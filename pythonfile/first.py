@@ -60,7 +60,7 @@ jsonstring = {
 }
 
 def get_db():
-    client = MongoClient('localhost:27017')
+    client = MongoClient('mongodb:27017')
     db = client.knexDBmh1 #client.database
     return db
 
