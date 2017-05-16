@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+    mongodb-service:
+        build: ./mongodb
+        ports:
+            - 27017:27017
+    python-file:
+        build: ./pythonfile
+        ports:
+            - 8000:27017
+        depends_on:
+            - mongodb-service
