@@ -1,4 +1,9 @@
 from pymongo import MongoClient
+import elastic
+import time
+
+time.sleep(5) #wait for initialisation of elasticsearch and mongodb...
+#FIXME: exception handling
 
 jsonstring = {
     "title": "test_project",
@@ -83,3 +88,4 @@ if __name__ == "__main__":
     for project in res:
         print(project)
         print()
+    elastic.elastic_example()

@@ -4,9 +4,15 @@ services:
     mongodb:
         image: mongo
 
+    elasticsearch:
+        image: elasticsearch
+        ports:
+            - "9200:9200"
+
     python-file:
         build: ./pythonfile
         links:
             - mongodb
-        depends_on:
-            - mongodb
+            - elasticsearch
+        environment:
+            - ELASTICSEARCH_URL=http://elasticsearch:9200
