@@ -4,9 +4,14 @@ services:
     mongodb:
         image: mongo
 
+    elasticsearch:
+        image: elasticsearch
+
     python-file:
         build: ./pythonfile
         links:
             - mongodb
+            - elasticsearch
         depends_on:
             - mongodb
+            - elasticsearch
