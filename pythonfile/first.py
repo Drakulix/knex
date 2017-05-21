@@ -2,8 +2,8 @@ from pymongo import MongoClient
 import elastic
 import time
 
-time.sleep(5) #wait for initialisation of elasticsearch and mongodb...
-#FIXME: exception handling
+time.sleep(5)   #FIXME: wait for initialisation of elasticsearch and mongodb
+                #with exception handling
 
 jsonstring = {
     "title": "test_project",
