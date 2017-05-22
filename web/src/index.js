@@ -1,8 +1,10 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import TopBar from './components/common/TopBar';
+import SideBar from './components/common/SideBar';
 
-class App extends Component {
+export default class App extends Component {
   constructor(props) {
     super(props);
 
@@ -14,10 +16,11 @@ class App extends Component {
   render() {
     return (
       <div>
-        <h1>Wenn ihr das hier seht, läufts! (:</h1>
+        <TopBar />
+        <SideBar />
       </div>
     );
   }
 }
 
-ReactDOM.render(<App />, document.querySelector('.container'));
+ReactDOM.render(<App />, document.querySelector('.content'));
