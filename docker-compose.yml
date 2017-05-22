@@ -11,8 +11,8 @@ services:
 
     python-file:
         build: ./pythonfile
+        ports:
+            - "5000:5000"
         links:
             - mongodb
             - elasticsearch
-        environment:
-            - ELASTICSEARCH_URL=http://elasticsearch:9200
