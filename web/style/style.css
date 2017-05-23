@@ -92,3 +92,50 @@ color: white;
 .inner-content {
   position: relative;
 }
+
+/*suzana*/
+.projecttitle {
+  position:relative;
+  width: 626px;
+  height: 18px;
+  left:289px;
+  top: 30px;
+  font-family: HelveticaNeue;
+  font-size: 18px;
+  text-align: left;
+  color: #000000;
+}
+.status {
+  position:relative;
+  width: 835px;
+  height: 22px;
+  left:290.5px;
+  top:48px;
+  font-family: HelveticaNeue;
+  font-size: 16px;
+  text-align: left;
+  color: #000000;
+}
+.projectbox {
+  position:relative;
+  width: 835px;
+  height: 674px
+  margin-top: 70px;
+  margin-left: 310px;
+  text-align: left;
+  color: #000000;
+  border: 2px;
+  border-style: outset;
+  border-color: grey;
+}
+.author{
+  position:relative;
+  top:70px;
+  left:310px;
+  width: 835px;
+  height: 16px;
+  font-family: HelveticaNeue;
+  font-size: 16px;
+  text-align: left;
+  color: #000000;
+}
