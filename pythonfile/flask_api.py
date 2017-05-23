@@ -1,5 +1,5 @@
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from pymongo import MongoClient
 from manifest_validator import ManifestValidator
 import time, json5, uuid, json
@@ -30,22 +30,22 @@ def create_project():
     json5.dumps(jsonstring)
     schema = open("manifest_schema.json")
     validator = ManifestValidator(schema)
-    r = validator.validate_manifest(jsonstring)
+    error = validator.validate_manifest(jsonstring)
 
-    if r == None:
+    if error == None:
         
         jsonstring['_id']=_id
         coll.insert(jsonstring)
         elastic.store_json("test", "projects", jsonstring)
 
     
-@app.route('/', methods=['GET','POST'])
+@app.route('/', methods=['GET'])
 def index():
     return jsonify(coll.find_one(_id))
 
 # receive manifest as a jsonstring
 # {'manifest':manifest}
-@app.route('/add_project')
+@app.route('/api/projects', methods=['POST'])
 def add_project():
 
     manifest=request.json['manifest']
@@ -54,29 +54,33 @@ def add_project():
     json5.dumps(manifest)
     schema = open("manifest_schema.json")
     validator = ManifestValidator(schema)
-    r = validator.validate_manifest(manifest)
+    error = validator.validate_manifest(manifest)
 
-    if r == None:
+    if error == None:
         _id=uuid.uuid4()    
         manifest['_id']=_id
         coll.insert(manifest)
         elastic.store_json("test", "projects", manifest)
-        return ('project imported \n')
-    
-    
-@app.route('/get_project_by_id/<uuid:project_id>', methods=['GET','POST'])
+        return make_response(manifest['_id'].hex)
+    else:
+        return make_response(error)
+
+@app.route('/api/projects', methods=['GET'])  
+@app.route('/api/projects/<uuid:project_id>', methods=['GET'])
 def get_project_by_id(project_id):
     res=coll.find_one({'_id':project_id})
     return jsonify(res)
 
-@app.route('/delete_project/<uuid:project_id>')
+# returns DeleteResult.raw_result
+@app.route('/api/projects', methods=['DELETE'])  
+@app.route('/api/projects/<uuid:project_id>', methods=['DELETE'])
 def delete_project(project_id):
-    coll.delete_one({'_id':project_id})
-    return ('project deleted \n')
+    return jsonify(coll.delete_one({'_id':project_id}).raw_result)
+    
 
 # receive body of elasticsearch query
 #{'query':body}
-@app.route('/search', methods=['GET','POST'])
+@app.route('/api/projects/search', methods=['POST'])
 def search():
     query=request.json['query']
     res=es.search(index="test", doc_type="projects", body=query)
