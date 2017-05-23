@@ -11,9 +11,9 @@ services:
         ports:
             - "9200:9200"
 
-    python-file:
+    backend-api:
         restart: always
-        build: ./pythonfile
+        build: ./backend/api
         ports:
             - "5000:5000"
         links:

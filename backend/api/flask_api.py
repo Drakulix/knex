@@ -13,8 +13,27 @@ def index():
     return elastic.elastic_example()
 
 
-# time.sleep(5)  # wait for initialisation of elasticsearch and mongodb...
-# FIXME: exception handling
+@app.route('/rest/v1.0/createProject', method="POST")
+def add_manifest_to_database():
+    # TODO validate manifest
+    # TODO check if already in database
+    # TODO add data to database
+    #
+    pass
+
+
+@app.route('/rest/v1.0/getProject', method="GET")
+def getProject():
+    # TODO get project from database to display project page
+    pass
+
+
+@app.route('/rest/v1.0/getProject', method="GET")
+def getProject():
+    # TODO get project from database to display project page
+    pass
+
+
 
 jsonstring = {
     "title": "test_project",
@@ -104,6 +123,8 @@ if __name__ == "__main__":
     for project in res:
         print(project)
         print()
+    # random sleep
     time.sleep(5)
+
     elastic.elastic_example()
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)

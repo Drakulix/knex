@@ -1,14 +1,14 @@
 FROM python:3
-CMD ls
-CMD mkdir pythonfile
+
+CMD mkdir api
 
 
 COPY requirements.txt .
 RUN ls
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . pythonfile/
+COPY . api/
 
-WORKDIR ./pythonfile
+WORKDIR ./api
 
-CMD ["python", "first.py" ]
+CMD ["python", "flask_api.py" ]

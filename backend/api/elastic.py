@@ -1,7 +1,7 @@
 import requests
 from elasticsearch import Elasticsearch
 
-from first import jsonstring
+from backend.api.flask_api import jsonstring
 
 es = Elasticsearch(['http://elasticsearch:9200'])
 
