@@ -1,0 +1,151 @@
+{
+  "description": "schema for manifest of knex project",
+  "type": "object",
+  "required": [
+    "project"
+  ],
+  "properties": {
+    "project": {
+      "type": "object",
+      "required": [
+        "title",
+        "url",
+        "authors",
+        "description",
+        "date_creation",
+        "date_last_updated"
+      ],
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "format": "url"
+        },
+        "git_url": {
+          "type": "string",
+          "format": "url"
+        },
+        "authors": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/user"
+          },
+          "additionalProperties": false
+        },
+        "analysis": {
+          "type": "object",
+          "$ref": "#/definitions/analysis"
+        },
+        "team": {
+          "type": "object",
+          "$ref": "#/definitions/team"
+        },
+        "status": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "date_creation": {
+          "type": "string",
+          "format": "date"
+        },
+        "date_last_updated": {
+          "type": "string",
+          "format": "date"
+        },
+        "tags": {
+          "type": "array",
+          "properties": {
+            "tag": {
+              "$ref": "#/definitions/future_work"
+            }
+          }
+        },
+        "future_work": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/future_work"
+          }
+        },
+        "realated_projects": {
+          "type": "array",
+          "properties": {
+            "project": {
+              "$ref": "#/definitions/future_work"
+            }
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "user": {
+      "required": [
+        "name",
+        "email"
+      ],
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        }
+      }
+    },
+    "analysis": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "url"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "team": {
+      "type": "object",
+      "required": [
+        "team_name"
+      ],
+      "team_name": "string",
+      "properties": {
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/user"
+          }
+        }
+      }
+    },
+    "authors": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/user"
+      }
+    },
+    "future_work": {
+      "type": "object",
+      "name": "string",
+      "url": {
+        "type": "string",
+        "format": "url"
+      },
+      "git_url": {
+        "type": "string",
+        "format": "url"
+      },
+      "descriptions": "string"
+    }
+  }
+}
+

@@ -9,6 +9,11 @@ from rest.manifest.manifest import Manifest
 app = Flask(__name__)
 
 
+@app.before_request
+def before_request():
+    get_db()
+
+
 @app.route('/')
 def index():
     return g.db.database_names()[0]
@@ -61,9 +66,6 @@ def find_by_title(db, title):
     return db.jsoncollection.find({"title": title})
 
 
-@app.before_request
-def before_request():
-    get_db()
 
 
 @app.teardown_request
