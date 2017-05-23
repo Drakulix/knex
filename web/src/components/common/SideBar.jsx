@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router';
 
 class SearchBar extends Component {
   constructor(props) {
@@ -16,25 +15,25 @@ class SearchBar extends Component {
 
   render() {
     return (
-      <div className="side-bar-container">
-        <ul className="menu-list">
-          <li className="menu-item">
-            <p class="menu-text">
-              {this.state.menu.discoverProjects}
-            </p>
-          </li>
-          <li className="menu-item">
-            <p class="menu-text">
-              {this.state.menu.createProject}
-            </p>
-          </li>
-          <li className="menu-item">
-            <p class="menu-text">
-              {this.state.menu.adminArea}
-            </p>
-          </li>
-        </ul>
-      </div>
+      <div className="container-fluid side-bar">
+          <ul className="list-group">
+            <li className="list-group-item">
+              <p>
+                {this.state.menu.discoverProjects}
+              </p>
+            </li>
+            <li className="list-group-item">
+              <p className="menu-text">
+                {this.state.menu.createProject}
+              </p>
+            </li>
+            <li className="list-group-item">
+              <p className="menu-text">
+                {this.state.menu.adminArea}
+              </p>
+            </li>
+          </ul>
+        </div>
     );
   }
 }

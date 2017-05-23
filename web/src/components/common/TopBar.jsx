@@ -11,17 +11,36 @@ class TopBar extends Component {
 
   render() {
     return (
-      <div className="top-bar-container">
-        <div className="company-logo ">
-          {this.state.logo}
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-2">
+            <p className="top-bar-company">
+              Company Name
+            </p>
+          </div>
+          <div className="col">
+            <form className="form-inline my-2 my-lg-0">
+              <input className="form-control search" type="text" placeholder="Search" />
+            </form>
+          </div>
+          <div className="col-1">
+            <p className="top-bar-text">
+              Collection
+            </p>
+          </div>
+          <div className="col-1">
+            <p className="top-bar-text">
+              Profile
+            </p>
+          </div>
+          <div className="col-1">
+            <p className="top-bar-text">
+              <i className="fa fa-power-off" aria-hidden="true"></i>
+            </p>
+          </div>
         </div>
       </div>
     );
-  }
-
-  onInputChange(term) {
-    this.setState({term});
-    this.props.onSearchTermChange(term);
   }
 }
 

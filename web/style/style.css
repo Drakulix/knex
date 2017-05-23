@@ -1,55 +1,94 @@
-.top-bar-container {
-  position: relative;
+@font-face {
+    font-family: "AvenirNext";
+    src: url(fonts/AvenirNext/AvenirNext.ttc);
+    font-style: Regular;
+}
+
+p:hover {
+color: #ff5500;
+}
+
+.container-fluid {
   height: 52px;
   background-color: #333333;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+  padding-right: 0px !important;
+  padding-left: 0px !important;
 }
 
-.company-logo {
-  padding-top: 14px;
-  margin-left: 28px;
+.top-bar-company {
 	width: 162px;
-	height: 18.4px;
+  margin-top: 16px;
+  margin-left: 28px;
 	font-family: HelveticaNeue;
 	font-size: 16px;
 	color: #ffffff;
 }
 
-.search-bar {
+.top-bar-text {
+  margin-top: 16px;
   text-align: center;
-  width: 433px;
-  height: 32px;
-  background-color: #ffffff;
-  box-shadow: inset 0 1px 0 0 #ececec;
-  border: solid 1px #cccccc;
+	font-family: HelveticaNeue;
+	font-size: 16px;
+	color: #ffffff;
 }
 
-.search-bar input {
-  width: 75%;
+.top-bar-searchbar {
+  margin-top: 16px;
+  margin-left: 41px;
+	font-family: HelveticaNeue;
+	font-size: 16px;
+	color: #ffffff;
 }
 
-.side-bar-container {
+.col-1:hover {
+  background-color: #242424;
+  height: 52px;
+}
+
+.search {
+  margin-top: 7px;
+  border-radius: 0px !important;
+  border: 0px !important;
+  width: 400px !important;
+  margin-left: 41px;
+}
+
+/* Start Sidebar Styling */
+
+.side-bar {
   position: absolute;
 	width: 261px;
-  height: 1024px;
+  height: 100%;
 	background-color: #333333;
 	box-shadow: 2px 0 4px 0 rgba(0, 0, 0, 0.5);
 }
 
-.menu-list {
-  margin-top: 118px;
+.list-group {
+  margin-top: 66px;
   height: 140px;
   padding: 0px !important;
 }
 
-.menu-item {
-width: 260px;
+.list-group-item {
 height: 52px;
-background-color: #333333;
+background-color: #333333 !important;
+border: 0px !important;
 color: white;
 }
 
-p.menu-text {
-  margin-left: 28px;
+.list-group-item:hover {
+    text-decoration: none;
+    background-color: #242424 !important;
+}
+
+.menu-button {
+  width: 260px;
+  height: 52px;
+  background-color: #333333;
   color: white;
+}
+
+.inner-content {
+  position: relative;
 }

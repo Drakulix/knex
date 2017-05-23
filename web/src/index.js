@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import TopBar from './components/common/TopBar';
 import SideBar from './components/common/SideBar';
+import InnerContent from './components/common/Content';
 
 export default class App extends Component {
   constructor(props) {
