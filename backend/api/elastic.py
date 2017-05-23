@@ -1,8 +1,6 @@
 import requests
 from elasticsearch import Elasticsearch
 
-from backend.api.flask_api import jsonstring
-
 es = Elasticsearch(['http://elasticsearch:9200'])
 
 
@@ -27,7 +25,7 @@ def print_results(results, field):
 
 def elastic_example():
     ping_elastic()
-    store_json("test", "projects", jsonstring)
+    store_json("test", "projects", "dummy")
     res = es.search(index="test", doc_type="projects", body={"query": {"match": {"status": "DONE"}}})
     print("jsonfile: %d documents found" % res['hits']['total'])
     print()

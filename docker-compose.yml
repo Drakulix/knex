@@ -4,6 +4,13 @@ services:
     mongodb:
         restart: always
         image: mongo
+        ports:
+            - "27017:27017"
+
+    mongo-seed:
+        build: ./backend/mongo-seed
+        links:
+            - mongodb
 
     elasticsearch:
         restart: always

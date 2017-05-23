@@ -11,4 +11,4 @@ COPY . api/
 
 WORKDIR ./api
 
-CMD ["python", "flask_api.py" ]
+CMD ["python", "api.py" ]
