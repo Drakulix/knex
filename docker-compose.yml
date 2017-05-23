@@ -8,6 +8,7 @@ services:
             - "27017:27017"
 
     mongo-seed:
+        restart: on-failure
         build: ./backend/mongo-seed
         links:
             - mongodb
