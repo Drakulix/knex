@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import TopBar from './components/common/TopBar';
 import SideBar from './components/common/SideBar';
 import InnerContent from './components/common/Content';
+import ProjectContainer from './components/ProjectContainer'
 
 export default class App extends Component {
   constructor(props) {
@@ -19,6 +20,7 @@ export default class App extends Component {
       <div>
         <TopBar />
         <SideBar />
+        <ProjectContainer />
       </div>
     );
   }
