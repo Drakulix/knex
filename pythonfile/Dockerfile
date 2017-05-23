@@ -1,10 +1,14 @@
 FROM python:3
+CMD ls
+CMD mkdir pythonfile
 
-WORKDIR /usr/src/app
 
-COPY requirements.txt ./
+COPY requirements.txt .
+RUN ls
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+COPY . pythonfile/
 
-CMD [ "python", "./first.py" ]
+WORKDIR ./pythonfile
+
+CMD ["python", "first.py" ]

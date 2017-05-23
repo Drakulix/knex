@@ -2,17 +2,22 @@ version: '3'
 
 services:
     mongodb:
+        restart: always
         image: mongo
 
     elasticsearch:
+        restart: always
         image: elasticsearch
         ports:
             - "9200:9200"
 
     python-file:
+        restart: always
         build: ./pythonfile
         ports:
             - "5000:5000"
         links:
             - mongodb
             - elasticsearch
+        volumes:
+            - /usr/src/app/
