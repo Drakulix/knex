@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-class SignUp extends React.Component {
+export default class SignUp extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -61,4 +61,3 @@ SignUp.defaultProps = {
   serviceName: 'Knex',
   teamName: 'Team Data Science'
 };
-export default SignUp;
