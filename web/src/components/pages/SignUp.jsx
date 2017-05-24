@@ -1,11 +1,19 @@
 import React from 'react';
 
+
 class SignUp extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
   render() {
+    const { serviceName, teamName } = this.props;
+
     return (
+
       <section className="sign-container">
-        <h1 className="service-name">Knex</h1>
-        <h2 className="team-name">Team Data Science</h2>
+        <h1 className="service-name">{serviceName}</h1>
+        <h2 className="team-name">{teamName}</h2>
         <div className="rectangle-sign">
           <h3 className="sign-type-desc">Sign In
           </h3>
@@ -44,4 +52,13 @@ class SignUp extends React.Component {
   }
 }
 
+SignUp.propTypes = {
+  serviceName: React.PropTypes.string,
+  teamName: React.PropTypes.string,
+}
+
+SignUp.defaultProps = {
+  serviceName: 'Knex',
+  teamName: 'Team Data Science'
+};
 export default SignUp;
