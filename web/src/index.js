@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import UploadByLink from './createProjectView.js';
+import UploadByPattern from './createProjectByPattern.js';
 
 class App extends Component {
   constructor(props) {
