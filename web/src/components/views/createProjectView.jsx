@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import UploadByPattern from './createProjectByPattern';
+import UploadByPattern from './CreateProjectByPattern';
 
 
 export default class UploadByLink extends React.Component {

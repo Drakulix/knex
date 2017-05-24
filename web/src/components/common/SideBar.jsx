@@ -39,7 +39,7 @@ class SearchBar extends Component {
               </ul>
           </div>
           <div className="col-9">
-            <UploadByLink />
+            <UploadByPattern />
           </div>
         </div>
       </div>
