@@ -15,7 +15,7 @@ class SignUp extends React.Component {
         <h1 className="service-name">{serviceName}</h1>
         <h2 className="team-name">{teamName}</h2>
         <div className="rectangle-sign">
-          <h3 className="sign-type-desc">Sign In
+          <h3 className="sign-type-desc">Sign Up
           </h3>
 
           {/*Input Email*/}
