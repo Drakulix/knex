@@ -15,8 +15,9 @@ export default class SignIn extends React.Component {
         <div className="rectangle-sign">
           <h3 className="sign-type-desc">Sign In</h3>
 
+          {/*Input Email*/}
           <div className="input-group">
-            <span className="input-group-addon" id="sizing-addon1">
+            <span className="input-group-addon">
               <span
                     className="glyphicon glyphicon-envelope"
                     aria-hidden="true"
@@ -25,8 +26,9 @@ export default class SignIn extends React.Component {
             <input type="text" className="form-control" placeholder="Email" />
           </div>
 
+
           <div className="input-group">
-            <span className="input-group-addon" id="basic-addon2">
+            <span className="input-group-addon">
               <span
                 className="glyphicon glyphicon-asterisk"
                 aria-hidden="true"
@@ -39,6 +41,7 @@ export default class SignIn extends React.Component {
             />
           </div>
 
+          {/*Input checkbox remember*/}
           <div className="checkbox">
             <label>
               <input type="checkbox" />
