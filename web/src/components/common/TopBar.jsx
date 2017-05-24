@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import data from 'test.json';
+
 class TopBar extends Component {
   constructor(props) {
     super(props);
