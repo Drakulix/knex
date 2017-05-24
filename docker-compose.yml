@@ -2,17 +2,30 @@ version: '3'
 
 services:
     mongodb:
+        restart: always
         image: mongo
+        ports:
+            - "27017:27017"
+
+    mongo-seed:
+        restart: on-failure
+        build: ./backend/mongo-seed
+        links:
+            - mongodb
 
     elasticsearch:
+        restart: always
         image: elasticsearch
         ports:
             - "9200:9200"
 
-    python-file:
-        build: ./pythonfile
+    backend-api:
+        restart: always
+        build: ./backend/api
+        ports:
+            - "5000:5000"
         links:
             - mongodb
             - elasticsearch
-        environment:
-            - ELASTICSEARCH_URL=http://elasticsearch:9200
+        volumes:
+            - /usr/src/app/
