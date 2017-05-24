@@ -1,3 +1,7 @@
+:root {
+  --highlight-color: #ff5500;
+}
+
 @font-face {
     font-family: "AvenirNext";
     src: url(fonts/AvenirNext/AvenirNext.ttc);
@@ -91,4 +95,45 @@ color: white;
 
 .inner-content {
   position: relative;
+}
+
+
+/* Start SignIn SignUp Styling */
+.sign-container{
+  text-align: center !important;
+}
+
+.service-name{
+  margin-top:138px;
+  margin-bottom: 128px;
+  font-size: 42px;
+  color: #333333;
+}
+
+.team-name{
+  font-size: 32px;
+  color: #8d8d8d;
+}
+
+.sign-type-desc{
+  margin-top: 45px;
+  margin-bottom: 30px;
+}
+
+.input-group{
+  width: 250px;
+  margin:9px auto;
+}
+
+.sign-button {
+  width: 250px;
+  height: 43px;
+  border-radius: 5px;
+  background-color: #ff5500 !important;
+  color: white !important;
+  margin: 25px !important;
+}
+
+.register-info{
+  color: #ff5500;
 }
