@@ -1,12 +1,29 @@
 import json
+import time
+import uuid
 
-from flask import Flask, g
+import json5
+from elasticsearch import Elasticsearch
+from flask import Flask, g, request, jsonify, abort
+from jsonschema import Draft4Validator, FormatChecker
 from pymongo import MongoClient
 
-# import elastic
-from rest.manifest.manifest import Manifest
-
 app = Flask(__name__)
+db = MongoClient(host='mongodb', port=27017)
+es = Elasticsearch(['http://elasticsearch:9200'])
+
+
+def get_db():
+    if not hasattr(g, 'db'):
+        g.db = db.knex
+    return g.db
+
+
+def validate(manifest):
+    schema = json.load("./manifest/manifest_schema.json")
+    validator = Draft4Validator(schema, format_checker=FormatChecker())
+    errors = validator.iter_errors(manifest)
+    return jsonify(errors)
 
 
 @app.before_request
@@ -16,61 +33,63 @@ def before_request():
 
 @app.route('/')
 def index():
-    return g.db.database_names()[0]
+    return g.db.collection_names(include_system_collections=False)[0]
     # return elastic.elastic_example()
 
 
-@app.route('/api/rest/createProject/<manifest_file_str>', methods=["POST"])
-def add_manifest_to_database(manifest_file_str):
-    # manifest ist validated
-    # TODO create exception return if validator cant validate manifest
-    manifest_json = json.loads(manifest_file_str)
-    manifest = Manifest(manifest_json)
-    if not manifest.validate():
-        return manifest.get_errors()
+@app.route('/api/projects/add', methods=['POST'])
+def add_project():
+    manifest = request.json['manifest']
+    manifest['date_creation'] = time.strftime("%Y-%m-%d")
+    manifest['date_update'] = time.strftime("%Y-%m-%d")
+    json5.dumps(manifest)
+    error = validate(manifest)
 
-    # TODO check if already in database
-
-    # TODO add data to database
-
-    pass
-
-
-@app.route('/api/rest/getProject/<project_id>', methods=["GET"])
-def get_project(project_id):
-    # TODO get project from database to display project page
-    return g.db.knex
+    if error is None:
+        _id = uuid.uuid4()
+        manifest['_id'] = _id
+        g.db.insert(manifest)
+        return jsonify(manifest)
+    else:
+        return abort(401)
 
 
-@app.route('/api/rest/seach/<searchparamas>', methods=["GET"])
-def search_with_params(seachparams):
-    # TODO get project from database to display project page
-    return seachparams
+@app.route('/api/projects', methods=['GET'])
+def get_projects():
+    res = g.db.projects.find_one()
+    return jsonify(res)
 
 
-def get_db():
-    if not hasattr(g, 'db'):
-        g.db = MongoClient(host='mongodb', port=27017)
-    return g.db
+@app.route('/api/projects/<project_id>', methods=['GET', 'PUT', 'DELETE'])
+def get_project_by_id(project_id):
+    if request.method == 'GET':
+        res = g.db.find_one({'_id': project_id})
+        return jsonify(res)
+    elif request.method == 'PUT':
+        if request.header['Content-Type'] == 'application/json':
+            manifest = request.json['manifest']
+            validate(manifest)
+            return jsonify(manifest)
+
+        return abort(401)
+    elif request.method == 'DELETE':
+        return jsonify(g.db.delete_one({'_id': project_id}).raw_result)
+    else:
+        return abort(400)
 
 
-def add_json(db, json):
-    db.jsoncollection.insert(json)
-
-
-def get_random_json(db):
-    return db.jsoncollection.find_one()
-
-
-def find_by_title(db, title):
-    return db.jsoncollection.find({"title": title})
-
-
+# receive body of elasticsearch query
+# {'query':body}
+@app.route('/api/projects/search', methods=['POST'])
+def search():
+    query = request.json['query']
+    res = es.search(index="test", doc_type="projects", body=query)
+    return jsonify(res)
 
 
 @app.teardown_request
 def teardown_request(exception):
-    g.db.close()
+    db.close()
 
 
 if __name__ == "__main__":

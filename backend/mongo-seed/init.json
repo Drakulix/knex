@@ -1,42 +1,80 @@
 [
   {
-    "project": {
-      "title": "test_project",
-      "url": "www.github.com/knex/",
-      "analysis": {
-        "url": "here-you-find-the-analysis.com",
-        "description": "thats what this analysis is about"
-      },
-      "hypothesis": "some text here",
-      "authors": [
-        {
-          "name": "test_owner",
-          "email": "email@address.com"
-        }
-      ],
-      "team": {
-        "team_name": "teamname"
-      },
-      "status": "DONE",
-      "description": "can this be a multiline description?",
-      "date_creation": "1970-01-01",
-      "date_updated": "2017-05-11",
-      "date_pub": "2017-05-11",
-      "tags": [
-        "tag",
-        "bio"
-      ],
-      "future_work": [
-        "some info on future work"
-      ],
-      "related_projects": [
-        {
-          "id": 0,
-          "name": "name of the listed project",
-          "author": "author",
-          "url": "www.my.url"
-        }
-      ]
-    }
+    "_id": 1,
+    "title": "test_project",
+    "url": "www.github.com/knex/",
+    "analysis": {
+      "url": "here-you-find-the-analysis.com",
+      "description": "thats what this analysis is about"
+    },
+    "hypothesis": "some text here",
+    "authors": [
+      {
+        "name": "test_owner",
+        "email": "email@address.com"
+      }
+    ],
+    "team": {
+      "team_name": "teamname"
+    },
+    "status": "DONE",
+    "description": "can this be a multiline description?",
+    "date_creation": "1970-01-01",
+    "date_updated": "2017-05-11",
+    "date_pub": "2017-05-11",
+    "tags": [
+      "tag",
+      "bio"
+    ],
+    "future_work": [
+      "some info on future work"
+    ],
+    "related_projects": [
+      {
+        "id": 0,
+        "name": "name of the listed project",
+        "author": "author",
+        "url": "www.my.url"
+      }
+    ]
+  },
+  {
+    "_id": 2,
+    "title": "test_project2",
+    "url": "www.github.com/knex/",
+    "analysis": {
+      "url": "here-you-find-the-analysis.com",
+      "description": "thats what this analysis is about"
+    },
+    "hypothesis": "some text here",
+    "authors": [
+      {
+        "name": "test_owner",
+        "email": "email@address.com"
+      }
+    ],
+    "team": {
+      "team_name": "teamname"
+    },
+    "status": "DONE",
+    "description": "can this be a multiline description?",
+    "date_creation": "1970-01-01",
+    "date_updated": "2017-05-11",
+    "date_pub": "2017-05-11",
+    "tags": [
+      "tag",
+      "bio"
+    ],
+    "future_work": [
+      "some info on future work"
+    ],
+    "related_projects": [
+      {
+        "id": 0,
+        "name": "name of the listed project",
+        "author": "author",
+        "url": "www.my.url"
+      }
+    ]
   }
 ]
