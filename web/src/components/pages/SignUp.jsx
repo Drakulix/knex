@@ -21,25 +21,41 @@ export default class SignUp extends React.Component {
           {/*Input Email*/}
           <div className="input-group" id="email-signup">
             <span className="input-group-addon">
-              <span className="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+              <span
+                className="glyphicon glyphicon-envelope"
+                aria-hidden="true"
+              />
             </span>
-            <input type="text" className="form-control" placeholder="Email"/>
+            <input type="text" className="form-control" placeholder="Email" />
           </div>
 
           {/*Input password*/}
           <div className="input-group">
             <span className="input-group-addon">
-              <span className="glyphicon glyphicon-asterisk" aria-hidden="true"></span>
+              <span
+                className="glyphicon glyphicon-asterisk"
+                aria-hidden="true" />
             </span>
-            <input type="password" className="form-control" placeholder="Password"/>
+            <input
+              type="password"
+              className="form-control"
+              placeholder="Password"
+            />
           </div>
 
           {/*Input confirm password*/}
           <div className="input-group">
             <span className="input-group-addon">
-              <span className="glyphicon glyphicon-asterisk" aria-hidden="true"></span>
+              <span
+                className="glyphicon glyphicon-asterisk"
+                aria-hidden="true" />
             </span>
-            <input type="password" className="form-control" placeholder="Confirm Password" type="password"/>
+            <input
+              type="password"
+              className="form-control"
+              placeholder="Confirm Password"
+              type="password"
+            />
           </div>
 
           <button type="button" className="btn btn-default btn-lg sign-button">
@@ -48,7 +64,7 @@ export default class SignUp extends React.Component {
         </div>
 
       </section>
-    )
+    );
   }
 }
 

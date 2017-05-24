@@ -13,26 +13,35 @@ export default class SignIn extends React.Component {
         <h1 className="service-name">{serviceName}</h1>
         <h2 className="team-name">{teamName}</h2>
         <div className="rectangle-sign">
-          <h3 className="sign-type-desc">Sign In
-          </h3>
+          <h3 className="sign-type-desc">Sign In</h3>
 
           <div className="input-group">
             <span className="input-group-addon" id="sizing-addon1">
-              <span className="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+              <span
+                    className="glyphicon glyphicon-envelope"
+                    aria-hidden="true"
+              />
             </span>
-            <input type="text" className="form-control" placeholder="Email"/>
+            <input type="text" className="form-control" placeholder="Email" />
           </div>
 
           <div className="input-group">
             <span className="input-group-addon" id="basic-addon2">
-              <span className="glyphicon glyphicon-asterisk" aria-hidden="true"></span>
+              <span
+                className="glyphicon glyphicon-asterisk"
+                aria-hidden="true"
+              />
             </span>
-            <input type="password" className="form-control" placeholder="Password"/>
+            <input
+              type="password"
+              className="form-control"
+              placeholder="Password"
+            />
           </div>
 
           <div className="checkbox">
             <label>
-              <input type="checkbox"/>
+              <input type="checkbox" />
               Remember me
             </label>
           </div>
@@ -41,12 +50,14 @@ export default class SignIn extends React.Component {
             Login
           </button>
           <div>
-            <a href="#" className="register-info">Don't have an account yet?<br></br>Register here.</a>
+            <a href="#" className="register-info">
+              Don't have an account yet?<br/>Register here.
+            </a>
           </div>
         </div>
 
       </section>
-    )
+    );
   }
 }
 
