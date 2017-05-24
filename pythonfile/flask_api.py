@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify, make_response
 from pymongo import MongoClient
 from manifest_validator import ManifestValidator
 import time, json5, uuid, json
-from first import jsonstring
 import elastic
 from elasticsearch import Elasticsearch
 
@@ -13,22 +12,6 @@ coll=db.projects
 
 es = Elasticsearch(['http://elasticsearch:9200'])
 app=Flask(__name__)
-
-
-# add project to test with
-@app.before_first_request
-def create_project():
-    jsonstring['date_creation']=time.strftime("%Y-%m-%d")
-    jsonstring['date_update']=time.strftime("%Y-%m-%d")
-    json5.dumps(jsonstring)
-    schema = open("manifest_schema.json")
-    validator = ManifestValidator(schema)
-    error = validator.validate_manifest(jsonstring)
-
-    if error == None:
-        jsonstring['_id']=_id
-        coll.insert(jsonstring)
-        elastic.store_json("test", "projects", jsonstring)
 
 
 @app.route('/', methods=['GET'])
