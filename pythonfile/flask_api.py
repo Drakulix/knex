@@ -1,4 +1,3 @@
-
 from flask import Flask, request, jsonify, make_response
 from pymongo import MongoClient
 from manifest_validator import ManifestValidator
@@ -7,24 +6,18 @@ from first import jsonstring
 import elastic
 from elasticsearch import Elasticsearch
 
+
 client=MongoClient('mongodb:27017')
 db=client.knexDBmh1
 coll=db.projects
 
 es = Elasticsearch(['http://elasticsearch:9200'])
-
-
 app=Flask(__name__)
-
-
-
-_id=uuid.uuid4()
 
 
 # add project to test with
 @app.before_first_request
 def create_project():
-    
     jsonstring['date_creation']=time.strftime("%Y-%m-%d")
     jsonstring['date_update']=time.strftime("%Y-%m-%d")
     json5.dumps(jsonstring)
@@ -33,59 +26,52 @@ def create_project():
     error = validator.validate_manifest(jsonstring)
 
     if error == None:
-        
         jsonstring['_id']=_id
         coll.insert(jsonstring)
         elastic.store_json("test", "projects", jsonstring)
 
-    
+
 @app.route('/', methods=['GET'])
 def index():
-    return jsonify(coll.find_one(_id))
+    return make_response('', 404)
 
 # receive manifest as a jsonstring
-# {'manifest':manifest}
+# returns new id
 @app.route('/api/projects', methods=['POST'])
 def add_project():
+    manifest=request.json
+    manifest['date_creation'] = time.strftime("%Y-%m-%d")
+    manifest['date_update'] = time.strftime("%Y-%m-%d")
 
-    manifest=request.json['manifest']
-    manifest['date_creation']=time.strftime("%Y-%m-%d")
-    manifest['date_update']=time.strftime("%Y-%m-%d")
-    json5.dumps(manifest)
     schema = open("manifest_schema.json")
     validator = ManifestValidator(schema)
     error = validator.validate_manifest(manifest)
 
     if error == None:
-        _id=uuid.uuid4()    
-        manifest['_id']=_id
+        manifest['id']=uuid.uuid4()
         coll.insert(manifest)
         elastic.store_json("test", "projects", manifest)
-        return make_response(manifest['_id'].hex)
+        return make_response(manifest['id'])
     else:
-        return make_response(error)
+        return make_response((error, '302'))
 
-@app.route('/api/projects', methods=['GET'])  
 @app.route('/api/projects/<uuid:project_id>', methods=['GET'])
 def get_project_by_id(project_id):
     res=coll.find_one({'_id':project_id})
     return jsonify(res)
 
-# returns DeleteResult.raw_result
-@app.route('/api/projects', methods=['DELETE'])  
 @app.route('/api/projects/<uuid:project_id>', methods=['DELETE'])
 def delete_project(project_id):
-    return jsonify(coll.delete_one({'_id':project_id}).raw_result)
-    
+    if coll.delete_one({'_id':project_id}).deleted_count != 0:
+        return make_response('Success')
+    else:
+        return make_response('Project not found', 404)
 
 # receive body of elasticsearch query
-#{'query':body}
 @app.route('/api/projects/search', methods=['POST'])
 def search():
-    query=request.json['query']
-    res=es.search(index="test", doc_type="projects", body=query)
+    res=es.search(index="test", doc_type="projects", body=request.json)
     return jsonify(res)
-    
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
