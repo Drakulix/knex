@@ -6,13 +6,11 @@ services:
 
     elasticsearch:
         image: elasticsearch
-        ports:
-            - "9200:9200"
 
-    python-file:
+    flask:
         build: ./pythonfile
         links:
             - mongodb
             - elasticsearch
-        environment:
-            - ELASTICSEARCH_URL=http://elasticsearch:9200
+        ports:
+            - "5000:5000"

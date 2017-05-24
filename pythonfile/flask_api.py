@@ -10,6 +10,8 @@ client=MongoClient('mongodb:27017')
 db=client.knexDBmh1
 coll=db.projects
 
+validator = ManifestValidator(schema)
+
 es = Elasticsearch(['http://elasticsearch:9200'])
 app=Flask(__name__)
 
@@ -27,7 +29,6 @@ def add_project():
     manifest['date_update'] = time.strftime("%Y-%m-%d")
 
     schema = open("manifest_schema.json")
-    validator = ManifestValidator(schema)
     error = validator.validate_manifest(manifest)
 
     if error == None:
@@ -57,4 +58,4 @@ def search():
     return jsonify(res)
 
 if __name__ == "__main__":
-    app.run(port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
