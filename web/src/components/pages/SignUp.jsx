@@ -12,6 +12,8 @@ export default class SignUp extends React.Component {
     return (
 
       <section className="sign-container">
+
+        {/*Information*/}
         <h1 className="service-name">{serviceName}</h1>
         <h2 className="team-name">{teamName}</h2>
         <div className="rectangle-sign">
