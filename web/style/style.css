@@ -137,3 +137,7 @@ color: white;
 .register-info{
   color: #ff5500;
 }
+
+#email-signup{
+  margin-bottom: 22px !important;
+}
