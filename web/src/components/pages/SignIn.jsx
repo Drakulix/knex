@@ -21,7 +21,7 @@ class SignIn extends React.Component {
             <span className="input-group-addon" id="basic-addon2">
               <span className="glyphicon glyphicon-asterisk" aria-hidden="true"></span>
             </span>
-            <input type="text" className="form-control" placeholder="Password"/>
+            <input type="password" className="form-control" placeholder="Password"/>
           </div>
 
           <div className="checkbox">
