@@ -4,7 +4,8 @@ import ReactDOM from 'react-dom';
 
 import TopBar from './components/common/TopBar';
 import SideBar from './components/common/SideBar';
-import InnerContent from './components/common/Content';
+import InnerContent from './components/common/Content'
+import SearchPage from './components/common/SearchPage';
 
 import UploadByLink from './createProjectView.js';
 import UploadByPattern from './createProjectByPattern.js';
@@ -24,6 +25,7 @@ export default class App extends Component {
       <div>
         <TopBar />
         <SideBar />
+        <SearchPage />
       </div>
     );
   }
