@@ -6,10 +6,10 @@ import UploadByPattern from './createProjectByPattern';
 export default class UploadByLink extends React.Component {
   render() {
     return (
-      <div className="content">
+      <div className="container">
         <div className="header">Create Project from Manifest</div>
         <input className="enterUrl" id="url" type="text" placeholder="enter url here (e.g. “http://soundloud.com/stuff/manifest.json”)" ></input>
-        <div className="text">Or</div>
+        <div className="text">or</div>
         <button className="submit" onClick={() => changeView(<UploadByPattern />) }>Create New Project Page</button>
       </div>
 
