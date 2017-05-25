@@ -103,3 +103,8 @@ color: white;
 .searchbar {
   width : 100%;
 }
+
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th{
+  background-color: #333333;
+  color : #ff5500;
+}
