@@ -97,7 +97,8 @@ color: white;
 /* createProjectByPattern.js and createProjectView.js */
 
 .container {
-  min-height: 600px;
+  min-height: 650px;
+  max-height: 800px;
 }
 
 .header{
