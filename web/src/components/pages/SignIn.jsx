@@ -28,7 +28,7 @@ export default class SignIn extends React.Component {
             <input type="text" className="form-control" placeholder="Email" />
           </div>
 
-
+          {/*Input password*/}
           <div className="input-group">
             <span className="input-group-addon">
               <span

@@ -10,7 +10,6 @@ export default class SignUp extends React.Component {
     const { serviceName, teamName } = this.props;
 
     return (
-
       <section className="sign-container">
 
         {/*Information*/}
