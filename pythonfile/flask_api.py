@@ -4,12 +4,14 @@ from manifest_validator import ManifestValidator
 import time, json5, uuid, json
 import elastic
 from elasticsearch import Elasticsearch
+import jsonschema
 
 
 client=MongoClient('mongodb:27017')
 db=client.knexDBmh1
 coll=db.projects
 
+schema = open("manifest_schema.json")
 validator = ManifestValidator(schema)
 
 es = Elasticsearch(['http://elasticsearch:9200'])
