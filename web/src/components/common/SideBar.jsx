@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import UploadByLink from '../views/createProjectView';
+import UploadByPattern from '../views/createProjectByPattern';
 
 class SearchBar extends Component {
   constructor(props) {
@@ -15,25 +17,32 @@ class SearchBar extends Component {
 
   render() {
     return (
-      <div className="container-fluid side-bar">
-          <ul className="list-group">
-            <li className="list-group-item">
-              <p>
-                {this.state.menu.discoverProjects}
-              </p>
-            </li>
-            <li className="list-group-item">
-              <p className="menu-text">
-                {this.state.menu.createProject}
-              </p>
-            </li>
-            <li className="list-group-item">
-              <p className="menu-text">
-                {this.state.menu.adminArea}
-              </p>
-            </li>
-          </ul>
+      <div className="inner-content">
+        <div className="row">
+          <div className="col-3 side-bar">
+              <ul className="list-group">
+                <li className="list-group-item">
+                  <p>
+                    {this.state.menu.discoverProjects}
+                  </p>
+                </li>
+                <li className="list-group-item">
+                  <p className="menu-text">
+                    {this.state.menu.createProject}
+                  </p>
+                </li>
+                <li className="list-group-item">
+                  <p className="menu-text">
+                    {this.state.menu.adminArea}
+                  </p>
+                </li>
+              </ul>
+          </div>
+          <div className="col-9">
+            <UploadByPattern />
+          </div>
         </div>
+      </div>
     );
   }
 }
