@@ -61,7 +61,6 @@ export default class SignUp extends React.Component {
               type="password"
               className="form-control"
               placeholder="Confirm Password"
-              type="password"
               required
             />
           </div>
