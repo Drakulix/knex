@@ -121,7 +121,7 @@ color: white;
 }
 
 .input-group{
-  width: 250px;
+  max-width: 250px;
   margin:9px auto;
 }
 
@@ -130,8 +130,13 @@ color: white;
   height: 43px;
   border-radius: 5px;
   background-color: #ff5500 !important;
+  border-color: #ff5500 !important;
   color: white !important;
   margin: 25px !important;
+}
+
+.sign-button:hover {
+  background-color: #d64802 !important;
 }
 
 .register-info{

@@ -21,18 +21,18 @@ export default class SignIn extends React.Component {
           <div className="input-group">
             <span className="input-group-addon">
               <span
-                    className="glyphicon glyphicon-envelope"
+                    className="fa fa-envelope-o"
                     aria-hidden="true"
               />
             </span>
-            <input type="text" className="form-control" placeholder="Email" />
+            <input type="text" className="form-control" placeholder="Email" required autofocus/>
           </div>
 
           {/*Input password*/}
           <div className="input-group">
             <span className="input-group-addon">
               <span
-                className="glyphicon glyphicon-asterisk"
+                className="fa fa-asterisk"
                 aria-hidden="true"
               />
             </span>
@@ -40,6 +40,7 @@ export default class SignIn extends React.Component {
               type="password"
               className="form-control"
               placeholder="Password"
+              required
             />
           </div>
 
@@ -51,7 +52,7 @@ export default class SignIn extends React.Component {
             </label>
           </div>
 
-          <button type="button" className="btn btn-default btn-lg sign-button">
+          <button type="submit" className="btn btn-lg btn-primary sign-button">
             Login
           </button>
           <div>
