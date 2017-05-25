@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import UploadByLink from '../views/createProjectView';
 import UploadByPattern from '../views/createProjectByPattern';
+import ProjectContainer from '../views/ProjectContainer';
 
 class SearchBar extends Component {
   constructor(props) {
@@ -39,7 +40,7 @@ class SearchBar extends Component {
               </ul>
           </div>
           <div className="col-9">
-            <UploadByPattern />
+            <ProjectContainer />
           </div>
         </div>
       </div>

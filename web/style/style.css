@@ -97,7 +97,7 @@ color: white;
 /* createProjectByPattern.js and createProjectView.js */
 
 .container {
-  min-height: 500px;
+  min-height: 600px;
 }
 
 .header{
@@ -232,3 +232,41 @@ color: white;
   text-align: center;
   color: #000000;
 }
+
+ /* Project Container */
+.projecttitle {
+  width: 626px;
+  height: 18px;
+  top: 30px;
+  font-family: HelveticaNeue;
+  font-size: 18px;
+  text-align: left;
+  color: #000000;
+}
+.status {
+  width: 835px;
+  height: 22px;
+  top:48px;
+  font-family: HelveticaNeue;
+  font-size: 16px;
+  text-align: left;
+  color: #000000;
+}
+.projectbox {
+  width: 835px;
+  height: 674px
+  margin-top: 70px;
+  text-align: left;
+  color: #000000;
+  border: 2px;
+  border-style: outset;
+  border-color: grey;
+}
+.author{
+  top:70px;
+  width: 835px;
+  height: 16px;
+  font-family: HelveticaNeue;
+  font-size: 16px;
+  text-align: left;
+  color: #000000;

@@ -9,6 +9,8 @@ import InnerContent from './components/common/Content';
 import UploadByLink from './components/views/CreateProjectView';
 import UploadByPattern from './components/views/CreateProjectByPattern';
 
+import ProjectContainer from './components/views/ProjectContainer';
+
 
 export default class App extends Component {
   constructor(props) {
