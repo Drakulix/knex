@@ -92,3 +92,14 @@ color: white;
 .inner-content {
   position: relative;
 }
+
+/* Search Styles */
+
+.headline {
+  width : 100%;
+  text-align: center;
+}
+
+.searchbar {
+  width : 100%;
+}

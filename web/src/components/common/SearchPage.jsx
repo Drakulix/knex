@@ -29,7 +29,9 @@ var results = results3
 class Headline extends Component {
   render() {
     return(
-      <h1 classname = "headline"> Looking for a Project? </h1>
+      <div className="row">
+        <h1 className="headline"> Looking for a Project? </h1>
+      </div>
     );
   }
 }
@@ -37,10 +39,14 @@ class Headline extends Component {
 class Searchbar extends Component {
   render() {
     return(
-      <div>
-        <input type="text" name="search"/>
-        <input type="submit"/>
-      </div>
+      <div className="input-group searchbar">
+        <input className="form-control" type="text" name="search"/>
+        <span class="input-group-button">
+          <button className="btn btn-primary" type="submit">
+            Search!
+          </button>
+        </span>
+       </div>
     );
   }
 }
@@ -48,30 +54,57 @@ class Searchbar extends Component {
 class AdvancedSearch extends Component {
   render() {
     return(
-      <div>
-        <label for="projectName"> Project Name:
-          <input type="text" id="projectName" name="projectName"/>
-        </label>
-        <label for="author"> Author:
-          <input type="search" id="author" name="author"/>
-        </label>
-        <label for="tags"> Tags:
-          <input type="search" id="tags" name="tags"/>
-        </label>
-        <label for="dateStart"> From:
-          <input type="date" id="dateStart" name="dateStart"/>
-        </label>
-        <label for="dateEnd"> To:
-          <input type="date" id="dateEnd" name="dateEnd"/>
-        </label>
-        <label for="description"> Description:
-          <input type="text" id="description" name="description"/>
-        </label>
-        <label for="status"> Status:
-          <input type="search" id="status" name="status"/>
-        </label>
-        <input type="submit"/>
-      </div>
+        <div className="form-horizontal row">
+          <div className="col-md-6 input-group">
+            <span className ="input-group-addon">
+              Project Name
+            </span>
+            <input class="form-control" type="text" id="projectName" name="projectName"/>
+          </div>
+          <div className="col-md-6 input-group">
+            <span className ="input-group-addon">
+              Author
+            </span>
+            <input class="form-control" type="search" id="author" name="author"/>
+          </div>
+          <div className="col-md-6 input-group">
+            <span className ="input-group-addon">
+              Tags
+            </span>
+            <input class="form-control" type="search" id="tags" name="tags"/>
+          </div>
+          <div className="col-md-3 input-group">
+            <span className ="input-group-addon">
+              From
+            </span>
+            <input class="form-control" type="date" id="dateStart" name="dateStart"/>
+          </div>
+          <div className="col-md-3 input-group">
+            <span className ="input-group-addon">
+              To
+            </span>
+            <input class="form-control" type="date" id="dateEnd" name="dateEnd"/>
+          </div>
+          <div className="col-md-6 input-group">
+            <span className ="input-group-addon">
+              Description
+            </span>
+            <input type="text" id="description" name="description"/>
+          </div>
+          <div className="col-md-6 input-group">
+            <span className ="input-group-addon">
+              Status
+            </span>
+            <input type="search" id="status" name="status"/>
+          </div>
+          <div className="input-group">
+            <span class="input-group-button">
+              <button className="btn btn-primary" type="submit">
+                Search!
+              </button>
+            </span>
+          </div>
+        </div>
     );
   }
 }
@@ -86,19 +119,28 @@ class Search extends Component {
     if(this.state.expanded){
       return(
         <div>
-          <form className="searchform">
+          <form className="form-horizontal">
             <AdvancedSearch/>
           </form>
-          <a onClick={() => this.setState({expanded : false})}>Minimize</a>
+          <div className="row">
+            <div className="col-md-2"/>
+            <div className="col-md-10">
+              <a onClick={() => this.setState({expanded : false})}>Minimize</a>
+            </div>
+          </div>
         </div>
       );
     } else {
       return(
         <div>
-          <form className="searchform">
-            <Searchbar/>
-          </form>
-          <a onClick={() => this.setState({expanded : true})}>Advanced Search</a>
+          <div className="row">
+            <form className="form-inline">
+              <Searchbar/>
+            </form>
+          </div>
+          <div className="row">
+            <a onClick={() => this.setState({expanded : true})}>Advanced Search</a>
+          </div>
         </div>
       );
     }
@@ -110,7 +152,7 @@ class Table extends Component {
     renderLine(result){
       return(
           <tr>
-            <td> {result.name} </td>
+            <td> <a href={result.name} >{result.name} </a> </td>
             <td> {result.author} </td>
             <td> {result.status} </td>
             <td> {result.description} </td>
@@ -130,17 +172,19 @@ class Table extends Component {
     renderTable(results){
       if(results.length>0){
         return(
-          <table>
-            <tr>
-              <th>Project</th>
-              <th>Author</th>
-              <th>Status</th>
-              <th>Description</th>
-              <th>Date</th>
-              <th>Fav</th>
-            </tr>
-            {this.renderLines(results)}
-          </table>
+          <div className="row">
+            <table className="table table-hover">
+              <tr>
+                <th className="col-md-3">Project</th>
+                <th className="col-md-2">Author</th>
+                <th className="col-md-1">Status</th>
+                <th className="col-md-4">Description</th>
+                <th className="col-md-1">Date</th>
+                <th className="col-md-1">Fav</th>
+              </tr>
+              {this.renderLines(results)}
+            </table>
+          </div>
         );
       } else {
         return null;
@@ -155,20 +199,19 @@ class Table extends Component {
 class SearchPage extends Component {
   render() {
     return (
-      <div className="inner-content">
-        <div className="headline">
-          <Headline />
-        </div>
-        <div className="search">
-          <Search />
-        </div>
-        <div className="table">
-          <Table />
+      <div class="inner-content">
+        <div className="container">
+          <div className="row">
+            <div className="col-md-10 offset-md-0">
+                <Headline />
+                <Search />
+                <Table />
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 }
-
 
 export default SearchPage;
