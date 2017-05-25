@@ -1,0 +1,28 @@
+[ 
+	{
+		title 			: 	'Music Mood Annotator Design and Integration',
+		description 	:	'A robust and efficient technique for automatic music mood annotation is presented. A song’s mood is expressed by a supervised machine learning approach based on musical features extracted from the raw audio signal. A ground truth, used for training, is created using both social network information systems and individual experts. Tests of 7 different classification configurations have been performed, showing that Support Vector Machines perform best for the task at hand. Moreover, we evaluate the algorithm robustness to different audio compression schemes. This fact, often neglected, is fundamental to build a system that is usable in real conditions. In addition, the integration of a fast and scalable version of this technique with the European Project PHAROS is discussed.',
+		status			: 	'DONE',
+		date_creation		:	'2009-06-03',
+		url			:	'http://example4.org',
+		tags 			: 	['Music information retrieval','Mood detection', 'Algotithms'],
+		authors 		:	[
+			{	name		:	'Cyril Laurier',
+				email		:	'cyril.laurier@upf.edu'
+
+			},
+			{	name		:	'Owen Meyers',
+				email		:	'owen.meyers@upf.edu'
+			},
+			{	name		:	'Joan Serrà',
+				email		:	'joan.serraj@upf.edu'
+			},
+			{	name		:	'Martín Blech',
+				email		:	'martin.blech@upf.edu'
+			},
+			{	name		:	'Perfecto Herrera',
+				email		:	'perfecto.herrera@upf.edu'
+			}
+		]
+	}
+]
