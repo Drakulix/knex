@@ -8,11 +8,13 @@ from werkzeug.utils import secure_filename
 from pymongo import MongoClient
 from manifest_validator import ManifestValidator
 import time, json5, uuid, json
-import elastic
+from elasticsearch import Elasticsearch
+from elasticsearch.exceptions import RequestError
 from bson.json_util import dumps
 import uploader
 from apiexception import ApiException
 
+es = Elasticsearch(['http://elasticsearch:9200'])
 
 client=MongoClient('mongodb:27017')
 db=client.knexDB
@@ -26,7 +28,7 @@ CORS(app)
 
 ALLOWED_EXTENSIONS = set(['txt', 'json', 'json5'])
 app.config['UPLOAD_FOLDER'] = ''
-app.config['MAX_CONTENT_PATH'] = 1000000; #100.000 byte = 100kb 
+app.config['MAX_CONTENT_PATH'] = 1000000; #100.000 byte = 100kb
 
 
 @app.route('/', methods=['GET'])
@@ -50,7 +52,7 @@ def add_project():
                     successful_files.append(file.filename+" " +str(newId)) #represent original filename
                 except Exception as e:
                     unsuccessful_files.append(file.filename + str(e))
-                        
+
                 print("Successful files: ", successful_files, '\n', file=sys.stderr)
                 print("Unsuccessful files: ", unsuccessful_files, '\n', file=sys.stderr)
         return      """<!doctype html>
@@ -70,7 +72,7 @@ def add_project():
 
             return make_response(str(newid))
         except ApiException as e:
-            raise e	
+            raise e
         except Exception as err:
             return make_response("error: " + str(err), '500')
 
@@ -97,7 +99,7 @@ def uploads():
 def get_projects():
     limit=request.args.get('limit', type=int)
     skip=request.args.get('skip', type=int)
-    
+
     argc=len(request.args)
 
     if coll.projects.count() == 0:
@@ -115,7 +117,7 @@ def get_projects():
         return make_response('Invalid parameters',400)
 
     res=make_response(dumps(res))
-    res.headers['Content-Type'] = 'application/json' 
+    res.headers['Content-Type'] = 'application/json'
 
     return res
 
@@ -128,16 +130,25 @@ def get_project_by_id(project_id):
 
 @app.route('/api/projects/<uuid:project_id>', methods=['DELETE'])
 def delete_project(project_id):
-    if coll.delete_one({'_id':project_id}).deleted_count != 0:
-        return make_response('Success')
+    try:
+        es.delete(index="projects-index", doc_type='Project', id=project_id, refresh=True)
+    except NotFoundError:
+        if coll.delete_one({'_id':project_id}).deleted_count == 0:
+            return make_response('Project not found', 404)
+        else:
+            return make_response('Success')
     else:
-        return make_response('Project not found', 404)
+        coll.delete_one({'_id':project_id})
+        return make_response('Success')
 
 # receive body of elasticsearch query
 @app.route('/api/projects/search', methods=['POST'])
 def search():
-    res=elastic.es.search(index="test", doc_type="projects", body=request.json)
-    return jsonify(res)
+    try:
+        res=es.search(index="projects-index", doc_type="Project", body=request.json)
+        return jsonify(res)
+    except RequestError as e:
+        return (str(e), 400)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

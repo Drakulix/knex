@@ -1,5 +1,4 @@
-from flask_api import validator, ALLOWED_EXTENSIONS, coll
-import elastic
+from flask_api import validator, ALLOWED_EXTENSIONS, coll, es
 import json5
 import time
 import uuid
@@ -22,19 +21,24 @@ def save_file_to_db(filename):
 
         if error == None:
             jsonfile.seek(0)
-        
+
             manifest = json5.load(jsonfile)
             jsonfile.close()
             manifest['date_creation'] = time.strftime("%Y-%m-%d")
             manifest['date_update'] = time.strftime("%Y-%m-%d")
             manifest['id'] = uuid.uuid4()
 
-            elastic.store_json('test', 'projects', manifest)
-            coll.insert_one(manifest)
-            print("Successfully validated file. ID is " + str(manifest['id']),file=sys.stderr)
-            print("File content is: ", file=sys.stderr)
-            print(manifest, file=sys.stderr)
-            return manifest['id']
+            res = es.index(index="projects-index", doc_type='Project', id=manifest['id'], body=manifest)
+            if res['created']:
+                coll.insert_one(manifest)
+
+                print("Successfully validated file. ID is " + str(manifest['id']),file=sys.stderr)
+                print("File content is: ", file=sys.stderr)
+                print(manifest, file=sys.stderr)
+                return manifest['id']
+            else:
+                print(error,file=sys.stderr)
+                raise ApiException("ElasticSearch Index Error: \n" + str(error), 500)
         else:
             print(error,file=sys.stderr)
             raise ApiException("Validation Error: \n" + str(error), 400)
@@ -49,9 +53,9 @@ def save_manifest_to_db(manifest):
         manifest['date_creation'] = time.strftime("%Y-%m-%d")
         manifest['date_update'] = time.strftime("%Y-%m-%d")
         manifest['id']=uuid.uuid4()
-                
+
         error = validator.validate_manifest(manifest)
-                    
+
         if error == None:
             coll.insert(manifest)
             elastic.store_json("test", "projects", manifest)
