@@ -65,6 +65,7 @@ color: #ff5500;
 .side-bar {
 	background-color: #333333;
 	box-shadow: 2px 0 4px 0 rgba(0, 0, 0, 0.5);
+  padding-right: 0px !important;
 }
 
 .list-group {
