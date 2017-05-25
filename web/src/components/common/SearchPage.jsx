@@ -202,7 +202,7 @@ class SearchPage extends Component {
       <div class="inner-content">
         <div className="container">
           <div className="row">
-            <div className="col-md-10 offset-md-0">
+            <div className="col-md-10 offset-md-2">
                 <Headline />
                 <Search />
                 <Table />

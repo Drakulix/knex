@@ -23,6 +23,8 @@ export default class App extends Component {
   render() {
     return (
       <div>
+        <TopBar />
+        <SideBar />
         <SearchPage />
       </div>
     );
