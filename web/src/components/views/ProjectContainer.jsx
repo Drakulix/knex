@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 
-class ProjectContainer extends Component{
-  constructor(props){
+class ProjectContainer extends Component {
+  constructor(props) {
     super(props);
-    this.state={
+    this.state = {
       state:null
     };
   }

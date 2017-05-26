@@ -3,13 +3,8 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
 import TopBar from './components/common/TopBar';
-import SideBar from './components/common/SideBar';
-import InnerContent from './components/common/Content';
-
-import UploadByLink from './components/views/CreateProjectView';
-import UploadByPattern from './components/views/CreateProjectByPattern';
-
-import ProjectContainer from './components/views/ProjectContainer';
+import CreateProject from './components/pages/CreateProject';
+import ProjectDetails from './components/pages/ProjectDetails';
 
 
 export default class App extends Component {
@@ -25,7 +20,7 @@ export default class App extends Component {
     return (
       <div>
         <TopBar />
-        <SideBar />
+        <ProjectDetails />
       </div>
     );
   }
