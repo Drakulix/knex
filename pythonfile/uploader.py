@@ -1,4 +1,4 @@
-from flask_api import validator, ALLOWED_EXTENSIONS
+from flask_api import validator, ALLOWED_EXTENSIONS, coll
 import elastic
 import json5
 import time
@@ -19,7 +19,8 @@ def save_file_to_db(filename):
 
     if error == None:
         elastic.store_json('test', 'projects', manifest)
-        print("Successfully validated file.")
+        coll.insert_one(manifest)
+        print("Successfully validated file. ID is"+str(manifest['id']))
 
     else:
         print(error)
