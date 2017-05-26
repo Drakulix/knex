@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { IndexLink, Link } from "react-router";
+
 
 class TopBar extends Component {
   constructor(props) {
@@ -20,7 +22,7 @@ class TopBar extends Component {
           </div>
           <div className="col">
             <form className="form-inline my-2 my-lg-0">
-              
+
             </form>
           </div>
           <div className="col-1">
