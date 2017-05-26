@@ -6,8 +6,8 @@ import TopBar from './components/common/TopBar';
 import SideBar from './components/common/SideBar';
 import InnerContent from './components/common/Content';
 
-import UploadByLink from './createProjectView.js';
-import UploadByPattern from './createProjectByPattern.js';
+import UploadByLink from './components/views/CreateProjectView';
+import UploadByPattern from './components/views/CreateProjectByPattern';
 
 
 export default class App extends Component {

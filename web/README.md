@@ -12,7 +12,7 @@ inside the folder 'web'
 
 - start the application with:
 ```
-npm run
+npm start
 ```
 - visit
 ```
