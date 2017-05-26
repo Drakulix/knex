@@ -1,7 +1,6 @@
 [ 
     {
-        title             :     'A music information system automatically generated via Web content
-mining techniques',
+        title             :     'A music information system automatically generated via Web content mining techniques',
         description     :    'This article deals with the problem of mining music-related information from the Web and representing this information via a music information system. Novel techniques have been developed as well as existing ones refined in order to automatically gather information about music artists and bands. After searching, retrieval, and indexing of Web pages that are related to a music artist or band, Web content mining and music information retrieval techniques were applied to capture the following categories of information: similarities between music artists or bands, prototypicality of an artist or a band for a genre, descriptive properties of an artist or a band, band members and instrumentation, images of album cover artwork. Approaches to extracting these pieces of information are presented and evaluation experiments are described that investigate the proposed approaches’ performance. From the insights gained by the various experiments an Automatically Generated Music Information System (AGMIS) providing Web-based access to the extracted information has been developed. AGMIS demonstrates the feasibility of automated music information systems on a large collection of more than 600,000 music artists.',
         status            :     'DONE',
         date_creation        :    '2010-10-08',
