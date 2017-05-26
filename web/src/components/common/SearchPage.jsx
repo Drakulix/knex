@@ -39,14 +39,14 @@ class Headline extends Component {
 class Searchbar extends Component {
   render() {
     return(
-      <div className="input-group searchbar">
+      <div className="input-group row">
         <input className="form-control" type="text" name="search"/>
-        <span class="input-group-button">
+        <span className="input-group-button">
           <button className="btn btn-primary" type="submit">
             Search!
           </button>
         </span>
-       </div>
+      </div>
     );
   }
 }
@@ -56,50 +56,50 @@ class AdvancedSearch extends Component {
     return(
         <div className="form-horizontal row">
           <div className="col-md-6 input-group">
-            <span className ="input-group-addon">
+            <span className ="input-group-addon primary">
               Project Name
             </span>
-            <input class="form-control" type="text" id="projectName" name="projectName"/>
+            <input class="form-control full-width" type="text" id="projectName" name="projectName"/>
           </div>
-          <div className="col-md-6 input-group">
-            <span className ="input-group-addon">
+          <div className="col-md-6 input-group ">
+            <span className ="input-group-addon primary">
               Author
             </span>
             <input class="form-control" type="search" id="author" name="author"/>
           </div>
-          <div className="col-md-6 input-group">
-            <span className ="input-group-addon">
+          <div className="col-md-6 input-group ">
+            <span className ="input-group-addon primary">
               Tags
             </span>
             <input class="form-control" type="search" id="tags" name="tags"/>
           </div>
-          <div className="col-md-3 input-group">
-            <span className ="input-group-addon">
+          <div className="col-md-3 input-group ">
+            <span className ="input-group-addon primary">
               From
             </span>
             <input class="form-control" type="date" id="dateStart" name="dateStart"/>
           </div>
           <div className="col-md-3 input-group">
-            <span className ="input-group-addon">
+            <span className ="input-group-addon primary">
               To
             </span>
             <input class="form-control" type="date" id="dateEnd" name="dateEnd"/>
           </div>
           <div className="col-md-6 input-group">
-            <span className ="input-group-addon">
+            <span className ="input-group-addon primary primary">
               Description
             </span>
             <input type="text" id="description" name="description"/>
           </div>
           <div className="col-md-6 input-group">
-            <span className ="input-group-addon">
+            <span className ="input-group-addon primary">
               Status
             </span>
             <input type="search" id="status" name="status"/>
           </div>
-          <div className="input-group">
-            <span class="input-group-button">
-              <button className="btn btn-primary" type="submit">
+          <div className="col-md-2 input-group">
+            <span class="input-group-button primary">
+              <button className="btn btn-primary " type="submit">
                 Search!
               </button>
             </span>
@@ -119,13 +119,17 @@ class Search extends Component {
     if(this.state.expanded){
       return(
         <div>
-          <form className="form-horizontal">
-            <AdvancedSearch/>
-          </form>
+          <div className="row">
+            <form className="form-horizontal col-md-12">
+              <AdvancedSearch/>
+            </form>
+          </div>
           <div className="row">
             <div className="col-md-2"/>
             <div className="col-md-10">
-              <a onClick={() => this.setState({expanded : false})}>Minimize</a>
+              <a onClick={() => this.setState({expanded : false})}  className="clickable-text">
+                <u>Minimize</u>
+              </a>
             </div>
           </div>
         </div>
@@ -134,12 +138,14 @@ class Search extends Component {
       return(
         <div>
           <div className="row">
-            <form className="form-inline">
+            <form className="form-horizontal col-md-12">
               <Searchbar/>
             </form>
           </div>
           <div className="row">
-            <a onClick={() => this.setState({expanded : true})}>Advanced Search</a>
+            <a onClick={() => this.setState({expanded : true})} className="clickable-text text-right">
+              <u>Advanced Search</u>
+            </a>
           </div>
         </div>
       );
@@ -152,7 +158,7 @@ class Table extends Component {
     renderLine(result){
       return(
           <tr>
-            <td> <a href={result.name} >{result.name} </a> </td>
+            <td> <a href={result.name} ><u>{result.name}</u></a> </td>
             <td> {result.author} </td>
             <td> {result.status} </td>
             <td> {result.description} </td>
@@ -204,7 +210,9 @@ class SearchPage extends Component {
           <div className="row">
             <div className="col-md-10 offset-md-2">
                 <Headline />
+                <hr className="hidden-divider"/>
                 <Search />
+                <hr className="horizontal-divider"/>
                 <Table />
             </div>
           </div>

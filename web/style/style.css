@@ -98,13 +98,46 @@ color: white;
 .headline {
   width : 100%;
   text-align: center;
+  color: #333333;
+  margin-top: 1em;
 }
 
-.searchbar {
-  width : 100%;
-}
-
-.table-hover tbody tr:hover td, .table-hover tbody tr:hover th{
-  background-color: #333333;
+.clickable-text{
+  cursor : pointer;
   color : #ff5500;
+}
+
+.full-width {
+  width: : 100% !important;
+}
+
+.table-hover tbody tr:hover td{
+  background-color: #333333 !important;
+  color : #ff5500 !important;
+}
+
+.table-hover tbody tr:hover th{
+  background-color: #ffffff;
+  color : #000000;
+}
+
+.horizontal-divider {
+  margin-top: 3em;
+  margin-bottom: 5em;
+}
+
+.hidden-divider {
+  margin-bottom: 5em;
+  visibility: hidden;
+}
+
+.btn-primary {
+  color : #333333 !important;
+  background-color: #ff5500 !important;
+}
+
+.input-group-addon.primary {
+    color: #ffffff;
+    background-color: #333333;
+    border-color: #333333;
 }
