@@ -7,8 +7,8 @@ import SideBar from './components/common/SideBar';
 import InnerContent from './components/common/Content'
 import SearchPage from './components/common/SearchPage';
 
-import UploadByLink from './createProjectView.js';
-import UploadByPattern from './createProjectByPattern.js';
+import UploadByLink from './components/views/CreateProjectView';
+import UploadByPattern from './components/views/CreateProjectByPattern';
 
 
 export default class App extends Component {
