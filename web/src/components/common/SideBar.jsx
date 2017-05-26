@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import UploadByLink from '../views/createProjectView';
-import UploadByPattern from '../views/createProjectByPattern';
+import UploadByLink from '../views/CreateProjectView';
+import UploadByPattern from '../views/CreateProjectByPattern';;
 import ProjectContainer from '../views/ProjectContainer';
 
 class SearchBar extends Component {
