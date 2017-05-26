@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import SearchPage from '../views/SearchPage';
+import TopBar from '../common/TopBar';
 
-class ProjectDetails extends Component {
+export default class ProjectDetails extends Component {
   constructor(props) {
     super(props);
 
@@ -16,8 +18,9 @@ class ProjectDetails extends Component {
   render() {
     return (
       <div className="inner-content">
+        <TopBar />
         <div className="row">
-          <div className="col-3 side-bar">
+          <div className="col-2 side-bar">
               <ul className="list-group">
                 <li className="list-group-item">
                   <p>
@@ -36,13 +39,11 @@ class ProjectDetails extends Component {
                 </li>
               </ul>
           </div>
-          <div className="col-9">
-            {/* ProjectDiscovery */}
+          <div className="col-10">
+            <SearchPage />
           </div>
         </div>
       </div>
     );
   }
 }
-
-export default ProjectDetails;

@@ -1,16 +1,7 @@
-:root {
-  --highlight-color: #ff5500;
-}
-
-@font-face {
-    font-family: "HelveticaNeue";
-    src: url(fonts/HelveticaNeue/HelveticaNeue.ttc);
-    font-style: Regular;
-}
-
 body {
   overflow-x: hidden;
   min-height: 100%;
+  font-family: 'Open Sans', sans-serif !important;
 }
 
 html {
@@ -57,6 +48,18 @@ color: #ff5500;
   font-weight: 300;
 	font-size: 16px;
 	color: #ffffff;
+}
+
+.padding {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+
+.topbar {
+  position: fixed;
+  width: 100%;
+  z-index: 100;
 }
 
 .col-1:hover {
@@ -107,6 +110,109 @@ font-weight: 300;
   color: white;
 }
 
+.header-title {
+  margin-top: 100px;
+  width : 100%;
+  text-align: center;
+  color: #333333;
+}
+
+/* Start SignIn SignUp Styling */
+.sign-container{
+  text-align: center !important;
+}
+
+.service-name{
+  margin-top:1em;
+  margin-bottom: 1em;
+  font-size: 42px;
+  color: #333333;
+}
+
+.team-name{
+  font-size: 32px;
+  color: #8d8d8d;
+}
+
+.sign-type-desc{
+  margin-top: 45px;
+  margin-bottom: 30px;
+}
+
+.input-group{
+  margin:9px auto;
+}
+
+.form-control {
+  height: 38px;
+}
+
+.sign-button {
+  width: 250px;
+  height: 43px;
+  border-radius: 5px;
+  background-color: #ff5500 !important;
+  border-color: #ff5500 !important;
+  color: white !important;
+  margin: 25px !important;
+}
+
+.sign-button:hover {
+  background-color: #d64802 !important;
+}
+
+.register-info{
+  color: #ff5500;
+}
+
+#email-signup{
+  margin-bottom: 22px !important;
+}
+
+/* Search Styles */
+
+
+.clickable-text{
+  cursor : pointer;
+  color : #ff5500;
+}
+
+.table-hover tbody tr:hover td{
+  background-color: #333333 !important;
+  color : #ff5500 !important;
+}
+
+.table-hover tbody tr:hover th{
+  background-color: #ffffff;
+  color : #000000;
+}
+
+.horizontal-divider {
+  margin-top: 3em;
+  margin-bottom: 5em;
+}
+
+.hidden-divider {
+  margin-bottom: 5em;
+  visibility: hidden;
+}
+
+.btn-primary {
+  color : #333333 !important;
+  background-color: #ff5500 !important;
+  border-radius: 0px !important;
+  border-color: #ff5500 !important;
+}
+
+.form-control {
+  border-radius: 0px !important;
+}
+
+.input-group-addon.primary {
+    color: #ffffff;
+    background-color: #333333;
+    border-color: #333333;
+}
 
 /* createProjectByPattern.js and createProjectView.js */
 
@@ -270,7 +376,7 @@ font-weight: 300;
 }
 .projectbox {
   width: 835px;
-  height: 674px
+  height: 674px;
   margin-top: 70px;
   text-align: left;
   color: #000000;
@@ -278,7 +384,8 @@ font-weight: 300;
   border-style: outset;
   border-color: grey;
 }
-.author{
+
+.author {
   top:70px;
   width: 835px;
   height: 16px;
@@ -287,97 +394,4 @@ font-weight: 300;
   font-size: 16px;
   text-align: left;
   color: #000000;
-
-/* Start SignIn SignUp Styling */
-.sign-container{
-  text-align: center !important;
-}
-
-.service-name{
-  margin-top:138px;
-  margin-bottom: 128px;
-  font-size: 42px;
-  color: #333333;
-}
-
-.team-name{
-  font-size: 32px;
-  color: #8d8d8d;
-}
-
-.sign-type-desc{
-  margin-top: 45px;
-  margin-bottom: 30px;
-}
-
-.input-group{
-  max-width: 250px;
-  margin:9px auto;
-}
-
-.sign-button {
-  width: 250px;
-  height: 43px;
-  border-radius: 5px;
-  background-color: #ff5500 !important;
-  border-color: #ff5500 !important;
-  color: white !important;
-  margin: 25px !important;
-}
-
-.sign-button:hover {
-  background-color: #d64802 !important;
-}
-
-.register-info{
-  color: #ff5500;
-}
-
-#email-signup{
-  margin-bottom: 22px !important;
-}
-
-/* Search Styles */
-
-.headline {
-  width : 100%;
-  text-align: center;
-  color: #333333;
-  margin-top: 1em;
-}
-
-.clickable-text{
-  cursor : pointer;
-  color : #ff5500;
-}
-
-.table-hover tbody tr:hover td{
-  background-color: #333333 !important;
-  color : #ff5500 !important;
-}
-
-.table-hover tbody tr:hover th{
-  background-color: #ffffff;
-  color : #000000;
-}
-
-.horizontal-divider {
-  margin-top: 3em;
-  margin-bottom: 5em;
-}
-
-.hidden-divider {
-  margin-bottom: 5em;
-  visibility: hidden;
-}
-
-.btn-primary {
-  color : #333333 !important;
-  background-color: #ff5500 !important;
-}
-
-.input-group-addon.primary {
-    color: #ffffff;
-    background-color: #333333;
-    border-color: #333333;
 }

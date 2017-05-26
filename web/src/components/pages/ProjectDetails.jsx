@@ -21,7 +21,7 @@ export default class ProjectDetails extends Component {
       <div className="inner-content">
         <TopBar />
         <div className="row">
-          <div className="col-3 side-bar">
+          <div className="col-2 side-bar">
               <ul className="list-group">
                 <li className="list-group-item">
                   <p>
@@ -40,7 +40,7 @@ export default class ProjectDetails extends Component {
                 </li>
               </ul>
           </div>
-          <div className="col-9">
+          <div className="col-10">
             <ProjectContainer title={data.project_two.title}/>
           </div>
         </div>

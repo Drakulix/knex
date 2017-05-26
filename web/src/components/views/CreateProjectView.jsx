@@ -12,8 +12,6 @@ export default class UploadByLink extends React.Component {
         <div className="text">or</div>
         <button className="submit" onClick={() => changeView(<UploadByPattern />) }>Create New Project Page</button>
       </div>
-
-
     );
   }
 }

@@ -30,7 +30,9 @@ class Headline extends Component {
   render() {
     return(
       <div className="row">
-        <h1 className="headline"> Looking for a Project? </h1>
+        <div className="header-title">
+          <h1>Looking for a Project?</h1>
+        </div>
       </div>
     );
   }
@@ -230,7 +232,7 @@ class SearchPage extends Component {
       <div className="inner-content">
         <div className="container">
           <div className="row">
-            <div className="col-md-10 offset-md-2">
+            <div className="col">
                 <Headline />
                 <hr className="hidden-divider"/>
                 <Search />

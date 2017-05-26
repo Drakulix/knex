@@ -13,7 +13,7 @@ class TopBar extends Component {
 
   render() {
     return (
-      <div className="container-fluid">
+      <div className="container-fluid topbar">
         <div className="row">
           <div className="col-3">
             <p className="top-bar-company">

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { Component } from 'react';
 
-export default class SignIn extends React.Component {
+export default class SignIn extends Component {
   constructor(props) {
     super(props);
   }
@@ -48,7 +48,7 @@ export default class SignIn extends React.Component {
           <div className="checkbox">
             <label>
               <input type="checkbox" />
-              Remember me
+               {" Remember me"}
             </label>
           </div>
 
