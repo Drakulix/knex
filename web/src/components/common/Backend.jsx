@@ -7,9 +7,7 @@ const BACKEND_URL = 'http://localhost:5000'
     // use this function to make a GET request.
     const url = `${BACKEND_URL}${path}`
 
-    return fetch(url)
-    .then(response => response.json())
-    .catch(ex => {
+    return fetch(url).then(response => response.json()).catch(ex => {
       console.error('parsing failes', ex);
     });
 
@@ -34,6 +32,7 @@ const BACKEND_URL = 'http://localhost:5000'
   }
 
   export default class BackendTest extends Component {
+    //This Component is just for testing
     constructor(props) {
       super(props);
 
@@ -51,9 +50,13 @@ const BACKEND_URL = 'http://localhost:5000'
       }),
       sendJson('POST', '/api/projects/search', {
         "query": {
-          "match_all": {}
+          "query_string": {
+            "default_field": "tags",
+            "query": "project"
+          }
         }
-      }).then(json => console.log(json))
+      })
+      // .then(json => console.log(json))
 
       return (
         <div></div>
