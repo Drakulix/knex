@@ -9,8 +9,8 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def save_file_to_db(filename):
-    json = open(filename).read()
-    error = validator.validate_manifest(json)
+    jsonfile = open(filename)
+    error = validator.validate_manifest(jsonfile)
 
     manifest = json5.load(open(filename))
     manifest['date_creation'] = time.strftime("%Y-%m-%d")
