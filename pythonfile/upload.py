@@ -1,25 +1,38 @@
 import os
 from flask.helpers import flash
-from flask import Flask, request, redirect, url_for, render_template
+from flask import request, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
-from manifest_validator import ManifestValidator
-from flask_api import app
+from flask_api import app, validator
 from flask import Request
+import elastic
+import json5
 
 
 UPLOAD_FOLDER = '/usr/uploads'
 ALLOWED_EXTENSIONS = set(['txt', 'json'])
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_PATH'] = 100000; #10.000 byte = 10kb 
+app.config['MAX_CONTENT_PATH'] = 1000000; #100.000 byte = 100kb 
 
 
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def save_file_to_db(filename):
+    error = validator.validate_manifest(open(filename))
+
+    manifest = json5.load(open(filename))
+    manifest['date_creation'] = time.strftime("%Y-%m-%d")
+    manifest['date_update'] = time.strftime("%Y-%m-%d")
+    manifest['id']=uuid.uuid4()
+
+    if error == None:
+        elastic.store_json('test', 'projects', manifest)
+
+    return error
 
 @app.route('/upload')
-def upload_file():
+def upload():
    return render_template('templates/upload.html')
 
 
@@ -36,10 +49,7 @@ def upload_file():
         if file and allowed_file(file.filename) and file.size < app.config['MAX_CONTENT_PATH']:
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('uploaded_file', filename=filename))
-    return '''
-    <!doctype html>
-    <title>Error</title>
-    <h1>Please visit flask:5000/upload to upload files.</h1>
-    </html>
-    '''
+            if (save_file_to_db(filename) == None):
+                return render_template('templates/upload_success.html')
+            else:
+                return render_template('templates/upload_error.html')

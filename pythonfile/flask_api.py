@@ -4,6 +4,7 @@ from manifest_validator import ManifestValidator
 import time, json5, uuid, json
 import elastic
 from elasticsearch import Elasticsearch
+import upload
 
 
 client=MongoClient('mongodb:27017')
@@ -13,7 +14,6 @@ coll=db.projects
 schema = open("manifest_schema.json")
 validator = ManifestValidator(schema)
 
-es = Elasticsearch(['http://elasticsearch:9200'])
 app=Flask(__name__)
 
 
@@ -29,7 +29,6 @@ def add_project():
     manifest['date_creation'] = time.strftime("%Y-%m-%d")
     manifest['date_update'] = time.strftime("%Y-%m-%d")
 
-    schema = open("manifest_schema.json")
     error = validator.validate_manifest(manifest)
 
     if error == None:
@@ -55,7 +54,7 @@ def delete_project(project_id):
 # receive body of elasticsearch query
 @app.route('/api/projects/search', methods=['POST'])
 def search():
-    res=es.search(index="test", doc_type="projects", body=request.json)
+    res=elastic.es.search(index="test", doc_type="projects", body=request.json)
     return jsonify(res)
 
 if __name__ == "__main__":
