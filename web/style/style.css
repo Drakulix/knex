@@ -107,10 +107,6 @@ color: white;
   color : #ff5500;
 }
 
-.full-width {
-  width: : 100% !important;
-}
-
 .table-hover tbody tr:hover td{
   background-color: #333333 !important;
   color : #ff5500 !important;
