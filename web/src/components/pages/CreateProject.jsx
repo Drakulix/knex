@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import UploadByPattern from '../views/CreateProjectByPattern';
+import TopBar from '../common/TopBar';
 
-class createProject extends Component {
+export default class CreateProject extends Component {
   constructor(props) {
     super(props);
 
@@ -17,6 +18,7 @@ class createProject extends Component {
   render() {
     return (
       <div className="inner-content">
+        <TopBar />
         <div className="row">
           <div className="col-3 side-bar">
               <ul className="list-group">
@@ -45,5 +47,3 @@ class createProject extends Component {
     );
   }
 }
-
-export default createProject;

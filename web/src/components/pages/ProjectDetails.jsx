@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import ProjectContainer from '../views/ProjectContainer';
-
+import TopBar from '../common/TopBar';
 import data from '!json!../../data/test_data.json';
 
-class ProjectDetails extends Component {
+export default class ProjectDetails extends Component {
   constructor(props) {
     super(props);
 
@@ -19,6 +19,7 @@ class ProjectDetails extends Component {
   render() {
     return (
       <div className="inner-content">
+        <TopBar />
         <div className="row">
           <div className="col-3 side-bar">
               <ul className="list-group">
@@ -47,5 +48,3 @@ class ProjectDetails extends Component {
     );
   }
 }
-
-export default ProjectDetails;

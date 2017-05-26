@@ -17,10 +17,13 @@
   },
   "dependencies": {
     "babel-preset-stage-1": "^6.1.18",
+    "history": "^1.17.0",
     "lodash": "^3.10.1",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
     "react-redux": "^4.0.0",
+    "react-router": "^4.1.1",
+    "react-router-dom": "^4.1.1",
     "redux": "^3.0.4"
   }
 }
