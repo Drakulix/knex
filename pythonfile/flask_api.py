@@ -79,13 +79,40 @@ def upload_file():
         if file.filename == '':
             flash('No selected file')
             return redirect(request.url)
-        if file and uploader.allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        securefilename = secure_filename(file.filename)
+        if file and uploader.allowed_file(securefilename):
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], securefilename))
             if (uploader.save_file_to_db(filename) == None):
                 return render_template('upload_success.html')
             else:
                 return render_template('upload_error.html')
+
+
+@app.route("/uploads", methods=["GET", "POST"])
+def uploads():
+    if request.method == 'POST':
+        successful_files = []
+        unsuccessful_files = []
+        uploaded_files = request.files.getlist("file[]")
+        for file in uploaded_files:
+            securefilename = secure_filename(file.filename)
+            if file and uploader.allowed_file(securefilename):
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], securefilename))
+                if (uploader.save_file_to_db(filename) == None):
+                    successful_files.append(file.filename) #represent original filename
+                else:
+                    unsuccessful_files.append(file.filename)
+        return make_response(successful_files, unsuccessful_files) #FIXME: build correct response showing successful and unsuccessful files
+    
+    elif request.method == 'GET':
+        return """
+    <!doctype html>
+    <title>Upload multiple files</title>
+    <h1>Upload multiple files</h1>
+    <form action="" method=post enctype=multipart/form-data>
+    <input type=file name="file[]" multiple>
+    <input type=submit value=Upload>
+    </form>"""
 
 
 if __name__ == "__main__":
