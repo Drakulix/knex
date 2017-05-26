@@ -63,8 +63,6 @@ class ProjectContainer extends Component{
           </p>
         </div>
       </div>
-
-
     );
   }
 }
