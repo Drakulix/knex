@@ -7,7 +7,6 @@ import {
   Link
 } from 'react-router-dom';
 
-import TopBar from './components/common/TopBar';
 import ProjectDetails from './components/pages/ProjectDetails';
 import CreateProject from './components/pages/CreateProject';
 import ProjectDiscovery from './components/pages/ProjectDiscovery';
