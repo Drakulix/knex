@@ -12,7 +12,7 @@ class ManifestValidator:
         try:
             self.validator = Draft4Validator(self.schema, format_checker=FormatChecker())
         except jsonschema.SchemaError as err:
-            print(e)
+            print(err)
 
     def validate_manifest(self, json_manifest):
         try:
@@ -20,7 +20,7 @@ class ManifestValidator:
             self.validator.validate(manifest)
             return None
         except jsonschema.ValidationError as err:
-            print(e.message)
+            print(err.message)
             return err
         except Exception as err:
             print(err)
