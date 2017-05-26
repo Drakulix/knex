@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify, make_response
+from flask_cors import CORS
 from pymongo import MongoClient
 from manifest_validator import ManifestValidator
 import time, json5, uuid, json
@@ -14,8 +15,10 @@ coll=db.projects
 
 #validator = ManifestValidator(schema)
 
+
 es = Elasticsearch(['http://elasticsearch:9200'])
 app=Flask(__name__)
+CORS(app)
 
 
 @app.route('/', methods=['GET'])
@@ -71,7 +74,7 @@ def delete_project(project_id):
 @app.route('/api/projects/search', methods=['POST'])
 #@app.route('/api/projects/search')
 def search():
-    try: 
+    try:
         res=es.search(index="projects-index", doc_type="Project", body=request.json)
         return jsonify(res)
     except RequestError:

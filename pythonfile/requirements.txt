@@ -4,3 +4,4 @@ elasticsearch
 requests
 json5
 jsonschema
+flask-cors
