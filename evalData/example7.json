@@ -1,22 +1,22 @@
 [ 
-	{
-		title 			: 	'A Context-Aware Music Recommendation System Using Fuzzy Bayesian Networks with Utility Theory',
-		description 	:	' As the World Wide Web becomes a large source of digital music, the music recommendation system has got a great demand. There are several music recommendation systems for both commercial and academic areas, which deal with the user preference as fixed. However, since the music preferred by a user may change depending on the contexts, the conventional systems have inherent problems. This paper proposes a context-aware music recommendation system (CA-MRS) that exploits the fuzzy system, Bayesian networks and the utility theory in order to recommend appropriate music with respect to the context. We have analyzed the recommendation process and performed a subjective test to show the usefulness of the proposed system.',
-		status			: 	'DONE',
-		date_creation		:	'2006-03-09',
-		url			:	'http://example7.org',
-		tags 			: 	['context-awareness', 'music recommendation system', 'fuzzy system', 'Bayesian networks', 'utility theory'],
-		authors 		:	[
-			{	name		:	'Han-Saem Park',
-				email		:	'sammy@sclab.yonsei.ac.kr'
+    {
+        title             :     'A Context-Aware Music Recommendation System Using Fuzzy Bayesian Networks with Utility Theory',
+        description     :    ' As the World Wide Web becomes a large source of digital music, the music recommendation system has got a great demand. There are several music recommendation systems for both commercial and academic areas, which deal with the user preference as fixed. However, since the music preferred by a user may change depending on the contexts, the conventional systems have inherent problems. This paper proposes a context-aware music recommendation system (CA-MRS) that exploits the fuzzy system, Bayesian networks and the utility theory in order to recommend appropriate music with respect to the context. We have analyzed the recommendation process and performed a subjective test to show the usefulness of the proposed system.',
+        status            :     'DONE',
+        date_creation        :    '2006-03-09',
+        url            :    'http://example7.org',
+        tags             :     ['context-awareness', 'music recommendation system', 'fuzzy system', 'Bayesian networks', 'utility theory'],
+        authors         :    [
+            {    name        :    'Han-Saem Park',
+                email        :    'sammy@sclab.yonsei.ac.kr'
 
-			},
-			{	name		:	'Ji-Oh Yoo',
-				email		:	'taiji391@sclab.yonsei.ac.kr'
-			},
-			{	name		:	'Sung-Bae Cho',
-				email		:	'sbcho@cs.yonsei.ac.kr'
-			}
-		]
-	}
+            },
+            {    name        :    'Ji-Oh Yoo',
+                email        :    'taiji391@sclab.yonsei.ac.kr'
+            },
+            {    name        :    'Sung-Bae Cho',
+                email        :    'sbcho@cs.yonsei.ac.kr'
+            }
+        ]
+    }
 ]

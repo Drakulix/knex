@@ -1,22 +1,22 @@
 [ 
-	{
-		title 			: 	'Location-aware music recommendation',
-		description 	:	'The increasing amount of online music content has opened opportunities for implementing new effective information access services—commonly known as music recommender systems—that support music navigation, discovery, sharing, and formation of user communities. In recent years, a new research area of contextual music recommendation and retrieval has emerged. Context-aware music recommender systems are capable of suggesting music items taking into consideration contextual conditions, such as the user’s mood or location, that may influence the user’s preferences at a particular moment. In this work, we consider a particular kind of context-aware recommendation task—selecting music content that fits a place of interest (POI). To address this problem we have used emotional tags assigned to both music tracks and POIs, and we have considered a set of similarity metrics for tagged resources to establish a match between music tracks and POIs. Following an initial web-based evaluation of the core matching technique, we have developed a mobile application that suggests an itinerary and plays recommended music for each visited POI, and evaluated it in a live user study. The results of the study show that users judge the recommended music as suited for the POIs, and that the music is rated higher when it is played in this usage scenario.',
-		status			: 	'DONE',
-		date_creation		:	'2012-09-30',
-		url			:	'http://example6.org',
-		tags 			: 	['Music recommender systems', 'Location-aware services', 'Mobile services', 'Social tagging', 'Affective computing'],
-		authors 		:	[
-			{	name		:	'Matthias Braunhofer',
-				email		:	'mbraunhofer@unibz.it'
+    {
+        title             :     'Location-aware music recommendation',
+        description     :    'The increasing amount of online music content has opened opportunities for implementing new effective information access services—commonly known as music recommender systems—that support music navigation, discovery, sharing, and formation of user communities. In recent years, a new research area of contextual music recommendation and retrieval has emerged. Context-aware music recommender systems are capable of suggesting music items taking into consideration contextual conditions, such as the user’s mood or location, that may influence the user’s preferences at a particular moment. In this work, we consider a particular kind of context-aware recommendation task—selecting music content that fits a place of interest (POI). To address this problem we have used emotional tags assigned to both music tracks and POIs, and we have considered a set of similarity metrics for tagged resources to establish a match between music tracks and POIs. Following an initial web-based evaluation of the core matching technique, we have developed a mobile application that suggests an itinerary and plays recommended music for each visited POI, and evaluated it in a live user study. The results of the study show that users judge the recommended music as suited for the POIs, and that the music is rated higher when it is played in this usage scenario.',
+        status            :     'DONE',
+        date_creation        :    '2012-09-30',
+        url            :    'http://example6.org',
+        tags             :     ['Music recommender systems', 'Location-aware services', 'Mobile services', 'Social tagging', 'Affective computing'],
+        authors         :    [
+            {    name        :    'Matthias Braunhofer',
+                email        :    'mbraunhofer@unibz.it'
 
-			},
-			{	name		:	'Marius Kaminskas',
-				email		:	' mkaminskas@unibz.it'
-			},
-			{	name		:	'Francesco Ricci',
-				email		:	'fricci@unibz.it'
-			}
-		]
-	}
+            },
+            {    name        :    'Marius Kaminskas',
+                email        :    ' mkaminskas@unibz.it'
+            },
+            {    name        :    'Francesco Ricci',
+                email        :    'fricci@unibz.it'
+            }
+        ]
+    }
 ]
