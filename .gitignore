@@ -1,1 +1,4 @@
 web/node_modules
+.vs
+*.pyproj
+*.sln
