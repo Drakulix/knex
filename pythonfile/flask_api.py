@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify, make_response
+from flask_cors import CORS
 from pymongo import MongoClient
 from manifest_validator import ManifestValidator
 import time, json5, uuid, json
@@ -14,8 +15,10 @@ coll=db.projects
 
 #validator = ManifestValidator(schema)
 
+
 es = Elasticsearch(['http://elasticsearch:9200'])
 app=Flask(__name__)
+CORS(app)
 
 
 @app.route('/', methods=['GET'])
@@ -49,7 +52,7 @@ def get_project_by_id(project_id):
     res=coll.find_one({'_id':project_id})
     return jsonify(res)
 
-#Note: works, but needs more exception handling
+
 @app.route('/api/projects/delete/<project_id>')
 def delete_project(project_id):
     #deletion from elastic search index
@@ -57,6 +60,8 @@ def delete_project(project_id):
         res = es.delete(index="projects-index", doc_type='Project', id=project_id, refresh=True)
     except NotFoundError:
         return make_response('Project not found', 404)
+    except:
+        return make_response('Unexpected Error', 500)
     #Deletion from Mongodb and return
     if (coll.delete_one({'_id':project_id}).deleted_count != 0):
         return make_response('Success')
@@ -69,12 +74,12 @@ def delete_project(project_id):
 @app.route('/api/projects/search', methods=['POST'])
 #@app.route('/api/projects/search')
 def search():
-    try: 
+    try:
         res=es.search(index="projects-index", doc_type="Project", body=request.json)
         return jsonify(res)
     except RequestError:
         return ("Some Error")
-    else:
+    except:
        return ("Error: Index probablly empty!")
 
 # dummy add a few projects to es
