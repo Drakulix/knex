@@ -4,8 +4,8 @@ import UploadByLink from './CreateProjectView';
 
 
 export default class UploadByPattern extends React.Component {
-  render() {
-    return (
+  render(){
+    return(
       <div className="container">
         <div className="innerContainer">
           <div className="headerCreation">Create New Project</div>
@@ -40,7 +40,7 @@ export default class UploadByPattern extends React.Component {
           </div>
         </div>
       </div>
-  );
+  )
   }
 }
 
