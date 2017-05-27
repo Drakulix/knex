@@ -110,8 +110,8 @@ def uploads():
         return """<!doctype html>
     <title>Upload multiple files</title>
     <h1>Upload multiple files</h1>
-    <body>Successful files: """ + ', '.join( e for e in successful_files) + """
-    Unsuccessful files: """ + ', '.join( e for e in unsuccessful_files) + '\n' + """
+    <body>Successful files: """ + ', '.join( e for e in successful_files) + '\n' + """
+    Unsuccessful files: """ + ', '.join( e for e in unsuccessful_files) + """
     </body>
     """
     
