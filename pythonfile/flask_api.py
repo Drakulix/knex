@@ -5,6 +5,7 @@ from manifest_validator import ManifestValidator
 import time, json5, uuid, json
 import elastic
 from elasticsearch import Elasticsearch
+from bson.json_util import dumps
 
 
 client=MongoClient('mongodb:27017')
@@ -42,9 +43,38 @@ def add_project():
     else:
         return make_response((error, '302'))
 
+# return list of projects, args->limit, skip
+@app.route('/api/projects', methods=['GET'])
+def get_projects():
+    limit=request.args.get('limit', type=int)
+    skip=request.args.get('skip', type=int)
+    
+    argc=len(request.args)
+
+    if coll.projects.count() == 0:
+        return make_response('There are no projects', 500)
+
+    if argc==0:
+        res=coll.find({})
+    elif limit and skip and argc<3:
+        res=coll.find({}, limit=limit, skip=skip)
+    elif limit and argc<2:
+        res=coll.find({}, limit=limit)
+    elif skip and argc<2:
+        res=coll.find({}, skip=skip)
+    else:
+        return make_response('Invalid parameters',400)
+
+    res=make_response(dumps(res))
+    res.headers['Content-Type'] = 'application/json' 
+
+    return res
+
 @app.route('/api/projects/<uuid:project_id>', methods=['GET'])
 def get_project_by_id(project_id):
-    res=coll.find_one({'_id':project_id})
+    res=coll.find_one({'_id': project_id})
+    if res is None:
+      return make_response('Project not found', 404)
     return jsonify(res)
 
 @app.route('/api/projects/<uuid:project_id>', methods=['DELETE'])
