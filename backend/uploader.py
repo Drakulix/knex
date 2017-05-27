@@ -4,7 +4,6 @@ import json5
 import time
 import uuid
 import sys
-import apiexception
 from apiexception import ApiException
 
 def allowed_file(filename):
@@ -39,7 +38,6 @@ def save_file_to_db(filename):
         else:
             print(error,file=sys.stderr)
             raise ApiException("Validation Error: \n" + str(error), 400)
-
 
     except ApiException as e:
         raise e

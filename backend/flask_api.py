@@ -75,6 +75,12 @@ def add_project():
             return make_response("error: " + str(err), '500')
 
 
+@app.errorhandler(ApiException)
+def handle_invalid_usage(error):
+    response = jsonify(error.to_dict())
+    response.status_code = error.status_code
+    return response
+
 @app.route('/upload', methods=['GET'])
 def uploads():
     if request.method == 'GET': #remove this later, default multi file uploader for testing purposes
