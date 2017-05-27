@@ -81,31 +81,53 @@ def search():
 #Note: deleting these projects will throw not found error bcause they are in es only, but they are deleted
 @app.route('/api/projects/dummyadd', methods=['GET'])
 def dummyadd():
-    doc1 = {
-    'author': 'James Comey',
-    'text': 'Hi, I am a cool new project lets search for me ^^',
-    'timestamp': datetime.now(),
-    'tags': ['Performance', 'AB-Testing', 'AnotherTag']
-    }
-    doc2 = {
-    'author': 'Max Mustermann',
-    'text': 'Wow an awesome project I got here, check it out',
-    'timestamp': datetime.now(),
-    'tags': ['Project', 'Computer', 'TagsAreGreat']
-    }
-    doc3 = {
-    'author': 'Mr x',
-    'text': 'Here is anonther project not so great',
-    'timestamp': datetime.now(),
-    'tags': ['Something', 'XY-Testing', 'AnotherTag']
-    }
-    output = ""
-    res = es.index(index="projects-index", doc_type='Project', id=1, body=doc1)
-    output += json.dumps(res)
-    res = es.index(index="projects-index", doc_type='Project', id=2, body=doc2)
-    output += json.dumps(res)
-    res = es.index(index="projects-index", doc_type='Project', id=3, body=doc3)
-    output += json.dumps(res)
+    output = "["
+
+    f = open('jsonprojectexamples/example0.json5', 'r')
+    doc =f.read()
+    res = es.index(index="projects-index", doc_type='Project', id=1, body=doc)
+    output += json.dumps(res) + " , "
+
+    f = open('jsonprojectexamples/example1.json5', 'r')
+    doc =f.read()
+    res = es.index(index="projects-index", doc_type='Project', id=2, body=doc)
+    output += json.dumps(res) + " , "
+
+    f = open('jsonprojectexamples/example2.json5', 'r')
+    doc =f.read()
+    res = es.index(index="projects-index", doc_type='Project', id=3, body=doc)
+    output += json.dumps(res) + " , "
+
+    f = open('jsonprojectexamples/example3.json5', 'r')
+    doc =f.read()
+    res = es.index(index="projects-index", doc_type='Project', id=4, body=doc)
+    output += json.dumps(res) + " , "
+
+    f = open('jsonprojectexamples/example4.json5', 'r')
+    doc =f.read()
+    res = es.index(index="projects-index", doc_type='Project', id=5, body=doc)
+    output += json.dumps(res) + " , "
+
+    f = open('jsonprojectexamples/example5.json5', 'r')
+    doc =f.read()
+    res = es.index(index="projects-index", doc_type='Project', id=6, body=doc)
+    output += json.dumps(res) + " , "
+
+    f = open('jsonprojectexamples/example6.json5', 'r')
+    doc =f.read()
+    res = es.index(index="projects-index", doc_type='Project', id=7, body=doc)
+    output += json.dumps(res) + " , "
+
+    f = open('jsonprojectexamples/example7.json5', 'r')
+    doc =f.read()
+    res = es.index(index="projects-index", doc_type='Project', id=8, body=doc)
+    output += json.dumps(res) + " , "
+
+    f = open('jsonprojectexamples/example8.json5', 'r')
+    doc =f.read()
+    res = es.index(index="projects-index", doc_type='Project', id=9, body=doc)
+    output += json.dumps(res) + " ]"
+
     return (output)
 
 
