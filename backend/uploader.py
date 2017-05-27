@@ -40,3 +40,22 @@ def save_file_to_db(filename):
         return error
     except Exception as err:
         return Exception("Error while trying to save the document into db.")
+
+def save_manifest_to_db(manifest):
+    try:
+        manifest['date_creation'] = time.strftime("%Y-%m-%d")
+        manifest['date_update'] = time.strftime("%Y-%m-%d")
+        manifest['id']=uuid.uuid4()
+                
+        error = validator.validate_manifest(manifest)
+                    
+        if error == None:
+            coll.insert(manifest)
+            elastic.store_json("test", "projects", manifest)
+            print("Successfully inserted content: ", file=sys.stderr)
+            print(manifest, file=sys.stderr)
+        else:
+            print(error, file=sys.stderr)
+
+    except Exception as err:
+        return Exception("Error while trying to save the document into db.")

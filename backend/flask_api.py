@@ -35,22 +35,56 @@ def index():
 
 # receive manifest as a jsonstring
 # returns new id
-@app.route('/api/projects', methods=['POST'])
+@app.route('/api/projects', methods=['GET', 'POST'])
 def add_project():
-    manifest=request.json
-    manifest['date_creation'] = time.strftime("%Y-%m-%d")
-    manifest['date_update'] = time.strftime("%Y-%m-%d")
+    if request.method == 'POST':
+        successful_files = []
+        unsuccessful_files = []
+        uploaded_files = request.files.getlist("file[]")
+        if len(uploaded_files) is not 0:
+            for file in uploaded_files:
+                securefilename = secure_filename(file.filename)
+                if file and uploader.allowed_file(securefilename):
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], securefilename))
+                    err = uploader.save_file_to_db(securefilename)
+                    if (err == None):
+                        successful_files.append(file.filename) #represent original filename
+                    else:
+                        unsuccessful_files.append(file.filename)
+                    print("Successful files: ", successful_files, '\n', file=sys.stderr)
+                    print("Unsuccessful files: ", unsuccessful_files, '\n', file=sys.stderr)
+            return      """<!doctype html>
+                        <title>Upload multiple files</title>
+                        <h1>Upload multiple files</h1>
+                        <body>Successful files: """ + ', '.join( e for e in successful_files) + '<br />' + """
+                        Unsuccessful files: """ + ', '.join( e for e in unsuccessful_files) + """
+                        </body>"""
 
-    schema = open("manifest_schema.json")
-    error = validator.validate_manifest(manifest)
+        else: #no files attached
+            try:
+                err = None
+                if request.json:
+                    err = uploader.save_manifest_to_db(request.json)
+                else:
+                    err = uploader.save_manifest_to_db(json5.load(request.data))
 
-    if error == None:
-        manifest['id']=uuid.uuid4()
-        coll.insert(manifest)
-        elastic.store_json("test", "projects", manifest)
-        return make_response(manifest['id'])
-    else:
-        return make_response((error, '302'))
+                if err == None:
+                    return make_response("Successfully saved json to DB.")
+                else:
+                    return make_response("Exception while trying to save the json to DB.")
+            except Exception as error:
+                return make_response("error", '500')
+
+
+    elif request.method == 'GET': #remove this later, default multi file uploader for testing purposes
+        return """
+    <!doctype html>
+    <title>Upload multiple files</title>
+    <h1>Upload multiple files</h1>
+    <form action="" method=post enctype=multipart/form-data>
+    <input type=file name="file[]" multiple>
+    <input type=submit value=Upload>
+    </form>"""
 
 # return list of projects, args->limit, skip
 @app.route('/api/projects', methods=['GET'])
@@ -99,7 +133,6 @@ def search():
     res=es.search(index="test", doc_type="projects", body=request.json)
     return jsonify(res)
 
-
 @app.route('/upload')
 def upload():
     return render_template('upload.html')
@@ -143,13 +176,8 @@ def uploads():
         return """<!doctype html>
     <title>Upload multiple files</title>
     <h1>Upload multiple files</h1>
-<<<<<<< HEAD
     <body>Successful files: """ + ', '.join( e for e in successful_files) + """
     Unsuccessful files: """ + ', '.join( e for e in unsuccessful_files) + '\n' + """
-=======
-    <body>Successful files: """ + ', '.join( e for e in successful_files) + '<br />' + """
-    Unsuccessful files: """ + ', '.join( e for e in unsuccessful_files) + """
->>>>>>> 1503972... basic exception handling in save_file_to_db method
     </body>
     """
     
