@@ -3,7 +3,6 @@ import {sendJson} from './Backend'
 
 //Return Value Simulation
 
-
 class Result extends Component{
   constructor(name, author, status, description, date, fav) {
     super();
@@ -16,6 +15,39 @@ class Result extends Component{
   }
 }
 
+class Results extends Component{
+
+    pullDataFromServer() {
+      var projects = [];
+      console.log(projects);
+      sendJson('POST', '/api/projects/search', {
+        "query": {
+          "match_all": {}
+        }
+      }).then(json => projects);
+      console.log(projects);
+      return projects;
+
+    }
+
+    constructor(name, author, status, description, date, fav) {
+      super();
+    }
+
+    render(){
+      var lines = [];
+      var projects = this.pullDataFromServer();
+      console.log(0);
+      for (var i = 0; i < projects.length; i++) {
+        lines.push(this.renderLine(projects[i]));
+        console.log(i+1);
+      }
+      return null;
+    }
+
+}
+
+
 const result = new Result("Proj", "auth", "inactive", "desc1", "01.01.2000", "yes");
 const result2 = new Result("Proj2", "auth2", "active", "desc2", "11.02.2016", "yes");
 const result3 = new Result("Proj3", "auth", "inactive", "desc3", "01.01.2000", "no");
@@ -24,7 +56,8 @@ const results1 = [result];
 const results2 = [result, result2];
 const results3 = [result, result2, result3];
 
-var results = results3
+var results = results3;
+
 
 // Main Code
 
@@ -140,26 +173,10 @@ class AdvancedSearch extends Component {
 
 
 class Search extends Component {
+
   constructor() {
     super();
     this.state = {expanded : false};
-  }
-
-  submitSearch() {
-    sendJson('POST', '/api/projects/search', {
-      "query": {
-        "match_all": {}
-      }
-    }),
-    sendJson('POST', '/api/projects/search', {
-      "query": {
-        "query_string": {
-          "default_field": "tags",
-          "query": "project"
-        }
-      }
-    })
-    .then(json => console.log(json))
   }
 
   render() {
@@ -180,9 +197,7 @@ class Search extends Component {
       return(
         <div>
           <div className="row">
-            <form className="form-horizontal col-md-12"
-                  onSubmit={this.submitSearch}
-            >
+            <form className="form-horizontal col-md-12">
               <Searchbar/>
             </form>
           </div>
@@ -219,6 +234,7 @@ class Table extends Component {
       }
       return(lines);
     }
+
     renderTable(results){
       if(results.length>0){
         return(
@@ -249,9 +265,11 @@ class Table extends Component {
 }
 
 class SearchPage extends Component {
+
   render() {
     return (
       <div className="inner-content">
+        <Results />
         <div className="container">
           <div className="row">
             <div className="col-md-12">
