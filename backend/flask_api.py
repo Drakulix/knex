@@ -9,8 +9,8 @@ from pymongo import MongoClient
 from manifest_validator import ManifestValidator
 import time, json5, uuid, json
 import elastic
-from elasticsearch import Elasticsearch
 from bson.json_util import dumps
+import uploader
 
 
 client=MongoClient('mongodb:27017')
@@ -20,7 +20,6 @@ coll=db.projects
 schema = open("manifest_schema.json")
 validator = ManifestValidator(schema)
 
-es = Elasticsearch(['http://elasticsearch:9200'])
 app=Flask(__name__)
 CORS(app)
 
@@ -119,7 +118,6 @@ def get_project_by_id(project_id):
     res=coll.find_one({'_id': project_id})
     if res is None:
       return make_response('Project not found', 404)
-    return jsonify(res)
 
 @app.route('/api/projects/<uuid:project_id>', methods=['DELETE'])
 def delete_project(project_id):
@@ -131,31 +129,8 @@ def delete_project(project_id):
 # receive body of elasticsearch query
 @app.route('/api/projects/search', methods=['POST'])
 def search():
-    res=es.search(index="test", doc_type="projects", body=request.json)
+    res=elastic.es.search(index="test", doc_type="projects", body=request.json)
     return jsonify(res)
-
-@app.route('/upload')
-def upload():
-    return render_template('upload.html')
-
-@app.route('/api/projects/upload', methods=['GET', 'POST'])
-def upload_file():
-    if request.method == 'POST':
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        securefilename = secure_filename(file.filename)
-        if file and uploader.allowed_file(securefilename):
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], securefilename))
-            if (uploader.save_file_to_db(securefilename) == None):
-                return render_template('upload_success.html')
-            else:
-                return render_template('upload_error.html')
-
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
