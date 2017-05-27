@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
-
-export default class SignUp extends React.Component {
+export default class SignUp extends Component {
   constructor(props) {
     super(props);
   }
@@ -20,7 +20,7 @@ export default class SignUp extends React.Component {
           </h3>
 
           {/*Input Email*/}
-          <div className="input-group" id="email-signup">
+          <div className="input-group input-login" id="email-signup">
             <span className="input-group-addon">
               <span
                 className="fa fa-envelope-o"
@@ -36,7 +36,7 @@ export default class SignUp extends React.Component {
           </div>
 
           {/*Input password*/}
-          <div className="input-group">
+          <div className="input-group input-login">
             <span className="input-group-addon">
               <span
                 className="fa fa-asterisk"
@@ -51,7 +51,7 @@ export default class SignUp extends React.Component {
           </div>
 
           {/*Input confirm password*/}
-          <div className="input-group">
+          <div className="input-group input-login">
             <span className="input-group-addon">
               <span
                 className="fa fa-asterisk"
@@ -65,9 +65,11 @@ export default class SignUp extends React.Component {
             />
           </div>
 
-          <button  type="submit" className="btn btn-lg btn-primary sign-button">
-            Sign Up
-          </button>
+          <Link to="/discovery">
+            <button  type="submit" className="btn btn-lg btn-primary sign-button">
+              Sign Up
+            </button>
+          </Link>
         </div>
 
       </section>

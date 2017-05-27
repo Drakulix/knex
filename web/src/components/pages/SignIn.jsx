@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
-export default class SignIn extends React.Component {
+export default class SignIn extends Component {
   constructor(props) {
     super(props);
   }
@@ -18,18 +19,18 @@ export default class SignIn extends React.Component {
           <h3 className="sign-type-desc">Sign In</h3>
 
           {/*Input Email*/}
-          <div className="input-group">
+          <div className="input-group input-login">
             <span className="input-group-addon">
               <span
-                    className="fa fa-envelope-o"
-                    aria-hidden="true"
+                className="fa fa-envelope-o"
+                aria-hidden="true"
               />
             </span>
             <input type="text" className="form-control" placeholder="Email" required autofocus/>
           </div>
 
           {/*Input password*/}
-          <div className="input-group">
+          <div className="input-group input-login">
             <span className="input-group-addon">
               <span
                 className="fa fa-asterisk"
@@ -48,17 +49,21 @@ export default class SignIn extends React.Component {
           <div className="checkbox">
             <label>
               <input type="checkbox" />
-              Remember me
+               {" Remember me"}
             </label>
           </div>
 
-          <button type="submit" className="btn btn-lg btn-primary sign-button">
-            Login
-          </button>
+          <Link to="/discovery">
+            <button type="submit" className="btn btn-lg btn-primary sign-button">
+              Login
+            </button>
+          </Link>
           <div>
-            <a href="#" className="register-info">
-              Don't have an account yet?<br/>Register here.
-            </a>
+            <Link to="/register">
+              <a href="#" className="register-info">
+                Don't have an account yet?<br/>Register here.
+              </a>
+            </Link>
           </div>
         </div>
 

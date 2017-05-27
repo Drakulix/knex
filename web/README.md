@@ -1,23 +1,31 @@
 # Knex
+
 Knex, a React and Redux based knowledge exchange plattform.
 
-## Node & npm Versions
+# Dependencies
+
+In order to run the application you have to install yarn and node.
+
+yarn: https://yarnpkg.com/en/docs/install
+node: https://nodejs.org/en/
+
+## Node & yarn Versions
 - Node 7.10
-- npm 4.6
+- yarn 0.19.1
 
 ## Installation
 - clone the repository
 - load dependencies via:
 
 ```
-npm install
+yarn install
 ```
 inside the folder 'web'
 
 
 - start the application with:
 ```
-npm start
+yarn start
 ```
 
 - visit
