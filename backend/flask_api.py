@@ -101,7 +101,8 @@ def uploads():
             securefilename = secure_filename(file.filename)
             if file and uploader.allowed_file(securefilename):
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], securefilename))
-                if (uploader.save_file_to_db(securefilename) == None):
+                err = uploader.save_file_to_db(securefilename)
+                if (err == None):
                     successful_files.append(file.filename) #represent original filename
                 else:
                     unsuccessful_files.append(file.filename)
@@ -110,7 +111,7 @@ def uploads():
         return """<!doctype html>
     <title>Upload multiple files</title>
     <h1>Upload multiple files</h1>
-    <body>Successful files: """ + ', '.join( e for e in successful_files) + '\n' + """
+    <body>Successful files: """ + ', '.join( e for e in successful_files) + '<br />' + """
     Unsuccessful files: """ + ', '.join( e for e in unsuccessful_files) + """
     </body>
     """
