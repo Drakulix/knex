@@ -34,7 +34,7 @@ def index():
 
 # receive manifest as a jsonstring
 # returns new id
-@app.route('/api/projects', methods=['GET', 'POST'])
+@app.route('/api/projects', methods=['POST'])
 def add_project():
     if request.method == 'POST':
         successful_files = []
@@ -75,16 +75,17 @@ def add_project():
                 return make_response("error", '500')
 
 
-    elif request.method == 'GET': #remove this later, default multi file uploader for testing purposes
-        return """
-    <!doctype html>
+@app.route('/upload', methods=['GET'])
+def uploads():
+    if request.method == 'GET': #remove this later, default multi file uploader for testing purposes
+        return """<!doctype html>
     <title>Upload multiple files</title>
     <h1>Upload multiple files</h1>
     <form action="" method=post enctype=multipart/form-data>
     <input type=file name="file[]" multiple>
     <input type=submit value=Upload>
     </form>"""
-
+    
 @app.route('/api/projects/<uuid:project_id>', methods=['GET'])
 def get_project_by_id(project_id):
     res=coll.find_one({'_id':project_id})
