@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {sendJson} from './Backend'
+import {fetchJson, sendJson} from './Backend'
 
 //Return Value Simulation
 
@@ -205,7 +205,7 @@ class Table extends Component {
       this.state = {
         projects : [],
       }
-
+      fetchJson('/api/projects/dummyadd'),
       sendJson('POST', '/api/projects/search', {
         "query": {
           "match_all": {}
@@ -218,15 +218,42 @@ class Table extends Component {
       });
     }
 
+
+    fitLength(string, maxLength){
+      if(string.length>maxLength){
+        return string.substring(0, maxLength) + " ...";
+      }
+      else return string;
+    }
+
+    authorsArrayToNameString(authors){
+      var names = [];
+      for(var i = 0 ;i < authors.length;i++){
+        names.push(authors[i].name);
+      }
+      return names.join();
+    }
+
     renderLine(result){
-      console.log(result);
+
+      var title = result._source.title;
+      var authors = result._source.authors;
+      var description = result._source.description;
+      var status = result._source.status;
+      var date_creation = result._source.date_creation;
+
+      var authorNames = this.authorsArrayToNameString(result._source.authors);
+      var shortenedDescription = this.fitLength(description, 100);
+
+      console.log(authorNames);
+
       return(
           <tr>
-            <td> </td>
-            <td> {result._source.author} </td>
-            <td> {result._source.text} </td>
-            <td> {result._source.timestamp} </td>
-            <td>  </td>
+            <td className="col-md-2"> {title} </td>
+            <td className="col-md-2"> {authorNames}</td>
+            <td className="col-md-2" data-toggle="tooltip" title={description}> {shortenedDescription} </td>
+            <td className="col-md-2"> {date_creation} </td>
+            <td className="col-md-2"> {status} </td>
           </tr>
       );
     }
@@ -246,11 +273,11 @@ class Table extends Component {
             <table className="table table-hover">
               <tbody>
                 <tr>
-                  <th className="col-md-3">Project</th>
+                  <th className="col-md-2">Project</th>
                   <th className="col-md-2">Author</th>
-                  <th className="col-md-5">Description</th>
-                  <th className="col-md-1">Date</th>
-                  <th className="col-md-1">Status</th>
+                  <th className="col-md-2">Description</th>
+                  <th className="col-md-2">Date</th>
+                  <th className="col-md-2">Status</th>
                 </tr>
                 {this.renderLines(results)}
               </tbody>
