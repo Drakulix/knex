@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import SearchPage from '../common/SearchPage.jsx'
+import SearchPage from '../views/SearchPage';
+import TopBar from '../common/TopBar';
+import { Link } from 'react-router-dom';
 
-class ProjectDetails extends Component {
+export default class ProjectDetails extends Component {
   constructor(props) {
     super(props);
 
@@ -17,28 +19,28 @@ class ProjectDetails extends Component {
   render() {
     return (
       <div className="inner-content">
+        <TopBar />
         <div className="row">
-          <div className="col-3 side-bar">
+          <div className="col-2 side-bar">
               <ul className="list-group">
-                <li className="list-group-item">
-                  <p>
+                <li className="list-group-item active">
+                  <Link to="/discovery">
                     {this.state.menu.discoverProjects}
-                  </p>
+                  </Link>
                 </li>
                 <li className="list-group-item">
-                  <p className="menu-text">
+                  <Link to="/create">
                     {this.state.menu.createProject}
-                  </p>
+                  </Link>
                 </li>
                 <li className="list-group-item">
-                  <p className="menu-text">
+                  <Link to="/create">
                     {this.state.menu.adminArea}
-                  </p>
+                  </Link>
                 </li>
               </ul>
           </div>
-          <div className="col-9">
-            {/* ProjectDiscovery */}
+          <div className="col-10">
             <SearchPage />
           </div>
         </div>
@@ -46,5 +48,3 @@ class ProjectDetails extends Component {
     );
   }
 }
-
-export default ProjectDetails;

@@ -1,46 +1,5 @@
 import React, { Component } from 'react';
-import {fetchJson, sendJson} from './Backend'
-
-//Return Value Simulation
-
-class Result extends Component{
-  constructor(name, author, status, description, date, fav) {
-    super();
-    this.name = name;
-    this.author = author;
-    this.status = status;
-    this.description = description;
-    this.date = date;
-    this.fav = fav;
-  }
-}
-
-class Results extends Component{
-
-    render(){
-      var lines = [];
-      var projects = this.pullDataFromServer();
-      console.log(0);
-      for (var i = 0; i < projects.length; i++) {
-        lines.push(this.renderLine(projects[i]));
-        console.log(i+1);
-      }
-      return null;
-    }
-
-}
-
-
-const result = new Result("Proj", "auth", "inactive", "desc1", "01.01.2000", "yes");
-const result2 = new Result("Proj2", "auth2", "active", "desc2", "11.02.2016", "yes");
-const result3 = new Result("Proj3", "auth", "inactive", "desc3", "01.01.2000", "no");
-const results0 = [];
-const results1 = [result];
-const results2 = [result, result2];
-const results3 = [result, result2, result3];
-
-var results = results3;
-
+import {fetchJson, sendJson} from '../common/Backend'
 
 // Main Code
 
@@ -48,7 +7,9 @@ class Headline extends Component {
   render() {
     return(
       <div className="row">
-        <h1 className="headline"> Looking for a Project? </h1>
+        <div className="header-title">
+          <h1>Looking for a Project?</h1>
+        </div>
       </div>
     );
   }
@@ -57,7 +18,7 @@ class Headline extends Component {
 class Searchbar extends Component {
   render() {
     return(
-      <div className="input-group row">
+      <div className="input-group">
         <input className="form-control" type="text" name="search"/>
         <span className="input-group-button">
           <button className="btn btn-primary" type="submit">
@@ -72,26 +33,26 @@ class Searchbar extends Component {
 class AdvancedSearch extends Component {
   render() {
     return(
-        <div className="panel panel-body">
-          <div className="row">
-            <div className="col-md-6">
-              <div className="input-group form-inline panel">
-                <span className ="input-group-addon primary">
-                  Project Name
-                </span>
-                <input className="form-control full-width" type="text" id="projectName" name="projectName"/>
-              </div>
-             </div>
-             <div className="col-md-6">
-               <div className="input-group form-inline panel">
-                 <span className ="input-group-addon primary">
-                   Author
-                 </span>
-                 <input className="form-control" type="search" id="author" name="author"/>
-               </div>
-             </div>
+      <div className="panel panel-body">
+        <div className="row">
+          <div className="col-md-6">
+            <div className="input-group form-inline panel">
+              <span className ="input-group-addon primary">
+                Project Name
+              </span>
+              <input className="form-control full-width" type="text" id="projectName" name="projectName"/>
+            </div>
           </div>
-          <div className="row">
+          <div className="col-md-6">
+            <div className="input-group form-inline panel">
+              <span className ="input-group-addon primary">
+                Author
+              </span>
+              <input className="form-control" type="search" id="author" name="author"/>
+            </div>
+          </div>
+        </div>
+        <div className="row">
           <div className="form-inline panel">
             <div className="col-md-4">
               <div className="input-group form-inline panel">
@@ -118,38 +79,37 @@ class AdvancedSearch extends Component {
               </div>
             </div>
           </div>
-          </div>
-          <div className="row">
-            <div className="col-md-6">
-              <div className="input-group form-inline panel">
-                <span className ="input-group-addon primary">
-                  Description
-                </span>
-                <input className="form-control" type="text" id="description" name="description"/>
-              </div>
-             </div>
-             <div className="col-md-6">
-               <div className="input-group form-inline panel">
-                 <span className ="input-group-addon primary">
-                   Status
-                 </span>
-                 <input className="form-control" type="text" id="status" name="status"/>
-               </div>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-6">
-                <div className="input-group form-inline panel">
-                  <span className="input-group-button primary">
-                    <button className="btn btn-primary " type="submit">
-                      Search!
-                    </button>
-                  </span>
-                </div>
-              </div>
+        </div>
+        <div className="row">
+          <div className="col-md-6">
+            <div className="input-group form-inline panel">
+              <span className ="input-group-addon primary">
+                Description
+              </span>
+              <input className="form-control" type="text" id="description" name="description"/>
             </div>
           </div>
-
+          <div className="col-md-6">
+            <div className="input-group form-inline panel">
+              <span className ="input-group-addon primary">
+                Status
+              </span>
+              <input className="form-control" type="text" id="status" name="status"/>
+            </div>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-md-6">
+            <div className="input-group form-inline panel">
+              <span className="input-group-button primary">
+                <button className="btn btn-primary " type="submit">
+                  Search!
+                </button>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
     );
   }
 }
@@ -184,7 +144,7 @@ class Search extends Component {
               <Searchbar/>
             </form>
           </div>
-          <div className="row">
+          <div className="row padding">
             <a onClick={() => this.setState({expanded : true})} className="clickable-text text-right">
               <u>Advanced Search</u>
             </a>
@@ -212,9 +172,11 @@ class Table extends Component {
         }
       })
       .then(function(data) {
-        that.setState({
-           projects : data.hits.hits,
-        });
+        if (typeof data != undefined){
+          that.setState({
+             projects : data.hits.hits,
+          });
+        };
       });
     }
 
@@ -249,11 +211,11 @@ class Table extends Component {
 
       return(
           <tr>
-            <td className="col-md-2"> {title} </td>
-            <td className="col-md-2"> {authorNames}</td>
-            <td className="col-md-2" data-toggle="tooltip" title={description}> {shortenedDescription} </td>
-            <td className="col-md-2"> {date_creation} </td>
-            <td className="col-md-2"> {status} </td>
+            <td> {title} </td>
+            <td> {authorNames}</td>
+            <td data-toggle="tooltip" title={description}> {shortenedDescription} </td>
+            <td> {date_creation} </td>
+            <td> {status} </td>
           </tr>
       );
     }
@@ -273,11 +235,11 @@ class Table extends Component {
             <table className="table table-hover">
               <tbody>
                 <tr>
-                  <th className="col-md-2">Project</th>
-                  <th className="col-md-2">Author</th>
-                  <th className="col-md-2">Description</th>
-                  <th className="col-md-2">Date</th>
-                  <th className="col-md-2">Status</th>
+                  <th className="col-3">Project</th>
+                  <th className="col-2">Author</th>
+                  <th className="col-5">Description</th>
+                  <th className="col-1">Date</th>
+                  <th className="col-1">Status</th>
                 </tr>
                 {this.renderLines(results)}
               </tbody>
@@ -294,14 +256,13 @@ class Table extends Component {
   }
 }
 
-class SearchPage extends Component {
-
+export default class SearchPage extends Component {
   render() {
     return (
       <div className="inner-content">
         <div className="container">
           <div className="row">
-            <div className="col-md-12">
+            <div className="col">
               <Headline />
               <hr className="hidden-divider"/>
               <Search />
@@ -314,5 +275,3 @@ class SearchPage extends Component {
     );
   }
 }
-
-export default SearchPage;

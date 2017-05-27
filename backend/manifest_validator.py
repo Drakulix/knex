@@ -1,10 +1,8 @@
 import json5
-
 import jsonschema
 from jsonschema import Draft4Validator
 from jsonschema import FormatChecker
 from jsonschema import validate
-
 
 class ManifestValidator:
     def __init__(self, json_schema):
@@ -20,7 +18,7 @@ class ManifestValidator:
             self.validator.validate(manifest)
             return None
         except jsonschema.ValidationError as err:
-            print(e.message)
+            print(err.message)
             return err
         except Exception as err:
             print(err)
