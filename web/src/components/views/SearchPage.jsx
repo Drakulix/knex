@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-
+import data from '../../data/test_data.json';
 //Return Value Simulation
 
 class Result extends Component{
-  constructor(name, author, status, description, date, fav) {
+  constructor(name, author, status, description, date, fav, tags) {
     super();
     this.name = name;
     this.author = author;
@@ -11,18 +11,27 @@ class Result extends Component{
     this.description = description;
     this.date = date;
     this.fav = fav;
+    this.tags=tags;
   }
+
+
 }
 
-const result = new Result("Proj", "auth", "inactive", "desc1", "01.01.2000", "yes");
-const result2 = new Result("Proj2", "auth2", "active", "desc2", "11.02.2016", "yes");
-const result3 = new Result("Proj3", "auth", "inactive", "desc3", "01.01.2000", "no");
-const results0 = [];
-const results1 = [result];
-const results2 = [result, result2];
-const results3 = [result, result2, result3];
+const result_one = new Result(data.project_one.title, data.project_one.authors, data.project_one.status, data.project_one.description, data.project_one.date_created, "yes", data.project_one.tags);
+const result_two  = new Result(data.project_two.title, data.project_two.authors, data.project_two.status, data.project_two.description, data.project_two.date_created, "yes", data.project_two.tags);
+const result_three = new Result(data.project_three.title, data.project_three.authors, data.project_three.status, data.project_three.description, data.project_three.date_created, "yes", data.project_three.tags);
+const result_four = new Result(data.project_four.title, data.project_four.authors, data.project_four.status, data.project_four.description, data.project_four.date_created, "yes", data.project_four.tags);
+const result_five = new Result(data.project_five.title, data.project_five.authors, data.project_five.status, data.project_five.description, data.project_five.date_created, "yes", data.project_five.tags);
+const result_six = new Result(data.project_six.title, data.project_six.authors, data.project_six.status, data.project_six.description, data.project_six.date_created, "yes", data.project_six.tags);
 
-var results = results3
+const results = [result_one];
+results.push(result_two);
+results.push(result_three);
+results.push(result_four);
+results.push(result_five);
+results.push(result_six);
+
+
 
 // Main Code
 
@@ -54,7 +63,10 @@ class Searchbar extends Component {
 }
 
 class AdvancedSearch extends Component {
+
+
   render() {
+
     return(
       <div className="panel panel-body">
         <div className="row">
@@ -140,7 +152,7 @@ class AdvancedSearch extends Component {
 class Search extends Component {
   constructor() {
     super();
-    this.state = {expanded : false};
+    this.state = {expanded : false, filter_project_name: "", filter_author: "", filter_tags: "",filter_from: "", filter_to: "", filter_description: "", filter_status: ""};
   }
 
   render() {
@@ -177,6 +189,48 @@ class Search extends Component {
 }
 
 class Table extends Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+      state:null
+      }
+    };
+
+    filterProjectName(results){
+      var filtered_results=[];
+      for(var i=0; i<results.length;i++){
+        if(results[i].name.includes(this.props.project_name))
+          filtered_results.push(results[i]);
+      }
+      return (filtered_results );
+    };
+
+    filterAuthors(results){
+      var filtered_results=[];
+      for(var i=0; i<results.length;i++){
+        if(results[i].author.includes(this.props.authors))
+          filtered_results.push(results[i]);
+      }
+      return (filtered_results);
+    };
+
+    filterTags(results){
+      var filtered_results=[];
+      for(var i=0; i<results.length;i++){
+        if(results[i].tags.includes(this.props.tags))
+          filtered_results.push(results[i]);
+      }
+      return (filtered_results);
+    };
+
+    filterStatus(results){
+      var filtered_results=[];
+      for(var i=0; i<results.length;i++){
+        if(results[i].status.includes(this.props.status))
+          filtered_results.push(results[i]);
+      }
+    return (filtered_results);
+    };
 
     renderLine(result){
       return(
@@ -221,7 +275,8 @@ class Table extends Component {
     }
 
   render() {
-    return this.renderTable(results);
+    var filtered_results=this.filterProjectName(results);
+    return this.renderTable(filtered_results);
   }
 }
 
@@ -236,7 +291,7 @@ export default class SearchPage extends Component {
                 <hr className="hidden-divider"/>
                 <Search />
                 <hr className="horizontal-divider"/>
-                <Table />
+                <Table project_name="Semantic"/>
             </div>
           </div>
         </div>
