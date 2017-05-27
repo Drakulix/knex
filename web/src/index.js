@@ -1,32 +1,22 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import {
+  HashRouter,
+  Route,
+  Link
+} from 'react-router-dom';
 
-import TopBar from './components/common/TopBar';
-import SideBar from './components/common/SideBar';
-import InnerContent from './components/common/Content';
+import ProjectDetails from './components/pages/ProjectDetails';
+import CreateProject from './components/pages/CreateProject';
+import ProjectDiscovery from './components/pages/ProjectDiscovery';
 
-import UploadByLink from './components/views/CreateProjectView';
-import UploadByPattern from './components/views/CreateProjectByPattern';
-
-
-export default class App extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      state: null
-    };
-  }
-
-  render() {
-    return (
+ReactDOM.render((
+   <HashRouter>
       <div>
-        <TopBar />
-        <SideBar />
+        <Route exact path="/" component={ProjectDiscovery} />
+          <Route path="create" component={CreateProject} />
+          <Route path="details" component={ProjectDetails} />
       </div>
-    );
-  }
-}
-
-ReactDOM.render(<App />, document.querySelector('.content'));
+   </HashRouter>
+), document.querySelector('.content'));

@@ -8,13 +8,21 @@ module.exports = {
     filename: 'bundle.js'
   },
   module: {
-    loaders: [{
-      exclude: /node_modules/,
-      loader: 'babel'
-    }]
+    loaders: [
+      {
+        exclude: /node_modules/,
+        loader: 'babel'
+      }
+    ],
+    rules: [
+      {
+        test: /\.json$/,
+        loaders: 'json-loader'
+      }
+    ]
   },
   resolve: {
-    extensions: ['', '.js', '.jsx']
+    extensions: ['', '.js', '.jsx', '.json']
   },
   devServer: {
     contentBase: './'

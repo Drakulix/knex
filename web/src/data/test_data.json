@@ -1,0 +1,41 @@
+{
+  "project_one": {
+    "title":"This wonderful title",
+    "authors": "John Do",
+    "status": "In progress",
+    "date_created": "2017-01-16",
+    "date_last_updated": "2017-03-27",
+    "team": "The best team ever",
+    "tags": "tag1,tag2,tag3",
+    "git_url": "https://github.com/Drakulix/knex",
+    "description": "Let's write an wonderful descriptiom. There was one time Derp, he wanted to eat a lot. He was hungry all the time, he ate all the time but he didn't get fat. Derpina, on the other hand, drank a lot but never got drunk.",
+    "future_work": "This is future work. I don't know what to write here, but it would be cool to see how Derps and Derpinas kids would be like... can you imagine?",
+    "related_projects": "If you want to see more related_projects, go check 9gag... I am pretty sure that you will find what you are looking for. Good luck!!!"
+  },
+  "project_two" : {
+    "title":"This wonderful title",
+    "authors": "John Do",
+    "status": "In progress",
+    "date_created": "2017-01-16",
+    "date_last_updated": "2017-03-27",
+    "team": "The best team ever",
+    "tags": "tag1,tag2,tag3",
+    "git_url": "https://github.com/Drakulix/knex",
+    "description": "Let's write an wonderful descriptiom. There was one time Derp, he wanted to eat a lot. He was hungry all the time, he ate all the time but he didn't get fat. Derpina, on the other hand, drank a lot but never got drunk.",
+    "future_work": "This is future work. I don't know what to write here, but it would be cool to see how Derps and Derpinas kids would be like... can you imagine?",
+    "related_projects": "If you want to see more related_projects, go check 9gag... I am pretty sure that you will find what you are looking for. Good luck!!!"
+  },
+  "project_three" : {
+    "title":"This wonderful title",
+    "authors": "John Do",
+    "status": "In progress",
+    "date_created": "2017-01-16",
+    "date_last_updated": "2017-03-27",
+    "team": "The best team ever",
+    "tags": "tag1,tag2,tag3",
+    "git_url": "https://github.com/Drakulix/knex",
+    "description": "Let's write an wonderful descriptiom. There was one time Derp, he wanted to eat a lot. He was hungry all the time, he ate all the time but he didn't get fat. Derpina, on the other hand, drank a lot but never got drunk.",
+    "future_work": "This is future work. I don't know what to write here, but it would be cool to see how Derps and Derpinas kids would be like... can you imagine?",
+    "related_projects": "If you want to see more related_projects, go check 9gag... I am pretty sure that you will find what you are looking for. Good luck!!!"
+  }
+}
