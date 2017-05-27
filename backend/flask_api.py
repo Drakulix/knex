@@ -35,7 +35,7 @@ def index():
 
 # receive manifest as a jsonstring
 # returns new id
-@app.route('/api/projects', methods=['GET', 'POST'])
+@app.route('/api/projects', methods=['POST'])
 def add_project():
     if request.method == 'POST':
         successful_files = []
@@ -76,9 +76,10 @@ def add_project():
                 return make_response("error", '500')
 
 
-    elif request.method == 'GET': #remove this later, default multi file uploader for testing purposes
-        return """
-    <!doctype html>
+@app.route('/upload', methods=['GET'])
+def uploads():
+    if request.method == 'GET': #remove this later, default multi file uploader for testing purposes
+        return """<!doctype html>
     <title>Upload multiple files</title>
     <h1>Upload multiple files</h1>
     <form action="" method=post enctype=multipart/form-data>
@@ -155,41 +156,6 @@ def upload_file():
             else:
                 return render_template('upload_error.html')
 
-
-@app.route("/uploads", methods=["GET", "POST"])
-def uploads():
-    if request.method == 'POST':
-        successful_files = []
-        unsuccessful_files = []
-        uploaded_files = request.files.getlist("file[]")
-        for file in uploaded_files:
-            securefilename = secure_filename(file.filename)
-            if file and uploader.allowed_file(securefilename):
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], securefilename))
-                err = uploader.save_file_to_db(securefilename)
-                if (err == None):
-                    successful_files.append(file.filename) #represent original filename
-                else:
-                    unsuccessful_files.append(file.filename)
-                print("Successful files: ", successful_files, '\n', file=sys.stderr)
-                print("Unsuccessful files: ", unsuccessful_files, '\n', file=sys.stderr)
-        return """<!doctype html>
-    <title>Upload multiple files</title>
-    <h1>Upload multiple files</h1>
-    <body>Successful files: """ + ', '.join( e for e in successful_files) + """
-    Unsuccessful files: """ + ', '.join( e for e in unsuccessful_files) + '\n' + """
-    </body>
-    """
-    
-    elif request.method == 'GET':
-        return """
-    <!doctype html>
-    <title>Upload multiple files</title>
-    <h1>Upload multiple files</h1>
-    <form action="" method=post enctype=multipart/form-data>
-    <input type=file name="file[]" multiple>
-    <input type=submit value=Upload>
-    </form>"""
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
