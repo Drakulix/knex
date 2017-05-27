@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import UploadByPattern from '../views/CreateProjectByPattern';
 import TopBar from '../common/TopBar';
+import { Link } from 'react-router-dom';
 
 export default class CreateProject extends Component {
   constructor(props) {
@@ -23,19 +24,19 @@ export default class CreateProject extends Component {
           <div className="col-2 side-bar">
               <ul className="list-group">
                 <li className="list-group-item">
-                  <p>
+                  <Link to="/discovery">
                     {this.state.menu.discoverProjects}
-                  </p>
+                  </Link>
                 </li>
-                <li className="list-group-item">
-                  <p className="menu-text">
+                <li className="list-group-item active">
+                  <Link to="/create">
                     {this.state.menu.createProject}
-                  </p>
+                  </Link>
                 </li>
                 <li className="list-group-item">
-                  <p className="menu-text">
+                  <Link to="/projects">
                     {this.state.menu.adminArea}
-                  </p>
+                  </Link>
                 </li>
               </ul>
           </div>

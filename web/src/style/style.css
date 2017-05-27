@@ -12,6 +12,24 @@ p:hover {
 color: #ff5500;
 }
 
+a {
+  color: #FFF;
+  font-family: 'Open Sans', sans-serif !important;
+  font-weight: 300;
+
+}
+
+a:hover {
+  color: #ff5500;
+  text-decoration: none;
+  font-family: 'Open Sans', sans-serif !important;
+  font-weight: 300;
+}
+
+.logo-banner {
+  margin-top: 12px;
+}
+
 .container {
   min-height: 1024px;
   max-height: 800px;
@@ -50,6 +68,10 @@ color: #ff5500;
 	color: #ffffff;
 }
 
+ .table-project-name {
+   color: black;
+ }
+
 .padding {
   padding-left: 15px;
   padding-right: 15px;
@@ -84,7 +106,7 @@ color: #ff5500;
 }
 
 .list-group {
-  margin-top: 66px;
+  margin-top: 100px;
   height: 140px;
   padding: 0px !important;
 }
@@ -101,6 +123,11 @@ font-weight: 300;
 .list-group-item:hover {
     text-decoration: none;
     background-color: #242424 !important;
+}
+
+.active {
+  text-decoration: none;
+  background-color: #242424 !important;
 }
 
 .menu-button {
@@ -139,8 +166,16 @@ font-weight: 300;
   margin-bottom: 30px;
 }
 
-.input-group{
+.input-group {
   margin:9px auto;
+}
+
+.input-login {
+  width: 250px;
+}
+
+.input-group-addon {
+  border-radius: 0px;
 }
 
 .form-control {
@@ -278,7 +313,7 @@ font-weight: 300;
   font-weight: 300;
   font-size: 30px;
   color: #000000;
-  margin-top: 37px;
+  margin-top: 100px;
 }
 
 .caption{
@@ -359,7 +394,7 @@ font-weight: 300;
 
  /* Project Container */
 .projecttitle {
-  margin-top: 40px;
+  margin-top: 100px;
   font-family: 'Open Sans', sans-serif;
   font-weight: 400;
   font-size: 18px;
