@@ -36,43 +36,42 @@ def index():
 # returns new id
 @app.route('/api/projects', methods=['POST'])
 def add_project():
-    if request.method == 'POST':
-        successful_files = []
-        unsuccessful_files = []
-        uploaded_files = request.files.getlist("file[]")
-        if len(uploaded_files) is not 0:
-            for file in uploaded_files:
-                securefilename = secure_filename(file.filename)
-                if file and uploader.allowed_file(securefilename):
-                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], securefilename))
-                    err = uploader.save_file_to_db(securefilename)
-                    if (err == None):
-                        successful_files.append(file.filename) #represent original filename
-                    else:
-                        unsuccessful_files.append(file.filename)
-                    print("Successful files: ", successful_files, '\n', file=sys.stderr)
-                    print("Unsuccessful files: ", unsuccessful_files, '\n', file=sys.stderr)
-            return      """<!doctype html>
-                        <title>Upload multiple files</title>
-                        <h1>Upload multiple files</h1>
-                        <body>Successful files: """ + ', '.join( e for e in successful_files) + '<br />' + """
-                        Unsuccessful files: """ + ', '.join( e for e in unsuccessful_files) + """
-                        </body>"""
-
-        else: #no files attached
-            try:
-                err = None
-                if request.json:
-                    err = uploader.save_manifest_to_db(request.json)
+    successful_files = []
+    unsuccessful_files = []
+    uploaded_files = request.files.getlist("file[]")
+    if len(uploaded_files) is not 0:
+        for file in uploaded_files:
+            securefilename = secure_filename(file.filename)
+            if file and uploader.allowed_file(securefilename):
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], securefilename))
+                err = uploader.save_file_to_db(securefilename)
+                if (err == None):
+                    successful_files.append(file.filename) #represent original filename
                 else:
-                    err = uploader.save_manifest_to_db(json5.load(request.data))
+                    unsuccessful_files.append(file.filename)
+                print("Successful files: ", successful_files, '\n', file=sys.stderr)
+                print("Unsuccessful files: ", unsuccessful_files, '\n', file=sys.stderr)
+        return      """<!doctype html>
+                    <title>Upload multiple files</title>
+                    <h1>Upload multiple files</h1>
+                    <body>Successful files: """ + ', '.join( e for e in successful_files) + '<br />' + """
+                    Unsuccessful files: """ + ', '.join( e for e in unsuccessful_files) + """
+                    </body>"""
 
-                if err == None:
-                    return make_response("Successfully saved json to DB.")
-                else:
-                    return make_response("Exception while trying to save the json to DB.")
-            except Exception as error:
-                return make_response("error", '500')
+    else: #no files attached
+        try:
+            err = None
+            if request.json:
+                err = uploader.save_manifest_to_db(request.json)
+            else:
+                err = uploader.save_manifest_to_db(json5.load(request.data))
+
+            if err == None:
+                return make_response("Successfully saved json to DB.")
+            else:
+                return make_response("Exception while trying to save the json to DB.")
+        except Exception as error:
+            return make_response("error", '500')
 
 
 @app.route('/upload', methods=['GET'])
