@@ -1,6 +1,8 @@
 import os
+import sys
 from werkzeug.utils import redirect
 from flask.helpers import flash
+from flask_cors import CORS
 from flask import Flask, request, jsonify, make_response, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
 from pymongo import MongoClient
@@ -12,15 +14,16 @@ import uploader
 
 
 client=MongoClient('mongodb:27017')
-db=client.knexDBmh1
+db=client.knexDB
 coll=db.projects
 
 schema = open("manifest_schema.json")
 validator = ManifestValidator(schema)
 
 app=Flask(__name__)
+CORS(app)
 
-ALLOWED_EXTENSIONS = set(['txt', 'json'])
+ALLOWED_EXTENSIONS = set(['txt', 'json', 'json5'])
 app.config['UPLOAD_FOLDER'] = ''
 app.config['MAX_CONTENT_PATH'] = 1000000; #100.000 byte = 100kb 
 
@@ -102,7 +105,15 @@ def uploads():
                     successful_files.append(file.filename) #represent original filename
                 else:
                     unsuccessful_files.append(file.filename)
-        return make_response(successful_files, unsuccessful_files) #FIXME: build correct response showing successful and unsuccessful files
+                print("Successful files: ", successful_files, '\n', file=sys.stderr)
+                print("Unsuccessful files: ", unsuccessful_files, '\n', file=sys.stderr)
+        return """<!doctype html>
+    <title>Upload multiple files</title>
+    <h1>Upload multiple files</h1>
+    <body>Successful files: """ + ', '.join( e for e in successful_files) + """
+    Unsuccessful files: """ + ', '.join( e for e in unsuccessful_files) + '\n' + """
+    </body>
+    """
     
     elif request.method == 'GET':
         return """
