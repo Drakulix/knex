@@ -17,23 +17,6 @@ class Result extends Component{
 
 class Results extends Component{
 
-    pullDataFromServer() {
-      var projects = [];
-      console.log(projects);
-      sendJson('POST', '/api/projects/search', {
-        "query": {
-          "match_all": {}
-        }
-      }).then(json => projects);
-      console.log(projects);
-      return projects;
-
-    }
-
-    constructor(name, author, status, description, date, fav) {
-      super();
-    }
-
     render(){
       var lines = [];
       var projects = this.pullDataFromServer();
@@ -214,15 +197,36 @@ class Search extends Component {
 
 class Table extends Component {
 
+    constructor() {
+      super();
+
+      var that = this;
+
+      this.state = {
+        projects : [],
+      }
+
+      sendJson('POST', '/api/projects/search', {
+        "query": {
+          "match_all": {}
+        }
+      })
+      .then(function(data) {
+        that.setState({
+           projects : data.hits.hits,
+        });
+      });
+    }
+
     renderLine(result){
+      console.log(result);
       return(
-          <tr key = {result.name} >
-            <td> <a href={result.name} ><u>{result.name}</u></a> </td>
-            <td> {result.author} </td>
-            <td> {result.status} </td>
-            <td> {result.description} </td>
-            <td> {result.date} </td>
-            <td> {result.fav} </td>
+          <tr>
+            <td> </td>
+            <td> {result._source.author} </td>
+            <td> {result._source.text} </td>
+            <td> {result._source.timestamp} </td>
+            <td>  </td>
           </tr>
       );
     }
@@ -244,10 +248,9 @@ class Table extends Component {
                 <tr>
                   <th className="col-md-3">Project</th>
                   <th className="col-md-2">Author</th>
-                  <th className="col-md-1">Status</th>
-                  <th className="col-md-4">Description</th>
+                  <th className="col-md-5">Description</th>
                   <th className="col-md-1">Date</th>
-                  <th className="col-md-1">Fav</th>
+                  <th className="col-md-1">Status</th>
                 </tr>
                 {this.renderLines(results)}
               </tbody>
@@ -260,7 +263,7 @@ class Table extends Component {
     }
 
   render() {
-    return this.renderTable(results);
+    return this.renderTable(this.state.projects);
   }
 }
 
@@ -269,7 +272,6 @@ class SearchPage extends Component {
   render() {
     return (
       <div className="inner-content">
-        <Results />
         <div className="container">
           <div className="row">
             <div className="col-md-12">
