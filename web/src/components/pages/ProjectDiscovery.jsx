@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import SearchPage from '../common/SearchPage.jsx'
 
 class ProjectDetails extends Component {
   constructor(props) {
@@ -38,6 +39,7 @@ class ProjectDetails extends Component {
           </div>
           <div className="col-9">
             {/* ProjectDiscovery */}
+            <SearchPage />
           </div>
         </div>
       </div>

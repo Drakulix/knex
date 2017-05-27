@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import {sendJson} from './Backend'
 
 //Return Value Simulation
+
 
 class Result extends Component{
   constructor(name, author, status, description, date, fav) {
@@ -136,10 +138,28 @@ class AdvancedSearch extends Component {
   }
 }
 
+
 class Search extends Component {
   constructor() {
     super();
     this.state = {expanded : false};
+  }
+
+  submitSearch() {
+    sendJson('POST', '/api/projects/search', {
+      "query": {
+        "match_all": {}
+      }
+    }),
+    sendJson('POST', '/api/projects/search', {
+      "query": {
+        "query_string": {
+          "default_field": "tags",
+          "query": "project"
+        }
+      }
+    })
+    .then(json => console.log(json))
   }
 
   render() {
@@ -160,7 +180,9 @@ class Search extends Component {
       return(
         <div>
           <div className="row">
-            <form className="form-horizontal col-md-12">
+            <form className="form-horizontal col-md-12"
+                  onSubmit={this.submitSearch}
+            >
               <Searchbar/>
             </form>
           </div>
@@ -179,7 +201,7 @@ class Table extends Component {
 
     renderLine(result){
       return(
-          <tr>
+          <tr key = {result.name} >
             <td> <a href={result.name} ><u>{result.name}</u></a> </td>
             <td> {result.author} </td>
             <td> {result.status} </td>
@@ -202,15 +224,17 @@ class Table extends Component {
         return(
           <div className="row">
             <table className="table table-hover">
-              <tr>
-                <th className="col-md-3">Project</th>
-                <th className="col-md-2">Author</th>
-                <th className="col-md-1">Status</th>
-                <th className="col-md-4">Description</th>
-                <th className="col-md-1">Date</th>
-                <th className="col-md-1">Fav</th>
-              </tr>
-              {this.renderLines(results)}
+              <tbody>
+                <tr>
+                  <th className="col-md-3">Project</th>
+                  <th className="col-md-2">Author</th>
+                  <th className="col-md-1">Status</th>
+                  <th className="col-md-4">Description</th>
+                  <th className="col-md-1">Date</th>
+                  <th className="col-md-1">Fav</th>
+                </tr>
+                {this.renderLines(results)}
+              </tbody>
             </table>
           </div>
         );
@@ -230,12 +254,12 @@ class SearchPage extends Component {
       <div className="inner-content">
         <div className="container">
           <div className="row">
-            <div className="col-md-10 offset-md-2">
-                <Headline />
-                <hr className="hidden-divider"/>
-                <Search />
-                <hr className="horizontal-divider"/>
-                <Table />
+            <div className="col-md-12">
+              <Headline />
+              <hr className="hidden-divider"/>
+              <Search />
+              <hr className="horizontal-divider"/>
+              <Table />
             </div>
           </div>
         </div>

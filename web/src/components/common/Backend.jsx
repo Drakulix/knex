@@ -56,7 +56,7 @@ const BACKEND_URL = 'http://localhost:5000'
           }
         }
       })
-      // .then(json => console.log(json))
+      .then(json => console.log(json))
 
       return (
         <div></div>
