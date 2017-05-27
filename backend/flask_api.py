@@ -117,6 +117,7 @@ def get_project_by_id(project_id):
     res=coll.find_one({'_id': project_id})
     if res is None:
       return make_response('Project not found', 404)
+    return jsonify(res)
 
 @app.route('/api/projects/<uuid:project_id>', methods=['DELETE'])
 def delete_project(project_id):
