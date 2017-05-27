@@ -8,9 +8,11 @@ services:
         image: elasticsearch
 
     flask:
-        build: ./pythonfile
+        build: ./backend
         links:
             - mongodb
             - elasticsearch
         ports:
             - "5000:5000"
+        volumes:
+            - ./backend:/backend
