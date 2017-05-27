@@ -82,7 +82,7 @@ def upload_file():
         securefilename = secure_filename(file.filename)
         if file and uploader.allowed_file(securefilename):
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], securefilename))
-            if (uploader.save_file_to_db(filename) == None):
+            if (uploader.save_file_to_db(securefilename) == None):
                 return render_template('upload_success.html')
             else:
                 return render_template('upload_error.html')
@@ -98,7 +98,7 @@ def uploads():
             securefilename = secure_filename(file.filename)
             if file and uploader.allowed_file(securefilename):
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], securefilename))
-                if (uploader.save_file_to_db(filename) == None):
+                if (uploader.save_file_to_db(securefilename) == None):
                     successful_files.append(file.filename) #represent original filename
                 else:
                     unsuccessful_files.append(file.filename)

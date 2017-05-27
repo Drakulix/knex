@@ -3,6 +3,8 @@ import elastic
 import json5
 import time
 import uuid
+import sys
+
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -20,9 +22,9 @@ def save_file_to_db(filename):
     if error == None:
         elastic.store_json('test', 'projects', manifest)
         coll.insert_one(manifest)
-        print("Successfully validated file. ID is"+str(manifest['id']))
+        print("Successfully validated file. ID is "+str(manifest['id']),file=sys.stderr)
 
     else:
-        print(error)
+        print(error,file=sys.stderr)
 
     return error
