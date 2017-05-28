@@ -1,6 +1,6 @@
 {
           "project_one": {
-            "title":"'Contextual music information retrieval and recommendation: State of the art and challenges",
+            "title":"Contextual music information retrieval and recommendation: State of the art and challenges",
             "authors": "Marius Kaminskas",
             "status": "In progress",
             "date_created": "2017-01-16",
@@ -8,7 +8,7 @@
             "team": "The best team ever",
             "tags": "'Music information retrieval','Music recommender systems','Context-aware services','Affective computing', 'Social computing'",
             "git_url": "https://github.com/Drakulix/knex",
-            "description": "Let's write an wonderful descriptiom. There was one time Derp, he wanted to eat a lot. He was hungry all the time, he ate all the time but he didn't get fat. Derpina, on the other hand, drank a lot but never got drunk.",
+            "description": "test",
             "future_work": "This is future work. I don't know what to write here, but it would be cool to see how Derps and Derpinas kids would be like... can you imagine?",
             "related_projects": "If you want to see more related_projects, go check 9gag... I am pretty sure that you will find what you are looking for. Good luck!!!"
           },
@@ -21,7 +21,7 @@
             "team": "The best team ever",
             "tags": "multimedia indexing, rich media, music information retrieval",
             "git_url": "https://github.com/Drakulix/knex",
-            "description": "Let's write an wonderful descriptiom. There was one time Derp, he wanted to eat a lot. He was hungry all the time, he ate all the time but he didn't get fat. Derpina, on the other hand, drank a lot but never got drunk.",
+            "description": "test",
             "future_work": "This is future work. I don't know what to write here, but it would be cool to see how Derps and Derpinas kids would be like... can you imagine?",
             "related_projects": "If you want to see more related_projects, go check 9gag... I am pretty sure that you will find what you are looking for. Good luck!!!"
           },
@@ -34,12 +34,12 @@
             "team": "The best team ever",
             "tags": "tag1,tag2,tag3",
             "git_url": "https://github.com/Drakulix/knex",
-            "description": "Let's write an wonderful descriptiom. There was one time Derp, he wanted to eat a lot. He was hungry all the time, he ate all the time but he didn't get fat. Derpina, on the other hand, drank a lot but never got drunk.",
+            "description": "test",
             "future_work": "This is future work. I don't know what to write here, but it would be cool to see how Derps and Derpinas kids would be like... can you imagine?",
             "related_projects": "If you want to see more related_projects, go check 9gag... I am pretty sure that you will find what you are looking for. Good luck!!!"
           },
           "project_four":{
-            "title":"'Contextual music information retrieval and recommendation: State of the art and challenges",
+            "title":"Contextual music information retrieval and recommendation: State of the art and challenges",
             "authors": "Marius Kaminskas",
             "status": "In progress",
             "date_created": "2017-01-16",
@@ -47,7 +47,7 @@
             "team": "The best team ever",
             "tags": "'Music information retrieval','Music recommender systems','Context-aware services','Affective computing', 'Social computing'",
             "git_url": "https://github.com/Drakulix/knex",
-            "description": "Let's write an wonderful descriptiom. There was one time Derp, he wanted to eat a lot. He was hungry all the time, he ate all the time but he didn't get fat. Derpina, on the other hand, drank a lot but never got drunk.",
+            "description": "test",
             "future_work": "This is future work. I don't know what to write here, but it would be cool to see how Derps and Derpinas kids would be like... can you imagine?",
             "related_projects": "If you want to see more related_projects, go check 9gag... I am pretty sure that you will find what you are looking for. Good luck!!!"
           },
@@ -60,7 +60,7 @@
             "team": "The best team ever",
             "tags": "multimedia indexing, rich media, music information retrieval",
             "git_url": "https://github.com/Drakulix/knex",
-            "description": "Let's write an wonderful descriptiom. There was one time Derp, he wanted to eat a lot. He was hungry all the time, he ate all the time but he didn't get fat. Derpina, on the other hand, drank a lot but never got drunk.",
+            "description": "test",
             "future_work": "This is future work. I don't know what to write here, but it would be cool to see how Derps and Derpinas kids would be like... can you imagine?",
             "related_projects": "If you want to see more related_projects, go check 9gag... I am pretty sure that you will find what you are looking for. Good luck!!!"
           },
@@ -73,7 +73,7 @@
             "team": "The best team ever",
             "tags": "tag1,tag2,tag3",
             "git_url": "https://github.com/Drakulix/knex",
-            "description": "Let's write an wonderful descriptiom. There was one time Derp, he wanted to eat a lot. He was hungry all the time, he ate all the time but he didn't get fat. Derpina, on the other hand, drank a lot but never got drunk.",
+            "description": "test",
             "future_work": "This is future work. I don't know what to write here, but it would be cool to see how Derps and Derpinas kids would be like... can you imagine?",
             "related_projects": "If you want to see more related_projects, go check 9gag... I am pretty sure that you will find what you are looking for. Good luck!!!"
           }

@@ -30,12 +30,12 @@ export default class ProjectDetails extends Component {
                 </Link>
               </li>
               <li className="list-group-item">
-                <Link to="/create">
+                <Link to="/createbylink">
                   {this.state.menu.createProject}
                 </Link>
               </li>
-              <li className="list-group-item active">
-                <Link to="/projects">
+              <li className="list-group-item">
+                <Link to="/discovery">
                   {this.state.menu.adminArea}
                 </Link>
               </li>
