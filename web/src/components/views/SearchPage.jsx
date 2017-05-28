@@ -314,26 +314,28 @@ class Table extends Component {
     }
 
   render() {
+    var new_results=results;
     if(this.props.project_name != null){
-      var filtered_results=this.filterProjectName(results);
-      return this.renderTable(filtered_results);
+      new_results=this.filterProjectName(new_results);
+
     }
     if(this.props.from != null && this.props.to!= null){
-    var filtered_results=this.filterDate(results);
-    return this.renderTable(filtered_results);
+      new_results=this.filterDate(new_results);
+
     }
     if(this.props.authors != null){
-      var filtered_results=this.filterAuthors(results);
-      return this.renderTable(filtered_results);
+      new_results=this.filterAuthors(new_results);
+
     }
     if(this.props.tags != null){
-      var filtered_results=this.filterTags(results);
-      return this.renderTable(filtered_results);
+      new_results=this.filterTags(new_results);
+
     }
     if(this.props.status!= null){
-      var filtered_results=this.filterStatus(results);
-      return this.renderTable(filtered_results);
+      new_results=this.filterStatus(new_results);
+
     }
+    return this.renderTable(new_results);
   }
 }
 
