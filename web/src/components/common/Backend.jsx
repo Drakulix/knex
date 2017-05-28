@@ -31,7 +31,7 @@ const BACKEND_URL = 'http://localhost:5000'
     });
   }
 
-  #TODO(gitmirgut): remove later
+  // TODO(gitmirgut): remove later
   export default class BackendTest extends Component {
     //This Component is just for testing
     constructor(props) {
@@ -43,7 +43,7 @@ const BACKEND_URL = 'http://localhost:5000'
     }
 
     render() {
-      // fetchJson('/api/projects/dummyadd'),
+      fetchJson('/api/projects'),
       sendJson('POST', '/api/projects/search', {
         "query": {
           "match_all": {}
