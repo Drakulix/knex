@@ -136,17 +136,7 @@ class AdvancedSearch extends Component {
             </div>
           </div>
         </div>
-        <div className="row">
-          <div className="col-md-6">
-            <div className="input-group form-inline panel">
-              <span className="input-group-button primary">
-                <button className="btn btn-primary " >
-                  Search!
-                </button>
-              </span>
-            </div>
-          </div>
-        </div>
+        
       </div>
     );
   }
