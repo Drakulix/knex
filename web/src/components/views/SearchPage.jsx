@@ -1,28 +1,5 @@
 import React, { Component } from 'react';
-
-//Return Value Simulation
-
-class Result extends Component{
-  constructor(name, author, status, description, date, fav) {
-    super();
-    this.name = name;
-    this.author = author;
-    this.status = status;
-    this.description = description;
-    this.date = date;
-    this.fav = fav;
-  }
-}
-
-const result = new Result("Proj", "auth", "inactive", "desc1", "01.01.2000", "yes");
-const result2 = new Result("Proj2", "auth2", "active", "desc2", "11.02.2016", "yes");
-const result3 = new Result("Proj3", "auth", "inactive", "desc3", "01.01.2000", "no");
-const results0 = [];
-const results1 = [result];
-const results2 = [result, result2];
-const results3 = [result, result2, result3];
-
-var results = results3
+import {fetchJson, sendJson} from '../common/Backend'
 
 // Main Code
 
@@ -137,7 +114,9 @@ class AdvancedSearch extends Component {
   }
 }
 
+
 class Search extends Component {
+
   constructor() {
     super();
     this.state = {expanded : false};
@@ -178,15 +157,62 @@ class Search extends Component {
 
 class Table extends Component {
 
+    constructor() {
+      super();
+
+      var that = this;
+
+      this.state = {
+        projects : [],
+      }
+      sendJson('POST', '/api/projects/search', {
+        "query": {
+          "match_all": {}
+        }
+      })
+      .then(function(data) {
+        if(data != null){
+          that.setState({
+             projects : data.hits.hits,
+          });
+        }
+      });
+    }
+
+
+    fitLength(string, maxLength){
+      if(string.length>maxLength){
+        return string.substring(0, maxLength) + " ...";
+      }
+      else return string;
+    }
+
+    authorsArrayToNameString(authors){
+      var names = [];
+      for(var i = 0 ;i < authors.length;i++){
+        names.push(authors[i].name);
+      }
+      return names.join();
+    }
+
     renderLine(result){
+
+      var title = result._source.title;
+      var authors = result._source.authors;
+      var description = result._source.description;
+      var status = result._source.status;
+      var date_creation = result._source.date_creation;
+
+      var authorNames = this.authorsArrayToNameString(result._source.authors);
+      var shortenedDescription = this.fitLength(description, 100);
+
       return(
           <tr>
-            <td> <a className="table-project-name" href={result.name} ><u>{result.name}</u></a> </td>
-            <td> {result.author} </td>
-            <td> {result.status} </td>
-            <td> {result.description} </td>
-            <td> {result.date} </td>
-            <td> {result.fav} </td>
+            <td className="col-md-2"> {title} </td>
+            <td className="col-md-2"> {authorNames}</td>
+            <td className="col-md-2" data-toggle="tooltip" title={description}> {shortenedDescription} </td>
+            <td className="col-md-2"> {date_creation} </td>
+            <td className="col-md-2"> {status} </td>
           </tr>
       );
     }
@@ -198,20 +224,22 @@ class Table extends Component {
       }
       return(lines);
     }
+
     renderTable(results){
       if(results.length>0){
         return(
           <div className="row">
             <table className="table table-hover">
-              <tr>
-                <th className="col-3">Project</th>
-                <th className="col-2">Author</th>
-                <th className="col-1">Status</th>
-                <th className="col-4">Description</th>
-                <th className="col-1">Date</th>
-                <th className="col-1">Fav</th>
-              </tr>
-              {this.renderLines(results)}
+              <tbody>
+                <tr>
+                  <th className="col-2">Project</th>
+                  <th className="col-2">Author</th>
+                  <th className="col-2">Description</th>
+                  <th className="col-2">Date</th>
+                  <th className="col-2">Status</th>
+                </tr>
+                {this.renderLines(results)}
+              </tbody>
             </table>
           </div>
         );
@@ -221,7 +249,7 @@ class Table extends Component {
     }
 
   render() {
-    return this.renderTable(results);
+    return this.renderTable(this.state.projects);
   }
 }
 
@@ -232,11 +260,11 @@ export default class SearchPage extends Component {
         <div className="container">
           <div className="row">
             <div className="col">
-                <Headline />
-                <hr className="hidden-divider"/>
-                <Search />
-                <hr className="horizontal-divider"/>
-                <Table />
+              <Headline />
+              <hr className="hidden-divider"/>
+              <Search />
+              <hr className="horizontal-divider"/>
+              <Table />
             </div>
           </div>
         </div>
