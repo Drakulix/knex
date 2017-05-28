@@ -260,11 +260,11 @@ export default class SearchPage extends Component {
         <div className="container">
           <div className="row">
             <div className="col">
-                <Headline />
-                <hr className="hidden-divider"/>
-                <Search />
-                <hr className="horizontal-divider"/>
-                <Table />
+              <Headline />
+              <hr className="hidden-divider"/>
+              <Search />
+              <hr className="horizontal-divider"/>
+              <Table />
             </div>
           </div>
         </div>
