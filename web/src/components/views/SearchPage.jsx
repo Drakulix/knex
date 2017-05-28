@@ -180,6 +180,10 @@ class Search extends Component {
     this.props.changeStateName(state);
   }
 
+  changeStateTags(tags){
+    this.props.changeStateName(tags);
+  }
+
 
   render() {
     if(this.state.expanded){
@@ -187,7 +191,7 @@ class Search extends Component {
         <div>
           <div className="row">
             <form className="form-horizontal col-md-12">
-              <AdvancedSearch changeStateName={(name) => this.changeStateName(name)} changeStateAuthor={(author) => this.changeStateAuthor(author)} changeStateFrom={(from) => this.changeStateFrom(from)} changeStateTo={(to) => this.changeStateTo(to)} changeStateState={(state) => this.changeStateState(state)}/>
+              <AdvancedSearch changeStateName={(name) => this.changeStateName(name)} changeStateAuthor={(author) => this.changeStateAuthor(author)} changeStateFrom={(from) => this.changeStateFrom(from)} changeStateTo={(to) => this.changeStateTo(to)} changeStateState={(state) => this.changeStateState(state)} changeStateTags={(tags) => this.changeStateTags(tags)} />
             </form>
             <a onClick={() => this.setState({expanded : false})}  className="clickable-text col-md-2">
               <u>Minimize</u>
@@ -365,6 +369,9 @@ export default class SearchPage extends Component {
     this.setState({filter_project_name: name });
   }
 
+  changeStateTags(tags){
+    this.setState({filter_tags: tags });
+  }
 
   render() {
     return (
@@ -375,7 +382,7 @@ export default class SearchPage extends Component {
 
                 <Headline />
                 <hr className="hidden-divider"/>
-                <Search changeStateName={(name) => this.changeStateName(name)} changeStateAuthor={(author) => this.changeStateAuthor(author)} changeStateFrom={(from) => this.changeStateFrom(from)} changeStateTo={(to) => this.changeStateTo(to)} changeStateState={(state) => this.changeStateState(state)} />
+                <Search changeStateName={(name) => this.changeStateName(name)} changeStateAuthor={(author) => this.changeStateAuthor(author)} changeStateFrom={(from) => this.changeStateFrom(from)} changeStateTo={(to) => this.changeStateTo(to)} changeStateState={(state) => this.changeStateState(state)} changeStateTags={(tags) => this.changeStateTags(tags)} />
                 <hr className="horizontal-divider"/>
                 <Table project_name= {this.state.filter_project_name} authors= {this.state.filter_author} tags= {this.state.filter_tags} from = {this.state.filter_from} to= {this.state.filter_to} state= {this.filter_state}/>
             </div>
