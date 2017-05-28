@@ -66,7 +66,7 @@ class AdvancedSearch extends Component {
 
 
   render() {
-    console.log(document.getElementById('projectName').value);
+    
     return(
       <div className="panel panel-body">
         <div className="row">
@@ -235,7 +235,6 @@ class Table extends Component {
 
 
       var fromDate= new Date(Number(this.props.from.substring(0,4)), Number(this.props.from.substring(5,7))-1, Number(this.props.from.substring(8,10)));
-      console.log(fromDate);
       var toDate= new Date(Number(this.props.to.substring(0,4)), Number(this.props.to.substring(5,7))-1, Number(this.props.to.substring(8,10)));
       var date_creation;
       var filtered_results=[];
