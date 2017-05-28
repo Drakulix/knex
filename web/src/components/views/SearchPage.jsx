@@ -259,6 +259,7 @@ class Table extends Component {
       }
     return (filtered_results);
     };
+
     filterDate(results){
 
 
@@ -346,7 +347,7 @@ class Table extends Component {
 export default class SearchPage extends Component {
   constructor(){
     super();
-    this.state = {filter_project_name: "", filter_author: "", filter_tags: "",filter_from: "", filter_to: "", filter_description: "", filter_status: ""};
+    this.state = {filter_project_name: "", filter_author: "", filter_tags: "",filter_from: null, filter_to: null, filter_description: "", filter_status: ""};
 
   }
 
@@ -383,7 +384,7 @@ export default class SearchPage extends Component {
                 <hr className="hidden-divider"/>
                 <Search changeStateName={(name) => this.changeStateName(name)} changeStateAuthor={(author) => this.changeStateAuthor(author)} changeStateFrom={(from) => this.changeStateFrom(from)} changeStateTo={(to) => this.changeStateTo(to)} ChangeStateStatus={(state) => this.ChangeStateStatus(state)}  changeStateTags={(tags) => this.changeStateTags(tags)}/>
                 <hr className="horizontal-divider"/>
-                <Table project_name= {this.state.filter_project_name} authors= {this.state.filter_author} tags= {this.state.filter_tags} from = {this.state.filter_from} to= {this.state.filter_to} status= {this.filter_status}/>
+                <Table project_name= {this.state.filter_project_name} authors= {this.state.filter_author} tags= {this.state.filter_tags} from = {this.state.filter_from} to= {this.state.filter_to} status= {this.filter_status} />
             </div>
           </div>
         </div>
