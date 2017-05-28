@@ -1,46 +1,5 @@
 import React, { Component } from 'react';
-import {fetchJson, sendJson} from './Backend'
-
-//Return Value Simulation
-
-class Result extends Component{
-  constructor(name, author, status, description, date, fav) {
-    super();
-    this.name = name;
-    this.author = author;
-    this.status = status;
-    this.description = description;
-    this.date = date;
-    this.fav = fav;
-  }
-}
-
-class Results extends Component{
-
-    render(){
-      var lines = [];
-      var projects = this.pullDataFromServer();
-      console.log(0);
-      for (var i = 0; i < projects.length; i++) {
-        lines.push(this.renderLine(projects[i]));
-        console.log(i+1);
-      }
-      return null;
-    }
-
-}
-
-
-const result = new Result("Proj", "auth", "inactive", "desc1", "01.01.2000", "yes");
-const result2 = new Result("Proj2", "auth2", "active", "desc2", "11.02.2016", "yes");
-const result3 = new Result("Proj3", "auth", "inactive", "desc3", "01.01.2000", "no");
-const results0 = [];
-const results1 = [result];
-const results2 = [result, result2];
-const results3 = [result, result2, result3];
-
-var results = results3;
-
+import {fetchJson, sendJson} from '../common/Backend'
 
 // Main Code
 
@@ -206,16 +165,17 @@ class Table extends Component {
       this.state = {
         projects : [],
       }
-      fetchJson('/api/projects/dummyadd'),
       sendJson('POST', '/api/projects/search', {
         "query": {
           "match_all": {}
         }
       })
       .then(function(data) {
-        that.setState({
-           projects : data.hits.hits,
-        });
+        if(data != null){
+          that.setState({
+             projects : data.hits.hits,
+          });
+        }
       });
     }
 
@@ -245,8 +205,6 @@ class Table extends Component {
 
       var authorNames = this.authorsArrayToNameString(result._source.authors);
       var shortenedDescription = this.fitLength(description, 100);
-
-      console.log(authorNames);
 
       return(
           <tr>

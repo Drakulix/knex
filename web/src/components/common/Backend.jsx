@@ -1,7 +1,7 @@
 import 'babel-polyfill';
 import 'isomorphic-fetch';
+import React, {Component} from 'react';
 const BACKEND_URL = 'http://localhost:5000'
-  import React, {Component} from 'react';
 
   export function fetchJson(path) {
     // use this function to make a GET request.
