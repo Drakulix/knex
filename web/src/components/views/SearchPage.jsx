@@ -66,7 +66,7 @@ class AdvancedSearch extends Component {
 
 
   render() {
-
+    console.log(document.getElementById('projectName').value);
     return(
       <div className="panel panel-body">
         <div className="row">
@@ -231,6 +231,22 @@ class Table extends Component {
       }
     return (filtered_results);
     };
+    filterDate(results){
+
+
+      var fromDate= new Date(Number(this.props.from.substring(0,4)), Number(this.props.from.substring(5,7))-1, Number(this.props.from.substring(8,10)));
+      console.log(fromDate);
+      var toDate= new Date(Number(this.props.to.substring(0,4)), Number(this.props.to.substring(5,7))-1, Number(this.props.to.substring(8,10)));
+      var date_creation;
+      var filtered_results=[];
+      for(var i=0; i<results.length;i++){
+
+        date_creation= new Date(Number(results[i].date.substring(0,4)), Number(results[i].date.substring(5,7))-1, Number(results[i].date.substring(8,10)));
+        if(date_creation.getTime()>=fromDate.getTime() && date_creation.getTime()<=toDate.getTime())
+          filtered_results.push(results[i]);
+      }
+    return (filtered_results);
+    };
 
     renderLine(result){
       return(
@@ -275,8 +291,26 @@ class Table extends Component {
     }
 
   render() {
-    var filtered_results=this.filterProjectName(results);
+    if(this.props.project_name != null){
+      var filtered_results=this.filterProjectName(results);
+      return this.renderTable(filtered_results);
+    }
+    if(this.props.from != null && this.props.to!= null){
+    var filtered_results=this.filterDate(results);
     return this.renderTable(filtered_results);
+    }
+    if(this.props.authors != null){
+      var filtered_results=this.filterAuthors(results);
+      return this.renderTable(filtered_results);
+    }
+    if(this.props.tags != null){
+      var filtered_results=this.filterTags(results);
+      return this.renderTable(filtered_results);
+    }
+    if(this.props.status!= null){
+      var filtered_results=this.filterStatus(results);
+      return this.renderTable(filtered_results);
+    }
   }
 }
 
@@ -291,7 +325,7 @@ export default class SearchPage extends Component {
                 <hr className="hidden-divider"/>
                 <Search />
                 <hr className="horizontal-divider"/>
-                <Table project_name="Semantic"/>
+                <Table status="In progress"/>
             </div>
           </div>
         </div>
