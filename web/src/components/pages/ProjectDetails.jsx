@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import ProjectContainer from '../views/ProjectContainer';
 import TopBar from '../common/TopBar';
-import data from '!json!../../data/test_data.json';
+import data from '../../data/test_data.json';
+import { Link } from 'react-router-dom';
 
 export default class ProjectDetails extends Component {
   constructor(props) {
@@ -21,26 +22,26 @@ export default class ProjectDetails extends Component {
       <div className="inner-content">
         <TopBar />
         <div className="row">
-          <div className="col-3 side-bar">
-              <ul className="list-group">
-                <li className="list-group-item">
-                  <p>
-                    {this.state.menu.discoverProjects}
-                  </p>
-                </li>
-                <li className="list-group-item">
-                  <p className="menu-text">
-                    {this.state.menu.createProject}
-                  </p>
-                </li>
-                <li className="list-group-item">
-                  <p className="menu-text">
-                    {this.state.menu.adminArea}
-                  </p>
-                </li>
-              </ul>
+          <div className="col-2 side-bar">
+            <ul className="list-group">
+              <li className="list-group-item">
+                <Link to="/discovery">
+                  {this.state.menu.discoverProjects}
+                </Link>
+              </li>
+              <li className="list-group-item">
+                <Link to="/create">
+                  {this.state.menu.createProject}
+                </Link>
+              </li>
+              <li className="list-group-item active">
+                <Link to="/projects">
+                  {this.state.menu.adminArea}
+                </Link>
+              </li>
+            </ul>
           </div>
-          <div className="col-9">
+          <div className="col-10">
             <ProjectContainer title={data.project_two.title}/>
           </div>
         </div>

@@ -1,22 +1,30 @@
-import _ from 'lodash';
-import React, { Component } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
+import registerServiceWorker from './registerServiceWorker';
+import './style/style.css';
+import './style/fonts/font-awesome/css/font-awesome.css';
+
 import {
-  HashRouter,
+  BrowserRouter,
   Route,
   Link
-} from 'react-router-dom';
+} from 'react-router-dom'
 
 import ProjectDetails from './components/pages/ProjectDetails';
 import CreateProject from './components/pages/CreateProject';
 import ProjectDiscovery from './components/pages/ProjectDiscovery';
+import SignIn from './components/pages/SignIn.jsx';
+import SignUp from './components/pages/SignUp.jsx';
 
-ReactDOM.render((
-   <HashRouter>
-      <div>
-        <Route exact path="/" component={ProjectDiscovery} />
-          <Route path="create" component={CreateProject} />
-          <Route path="details" component={ProjectDetails} />
-      </div>
-   </HashRouter>
-), document.querySelector('.content'));
+ReactDOM.render(
+<BrowserRouter>
+  <div>
+    <Route path="/discovery" component={ProjectDiscovery} /> {/* <-- Replace this component to get different startpages e.g. SignIn, ProjectDiscovery etc. */}
+    <Route path="/create" component={CreateProject} />
+    <Route path="/projects" component={ProjectDetails} />
+    <Route path="/register" component={SignUp} />
+    <Route exact path="/" component={SignIn} />
+ </div>
+</BrowserRouter>
+, document.getElementById('root'));
+registerServiceWorker();

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { IndexLink, Link } from "react-router";
+import { Link } from "react-router-dom";
+import logo from '../../style/img/knex_logo_white_header.png';
 
 
 class TopBar extends Component {
@@ -13,12 +14,10 @@ class TopBar extends Component {
 
   render() {
     return (
-      <div className="container-fluid">
+      <div className="container-fluid topbar">
         <div className="row">
           <div className="col-3">
-            <p className="top-bar-company">
-              Company Name
-            </p>
+            <img className="logo-banner" src={logo}/>
           </div>
           <div className="col">
             <form className="form-inline my-2 my-lg-0">
@@ -37,7 +36,9 @@ class TopBar extends Component {
           </div>
           <div className="col-1">
             <p className="top-bar-text">
-              <i className="fa fa-power-off" aria-hidden="true"></i>
+              <Link to="/">
+                <i className="fa fa-power-off" aria-hidden="true"></i>
+              </Link>
             </p>
           </div>
         </div>
