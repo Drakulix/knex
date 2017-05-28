@@ -24,6 +24,8 @@ export default class ProjectDetails extends Component {
           <div className="col-2 side-bar">
               <ul className="list-group">
                 <li className="list-group-item active">
+                  <div className="menu-indicator">
+                  </div>
                   <Link to="/discovery">
                     {this.state.menu.discoverProjects}
                   </Link>
