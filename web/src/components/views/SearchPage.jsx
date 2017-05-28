@@ -324,7 +324,7 @@ class Table extends Component {
       new_results=this.filterProjectName(new_results);
 
     }
-    if(this.props.from != null && this.props.to!= null){
+    if(this.props.from != "" && this.props.to!= ""){
       new_results=this.filterDate(new_results);
 
     }
@@ -347,7 +347,7 @@ class Table extends Component {
 export default class SearchPage extends Component {
   constructor(){
     super();
-    this.state = {filter_project_name: "", filter_author: "", filter_tags: "",filter_from: null, filter_to: null, filter_description: "", filter_status: ""};
+    this.state = {filter_project_name: "", filter_author: "", filter_tags: "",filter_from: "", filter_to: "", filter_description: "", filter_status: ""};
 
   }
 
