@@ -384,7 +384,7 @@ export default class SearchPage extends Component {
                 <hr className="hidden-divider"/>
                 <Search changeStateName={(name) => this.changeStateName(name)} changeStateAuthor={(author) => this.changeStateAuthor(author)} changeStateFrom={(from) => this.changeStateFrom(from)} changeStateTo={(to) => this.changeStateTo(to)} changeStateState={(state) => this.changeStateState(state)} changeStateTags={(tags) => this.changeStateTags(tags)} />
                 <hr className="horizontal-divider"/>
-                <Table project_name= {this.state.filter_project_name} authors= {this.state.filter_author} tags= {this.state.filter_tags} from = {this.state.filter_from} to= {this.state.filter_to} state= {this.filter_state}/>
+                <Table project_name= {this.state.filter_project_name} authors= {this.state.filter_author} tags= {this.state.filter_tags} from = {this.state.filter_from} to= {this.state.filter_to} status= {this.filter_state}/>
             </div>
           </div>
         </div>
