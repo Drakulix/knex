@@ -32,7 +32,6 @@ a:hover {
 
 .container {
   min-height: 1024px;
-  max-height: 800px;
 }
 
 .container-fluid {
@@ -82,11 +81,6 @@ a:hover {
   position: fixed;
   width: 100%;
   z-index: 100;
-}
-
-.col-1:hover {
-  background-color: #242424;
-  height: 52px;
 }
 
 .search {
