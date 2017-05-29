@@ -15,7 +15,7 @@ from werkzeug.utils import secure_filename
 import uploader
 from apiexception import ApiException
 
-es = Elasticsearch(['http://elasticsearch:9200'])
+es = Elasticsearch([{'host': 'elasticsearch', 'port': 9200}])
 
 client = MongoClient('mongodb:27017')
 db = client.knexDB
@@ -107,7 +107,7 @@ def get_projects():
 
     argc = len(request.args)
 
-    if coll.projects.count() == 0:
+    if coll.count() == 0:
         return make_response('There are no projects', 500)
 
     if argc == 0:

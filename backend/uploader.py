@@ -62,27 +62,27 @@ def save_manifest_to_db(manifest):
     try:
         manifest['date_creation'] = time.strftime("%Y-%m-%d")
         manifest['date_update'] = time.strftime("%Y-%m-%d")
-        manifest['id'] = uuid.uuid4()
+        manifest['_id'] = uuid.uuid4()
 
         is_valid = validator.is_valid(manifest)
 
         if is_valid:
+            print("manifest is valid", file=sys.stderr)
             coll.insert(manifest)
-            elastic.store_json("test", "projects", manifest)
+            print("mongo insert: ", file=sys.stderr)
+            es.create(index="projects-index", doc_type='Project', id=manifest["_id"], refresh=True, body={})
             print("Successfully inserted content: ", file=sys.stderr)
             print(manifest, file=sys.stderr)
-            return manifest['id']
+            return manifest['_id']
         else:
             print(is_valid, file=sys.stderr)
-            v = validator.iter_errors(manifest)
-            if v is not None:
-                validation_error = []
-                for error in sorted(validator.iter_errors(manifest), key=str):
-                    print(error.message, file=sys.stderr)
-                    validation_error.append(error.message)
+            validation_error = []
+            for error in sorted(validator.iter_errors(manifest), key=str):
+                print(error.message, file=sys.stderr)
+                validation_error.append(error.message)
             raise ApiException("Validation Error: \n" + str(is_valid), 400, validation_error)
 
     except ApiException as e:
         raise e
     except Exception as err:
-        raise ApiException("Error while trying to save the document into db.")
+        raise ApiException("Error while trying to save the document into db." + err.message)
