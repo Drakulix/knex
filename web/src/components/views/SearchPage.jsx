@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+
 import data from '../../data/test_data.json';
 //Return Value Simulation
 
@@ -136,7 +138,7 @@ class AdvancedSearch extends Component {
             </div>
           </div>
         </div>
-        
+
       </div>
     );
   }
@@ -269,7 +271,13 @@ class Table extends Component {
     renderLine(result){
       return(
           <tr>
-            <td> <a className="table-project-name" href={result.name} ><u>{result.name}</u></a> </td>
+            <td>
+              <Link to="/projects" className="table-project-name">
+                <a className="table-project-name" >
+                  <u>{result.name}</u>
+                </a>
+              </Link>
+            </td>
             <td> {result.author} </td>
             <td> {result.status} </td>
             <td> {result.description} </td>

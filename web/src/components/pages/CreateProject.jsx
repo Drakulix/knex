@@ -29,12 +29,14 @@ export default class CreateProject extends Component {
                   </Link>
                 </li>
                 <li className="list-group-item active">
+                  <div className="menu-indicator">
+                  </div>
                   <Link to="/create">
                     {this.state.menu.createProject}
                   </Link>
                 </li>
                 <li className="list-group-item">
-                  <Link to="/projects">
+                  <Link to="/discovery">
                     {this.state.menu.adminArea}
                   </Link>
                 </li>

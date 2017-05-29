@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import logo from '../../style/img/knex_logo.png';
 
 export default class SignUp extends Component {
   constructor(props) {
@@ -13,7 +14,7 @@ export default class SignUp extends Component {
       <section className="sign-container">
 
         {/*Information*/}
-        <h1 className="service-name">{serviceName}</h1>
+        <img className="service-name" src={logo} width="200px" height="133px" />
         <h2 className="team-name">{teamName}</h2>
         <div className="rectangle-sign">
           <h3 className="sign-type-desc">Sign Up

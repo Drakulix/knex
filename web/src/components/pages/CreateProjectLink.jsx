@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import SearchPage from '../views/SearchPage';
+import UploadByLink from '../views/CreateProjectView.jsx';
 import TopBar from '../common/TopBar';
 import { Link } from 'react-router-dom';
 
-export default class ProjectDetails extends Component {
+export default class CreateProject extends Component {
   constructor(props) {
     super(props);
 
@@ -23,15 +23,15 @@ export default class ProjectDetails extends Component {
         <div className="row">
           <div className="col-2 side-bar">
               <ul className="list-group">
-                <li className="list-group-item active">
-                  <div className="menu-indicator">
-                  </div>
+                <li className="list-group-item">
                   <Link to="/discovery">
                     {this.state.menu.discoverProjects}
                   </Link>
                 </li>
-                <li className="list-group-item">
-                  <Link to="/createbylink">
+                <li className="list-group-item active">
+                  <div className="menu-indicator">
+                  </div>
+                  <Link to="/create">
                     {this.state.menu.createProject}
                   </Link>
                 </li>
@@ -43,7 +43,7 @@ export default class ProjectDetails extends Component {
               </ul>
           </div>
           <div className="col-10">
-            <SearchPage />
+            <UploadByLink />
           </div>
         </div>
       </div>

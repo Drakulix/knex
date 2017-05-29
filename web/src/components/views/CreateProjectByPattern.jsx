@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import UploadByLink from './CreateProjectView';
+import { Link } from 'react-router-dom';
+import CreateProjectLink from '../pages/CreateProjectLink.jsx';
 
 
 export default class UploadByPattern extends React.Component {
@@ -36,18 +37,12 @@ export default class UploadByPattern extends React.Component {
           </input>
           <div className="buttons">
             <button className="saveButton" >Save</button>
-            <button className="cancelButton" onClick={() => changeView(<UploadByLink />) }>Cancel</button>
+              <Link to="/createbylink">
+                <button className="cancelButton">Cancel</button>
+              </Link>
           </div>
         </div>
       </div>
   )
   }
-}
-
-function changeView(element){
-  ReactDOM.render(
-    //<UploadByLink />,
-    element,
-    document.getElementById('root')
-  );
 }
