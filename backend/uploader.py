@@ -21,12 +21,11 @@ def save_file_to_db(filename):
             if not jsonfile.read():
                 raise ApiException('File ' + str(filename) + ' is empty.', 400)
             jsonfile.seek(0)
-            is_valid = validator.is_valid(json5.load(jsonfile))
+            manifest = json5.load(jsonfile)
+            is_valid = validator.is_valid(manifest)
 
             if is_valid:
                 jsonfile.seek(0)
-
-                manifest = json5.load(jsonfile)
                 jsonfile.close()
                 manifest['date_creation'] = time.strftime("%Y-%m-%d")
                 manifest['date_update'] = time.strftime("%Y-%m-%d")
@@ -44,8 +43,13 @@ def save_file_to_db(filename):
                     print(is_valid, file=sys.stderr)
                     raise ApiException("ElasticSearch Index Error: \n" + str(is_valid), 500)
             else:
-                # TODO add iter_error print here to show validation errors
                 print(is_valid, file=sys.stderr)
+                v = validator.iter_errors(manifest)
+                if v is not None:
+                    validation_error = []
+                    for error in sorted(validator.iter_errors(manifest), key=str):
+                        print(error.message, file=sys.stderr)
+                        validation_error.append(error.message)
                 raise ApiException("Validation Error: \n" + str(is_valid), 400)
 
     except ApiException as e:
