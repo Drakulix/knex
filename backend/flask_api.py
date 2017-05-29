@@ -71,7 +71,8 @@ def add_project():
             if request.json:
                 newid = uploader.save_manifest_to_db(request.json)
             else:
-                newid = uploader.save_manifest_to_db(json5.load(request.data))
+                print(request.data.decode("utf-8"), file=sys.stderr)
+                newid = uploader.save_manifest_to_db(json5.loads(request.data.decode("utf-8")))
 
             return make_response(str(newid))
         except ApiException as e:
