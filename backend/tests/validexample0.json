@@ -12,17 +12,7 @@
     }
   ],
   "team": {
-    "team_name": "teamname",
-    "members": [
-      {
-        "name": "member1",
-        "email": "member1@team.com"
-      },
-      {
-        "name": "member2",
-        "email": "member2@team.com"
-      }
-    ]
+    "team_name": "teamname"
   },
   "status": "DONE",
   "description": "can this be a multiline description?",
@@ -32,9 +22,7 @@
     "tag",
     "bio"
   ],
-  "future_work": [
-    "this is something related to this work"
-  ],
+  "future_work": "this is something related to this work",
   "related_projects": [
     {
       "id": 0,

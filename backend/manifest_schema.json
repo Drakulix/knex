@@ -30,10 +30,9 @@
     "hypothesis": {
       "type": "string"
     },
-    "teams": {
-      "type": "array",
-      "minItems": 1,
-      "items": {
+    "team": {
+      "type": "object",
+      "properties": {
         "$ref": "#/definitions/team"
       }
     },
@@ -47,11 +46,7 @@
       "type": "string",
       "format": "date"
     },
-    "date_pub": {
-      "type": "string",
-      "format": "date"
-    },
-    "date_updated": {
+    "date_last_updated": {
       "type": "string",
       "format": "date"
     },
@@ -64,12 +59,9 @@
       }
     },
     "future_work": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
+      "type": "string"
     },
-    "realated_projects": {
+    "related_projects": {
       "type": "array",
       "items": {
         "project": {
@@ -78,8 +70,6 @@
       }
     }
   },
-  "additionalProperties": false,
-
   "definitions": {
     "user": {
       "required": [
@@ -110,7 +100,12 @@
       }
     },
     "team": {
-      "type": "string"
+      "type": "object",
+      "properties": {
+        "team_name": {
+          "type": "string"
+        }
+      }
     },
     "authors": {
       "type": "array",
