@@ -35,7 +35,7 @@ app.config['MAX_CONTENT_PATH'] = 1000000  # 100.000 byte = 100kb
 
 @app.route('/', methods=['GET'])
 def index():
-    """Summary
+    """Index of knex
     """
     return make_response('', 404)
 
@@ -43,12 +43,6 @@ def index():
 @app.route('/api/projects', methods=['POST'])
 def add_project():
     """Receive manifest as a jsonstring and return new ID
-
-    Returns:
-        TYPE: Description
-
-    Raises:
-        e: Description
     """
     successful_files = []
     unsuccessful_files = []
@@ -92,13 +86,13 @@ def add_project():
 
 @app.errorhandler(ApiException)
 def handle_invalid_usage(error):
-    """Summary
+    """Handler for the ApiException error class.
 
     Args:
-        error (TYPE): Description
+        error: Error which needs to be handled.
 
     Returns:
-        TYPE: Description
+        response (json): Error in json format
     """
     response = jsonify(error.to_dict())
     response.status_code = error.status_code
@@ -107,12 +101,10 @@ def handle_invalid_usage(error):
 
 @app.route('/upload', methods=['GET'])
 def uploads():
-    """Summary
-
-    Returns:
-        TYPE: Description
+    """TODO: 
+    remove this later, default multi file uploader for testing purposes
     """
-    if request.method == 'GET':  # remove this later, default multi file uploader for testing purposes
+    if request.method == 'GET':
         return """<!doctype html>
     <title>Upload multiple files</title>
     <h1>Upload multiple files</h1>
@@ -127,7 +119,7 @@ def get_projects():
     """Return list of projects, args->limit, skip
 
     Returns:
-        TYPE: Description
+        res: A list of projects
     """
     limit = request.args.get('limit', type=int)
     skip = request.args.get('skip', type=int)
@@ -156,13 +148,13 @@ def get_projects():
 
 @app.route('/api/projects/<uuid:project_id>', methods=['GET'])
 def get_project_by_id(project_id):
-    """Summary
+    """Returns project by ID number, 404 if it is not found.
 
     Args:
-        project_id (TYPE): Description
+        project_id: The ID of the project which should get returned
 
     Returns:
-        TYPE: Description
+        res (json): Project corresponding to the ID
     """
     res = coll.find_one({'_id': project_id})
     if res is None:
@@ -172,13 +164,13 @@ def get_project_by_id(project_id):
 
 @app.route('/api/projects/<uuid:project_id>', methods=['DELETE'])
 def delete_project(project_id):
-    """Summary
+    """Deletes a project by ID.
 
     Args:
-        project_id (TYPE): Description
+        project_id: ID of a project
 
     Returns:
-        TYPE: Description
+        response: Success response or 404 if project is not found
     """
     try:
         es.delete(index="projects-index", doc_type='Project', id=project_id, refresh=True)
@@ -197,7 +189,7 @@ def search():
     """Receive body of elasticsearch query
 
     Returns:
-        TYPE: Description
+        res (json): Body of the Query
     """
     try:
         res = es.search(index="projects-index", doc_type="Project", body=request.json)

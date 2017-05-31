@@ -12,7 +12,7 @@ def allowed_file(filename):
     """Check if the file is an allowed file.
 
     Args:
-        filename: Filename
+        filename: Name of the Upload-File
 
     Returns:
         bool: True if the file is allowed, False otherwise.
@@ -25,10 +25,10 @@ def save_file_to_db(filename):
     """Save file to the Database.
 
     Args:
-        filename: Filename
+        filename: Name of the Upload-File
 
     Returns:
-        TYPE: Description
+        id: The Manifest ID
 
     Raises:
         ApiException: Error while trying to open/save the file or ElasticSearch Index Error.
@@ -83,10 +83,10 @@ def save_manifest_to_db(manifest):
     """Save manifest to the Database.
 
     Args:
-        manifest: Description
+        manifest: The manifest to be saved
 
     Returns:
-        TYPE: Description
+        id: The ID of the manifest
 
     Raises:
         ApiException: Error while trying to save the document.
