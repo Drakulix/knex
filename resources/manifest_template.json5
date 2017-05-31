@@ -28,19 +28,9 @@
   },
   "status": "DONE",
   /* a short description*/
-  "description": "can this be a multiline description
+  "description": "can this be a multiline description this is super cool in json5
   \
-  you
-  willsee
-  how
-  cool
-  this
-  iswhen
-  you
-  start
-  trying
-  this
-  out
+
   ",
 
   /* the date the project was created in github ort where ever it lives */
