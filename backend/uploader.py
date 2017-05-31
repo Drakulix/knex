@@ -77,13 +77,12 @@ def save_manifest_to_db(manifest):
             print(is_valid, file=sys.stderr)
             errors = sorted(validator.iter_errors(manifest), key=str)
             validation_error = {}
-            validation_error["upper_errors"] = []
+            validation_error["errors"] = []
             validation_error["sub_errors"] = []
             for error in errors:
-                validation_error["upper_errors"].append(error.message)
+                validation_error["errors"].append(error.message)
                 print(error.message, file=sys.stderr)
                 for suberror in sorted(error.context, key=lambda e: e.schema_path):
-                    print("here", file=sys.stderr)
                     validation_error["sub_errors"].append(suberror.message)
                     print(list(suberror.schema_path), suberror.message, sep=", ", file=sys.stderr)
             raise ApiException("Validation Error: \n" + str(is_valid), 400, validation_error)
