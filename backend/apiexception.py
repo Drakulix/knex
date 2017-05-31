@@ -1,7 +1,11 @@
 class ApiException(Exception):
+    """
+    """
     status_code = 400
 
     def __init__(self, message, status_code=None, payload=None):
+        """
+        """
         Exception.__init__(self)
         self.message = message
 
@@ -10,6 +14,8 @@ class ApiException(Exception):
         self.payload = payload
 
     def to_dict(self):
+        """
+        """
         rv = dict()
         rv['message'] = self.message
         rv['validation_error'] = self.payload

@@ -9,11 +9,30 @@ from flask_api import validator, ALLOWED_EXTENSIONS, coll, es
 
 
 def allowed_file(filename):
+    """Check if the file is an allowed file.
+
+    Args:
+        filename: Filename
+
+    Returns:
+        bool: True if the file is allowed, False otherwise.
+    """
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def save_file_to_db(filename):
+    """Save file to the Database.
+
+    Args:
+        filename: Filename
+
+    Returns:
+        TYPE: Description
+
+    Raises:
+        ApiException: Error while trying to open/save the file or ElasticSearch Index Error.
+    """
     try:
         with open(filename) as jsonfile:
             if not jsonfile:
@@ -31,11 +50,13 @@ def save_file_to_db(filename):
                 manifest['date_update'] = time.strftime("%Y-%m-%d")
                 manifest['id'] = uuid.uuid4()
 
-                res = es.index(index="projects-index", doc_type='Project', id=manifest['id'], body=manifest)
+                res = es.index(index="projects-index", doc_type='Project',
+                               id=manifest['id'], body=manifest)
                 if res['created']:
                     coll.insert_one(manifest)
 
-                    print("Successfully validated file. ID is " + str(manifest['id']), file=sys.stderr)
+                    print("Successfully validated file. ID is " +
+                          str(manifest['id']), file=sys.stderr)
                     print("File content is: ", file=sys.stderr)
                     print(manifest, file=sys.stderr)
                     return manifest['id']
@@ -59,6 +80,17 @@ def save_file_to_db(filename):
 
 
 def save_manifest_to_db(manifest):
+    """Save manifest to the Database.
+
+    Args:
+        manifest: Description
+
+    Returns:
+        TYPE: Description
+
+    Raises:
+        ApiException: Error while trying to save the document.
+    """
     try:
         manifest['date_creation'] = time.strftime("%Y-%m-%d")
         manifest['date_update'] = time.strftime("%Y-%m-%d")
@@ -70,7 +102,8 @@ def save_manifest_to_db(manifest):
             print("manifest is valid", file=sys.stderr)
             coll.insert(manifest)
             print("mongo insert: ", file=sys.stderr)
-            es.create(index="projects-index", doc_type='Project', id=manifest["_id"], refresh=True, body={})
+            es.create(index="projects-index", doc_type='Project',
+                      id=manifest["_id"], refresh=True, body={})
             print("Successfully inserted content: ", file=sys.stderr)
             print(manifest, file=sys.stderr)
             return manifest['_id']
