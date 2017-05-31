@@ -28,7 +28,12 @@ validator = Draft4Validator(schema, format_checker=FormatChecker())
 app = Flask(__name__)
 CORS(app)
 
-ALLOWED_EXTENSIONS = set(['txt', 'json', 'json5'])
+# TODO open this in om startup
+with app.open_resource("manifest_schema.json") as schema_file:
+    schema = json.load(schema_file)
+validator = Draft4Validator(schema, format_checker=FormatChecker())
+
+ALLOWED_EXTENSIONS = {'txt', 'json', 'json5'}
 app.config['UPLOAD_FOLDER'] = ''
 app.config['MAX_CONTENT_PATH'] = 1000000  # 100.000 byte = 100kb
 
@@ -174,7 +179,7 @@ def delete_project(project_id):
     """
     try:
         es.delete(index="projects-index", doc_type='Project', id=project_id, refresh=True)
-    except NotFoundError:
+    except Exception as e:
         if coll.delete_one({'_id': project_id}).deleted_count == 0:
             return make_response('Project not found', 404)
         else:

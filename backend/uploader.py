@@ -92,13 +92,12 @@ def save_manifest_to_db(manifest):
         ApiException: Error while trying to save the document.
     """
     try:
-        manifest['date_creation'] = time.strftime("%Y-%m-%d")
-        manifest['date_update'] = time.strftime("%Y-%m-%d")
-        manifest['_id'] = uuid.uuid4()
-
         is_valid = validator.is_valid(manifest)
 
         if is_valid:
+            manifest['date_creation'] = time.strftime("%Y-%m-%d")
+            manifest['date_update'] = time.strftime("%Y-%m-%d")
+            manifest['_id'] = uuid.uuid4()
             print("manifest is valid", file=sys.stderr)
             coll.insert(manifest)
             print("mongo insert: ", file=sys.stderr)
@@ -109,10 +108,16 @@ def save_manifest_to_db(manifest):
             return manifest['_id']
         else:
             print(is_valid, file=sys.stderr)
-            validation_error = []
-            for error in sorted(validator.iter_errors(manifest), key=str):
+            errors = sorted(validator.iter_errors(manifest), key=str)
+            validation_error = {}
+            validation_error["errors"] = []
+            validation_error["sub_errors"] = []
+            for error in errors:
+                validation_error["errors"].append(error.message)
                 print(error.message, file=sys.stderr)
-                validation_error.append(error.message)
+                for suberror in sorted(error.context, key=lambda e: e.schema_path):
+                    validation_error["sub_errors"].append(suberror.message)
+                    print(list(suberror.schema_path), suberror.message, sep=", ", file=sys.stderr)
             raise ApiException("Validation Error: \n" + str(is_valid), 400, validation_error)
 
     except ApiException as e:
