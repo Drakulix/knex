@@ -30,7 +30,7 @@ yarn start
 
 - visit
 ```
-http://localhost:8080
+http://localhost:3000
 ```
 in your favourite browser to see the application.
 

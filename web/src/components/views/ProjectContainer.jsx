@@ -13,20 +13,20 @@ class ProjectContainer extends Component {
       <div className="container">
         <div className="projecttitle">
           <p>
-            {"Title: " + this.props.title}
+            {"Title: " + "Contextual music information retrieval and recommendation: State of the art and challenges"}
           </p>
         </div>
         <div className="status">
           <p>
-          {"Status: "+ this.props.status}
+          {"Status: "+ "In progress"}
           </p>
         </div>
         <div className="author">
           <p>
-            {"Authors: "+ this.props.authors}
+            {"Authors: "+ "Marius Kaminskas"}
           </p>
           <p>
-            {"Date of creation: " + this.props.date_created}
+            {"Date of creation: " + "2017-01-16"}
           </p>
           <p>
             {"Last time updated: " + this.props.date_last_updated}
@@ -44,7 +44,7 @@ class ProjectContainer extends Component {
             {this.props.git_url}
           </p>
           <p>
-            {"Description: "}
+            {"Description: " + "test"}
           </p>
           <p>
             {this.props.description}
