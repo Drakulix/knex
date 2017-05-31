@@ -60,13 +60,12 @@ def save_file_to_db(filename):
 
 def save_manifest_to_db(manifest):
     try:
-        manifest['date_creation'] = time.strftime("%Y-%m-%d")
-        manifest['date_update'] = time.strftime("%Y-%m-%d")
-        manifest['_id'] = uuid.uuid4()
-
         is_valid = validator.is_valid(manifest)
 
         if is_valid:
+            manifest['date_creation'] = time.strftime("%Y-%m-%d")
+            manifest['date_update'] = time.strftime("%Y-%m-%d")
+            manifest['_id'] = uuid.uuid4()
             print("manifest is valid", file=sys.stderr)
             coll.insert(manifest)
             print("mongo insert: ", file=sys.stderr)

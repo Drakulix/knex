@@ -1,0 +1,68 @@
+{
+  /* the title which lists the project
+   * required */
+  "title": "test_project0",
+  /* put an url here or multiple that are representative for the project
+   * required*/
+  "url": [
+    "www.github.com/knex/"
+  ],
+  /* put multiple anlalysis links here */
+  "analysis": [
+    {
+      "url": "here-you-find-the-analysis.com",
+      "description": "thats what this analysis is about"
+    }
+  ],
+  /* a list of authors and their email addresses
+   * at least one */
+  "authors": [
+    {
+      "name": "test_owner0",
+      "email": "email@address.com"
+    }
+  ],
+  /* the team name  */
+  "team": {
+    "team_name": "teamname"
+  },
+  "status": "DONE",
+  /* a short description*/
+  "description": "can this be a multiline description
+  \
+  you
+  will
+  see
+  how
+  cool
+  this
+  is
+  \
+  when
+  you
+  start
+  trying
+  this
+  out
+  ",
+
+  /* the date the project was created in github ort where ever it lives */
+  "date_creation": "1970-01-01",
+  /* the date the project was updated last either in knex or where it lives */
+  "date_last_updated": "2017-05-11",
+  /* a lit of tags */
+  "tags": [
+    "tag",
+    "bio"
+  ],
+  /* a string describing the future work */
+  "future_work": "this is something related to this work",
+  /* related projects on knex or else where */
+  "related_projects": [
+    {
+      "name": "name of the listed project",
+      "author": "author",
+      "url": "www.my.url"
+    }
+  ]
+}
