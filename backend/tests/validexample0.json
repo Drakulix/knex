@@ -1,10 +1,14 @@
 {
   "title": "test_project0",
-  "url": "www.github.com/knex/",
-  "analysis": {
+  "url": [
+    "www.github.com/knex/"
+  ],
+  "analysis": [
+    {
     "url": "here-you-find-the-analysis.com",
     "description": "thats what this analysis is about"
-  },
+    }
+  ],
   "authors": [
     {
       "name": "test_owner0",
