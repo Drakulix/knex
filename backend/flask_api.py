@@ -1,39 +1,42 @@
+import json
 import os
 import sys
-from werkzeug.utils import redirect
-from flask.helpers import flash
-from flask_cors import CORS
-from flask import Flask, request, jsonify, make_response, redirect, url_for, render_template
-from werkzeug.utils import secure_filename
-from pymongo import MongoClient
-from manifest_validator import ManifestValidator
-import time, json5, uuid, json
+
+import json5
+from bson.json_util import dumps
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import RequestError
-from bson.json_util import dumps
+from flask import Flask, request, jsonify, make_response
+from flask_cors import CORS
+from jsonschema import FormatChecker, Draft4Validator
+from pymongo import MongoClient
+from werkzeug.utils import secure_filename
+
 import uploader
 from apiexception import ApiException
 
-es = Elasticsearch(['http://elasticsearch:9200'])
+es = Elasticsearch([{'host': 'elasticsearch', 'port': 9200}])
 
-client=MongoClient('mongodb:27017')
-db=client.knexDB
-coll=db.projects
+client = MongoClient('mongodb:27017')
+db = client.knexDB
+coll = db.projects
 
-schema = open("manifest_schema.json")
-validator = ManifestValidator(schema)
+with open("manifest_schema.json") as schema_file:
+    schema = json.load(schema_file)
+validator = Draft4Validator(schema, format_checker=FormatChecker())
 
-app=Flask(__name__)
+app = Flask(__name__)
 CORS(app)
 
 ALLOWED_EXTENSIONS = set(['txt', 'json', 'json5'])
 app.config['UPLOAD_FOLDER'] = ''
-app.config['MAX_CONTENT_PATH'] = 1000000; #100.000 byte = 100kb
+app.config['MAX_CONTENT_PATH'] = 1000000;  # 100.000 byte = 100kb
 
 
 @app.route('/', methods=['GET'])
 def index():
     return make_response('', 404)
+
 
 # receive manifest as a jsonstring
 # returns new id
@@ -49,26 +52,27 @@ def add_project():
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], securefilename))
                 try:
                     newId = uploader.save_file_to_db(securefilename)
-                    successful_files.append(file.filename+" " +str(newId)) #represent original filename
+                    successful_files.append(file.filename + " " + str(newId))  # represent original filename
                 except Exception as e:
                     unsuccessful_files.append(file.filename + str(e))
 
                 print("Successful files: ", successful_files, '\n', file=sys.stderr)
                 print("Unsuccessful files: ", unsuccessful_files, '\n', file=sys.stderr)
-        return      """<!doctype html>
+        return """<!doctype html>
                     <title>Upload multiple files</title>
                     <h1>Upload multiple files</h1>
-                    <body>Successful files: """ + ', '.join( e for e in successful_files) + '<br />' + """
-                    Unsuccessful files: """ + ', '.join( e for e in unsuccessful_files) + """
+                    <body>Successful files: """ + ', '.join(e for e in successful_files) + '<br />' + """
+                    Unsuccessful files: """ + ', '.join(e for e in unsuccessful_files) + """
                     </body>"""
 
-    else: #no files attached
+    else:  # no files attached
         try:
             newid = None
             if request.json:
                 newid = uploader.save_manifest_to_db(request.json)
             else:
-                newid = uploader.save_manifest_to_db(json5.load(request.data))
+                print(request.data.decode("utf-8"), file=sys.stderr)
+                newid = uploader.save_manifest_to_db(json5.loads(request.data.decode("utf-8")))
 
             return make_response(str(newid))
         except ApiException as e:
@@ -83,9 +87,10 @@ def handle_invalid_usage(error):
     response.status_code = error.status_code
     return response
 
+
 @app.route('/upload', methods=['GET'])
 def uploads():
-    if request.method == 'GET': #remove this later, default multi file uploader for testing purposes
+    if request.method == 'GET':  # remove this later, default multi file uploader for testing purposes
         return """<!doctype html>
     <title>Upload multiple files</title>
     <h1>Upload multiple files</h1>
@@ -94,61 +99,66 @@ def uploads():
     <input type=submit value=Upload>
     </form>"""
 
+
 # return list of projects, args->limit, skip
 @app.route('/api/projects', methods=['GET'])
 def get_projects():
-    limit=request.args.get('limit', type=int)
-    skip=request.args.get('skip', type=int)
+    limit = request.args.get('limit', type=int)
+    skip = request.args.get('skip', type=int)
 
-    argc=len(request.args)
+    argc = len(request.args)
 
-    if coll.projects.count() == 0:
+    if coll.count() == 0:
         return make_response('There are no projects', 500)
 
-    if argc==0:
-        res=coll.find({})
-    elif limit and skip and argc<3:
-        res=coll.find({}, limit=limit, skip=skip)
-    elif limit and argc<2:
-        res=coll.find({}, limit=limit)
-    elif skip and argc<2:
-        res=coll.find({}, skip=skip)
+    if argc == 0:
+        res = coll.find({})
+    elif limit and skip and argc < 3:
+        res = coll.find({}, limit=limit, skip=skip)
+    elif limit and argc < 2:
+        res = coll.find({}, limit=limit)
+    elif skip and argc < 2:
+        res = coll.find({}, skip=skip)
     else:
-        return make_response('Invalid parameters',400)
+        return make_response('Invalid parameters', 400)
 
-    res=make_response(dumps(res))
+    res = make_response(dumps(res))
     res.headers['Content-Type'] = 'application/json'
 
     return res
 
+
 @app.route('/api/projects/<uuid:project_id>', methods=['GET'])
 def get_project_by_id(project_id):
-    res=coll.find_one({'_id': project_id})
+    res = coll.find_one({'_id': project_id})
     if res is None:
-      return make_response('Project not found', 404)
+        return make_response('Project not found', 404)
     return jsonify(res)
+
 
 @app.route('/api/projects/<uuid:project_id>', methods=['DELETE'])
 def delete_project(project_id):
     try:
         es.delete(index="projects-index", doc_type='Project', id=project_id, refresh=True)
     except NotFoundError:
-        if coll.delete_one({'_id':project_id}).deleted_count == 0:
+        if coll.delete_one({'_id': project_id}).deleted_count == 0:
             return make_response('Project not found', 404)
         else:
             return make_response('Success')
     else:
-        coll.delete_one({'_id':project_id})
+        coll.delete_one({'_id': project_id})
         return make_response('Success')
+
 
 # receive body of elasticsearch query
 @app.route('/api/projects/search', methods=['POST'])
 def search():
     try:
-        res=es.search(index="projects-index", doc_type="Project", body=request.json)
+        res = es.search(index="projects-index", doc_type="Project", body=request.json)
         return jsonify(res)
     except RequestError as e:
         return (str(e), 400)
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

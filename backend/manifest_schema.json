@@ -1,86 +1,75 @@
 {
-  "description": "schema for manifest of knex project",
   "type": "object",
   "required": [
-    "project"
+    "title",
+    "authors",
+    "description",
+    "status",
+    "date_creation"
   ],
   "properties": {
-    "project": {
+    "title": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string",
+      "format": "url"
+    },
+    "authors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/user"
+      },
+      "additionalProperties": false
+    },
+    "analysis": {
       "type": "object",
-      "required": ["title", "authors", "description", "status", "date_creation"],
+      "$ref": "#/definitions/analysis"
+    },
+    "hypothesis": {
+      "type": "string"
+    },
+    "team": {
+      "type": "object",
       "properties": {
-
-        "title": {
+        "$ref": "#/definitions/team"
+      }
+    },
+    "status": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "date_creation": {
+      "type": "string",
+      "format": "date"
+    },
+    "date_last_updated": {
+      "type": "string",
+      "format": "date"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "tag": {
           "type": "string"
-        },
-        "url": {
-          "type": "string",
-          "format":"url"
-        },
-        "authors":{
-          "type": "array",
-          "minItems": 1,
-          "items":{
-            "$ref": "#/definitions/user"
-          },
-          "additionalProperties": false
-        },
-        "analysis":{
-          "type": "object",
-          "$ref": "#/definitions/analysis"
-        },
-        "hypothesis":{
-          "type": "string"
-        },
-        "teams": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "$ref": "#/definitions/team"
-          }
-        },
-        "status": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "date_creation": {
-          "type": "string",
-          "format": "date"
-        },
-        "date_pub": {
-          "type": "string",
-          "format": "date"
-        },
-        "date_updated": {
-          "type": "string",
-          "format": "date"
-        },
-        "tags": {
-          "type": "array",
-          "items":{
-            "tag": {"type": "string"}
-          }
-        },
-        "future_work": {
-          "type": "array",
-          "items":{
-            "type": "string"
-          }
-        },
-        "realated_projects": {
-          "type": "array",
-          "items":{
-            "project": {"$ref": "#/definitions/related_project"}
-          }
+        }
+      }
+    },
+    "future_work": {
+      "type": "string"
+    },
+    "related_projects": {
+      "type": "array",
+      "items": {
+        "project": {
+          "$ref": "#/definitions/related_project"
         }
       }
     }
-
   },
-  "additionalProperties": false,
-
   "definitions": {
     "user": {
       "required": [
@@ -111,7 +100,12 @@
       }
     },
     "team": {
-      "type": "string"
+      "type": "object",
+      "properties": {
+        "team_name": {
+          "type": "string"
+        }
+      }
     },
     "authors": {
       "type": "array",
