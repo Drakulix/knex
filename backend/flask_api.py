@@ -40,13 +40,15 @@ app.config['MAX_CONTENT_PATH'] = 1000000  # 100.000 byte = 100kb
 
 @app.route('/', methods=['GET'])
 def index():
+    """Index of knex
+    """
     return make_response('', 404)
 
 
-# receive manifest as a jsonstring
-# returns new id
 @app.route('/api/projects', methods=['POST'])
 def add_project():
+    """Receive manifest as a jsonstring and return new ID
+    """
     successful_files = []
     unsuccessful_files = []
     uploaded_files = request.files.getlist("file[]")
@@ -57,7 +59,8 @@ def add_project():
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], securefilename))
                 try:
                     newId = uploader.save_file_to_db(securefilename)
-                    successful_files.append(file.filename + " " + str(newId))  # represent original filename
+                    # represent original filename
+                    successful_files.append(file.filename + " " + str(newId))
                 except Exception as e:
                     unsuccessful_files.append(file.filename + str(e))
 
@@ -88,6 +91,14 @@ def add_project():
 
 @app.errorhandler(ApiException)
 def handle_invalid_usage(error):
+    """Handler for the ApiException error class.
+
+    Args:
+        error: Error which needs to be handled.
+
+    Returns:
+        response (json): Error in json format
+    """
     response = jsonify(error.to_dict())
     response.status_code = error.status_code
     return response
@@ -95,7 +106,10 @@ def handle_invalid_usage(error):
 
 @app.route('/upload', methods=['GET'])
 def uploads():
-    if request.method == 'GET':  # remove this later, default multi file uploader for testing purposes
+    """TODO: 
+    remove this later, default multi file uploader for testing purposes
+    """
+    if request.method == 'GET':
         return """<!doctype html>
     <title>Upload multiple files</title>
     <h1>Upload multiple files</h1>
@@ -105,9 +119,13 @@ def uploads():
     </form>"""
 
 
-# return list of projects, args->limit, skip
 @app.route('/api/projects', methods=['GET'])
 def get_projects():
+    """Return list of projects, args->limit, skip
+
+    Returns:
+        res: A list of projects
+    """
     limit = request.args.get('limit', type=int)
     skip = request.args.get('skip', type=int)
 
@@ -135,6 +153,14 @@ def get_projects():
 
 @app.route('/api/projects/<uuid:project_id>', methods=['GET'])
 def get_project_by_id(project_id):
+    """Returns project by ID number, 404 if it is not found.
+
+    Args:
+        project_id: The ID of the project which should get returned
+
+    Returns:
+        res (json): Project corresponding to the ID
+    """
     res = coll.find_one({'_id': project_id})
     if res is None:
         return make_response('Project not found', 404)
@@ -143,6 +169,14 @@ def get_project_by_id(project_id):
 
 @app.route('/api/projects/<uuid:project_id>', methods=['DELETE'])
 def delete_project(project_id):
+    """Deletes a project by ID.
+
+    Args:
+        project_id: ID of a project
+
+    Returns:
+        response: Success response or 404 if project is not found
+    """
     try:
         es.delete(index="projects-index", doc_type='Project', id=project_id, refresh=True)
     except Exception as e:
@@ -155,9 +189,13 @@ def delete_project(project_id):
         return make_response('Success')
 
 
-# receive body of elasticsearch query
 @app.route('/api/projects/search', methods=['POST'])
 def search():
+    """Receive body of elasticsearch query
+
+    Returns:
+        res (json): Body of the Query
+    """
     try:
         res = es.search(index="projects-index", doc_type="Project", body=request.json)
         return jsonify(res)
