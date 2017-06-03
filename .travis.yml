@@ -9,6 +9,13 @@ python:
   - "3.5"
   - "3.6"
 
+before_install:
+  - sudo apt-get update
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-engine
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/1.14.0-rc1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
 install:
   - "pip install flask"
   - "pip install -r ./tests/requirements.txt"
@@ -16,5 +23,10 @@ install:
 services:
   - docker
 
+before_script:
+  - docker info
+  - docker-compose --version
+  - docker-compose -v build
+  - docker-compose start
 
-script: true
+script: pytest
