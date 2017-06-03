@@ -26,8 +26,6 @@ install:
   - "pip install -r ./tests/requirements.txt"
 
 before_script:
-  - docker-compose pull
-  - docker-compose build
-  - docker-compose start
+  - docker-compose up -d
 
 script: pytest
