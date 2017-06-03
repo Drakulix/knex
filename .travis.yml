@@ -11,7 +11,7 @@ python:
 
 install:
   - "pip install flask"
-  - "pip install ./tests/requirements.txt"
+  - "pip install -r ./tests/requirements.txt"
 
 services:
   - docker
