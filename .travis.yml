@@ -9,9 +9,12 @@ python:
   - "3.5"
   - "3.6"
 
-install: "pip install flask"
+install:
+  - "pip install flask"
+  - "pip install ./tests/requirements.txt"
 
 services:
   - docker
+
 
 script: true
