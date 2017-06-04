@@ -66,8 +66,8 @@ class Searchbar extends Component {
 
 class AdvancedSearch extends Component {
 
+  //View for advanced search, the onChange in the <input> parses the state all the way to the parent
   render() {
-
     return(
       <div className="panel panel-body">
         <div className="row">
@@ -122,7 +122,7 @@ class AdvancedSearch extends Component {
               <span className ="input-group-addon primary">
                 Status
               </span>
-              <input className="form-control" type="text" id="status" name="status" onChange={(value) => this.props.ChangeStateStatus(value.target.value)}/>
+              <input className="form-control" type="text" id="status" name="status" onChange={(value) => this.props.changeStateStatus(value.target.value)}/>
             </div>
           </div>
         </div>
@@ -147,7 +147,7 @@ class Search extends Component {
         <div>
           <div className="row">
             <form className="form-horizontal col-md-12">
-              <AdvancedSearch changeStateName={(name) => this.props.changeStateName(name)} changeStateAuthor={(author) => this.props.changeStateAuthor(author)} changeStateFrom={(from) => this.props.changeStateFrom(from)} changeStateTo={(to) => this.props.changeStateTo(to)} ChangeStateStatus={(state) => this.props.ChangeStateStatus(state)} changeStateTags={(tags) => this.props.changeStateTags(tags)} />
+              <AdvancedSearch changeStateName={(name) => this.props.changeStateName(name)} changeStateAuthor={(author) => this.props.changeStateAuthor(author)} changeStateFrom={(from) => this.props.changeStateFrom(from)} changeStateTo={(to) => this.props.changeStateTo(to)} changeStateStatus={(status) => this.props.changeStateStatus(status)} changeStateTags={(tags) => this.props.changeStateTags(tags)} />
             </form>
             <a onClick={() => this.setState({expanded : false})}  className="clickable-text col-md-2">
               <u>Minimize</u>
@@ -310,6 +310,10 @@ export default class SearchPage extends Component {
 
   }
 
+
+  /*
+    functions to get the state of the advanced search via the search element, the value of the input fields is given to the <table> and filtered
+  */
   changeStateAuthor(author){
     this.setState({filter_author: author });
   }
@@ -322,9 +326,10 @@ export default class SearchPage extends Component {
     this.setState({filter_to: to });
   }
 
-  ChangeStateStatus(status){
+  changeStateStatus(status){
     this.setState({filter_status: status});
   }
+
   changeStateName(name){
     this.setState({filter_project_name: name });
   }
@@ -336,14 +341,17 @@ export default class SearchPage extends Component {
   render() {
     return (
       <div className="inner-content">
+
         <div className="container">
+
           <div className="row">
             <div className="col">
+
                 <Headline />
                 <hr className="hidden-divider"/>
-                <Search changeStateName={(name) => this.changeStateName(name)} changeStateAuthor={(author) => this.changeStateAuthor(author)} changeStateFrom={(from) => this.changeStateFrom(from)} changeStateTo={(to) => this.changeStateTo(to)} ChangeStateStatus={(status) => this.ChangeStateStatus(status)}  changeStateTags={(tags) => this.changeStateTags(tags)}/>
+                <Search changeStateName={(name) => this.changeStateName(name)} changeStateAuthor={(author) => this.changeStateAuthor(author)} changeStateFrom={(from) => this.changeStateFrom(from)} changeStateTo={(to) => this.changeStateTo(to)} changeStateStatus={(status) => this.changeStateStatus(status)}  changeStateTags={(tags) => this.changeStateTags(tags)}/>
                 <hr className="horizontal-divider"/>
-                <Table project_name= {this.state.filter_project_name} authors= {this.state.filter_author} tags= {this.state.filter_tags} from = {this.state.filter_from} to= {this.state.filter_to} status= {this.filter_status} />
+                <Table project_name= {this.state.filter_project_name} authors= {this.state.filter_author} tags= {this.state.filter_tags} from = {this.state.filter_from} to= {this.state.filter_to} status= {this.state.filter_status} />
             </div>
           </div>
         </div>
