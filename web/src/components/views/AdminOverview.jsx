@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-export default class UploadByLink extends React.Component {
+export default class AdminOverview extends React.Component {
   render() {
     return (
       <div className="container">
