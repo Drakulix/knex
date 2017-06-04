@@ -306,10 +306,9 @@ class Table extends Component {
 export default class SearchPage extends Component {
   constructor(){
     super();
-    this.state = {filter_project_name: "", filter_author: "", filter_tags: "", filter_from: "", filter_to: "", filter_description: "", filter_status: ""};
+    this.state = {filter_project_name: "", filter_author: "", filter_tags: "", filter_date_from: "", filter_date_to: "", filter_description: "", filter_status: ""};
 
   }
-
 
   /*
     functions to get the state of the advanced search via the search element, the value of the input fields is given to the <table> and filtered
@@ -319,11 +318,11 @@ export default class SearchPage extends Component {
   }
 
   changeStateFrom(from){
-    this.setState({filter_from: from });
+    this.setState({filter_date_from: from });
   }
 
   changeStateTo(to){
-    this.setState({filter_to: to });
+    this.setState({filter_date_to: to });
   }
 
   changeStateStatus(status){
@@ -341,17 +340,14 @@ export default class SearchPage extends Component {
   render() {
     return (
       <div className="inner-content">
-
         <div className="container">
-
           <div className="row">
             <div className="col">
-
                 <Headline />
                 <hr className="hidden-divider"/>
                 <Search changeStateName={(name) => this.changeStateName(name)} changeStateAuthor={(author) => this.changeStateAuthor(author)} changeStateFrom={(from) => this.changeStateFrom(from)} changeStateTo={(to) => this.changeStateTo(to)} changeStateStatus={(status) => this.changeStateStatus(status)}  changeStateTags={(tags) => this.changeStateTags(tags)}/>
                 <hr className="horizontal-divider"/>
-                <Table project_name= {this.state.filter_project_name} authors= {this.state.filter_author} tags= {this.state.filter_tags} from = {this.state.filter_from} to= {this.state.filter_to} status= {this.state.filter_status} />
+                <Table project_name= {this.state.filter_project_name} authors= {this.state.filter_author} tags= {this.state.filter_tags} from = {this.state.filter_date_from} to= {this.state.filter_date_to} status= {this.state.filter_status} />
             </div>
           </div>
         </div>
