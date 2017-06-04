@@ -65,10 +65,6 @@ class Searchbar extends Component {
 }
 
 class AdvancedSearch extends Component {
-  constructor(props) {
-    super(props);
-  }
-
 
   render() {
 
@@ -124,14 +120,6 @@ class AdvancedSearch extends Component {
           <div className="col-md-6">
             <div className="input-group form-inline panel">
               <span className ="input-group-addon primary">
-                Description
-              </span>
-              <input className="form-control" type="text" id="description" name="description" onChange={(value) => this.setState({filter_description: value.target.value})}/>
-            </div>
-          </div>
-          <div className="col-md-6">
-            <div className="input-group form-inline panel">
-              <span className ="input-group-addon primary">
                 Status
               </span>
               <input className="form-control" type="text" id="status" name="status" onChange={(value) => this.props.ChangeStateStatus(value.target.value)}/>
@@ -149,31 +137,7 @@ class AdvancedSearch extends Component {
 class Search extends Component {
   constructor(props) {
     super(props);
-    this.state = {expanded : false, filter_project_name: null, filter_author: null , filter_tags: null ,filter_from: null, filter_to: null , filter_description: null , filter_status: null};
-  }
-
-  changeStateName(name){
-    this.props.changeStateName(name);
-  }
-
-  changeStateAuthor(author){
-    this.props.changeStateAuthor(author);
-  }
-
-  changeStateFrom(from){
-    this.props.changeStateFrom(from);
-  }
-
-  changeStateTo(to){
-    this.props.changeStateTo(to);
-  }
-
-  ChangeStateStatus(status){
-    this.props.ChangeStateStatus(status);
-  }
-
-  changeStateTags(tags){
-    this.props.changeStateTags(tags);
+    this.state = {expanded : false};
   }
 
 
@@ -183,7 +147,7 @@ class Search extends Component {
         <div>
           <div className="row">
             <form className="form-horizontal col-md-12">
-              <AdvancedSearch changeStateName={(name) => this.changeStateName(name)} changeStateAuthor={(author) => this.changeStateAuthor(author)} changeStateFrom={(from) => this.changeStateFrom(from)} changeStateTo={(to) => this.changeStateTo(to)} ChangeStateStatus={(state) => this.ChangeStateStatus(state)} changeStateTags={(tags) => this.changeStateTags(tags)} />
+              <AdvancedSearch changeStateName={(name) => this.props.changeStateName(name)} changeStateAuthor={(author) => this.props.changeStateAuthor(author)} changeStateFrom={(from) => this.props.changeStateFrom(from)} changeStateTo={(to) => this.props.changeStateTo(to)} ChangeStateStatus={(state) => this.props.ChangeStateStatus(state)} changeStateTags={(tags) => this.props.changeStateTags(tags)} />
             </form>
             <a onClick={() => this.setState({expanded : false})}  className="clickable-text col-md-2">
               <u>Minimize</u>
@@ -211,10 +175,7 @@ class Search extends Component {
 }
 
 class Table extends Component {
-    constructor(props) {
-      super(props);
 
-    };
 
     filterProjectName(results){
       var filtered_results=[];
@@ -322,7 +283,7 @@ class Table extends Component {
       new_results=this.filterProjectName(new_results);
 
     }
-    if(this.props.from != "" && this.props.to!= ""){
+    if(this.props.from !== "" && this.props.to!== ""){
       new_results=this.filterDate(new_results);
 
     }
