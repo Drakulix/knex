@@ -149,7 +149,7 @@ class AdvancedSearch extends Component {
 class Search extends Component {
   constructor(props) {
     super(props);
-    this.state = {expanded : false, filter_project_name: "", filter_author: "", filter_tags: "",filter_from: "", filter_to: "", filter_description: "", filter_status: ""};
+    this.state = {expanded : false, filter_project_name: null, filter_author: null , filter_tags: null ,filter_from: null, filter_to: null , filter_description: null , filter_status: null};
   }
 
   changeStateName(name){
@@ -168,8 +168,8 @@ class Search extends Component {
     this.props.changeStateTo(to);
   }
 
-  ChangeStateStatus(state){
-    this.props.ChangeStateStatus(state);
+  ChangeStateStatus(status){
+    this.props.ChangeStateStatus(status);
   }
 
   changeStateTags(tags){
@@ -219,7 +219,7 @@ class Table extends Component {
     filterProjectName(results){
       var filtered_results=[];
       for(var i=0; i<results.length;i++){
-        if(results[i].name.includes(this.props.project_name))
+        if(results[i].name.toLowerCase().includes(this.props.project_name.toLowerCase()))
           filtered_results.push(results[i]);
       }
       return (filtered_results );
@@ -228,7 +228,7 @@ class Table extends Component {
     filterAuthors(results){
       var filtered_results=[];
       for(var i=0; i<results.length;i++){
-        if(results[i].author.includes(this.props.authors))
+        if(results[i].author.toLowerCase().includes(this.props.authors.toLowerCase()))
           filtered_results.push(results[i]);
       }
       return (filtered_results);
@@ -237,7 +237,7 @@ class Table extends Component {
     filterTags(results){
       var filtered_results=[];
       for(var i=0; i<results.length;i++){
-        if(results[i].tags.includes(this.props.tags))
+        if(results[i].tags.toLowerCase().includes(this.props.tags.toLowerCase()))
           filtered_results.push(results[i]);
       }
       return (filtered_results);
@@ -246,7 +246,7 @@ class Table extends Component {
     filterStatus(results){
       var filtered_results=[];
       for(var i=0; i<results.length;i++){
-        if(results[i].status.includes(this.props.status))
+        if(results[i].status.toLowerCase().includes(this.props.status.toLowerCase()))
           filtered_results.push(results[i]);
       }
     return (filtered_results);
@@ -345,7 +345,7 @@ class Table extends Component {
 export default class SearchPage extends Component {
   constructor(){
     super();
-    this.state = {filter_project_name: "", filter_author: "", filter_tags: "",filter_from: "", filter_to: "", filter_description: "", filter_status: ""};
+    this.state = {filter_project_name: "", filter_author: "", filter_tags: "", filter_from: "", filter_to: "", filter_description: "", filter_status: ""};
 
   }
 
@@ -361,8 +361,8 @@ export default class SearchPage extends Component {
     this.setState({filter_to: to });
   }
 
-  ChangeStateStatus(state){
-    this.setState({filter_status: state });
+  ChangeStateStatus(status){
+    this.setState({filter_status: status});
   }
   changeStateName(name){
     this.setState({filter_project_name: name });
@@ -380,7 +380,7 @@ export default class SearchPage extends Component {
             <div className="col">
                 <Headline />
                 <hr className="hidden-divider"/>
-                <Search changeStateName={(name) => this.changeStateName(name)} changeStateAuthor={(author) => this.changeStateAuthor(author)} changeStateFrom={(from) => this.changeStateFrom(from)} changeStateTo={(to) => this.changeStateTo(to)} ChangeStateStatus={(state) => this.ChangeStateStatus(state)}  changeStateTags={(tags) => this.changeStateTags(tags)}/>
+                <Search changeStateName={(name) => this.changeStateName(name)} changeStateAuthor={(author) => this.changeStateAuthor(author)} changeStateFrom={(from) => this.changeStateFrom(from)} changeStateTo={(to) => this.changeStateTo(to)} ChangeStateStatus={(status) => this.ChangeStateStatus(status)}  changeStateTags={(tags) => this.changeStateTags(tags)}/>
                 <hr className="horizontal-divider"/>
                 <Table project_name= {this.state.filter_project_name} authors= {this.state.filter_author} tags= {this.state.filter_tags} from = {this.state.filter_from} to= {this.state.filter_to} status= {this.filter_status} />
             </div>
