@@ -3,7 +3,7 @@ import Overview from '../views/AdminOverview';
 import TopBar from '../common/TopBar';
 import { Link } from 'react-router-dom';
 
-export default class CreateProject extends Component {
+export default class AdminArea extends Component {
   constructor(props) {
     super(props);
 
