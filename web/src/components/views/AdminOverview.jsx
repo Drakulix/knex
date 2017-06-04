@@ -2,6 +2,15 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 export default class UploadByLink extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      project: {
+        description: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
+      }
+    };
+  }
   render() {
     return (
       <div className="container">
@@ -17,6 +26,9 @@ export default class UploadByLink extends React.Component {
             <p className="nav-link" href="#">Invite User</p>
           </li>
         </ul>
+        <button className="delete-button">
+          <i className="fa fa-trash-o" aria-hidden="true"></i>
+        </button>
         <div className="table-container">
           <table className="table">
             <thead className="thead-default">
@@ -24,7 +36,7 @@ export default class UploadByLink extends React.Component {
                 <th>Project Name</th>
                 <th>Author</th>
                 <th>Status</th>
-                <th>Descrption</th>
+                <th>Description</th>
                 <th>Date</th>
                 <th></th>
               </tr>
@@ -33,8 +45,8 @@ export default class UploadByLink extends React.Component {
               <tr>
                 <th scope="row">Contextual music information retrieval and recommendation</th>
                 <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
+                <td>in progress</td>
+                <td>{this.state.project.description}</td>
                 <td>22/06/17</td>
                 <td>
                   <input type="checkbox" className="form-check-input" />
@@ -43,8 +55,8 @@ export default class UploadByLink extends React.Component {
               <tr>
                 <th scope="row">Semantic Analysis of Song Lyrics</th>
                 <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
+                <td>done</td>
+                <td>{this.state.project.description}</td>
                 <td>22/06/17</td>
                 <td>
                   <input type="checkbox" className="form-check-input" />
@@ -53,8 +65,8 @@ export default class UploadByLink extends React.Component {
               <tr>
                 <th scope="row">Combining Audio Content and Social Context for Semantic Music Discovery</th>
                 <td>Larry</td>
-                <td>the Bird</td>
-                <td>@twitter</td>
+                <td>pending</td>
+                <td>{this.state.project.description}</td>
                 <td>22/06/17</td>
                 <td>
                   <input type="checkbox" className="form-check-input" />

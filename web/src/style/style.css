@@ -479,3 +479,24 @@ font-weight: 300;
 .table-container {
   margin-top: 2em;
 }
+
+.delete-button {
+  width: 58px;
+  height: 42px;
+  background-color: #333333;
+  border: solid 1px #333333;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  font-size: 18px;
+  text-align: center;
+  color: #ffffff;
+  float: right;
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+.nav-tabs .nav-link {
+    border: 1px solid transparent;
+    border-top-left-radius: 0rem;
+    border-top-right-radius: 0rem;
+}
