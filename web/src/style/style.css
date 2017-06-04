@@ -430,3 +430,13 @@ font-weight: 300;
   text-align: left;
   color: #000000;
 }
+
+/* User Collection */
+
+.collection-header {
+  margin-top: 5em;
+  margin-bottom: 2em;
+  text-align: center;
+  font-size: 32px;
+  font-weight: 300;
+}
