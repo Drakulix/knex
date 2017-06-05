@@ -53,7 +53,7 @@ class TestPOST(object):
     def test_missformed_json_error(self, flask_api_url):
         assert True
 
-    def test_missformed_context_type(self, flask_api_url):
+    def test_missformed_content_type(self, flask_api_url):
         assert True
 
 

@@ -1,11 +1,10 @@
 import requests
 
 
-
-
 def test_no_mongo(flask_api_url, docker_client):
     # TODO
     assert True
+
 
 def test_no_elastic(flask_api_url, docker_client):
     # TODO

@@ -16,7 +16,7 @@ def docker_client():
 
 @pytest.fixture(scope='session')
 def flask_api_url():
-    client = docker.from_env()
+    # client = docker.from_env()
     flask_api_url = "http://localhost:5000"
     return flask_api_url
 

@@ -116,7 +116,6 @@ def save_manifest_to_db(manifest):
                 ids.append(entry['_id'])
 
             return ids
-
         else:
             print(is_valid, file=sys.stderr)
             errors = sorted(validator.iter_errors(manifest), key=str)

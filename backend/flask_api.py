@@ -106,17 +106,17 @@ def handle_invalid_usage(error):
 
 @app.route('/upload', methods=['GET'])
 def uploads():
-    """TODO: 
+    """TODO:
     remove this later, default multi file uploader for testing purposes
     """
     if request.method == 'GET':
         return """<!doctype html>
-    <title>Upload multiple files</title>
-    <h1>Upload multiple files</h1>
-    <form action="" method=post enctype=multipart/form-data>
-    <input type=file name="file[]" multiple>
-    <input type=submit value=Upload>
-    </form>"""
+        <title>Upload multiple files</title>
+        <h1>Upload multiple files</h1>
+        <form action="" method=post enctype=multipart/form-data>
+        <input type=file name="file[]" multiple>
+        <input type=submit value=Upload>
+        </form>"""
 
 
 @app.route('/api/projects', methods=['GET'])
