@@ -9,11 +9,30 @@ from flask_api import validator, ALLOWED_EXTENSIONS, coll, es
 
 
 def allowed_file(filename):
+    """Check if the file is an allowed file.
+
+    Args:
+        filename: Name of the Upload-File
+
+    Returns:
+        bool: True if the file is allowed, False otherwise.
+    """
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def save_file_to_db(filename):
+    """Save file to the Database.
+
+    Args:
+        filename: Name of the Upload-File
+
+    Returns:
+        id: The Manifest ID
+
+    Raises:
+        ApiException: Error while trying to open/save the file or ElasticSearch Index Error.
+    """
     try:
         with open(filename) as jsonfile:
             if not jsonfile:
@@ -31,11 +50,13 @@ def save_file_to_db(filename):
                 manifest['date_update'] = time.strftime("%Y-%m-%d")
                 manifest['id'] = uuid.uuid4()
 
-                res = es.index(index="projects-index", doc_type='Project', id=manifest['id'], body=manifest)
+                res = es.index(index="projects-index", doc_type='Project',
+                               id=manifest['id'], body=manifest)
                 if res['created']:
                     coll.insert_one(manifest)
 
-                    print("Successfully validated file. ID is " + str(manifest['id']), file=sys.stderr)
+                    print("Successfully validated file. ID is " +
+                          str(manifest['id']), file=sys.stderr)
                     print("File content is: ", file=sys.stderr)
                     print(manifest, file=sys.stderr)
                     return manifest['id']
@@ -59,27 +80,44 @@ def save_file_to_db(filename):
 
 
 def save_manifest_to_db(manifest):
-    try:
-        manifest['date_creation'] = time.strftime("%Y-%m-%d")
-        manifest['date_update'] = time.strftime("%Y-%m-%d")
-        manifest['_id'] = uuid.uuid4()
+    """Save manifest to the Database.
 
+    Args:
+        manifest: The manifest to be saved
+
+    Returns:
+        id: The ID of the manifest
+
+    Raises:
+        ApiException: Error while trying to save the document.
+    """
+    try:
         is_valid = validator.is_valid(manifest)
 
         if is_valid:
+            manifest['date_creation'] = time.strftime("%Y-%m-%d")
+            manifest['date_update'] = time.strftime("%Y-%m-%d")
+            manifest['_id'] = uuid.uuid4()
             print("manifest is valid", file=sys.stderr)
             coll.insert(manifest)
             print("mongo insert: ", file=sys.stderr)
-            es.create(index="projects-index", doc_type='Project', id=manifest["_id"], refresh=True, body={})
+            es.create(index="projects-index", doc_type='Project',
+                      id=manifest["_id"], refresh=True, body={})
             print("Successfully inserted content: ", file=sys.stderr)
             print(manifest, file=sys.stderr)
             return manifest['_id']
         else:
             print(is_valid, file=sys.stderr)
-            validation_error = []
-            for error in sorted(validator.iter_errors(manifest), key=str):
+            errors = sorted(validator.iter_errors(manifest), key=str)
+            validation_error = {}
+            validation_error["errors"] = []
+            validation_error["sub_errors"] = []
+            for error in errors:
+                validation_error["errors"].append(error.message)
                 print(error.message, file=sys.stderr)
-                validation_error.append(error.message)
+                for suberror in sorted(error.context, key=lambda e: e.schema_path):
+                    validation_error["sub_errors"].append(suberror.message)
+                    print(list(suberror.schema_path), suberror.message, sep=", ", file=sys.stderr)
             raise ApiException("Validation Error: \n" + str(is_valid), 400, validation_error)
 
     except ApiException as e:
