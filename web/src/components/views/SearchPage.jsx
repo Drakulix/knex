@@ -363,6 +363,7 @@ class Table extends Component {
       new_results=this.filterTags(new_results);
 
     }
+    // TODO(gitmirgut) status doesn't work yet.
     // if(this.props.status!= null){
     //   new_results=this.filterStatus(new_results);
     //
