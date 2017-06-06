@@ -65,13 +65,9 @@ class Searchbar extends Component {
 }
 
 class AdvancedSearch extends Component {
-  constructor(props) {
-    super(props);
-  }
 
-
+  //View for advanced search, the onChange in the <input> parses the state all the way to the parent
   render() {
-
     return(
       <div className="panel panel-body">
         <div className="row">
@@ -124,17 +120,9 @@ class AdvancedSearch extends Component {
           <div className="col-md-6">
             <div className="input-group form-inline panel">
               <span className ="input-group-addon primary">
-                Description
-              </span>
-              <input className="form-control" type="text" id="description" name="description" onChange={(value) => this.setState({filter_description: value.target.value})}/>
-            </div>
-          </div>
-          <div className="col-md-6">
-            <div className="input-group form-inline panel">
-              <span className ="input-group-addon primary">
                 Status
               </span>
-              <input className="form-control" type="text" id="status" name="status" onChange={(value) => this.props.ChangeStateStatus(value.target.value)}/>
+              <input className="form-control" type="text" id="status" name="status" onChange={(value) => this.props.changeStateStatus(value.target.value)}/>
             </div>
           </div>
         </div>
@@ -149,31 +137,7 @@ class AdvancedSearch extends Component {
 class Search extends Component {
   constructor(props) {
     super(props);
-    this.state = {expanded : false, filter_project_name: "", filter_author: "", filter_tags: "",filter_from: "", filter_to: "", filter_description: "", filter_status: ""};
-  }
-
-  changeStateName(name){
-    this.props.changeStateName(name);
-  }
-
-  changeStateAuthor(author){
-    this.props.changeStateAuthor(author);
-  }
-
-  changeStateFrom(from){
-    this.props.changeStateFrom(from);
-  }
-
-  changeStateTo(to){
-    this.props.changeStateTo(to);
-  }
-
-  ChangeStateStatus(state){
-    this.props.ChangeStateStatus(state);
-  }
-
-  changeStateTags(tags){
-    this.props.changeStateTags(tags);
+    this.state = {expanded : false};
   }
 
 
@@ -183,7 +147,7 @@ class Search extends Component {
         <div>
           <div className="row">
             <form className="form-horizontal col-md-12">
-              <AdvancedSearch changeStateName={(name) => this.changeStateName(name)} changeStateAuthor={(author) => this.changeStateAuthor(author)} changeStateFrom={(from) => this.changeStateFrom(from)} changeStateTo={(to) => this.changeStateTo(to)} ChangeStateStatus={(state) => this.ChangeStateStatus(state)} changeStateTags={(tags) => this.changeStateTags(tags)} />
+              <AdvancedSearch changeStateName={(name) => this.props.changeStateName(name)} changeStateAuthor={(author) => this.props.changeStateAuthor(author)} changeStateFrom={(from) => this.props.changeStateFrom(from)} changeStateTo={(to) => this.props.changeStateTo(to)} changeStateStatus={(status) => this.props.changeStateStatus(status)} changeStateTags={(tags) => this.props.changeStateTags(tags)} />
             </form>
             <a onClick={() => this.setState({expanded : false})}  className="clickable-text col-md-2">
               <u>Minimize</u>
@@ -211,15 +175,12 @@ class Search extends Component {
 }
 
 class Table extends Component {
-    constructor(props) {
-      super(props);
 
-    };
 
     filterProjectName(results){
       var filtered_results=[];
       for(var i=0; i<results.length;i++){
-        if(results[i].name.includes(this.props.project_name))
+        if(results[i].name.toLowerCase().includes(this.props.project_name.toLowerCase()))
           filtered_results.push(results[i]);
       }
       return (filtered_results );
@@ -228,7 +189,7 @@ class Table extends Component {
     filterAuthors(results){
       var filtered_results=[];
       for(var i=0; i<results.length;i++){
-        if(results[i].author.includes(this.props.authors))
+        if(results[i].author.toLowerCase().includes(this.props.authors.toLowerCase()))
           filtered_results.push(results[i]);
       }
       return (filtered_results);
@@ -237,7 +198,7 @@ class Table extends Component {
     filterTags(results){
       var filtered_results=[];
       for(var i=0; i<results.length;i++){
-        if(results[i].tags.includes(this.props.tags))
+        if(results[i].tags.toLowerCase().includes(this.props.tags.toLowerCase()))
           filtered_results.push(results[i]);
       }
       return (filtered_results);
@@ -246,7 +207,7 @@ class Table extends Component {
     filterStatus(results){
       var filtered_results=[];
       for(var i=0; i<results.length;i++){
-        if(results[i].status.includes(this.props.status))
+        if(results[i].status.toLowerCase().includes(this.props.status.toLowerCase()))
           filtered_results.push(results[i]);
       }
     return (filtered_results);
@@ -322,7 +283,7 @@ class Table extends Component {
       new_results=this.filterProjectName(new_results);
 
     }
-    if(this.props.from != "" && this.props.to!= ""){
+    if(this.props.from !== "" && this.props.to!== ""){
       new_results=this.filterDate(new_results);
 
     }
@@ -345,25 +306,29 @@ class Table extends Component {
 export default class SearchPage extends Component {
   constructor(){
     super();
-    this.state = {filter_project_name: "", filter_author: "", filter_tags: "",filter_from: "", filter_to: "", filter_description: "", filter_status: ""};
+    this.state = {filter_project_name: "", filter_author: "", filter_tags: "", filter_date_from: "", filter_date_to: "", filter_description: "", filter_status: ""};
 
   }
 
+  /*
+    functions to get the state of the advanced search via the search element, the value of the input fields is given to the <table> and filtered
+  */
   changeStateAuthor(author){
     this.setState({filter_author: author });
   }
 
   changeStateFrom(from){
-    this.setState({filter_from: from });
+    this.setState({filter_date_from: from });
   }
 
   changeStateTo(to){
-    this.setState({filter_to: to });
+    this.setState({filter_date_to: to });
   }
 
-  ChangeStateStatus(state){
-    this.setState({filter_status: state });
+  changeStateStatus(status){
+    this.setState({filter_status: status});
   }
+
   changeStateName(name){
     this.setState({filter_project_name: name });
   }
@@ -380,9 +345,9 @@ export default class SearchPage extends Component {
             <div className="col">
                 <Headline />
                 <hr className="hidden-divider"/>
-                <Search changeStateName={(name) => this.changeStateName(name)} changeStateAuthor={(author) => this.changeStateAuthor(author)} changeStateFrom={(from) => this.changeStateFrom(from)} changeStateTo={(to) => this.changeStateTo(to)} ChangeStateStatus={(state) => this.ChangeStateStatus(state)}  changeStateTags={(tags) => this.changeStateTags(tags)}/>
+                <Search changeStateName={(name) => this.changeStateName(name)} changeStateAuthor={(author) => this.changeStateAuthor(author)} changeStateFrom={(from) => this.changeStateFrom(from)} changeStateTo={(to) => this.changeStateTo(to)} changeStateStatus={(status) => this.changeStateStatus(status)}  changeStateTags={(tags) => this.changeStateTags(tags)}/>
                 <hr className="horizontal-divider"/>
-                <Table project_name= {this.state.filter_project_name} authors= {this.state.filter_author} tags= {this.state.filter_tags} from = {this.state.filter_from} to= {this.state.filter_to} status= {this.filter_status} />
+                <Table project_name= {this.state.filter_project_name} authors= {this.state.filter_author} tags= {this.state.filter_tags} from = {this.state.filter_date_from} to= {this.state.filter_date_to} status= {this.state.filter_status} />
             </div>
           </div>
         </div>
