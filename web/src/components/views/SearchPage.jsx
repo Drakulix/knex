@@ -3,38 +3,6 @@ import { Link } from 'react-router-dom';
 import BackendTest, {fetchJson, sendJson} from '../common/Backend'
 import data from '../../data/test_data.json';
 //Return Value Simulation
-
-class Result extends Component{
-  constructor(name, author, status, description, date, fav, tags) {
-    super();
-    this.name = name;
-    this.author = author;
-    this.status = status;
-    this.description = description;
-    this.date = date;
-    this.fav = fav;
-    this.tags=tags;
-  }
-
-
-}
-
-const result_one = new Result(data.project_one.title, data.project_one.authors, data.project_one.status, data.project_one.description, data.project_one.date_created, "yes", data.project_one.tags);
-const result_two  = new Result(data.project_two.title, data.project_two.authors, data.project_two.status, data.project_two.description, data.project_two.date_created, "yes", data.project_two.tags);
-const result_three = new Result(data.project_three.title, data.project_three.authors, data.project_three.status, data.project_three.description, data.project_three.date_created, "yes", data.project_three.tags);
-const result_four = new Result(data.project_four.title, data.project_four.authors, data.project_four.status, data.project_four.description, data.project_four.date_created, "yes", data.project_four.tags);
-const result_five = new Result(data.project_five.title, data.project_five.authors, data.project_five.status, data.project_five.description, data.project_five.date_created, "yes", data.project_five.tags);
-const result_six = new Result(data.project_six.title, data.project_six.authors, data.project_six.status, data.project_six.description, data.project_six.date_created, "yes", data.project_six.tags);
-
-const results = [result_one];
-results.push(result_two);
-results.push(result_three);
-results.push(result_four);
-results.push(result_five);
-results.push(result_six);
-
-
-
 // Main Code
 
 class Headline extends Component {
@@ -246,7 +214,7 @@ class Table extends Component {
     filterProjectName(results){
       var filtered_results=[];
       for(var i=0; i<results.length;i++){
-        if(results[i].name.includes(this.props.project_name))
+        if(results[i]._source.title.includes(this.props.project_name))
           filtered_results.push(results[i]);
       }
       return (filtered_results );
@@ -255,8 +223,12 @@ class Table extends Component {
     filterAuthors(results){
       var filtered_results=[];
       for(var i=0; i<results.length;i++){
-        if(results[i].author.includes(this.props.authors))
-          filtered_results.push(results[i]);
+        for (var j=0; j < results[i]._source.authors.length; j++){
+          if (results[i]._source.authors[j].name.includes(this.props.authors)){
+            filtered_results.push(results[i]);
+            break;
+          }
+        }
       }
       return (filtered_results);
     };
@@ -264,8 +236,12 @@ class Table extends Component {
     filterTags(results){
       var filtered_results=[];
       for(var i=0; i<results.length;i++){
-        if(results[i].tags.includes(this.props.tags))
-          filtered_results.push(results[i]);
+        for (var j=0; j<results[i]._source.tags.length; j++){
+          if(results[i]._source.tags[j].includes(this.props.tags)){
+            filtered_results.push(results[i]);
+            break;
+          }
+        }
       }
       return (filtered_results);
     };
@@ -288,7 +264,7 @@ class Table extends Component {
       var filtered_results=[];
       for(var i=0; i<results.length;i++){
 
-        date_creation= new Date(Number(results[i].date.substring(0,4)), Number(results[i].date.substring(5,7))-1, Number(results[i].date.substring(8,10)));
+        date_creation= new Date(Number(results[i]._source.date_creation.substring(0,4)), Number(results[i]._source.date_creation.substring(5,7))-1, Number(results[i]._source.date_creation.substring(8,10)));
         if(date_creation.getTime()>=fromDate.getTime() && date_creation.getTime()<=toDate.getTime())
           filtered_results.push(results[i]);
       }
@@ -370,7 +346,7 @@ class Table extends Component {
     }
 
   render() {
-    var new_results=results;
+    var new_results=this.state.projects;
     if(this.props.project_name != null){
       new_results=this.filterProjectName(new_results);
 
@@ -387,11 +363,11 @@ class Table extends Component {
       new_results=this.filterTags(new_results);
 
     }
-    if(this.props.status!= null){
-      new_results=this.filterStatus(new_results);
-
-    }
-    return this.renderTable(this.state.projects);
+    // if(this.props.status!= null){
+    //   new_results=this.filterStatus(new_results);
+    //
+    // }
+    return this.renderTable(new_results);
   }
 }
 
