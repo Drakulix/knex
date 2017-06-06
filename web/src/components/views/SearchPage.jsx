@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import BackendTest, {fetchJson, sendJson} from '../common/Backend'
+import Pagination from '../common/Pagination'
 import data from '../../data/test_data.json';
 //Return Value Simulation
 // Main Code
@@ -431,6 +432,7 @@ export default class SearchPage extends Component {
   constructor(){
     super();
     this.state = {
+      currentPage: 0,
       filter_project_name: "",
       filter_author: "",
       filter_tags: "",
@@ -480,6 +482,7 @@ export default class SearchPage extends Component {
                   changeStateTags={(tags) => this.changeStateTags(tags)}
                 />
                 <hr className="horizontal-divider"/>
+                <Pagination currentPage={this.state.currentPage}/>
                 <Table
                   project_name= {this.state.filter_project_name}
                   authors= {this.state.filter_author}
