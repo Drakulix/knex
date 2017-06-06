@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-
+import BackendTest, {fetchJson, sendJson} from '../common/Backend'
 import data from '../../data/test_data.json';
 //Return Value Simulation
 
@@ -214,6 +214,33 @@ class Table extends Component {
     constructor(props) {
       super(props);
 
+      var that = this;
+
+      this.state = {
+        projects: [],
+      }
+      sendJson('POST', '/api/projects/search',
+      {
+        "query": {
+          "bool": {
+            "should": [
+              {
+                "query_string": {
+                  "query": "*",
+                  "fields": ["title"]
+                }
+              }
+            ]
+          }
+        }
+      })
+      .then(function(data) {
+        if(data != null){
+          that.setState({
+             projects : data.hits.hits,
+          });
+        }
+      });
     };
 
     filterProjectName(results){
@@ -268,21 +295,47 @@ class Table extends Component {
     return (filtered_results);
     };
 
+    authorsArrayToNameString(authors) {
+      var names = [];
+      for(var i = 0 ;i < authors.length;i++){
+        names.push(authors[i].name);
+      }
+      return names.join();
+    };
+
+    fitLength(string, maxLength){
+      if(string.length>maxLength){
+        return string.substring(0, maxLength) + " ...";
+      }
+      else return string;
+    }
+
     renderLine(result){
+
+      var title = result._source.title;
+      var authors = result._source.authors;
+
+      var description = result._source.description;
+      var status = result._source.status;
+      var date_creation = result._source.date_creation;
+
+      var authorNames = this.authorsArrayToNameString(authors);
+      var shortenedDescription = this.fitLength(description, 100);
+
       return(
           <tr>
             <td>
               <Link to="/projects" className="table-project-name">
                 <a className="table-project-name" >
-                  <u>{result.name}</u>
+                  <u>{title}</u>
                 </a>
               </Link>
             </td>
-            <td> {result.author} </td>
-            <td> {result.status} </td>
-            <td> {result.description} </td>
-            <td> {result.date} </td>
-            <td> {result.fav} </td>
+            <td> {authorNames} </td>
+            <td> {status} </td>
+            <td> {description} </td>
+            <td> {date_creation} </td>
+            <td>  </td>
           </tr>
       );
     }
@@ -338,7 +391,7 @@ class Table extends Component {
       new_results=this.filterStatus(new_results);
 
     }
-    return this.renderTable(new_results);
+    return this.renderTable(this.state.projects);
   }
 }
 
