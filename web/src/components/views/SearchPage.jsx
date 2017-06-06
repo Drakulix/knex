@@ -328,7 +328,7 @@ class Table extends Component {
         return(
           <div className="row">
             <table className="table table-hover">
-              <tr>
+              <tr className= "th-search">
                 <th className="col-3">Project</th>
                 <th className="col-2">Author</th>
                 <th className="col-1">Status</th>
