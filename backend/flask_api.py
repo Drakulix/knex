@@ -21,14 +21,9 @@ client = MongoClient('mongodb:27017')
 db = client.knexDB
 coll = db.projects
 
-with open("manifest_schema.json") as schema_file:
-    schema = json.load(schema_file)
-validator = Draft4Validator(schema, format_checker=FormatChecker())
-
 app = Flask(__name__)
 CORS(app)
 
-# TODO open this in om startup
 with app.open_resource("manifest_schema.json") as schema_file:
     schema = json.load(schema_file)
 validator = Draft4Validator(schema, format_checker=FormatChecker())
