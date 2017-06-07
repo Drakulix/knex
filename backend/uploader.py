@@ -83,7 +83,7 @@ def save_manifest_to_db(manifest):
     """Save manifest to the Database.
 
     Args:
-        manifest: The manifest to be saved
+        manifest: The manifest to be saved, may contain multiple json objects
 
     Returns:
         id: The ID of the manifest
@@ -95,17 +95,28 @@ def save_manifest_to_db(manifest):
         is_valid = validator.is_valid(manifest)
 
         if is_valid:
-            manifest['date_creation'] = time.strftime("%Y-%m-%d")
-            manifest['date_update'] = time.strftime("%Y-%m-%d")
-            manifest['_id'] = uuid.uuid4()
-            print("manifest is valid", file=sys.stderr)
-            coll.insert(manifest)
-            print("mongo insert: ", file=sys.stderr)
-            es.create(index="projects-index", doc_type='Project',
-                      id=manifest["_id"], refresh=True, body={})
-            print("Successfully inserted content: ", file=sys.stderr)
-            print(manifest, file=sys.stderr)
-            return manifest['_id']
+            manifestlist = []
+            ids = []
+            if isinstance(manifest, list):
+                manifestlist = manifest
+            else:
+                manifestlist.append(manifest)
+
+            for entry in manifestlist:
+                entry['date_creation'] = time.strftime("%Y-%m-%d")
+                entry['date_update'] = time.strftime("%Y-%m-%d")
+                entry['_id'] = uuid.uuid4()
+                print("manifest is valid", file=sys.stderr)
+                coll.insert(entry)
+                print("mongo insert: ", file=sys.stderr)
+                es.create(index="projects-index", doc_type='Project',
+                          id=entry["_id"], refresh=True, body={})
+                print("Successfully inserted content: ", file=sys.stderr)
+                print(entry, file=sys.stderr)
+                ids.append(entry['_id'])
+
+            return ids
+
         else:
             print(is_valid, file=sys.stderr)
             errors = sorted(validator.iter_errors(manifest), key=str)
@@ -123,4 +134,4 @@ def save_manifest_to_db(manifest):
     except ApiException as e:
         raise e
     except Exception as err:
-        raise ApiException("Error while trying to save the document into db." + err.message)
+        raise ApiException("Error while trying to save the document(s) into db." + err.message)
