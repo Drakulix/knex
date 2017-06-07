@@ -3,12 +3,9 @@ import { Link } from 'react-router-dom';
 import logo from '../../style/img/knex_logo.png';
 
 export default class SignIn extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   render() {
-    const { serviceName, teamName } = this.props;
+    const { teamName } = this.props;
 
     return (
       <section className="sign-container">

@@ -7,7 +7,6 @@ import './style/fonts/font-awesome/css/font-awesome.css';
 import {
   BrowserRouter,
   Route,
-  Link
 } from 'react-router-dom'
 
 import ProjectDetails from './components/pages/ProjectDetails';
@@ -17,11 +16,13 @@ import ProjectDiscovery from './components/pages/ProjectDiscovery';
 import UserCollection from './components/pages/UserCollection';
 import SignIn from './components/pages/SignIn.jsx';
 import SignUp from './components/pages/SignUp.jsx';
+import AdminArea from './components/pages/AdminArea';
 
 ReactDOM.render(
 <BrowserRouter>
   <div>
-    <Route path="/discovery" component={ProjectDiscovery} /> {/* <-- Replace this component to get different startpages e.g. SignIn, ProjectDiscovery etc. */}
+    <Route path="/discovery" component={ProjectDiscovery} />
+    <Route path="/admin" component={AdminArea} />
     <Route path="/create" component={CreateProject} />
     <Route path="/createbylink" component={CreateProjectLink} />
     <Route path="/projects" component={ProjectDetails} />
