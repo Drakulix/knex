@@ -75,14 +75,15 @@ def add_project():
 
     else:  # no files attached
         try:
-            return_ids = []
+            return_ids = {"ids":[]}
             if request.json:
                 for project_id in uploader.save_manifest_to_db(request.json):
-                    return_ids.append(id)
+                    return_ids['ids'].append(project_id)
             else:
                 print(request.data.decode("utf-8"), file=sys.stderr)
                 for project_id in uploader.save_manifest_to_db(json5.loads(request.data.decode("utf-8"))):
-                    return_ids.append(id)
+                    print(project_id)
+                    return_ids['ids'].append(project_id)
 
             return jsonify(return_ids)
         except ApiException as e:
