@@ -17,12 +17,14 @@ class TestPOST(object):
             'testmanifests',
             'validexample0.json5'
         )
-        with open(test_manifest, 'r', encoding='UTF16') as tf:
+        with open(test_manifest, 'r', encoding='utf-8') as tf:
             data = str(tf.read().replace('\n', ''))
-        response = requests.post(flask_api_url + "/api/projects", data=data.encode('UTF-8'),
+        response = requests.post(flask_api_url + "/api/projects", data=data.encode('utf-8'),
                                  headers={'Content-Type': 'application/json5'})
-        print(response.text)
-        assert UUID(response.text, version=4)
+        print(response.json)
+        id_list = response.json()
+        for id in id_list:
+            assert UUID(id, version=4)
 
     def test_success_json(self, flask_api_url, pytestconfig):
         test_manifest = os.path.join(
@@ -35,6 +37,7 @@ class TestPOST(object):
             test_manifest_json = json.load(tf)
         response = requests.post(flask_api_url + "/api/projects", json=test_manifest_json)
         print(response.text)
+        assert UUID(response.text, version=4)
 
     def test_validtion_error(self, flask_api_url, pytestconfig):
         test_manifest = os.path.join(
