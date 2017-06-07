@@ -21,14 +21,9 @@ client = MongoClient('mongodb:27017')
 db = client.knexDB
 coll = db.projects
 
-with open("manifest_schema.json") as schema_file:
-    schema = json.load(schema_file)
-validator = Draft4Validator(schema, format_checker=FormatChecker())
-
 app = Flask(__name__)
 CORS(app)
 
-# TODO open this in om startup
 with app.open_resource("manifest_schema.json") as schema_file:
     schema = json.load(schema_file)
 validator = Draft4Validator(schema, format_checker=FormatChecker())
@@ -75,14 +70,17 @@ def add_project():
 
     else:  # no files attached
         try:
-            newid = None
+            return_ids = []
             if request.json:
-                newid = uploader.save_manifest_to_db(request.json)
+                return_ids = uploader.save_manifest_to_db(request.json)
+
             else:
                 print(request.data.decode("utf-8"), file=sys.stderr)
-                newid = uploader.save_manifest_to_db(json5.loads(request.data.decode("utf-8")))
+                return_ids = uploader.save_manifest_to_db(
+                    json5.loads(request.data.decode("utf-8")))
+                print(return_ids)
 
-            return make_response(str(newid))
+            return jsonify(return_ids)
         except ApiException as e:
             raise e
         except Exception as err:
@@ -106,17 +104,17 @@ def handle_invalid_usage(error):
 
 @app.route('/upload', methods=['GET'])
 def uploads():
-    """TODO: 
+    """TODO:
     remove this later, default multi file uploader for testing purposes
     """
     if request.method == 'GET':
         return """<!doctype html>
-    <title>Upload multiple files</title>
-    <h1>Upload multiple files</h1>
-    <form action="" method=post enctype=multipart/form-data>
-    <input type=file name="file[]" multiple>
-    <input type=submit value=Upload>
-    </form>"""
+        <title>Upload multiple files</title>
+        <h1>Upload multiple files</h1>
+        <form action="" method=post enctype=multipart/form-data>
+        <input type=file name="file[]" multiple>
+        <input type=submit value=Upload>
+        </form>"""
 
 
 @app.route('/api/projects', methods=['GET'])
