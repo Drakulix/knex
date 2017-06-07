@@ -70,6 +70,14 @@ export default class SignUp extends Component {
           </Link>
         </div>
 
+        <div>
+          <Link to="/">
+            <a href="#" className="register-info">
+              You already have an account?<br/>Login here.
+            </a>
+          </Link>
+        </div>
+
       </section>
     );
   }
