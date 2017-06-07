@@ -20,6 +20,7 @@ before_install:
     - sudo mv docker-compose /usr/local/bin
     - docker-compose -v
     - docker -v
+    - docker ps
 
 install:
   - "pip install flask"
@@ -28,4 +29,7 @@ install:
 before_script:
   - docker-compose up -d
 
-script: pytest
+script: pytest tests/
+
+after_script:
+  - docker-compose stop

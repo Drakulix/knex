@@ -4,7 +4,7 @@ from elasticsearch import Elasticsearch
 from pymongo import MongoClient
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope='session')
 def docker_client():
     """
     to run this properly you have to install pypiwin32 if you are on windows
@@ -14,13 +14,14 @@ def docker_client():
     return client
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope='session')
 def flask_api_url():
+    client = docker.from_env()
     flask_api_url = "http://localhost:5000"
     return flask_api_url
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope='session')
 def mongo_client():
     client = MongoClient('localhost', 27017)
     db = client.knexDB
@@ -28,7 +29,7 @@ def mongo_client():
     return coll
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope='session')
 def elastic_client():
-    es = Elasticsearch([{'host': 'elasticsearch', 'port': 9200}])
+    es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
     return es
