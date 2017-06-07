@@ -8,6 +8,10 @@ html {
   height: 100%;
 }
 
+p {
+  margin-bottom: 0px !important;
+}
+
 p:hover {
 color: #ff5500;
 }
@@ -122,6 +126,7 @@ font-weight: 300;
 .active {
   text-decoration: none;
   background-color: #242424 !important;
+  color: white !important;
 }
 
 .menu-button {
@@ -429,4 +434,79 @@ font-weight: 300;
   font-size: 16px;
   text-align: left;
   color: #000000;
+}
+
+/* User Collection */
+
+.collection-header {
+   margin-top: 5em;
+  margin-bottom: 2em;
+  text-align: center;
+  font-size: 32px;
+  font-weight: 300;
+}
+/* Admin Area Start */
+
+.adminarea-header {
+  margin-top: 5em;
+  margin-bottom: 2em;
+  text-align: center;
+  font-size: 32px;
+  font-weight: 300;
+}
+
+
+.pagination-container {
+  margin-top: 2em;
+}
+
+.pagination {
+  justify-content: center !important;
+}
+
+.page-item:first-child .page-link {
+  margin-left: 0;
+  border-top-left-radius: 0.0rem;
+  border-bottom-left-radius: 0.0rem;
+}
+
+.page-item:last-child .page-link {
+  border-top-right-radius: 0.0rem;
+  border-bottom-right-radius: 0.0rem;
+}
+
+.page-link {
+    position: relative;
+    display: block;
+    padding: 0.5rem 0.75rem;
+    margin-left: -1px;
+    line-height: 1.25;
+    color: #333333;
+    background-color: #fff;
+    border: 1px solid #ddd;
+}
+
+.table-container {
+  margin-top: 2em;
+}
+
+.delete-button {
+  width: 58px;
+  height: 42px;
+  background-color: #333333;
+  border: solid 1px #333333;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  font-size: 18px;
+  text-align: center;
+  color: #ffffff;
+  float: right;
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+.nav-tabs .nav-link {
+    border: 1px solid transparent;
+    border-top-left-radius: 0rem;
+    border-top-right-radius: 0rem;
 }

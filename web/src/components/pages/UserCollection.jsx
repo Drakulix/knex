@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import UploadByLink from '../views/CreateProjectView.jsx';
+import CollectionTable from '../views/CollectionTable';
 import TopBar from '../common/TopBar';
 import { Link } from 'react-router-dom';
 
-export default class CreateProject extends Component {
+export default class UserCollection extends Component {
   constructor(props) {
     super(props);
 
@@ -28,9 +28,7 @@ export default class CreateProject extends Component {
                     {this.state.menu.discoverProjects}
                   </Link>
                 </li>
-                <li className="list-group-item active">
-                  <div className="menu-indicator">
-                  </div>
+                <li className="list-group-item">
                   <Link to="/create">
                     {this.state.menu.createProject}
                   </Link>
@@ -43,7 +41,7 @@ export default class CreateProject extends Component {
               </ul>
           </div>
           <div className="col-10">
-            <UploadByLink />
+            <CollectionTable />
           </div>
         </div>
       </div>

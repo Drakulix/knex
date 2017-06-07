@@ -3,12 +3,9 @@ import { Link } from 'react-router-dom';
 import logo from '../../style/img/knex_logo.png';
 
 export default class SignUp extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   render() {
-    const { serviceName, teamName } = this.props;
+    const { teamName } = this.props;
 
     return (
       <section className="sign-container">
@@ -70,6 +67,14 @@ export default class SignUp extends Component {
             <button  type="submit" className="btn btn-lg btn-primary sign-button">
               Sign Up
             </button>
+          </Link>
+        </div>
+
+        <div>
+          <Link to="/">
+            <a href="#" className="register-info">
+              You already have an account?<br/>Login here.
+            </a>
           </Link>
         </div>
 
