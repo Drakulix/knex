@@ -1,3 +1,5 @@
 pytest
 requests
 docker
+elasticsearch
+pymongo
