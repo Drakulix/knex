@@ -21,7 +21,7 @@ before_install:
     - docker-compose -v
     - docker -v
     - docker ps
-    - sleep 15
+
 
 install:
   - "pip install flask"
@@ -30,7 +30,9 @@ install:
 before_script:
   - docker-compose up -d
 
-script: pytest tests/
+script:
+  - sleep 30
+  - pytest tests/
 
 after_script:
   - docker-compose stop

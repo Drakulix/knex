@@ -19,3 +19,11 @@ def test_empty_database(flask_api_url):
     # response.raise_for_status()
 
     print(response.text)
+
+def test_empty_database_hardcoded():
+    """Sample test."""
+    response = requests.get("http://localhost:5000" + "/api/projects")
+    assert response.text == "There are no projects"
+    # response.raise_for_status()
+
+    print(response.text)
