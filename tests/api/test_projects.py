@@ -22,7 +22,7 @@ class TestPOST(object):
         response = requests.post(flask_api_url + "/api/projects", data=data.encode('utf-8'),
                                  headers={'Content-Type': 'application/json5'})
         print(response.text)
-        for id in response.json()["ids"]:
+        for id in response.json():
             assert UUID(id, version=4)
 
     def test_success_json(self, flask_api_url, pytestconfig):
@@ -36,7 +36,7 @@ class TestPOST(object):
             test_manifest_json = json.load(tf)
         response = requests.post(flask_api_url + "/api/projects", json=test_manifest_json)
         print(response.text)
-        for id in response.json()["ids"]:
+        for id in response.json():
             assert UUID(id, version=4)
 
     def test_validtion_error(self, flask_api_url, pytestconfig):
