@@ -436,6 +436,15 @@ font-weight: 300;
   color: #000000;
 }
 
+/* User Collection */
+
+.collection-header {
+   margin-top: 5em;
+  margin-bottom: 2em;
+  text-align: center;
+  font-size: 32px;
+  font-weight: 300;
+}
 /* Admin Area Start */
 
 .adminarea-header {
@@ -445,6 +454,7 @@ font-weight: 300;
   font-size: 32px;
   font-weight: 300;
 }
+
 
 .pagination-container {
   margin-top: 2em;
