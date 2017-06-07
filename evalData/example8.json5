@@ -1,10 +1,9 @@
-[ 
-    {
+{
         title             :     'A Novel Method for Music Recommendation using Social Media Tags',
         description     :    'Tremendous growth of online music data has given new opportunities for building more effective music recommender systems. These systems help users to find and categorize songs according to their likings. The main goal of Recommender Systems (RS) is to predict ratings of items that the users would be interested in. With the rapid development of the Collaborative Tagging approach, tags could be fascinating and helpful information to enrich RS systems. Attributes are the “global” depictions of items while tags are “local” depictions of items provided by the users. Explicit feedback and implicit feedback demonstrates distinct properties of users’ preferences with both advantages and disadvantages. Combination of these in a user preference model not only exhibits a number of disputes but can also overwhelm the problems related with each other. Hence, to take advantage of tagging data and see whether better recommendations are generated or not, a novel method for music recommendation is proposed that combines implicit feedback and explicit feedback of the users. Also, both explicit types of feedbacks are normalized before transformation into ratings in order to provide the desired ratings in case of skewed play counts data.',
         status            :     'DONE',
         date_creation        :    '2015-07-02',
-        url            :    'http://example8.org',
+        url            :    ['http://example8.org'],
         tags             :     ['Social media tags', 'Recommendation by Tag-driven Item Similarity'],
         authors         :    [
             {    name        :    'Gunjan Advani',
@@ -15,5 +14,4 @@
                 email        :    'soni@patel.org'
             }
         ]
-    }
-]
+}
