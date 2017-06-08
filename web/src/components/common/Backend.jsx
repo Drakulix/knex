@@ -30,10 +30,6 @@ const BACKEND_URL = 'http://localhost:5000'
     });
   }
 
-    export function dummyadd(){
-      fetchJson('')
-    }
-
   // TODO(gitmirgut): remove later
   export default class BackendTest extends Component {
     //This Component is just for testing
@@ -60,6 +56,7 @@ const BACKEND_URL = 'http://localhost:5000'
           }
         }
       })
+      // .then(json => console.log(json))
 
       return (
         <div></div>

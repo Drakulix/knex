@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { dummyadd, getProjects, sendJson, fetchJson } from '../common/Backend'
-
+import BackendTest, {fetchJson, sendJson} from '../common/Backend'
+import Pagination from '../common/Pagination'
 import data from '../../data/test_data.json';
-
 // Main Code
 
 class Headline extends Component {
@@ -38,9 +37,7 @@ class AdvancedSearch extends Component {
     super(props);
   }
 
-
   render() {
-
     return(
       <div className="panel panel-body">
         <div className="row">
@@ -49,7 +46,13 @@ class AdvancedSearch extends Component {
               <span className ="input-group-addon primary">
                 Project Name
               </span>
-              <input className="form-control full-width" type="text" id="projectName" name="projectName" onChange={(value) => this.props.changeStateName(value.target.value)}/>
+              <input
+                className="form-control full-width"
+                type="text"
+                id="projectName"
+                name="projectName"
+                onChange={(value) => this.props.changeStateName(value.target.value)}
+              />
             </div>
           </div>
           <div className="col-md-6">
@@ -57,7 +60,13 @@ class AdvancedSearch extends Component {
               <span className ="input-group-addon primary">
                 Author
               </span>
-              <input className="form-control" type="search" id="author" name="author" onChange={(value) => this.props.changeStateAuthor(value.target.value)}/>
+              <input
+                className="form-control"
+                type="search"
+                id="author"
+                name="author"
+                onChange={(value) => this.props.changeStateAuthor(value.target.value)}
+              />
             </div>
           </div>
         </div>
@@ -68,7 +77,13 @@ class AdvancedSearch extends Component {
                 <span className ="input-group-addon primary">
                   Tags
                 </span>
-                <input className="form-control" type="text" id="tags" name="tags" onChange={(value) => this.props.changeStateTags(value.target.value)}/>
+                <input
+                  className="form-control"
+                  type="text"
+                  id="tags"
+                  name="tags"
+                  onChange={(value) => this.props.changeStateTags(value.target.value)}
+                />
               </div>
             </div>
             <div className="col-md-4">
@@ -76,7 +91,13 @@ class AdvancedSearch extends Component {
                 <span className ="input-group-addon primary">
                   From
                 </span>
-                <input className="form-control" type="date" id="dateStart" name="dateStart" onChange={(value) => this.props.changeStateFrom(value.target.value)}/>
+                <input
+                  className="form-control"
+                  type="date"
+                  id="dateStart"
+                  name="dateStart"
+                  onChange={(value) => this.props.changeStateFrom(value.target.value)}
+                />
               </div>
             </div>
             <div className="col-md-4">
@@ -84,7 +105,13 @@ class AdvancedSearch extends Component {
                 <span className ="input-group-addon primary">
                   To
                 </span>
-                <input className="form-control" type="date" id="dateEnd" name="dateEnd" onChange={(value) => this.props.changeStateTo(value.target.value)}/>
+                <input
+                  className="form-control"
+                  type="date"
+                  id="dateEnd"
+                  name="dateEnd"
+                  onChange={(value) => this.props.changeStateTo(value.target.value)}
+                />
               </div>
             </div>
           </div>
@@ -95,7 +122,13 @@ class AdvancedSearch extends Component {
               <span className ="input-group-addon primary">
                 Description
               </span>
-              <input className="form-control" type="text" id="description" name="description" onChange={(value) => this.setState({filter_description: value.target.value})}/>
+              <input
+                className="form-control"
+                type="text"
+                id="description"
+                name="description"
+                onChange={(value) => this.setState({filter_description: value.target.value})}
+              />
             </div>
           </div>
           <div className="col-md-6">
@@ -103,7 +136,13 @@ class AdvancedSearch extends Component {
               <span className ="input-group-addon primary">
                 Status
               </span>
-              <input className="form-control" type="text" id="status" name="status" onChange={(value) => this.props.ChangeStateStatus(value.target.value)}/>
+              <input
+                className="form-control"
+                type="text"
+                id="status"
+                name="status"
+                onChange={(value) => this.props.ChangeStateStatus(value.target.value)}
+              />
             </div>
           </div>
         </div>
@@ -116,7 +155,15 @@ class AdvancedSearch extends Component {
 class Search extends Component {
   constructor(props) {
     super(props);
-    this.state = {expanded : false, filter_project_name: "", filter_author: "", filter_tags: "",filter_from: "", filter_to: "", filter_description: "", filter_status: ""};
+    this.state = {
+      expanded : false,
+      filter_project_name: "",
+      filter_author: "",
+      filter_tags: "",
+      filter_from: "",
+      filter_to: "",
+      filter_description: "",
+      filter_status: ""};
   }
 
   changeStateName(name){
@@ -150,7 +197,14 @@ class Search extends Component {
         <div>
           <div className="row">
             <form className="form-horizontal col-md-12">
-              <AdvancedSearch changeStateName={(name) => this.changeStateName(name)} changeStateAuthor={(author) => this.changeStateAuthor(author)} changeStateFrom={(from) => this.changeStateFrom(from)} changeStateTo={(to) => this.changeStateTo(to)} ChangeStateStatus={(state) => this.ChangeStateStatus(state)} changeStateTags={(tags) => this.changeStateTags(tags)} />
+              <AdvancedSearch
+                changeStateName={(name) => this.changeStateName(name)}
+                changeStateAuthor={(author) => this.changeStateAuthor(author)}
+                changeStateFrom={(from) => this.changeStateFrom(from)}
+                changeStateTo={(to) => this.changeStateTo(to)}
+                ChangeStateStatus={(state) => this.ChangeStateStatus(state)}
+                changeStateTags={(tags) => this.changeStateTags(tags)}
+              />
             </form>
             <a onClick={() => this.setState({expanded : false})}  className="clickable-text col-md-2">
               <u>Minimize</u>
@@ -233,8 +287,12 @@ class Table extends Component {
     filterAuthors(results){
       var filtered_results=[];
       for(var i=0; i<results.length;i++){
-        if(results[i].authors.includes(this.props.authors))
-          filtered_results.push(results[i]);
+        for (var j=0; j < results[i].authors.length; j++){
+          if (results[i].authors[j].name.includes(this.props.authors)){
+            filtered_results.push(results[i]);
+            break;
+          }
+        }
       }
       return (filtered_results);
     };
@@ -242,8 +300,12 @@ class Table extends Component {
     filterTags(results){
       var filtered_results=[];
       for(var i=0; i<results.length;i++){
-        if(results[i].tags.includes(this.props.tags))
-          filtered_results.push(results[i]);
+        for (var j=0; j<results[i]._source.tags.length; j++){
+          if(results[i]._source.tags[j].includes(this.props.tags)){
+            filtered_results.push(results[i]);
+            break;
+          }
+        }
       }
       return (filtered_results);
     };
@@ -264,12 +326,13 @@ class Table extends Component {
       var filtered_results=[];
       for(var i=0; i<results.length;i++){
 
-        date_creation= new Date(Number(results[i].date.substring(0,4)), Number(results[i].date.substring(5,7))-1, Number(results[i].date.substring(8,10)));
+        date_creation= new Date(Number(results[i]._source.date_creation.substring(0,4)), Number(results[i]._source.date_creation.substring(5,7))-1, Number(results[i]._source.date_creation.substring(8,10)));
         if(date_creation.getTime()>=fromDate.getTime() && date_creation.getTime()<=toDate.getTime())
           filtered_results.push(results[i]);
       }
     return (filtered_results);
     };
+
 
     fitLength(string, maxLength){
       if(string.length>maxLength){
@@ -299,7 +362,13 @@ class Table extends Component {
 
       return(
           <tr>
-            <td> {title} </td>
+            <td>
+              <Link to="/projects" className="table-project-name">
+                <a className="table-project-name" >
+                  <u>{title}</u>
+                </a>
+              </Link>
+            </td>
             <td> {authors}</td>
             <td> {status} </td>
             <td data-toggle="tooltip" title={description}> {shortenedDescription} </td>
@@ -318,7 +387,7 @@ class Table extends Component {
     }
 
     newPage(changeIndex){
-      var newPageIndex = this.state.pageNumber + changeIndex;
+      var newPageIndex = this.state.pageNumber + (changeIndex * this.state.pageSize);
 
       if( newPageIndex>0){
         this.setState({
@@ -428,6 +497,7 @@ class Table extends Component {
       if(this.props.tags != null){
         new_results=this.filterTags(new_results);
       }
+      // TODO(gitmirgut) status doesn't work yet.
       if(this.props.status!= null){
         new_results=this.filterStatus(new_results);
       }
@@ -439,8 +509,15 @@ class Table extends Component {
 export default class SearchPage extends Component {
   constructor(){
     super();
-    //dummyadd();  //only once
-    this.state = {filter_project_name: "", filter_author: "", filter_tags: "",filter_from: "", filter_to: "", filter_description: "", filter_status: ""};
+    this.state = {
+      currentPage: 0,
+      filter_project_name: "",
+      filter_author: "",
+      filter_tags: "",
+      filter_from: "",
+      filter_to: "",
+      filter_description: "",
+      filter_status: ""};
   }
 
   changeStateAuthor(author){
@@ -472,11 +549,25 @@ export default class SearchPage extends Component {
         <div className="container">
           <div className="row">
             <div className="col">
-              <Headline />
-              <hr className="hidden-divider"/>
-              <Search changeStateName={(name) => this.changeStateName(name)} changeStateAuthor={(author) => this.changeStateAuthor(author)} changeStateFrom={(from) => this.changeStateFrom(from)} changeStateTo={(to) => this.changeStateTo(to)} ChangeStateStatus={(state) => this.ChangeStateStatus(state)}  changeStateTags={(tags) => this.changeStateTags(tags)}/>
-              <hr className="horizontal-divider"/>
-              <Table project_name= {this.state.filter_project_name} authors= {this.state.filter_author} tags= {this.state.filter_tags} from = {this.state.filter_from} to= {this.state.filter_to} status= {this.filter_status} />
+                <Headline />
+                <hr className="hidden-divider"/>
+                <Search
+                  changeStateName={(name) => this.changeStateName(name)}
+                  changeStateAuthor={(author) => this.changeStateAuthor(author)}
+                  changeStateFrom={(from) => this.changeStateFrom(from)}
+                  changeStateTo={(to) => this.changeStateTo(to)}
+                  ChangeStateStatus={(state) => this.ChangeStateStatus(state)}
+                  changeStateTags={(tags) => this.changeStateTags(tags)}
+                />
+                <hr className="horizontal-divider"/>
+                <Table
+                  project_name= {this.state.filter_project_name}
+                  authors= {this.state.filter_author}
+                  tags= {this.state.filter_tags}
+                  from = {this.state.filter_from}
+                  to= {this.state.filter_to}
+                  status= {this.filter_status}
+                />
             </div>
           </div>
         </div>
