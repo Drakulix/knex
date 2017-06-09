@@ -11,6 +11,7 @@ from flask_cors import CORS
 from jsonschema import FormatChecker, Draft4Validator
 from pymongo import MongoClient
 from werkzeug.utils import secure_filename
+from pprint import pprint
 
 import uploader
 from apiexception import ApiException
@@ -20,6 +21,24 @@ es = Elasticsearch([{'host': 'elasticsearch', 'port': 9200}])
 client = MongoClient('mongodb:27017')
 db = client.knexDB
 coll = db.projects
+users = db.users
+
+def insert_user(firstname, lastname, email, password_hash,bio="",bookmarks=""):
+    try:
+        users.insert_one(
+        {
+        "email": email,
+        "password_hash": password_hash, #bcrypt.hashpw(password_hash.encode('utf-8'), bcrypt.gensalt()),
+        "firstname":firstname,
+        "lastname":lastname,
+        "bio": bio,
+        "bookmarks": bookmarks
+        })
+        return ('\nInserted data successfully\n')
+
+    except Exception as e:
+        return (str(e))
+
 
 app = Flask(__name__)
 CORS(app)
@@ -37,7 +56,8 @@ app.config['MAX_CONTENT_PATH'] = 1000000  # 100.000 byte = 100kb
 def index():
     """Index of knex
     """
-    return make_response('', 404)
+    insert_user('alex',"dfsfs","a.@ds.com", "pass")
+    return  users.find_one()["email"] #make_response('', 404)
 
 
 @app.route('/api/projects', methods=['POST'])
