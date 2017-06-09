@@ -72,13 +72,15 @@ class TestPOST(object):
         )
         with open(invalid_manifest, 'r', encoding='utf-8') as tf:
             invalid_data = str(tf.read().replace('\n', ''))
-        invalid_response = requests.post(flask_api_url + "/api/projects", data=invalid_data.encode('utf-8'),
+        invalid_response = requests.post(flask_api_url + "/api/projects",
+                                         data=invalid_data.encode('utf-8'),
                                          headers={'Content-Type': 'application/json5'})
         print(invalid_response.text)
 
         with open(unmatching_manifest, 'r', encoding='utf-8') as tf:
             unmatching_data = str(tf.read().replace('\n', ''))
-        unmatching_response = requests.post(flask_api_url + "/api/projects", data=unmatching_data.encode('utf-8'),
+        unmatching_response = requests.post(flask_api_url + "/api/projects",
+                                            data=unmatching_data.encode('utf-8'),
                                             headers={'Content-Type': 'application/json5'})
         print(unmatching_response.text)
 
