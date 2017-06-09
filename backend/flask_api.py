@@ -23,6 +23,9 @@ db = client.knexDB
 coll = db.projects
 users = db.users
 
+
+#function prototype for  insert user
+#should the password be hashed here?
 def insert_user(firstname, lastname, email, password_hash,bio="",bookmarks=""):
     try:
         users.insert_one(
@@ -56,8 +59,7 @@ app.config['MAX_CONTENT_PATH'] = 1000000  # 100.000 byte = 100kb
 def index():
     """Index of knex
     """
-    insert_user('alex',"dfsfs","a.@ds.com", "pass")
-    return  users.find_one()["email"] #make_response('', 404)
+    return  make_response('', 404)
 
 
 @app.route('/api/projects', methods=['POST'])
