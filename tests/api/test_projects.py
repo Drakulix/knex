@@ -102,9 +102,8 @@ class TestPOST(object):
         assert response.status_code == 400
 
 
-
 class TestDELETE(object):
-    
+
     def test_unknown_id(self, flask_api_url):
         """ Test for 404 when a project with unknown ID is to be deleted.
         """
@@ -134,11 +133,9 @@ class TestDELETE(object):
         print(delete_response.text)
 
         assert delete_response.status_code == 200
-    
+
     def test_unconsistent_delete(self, flask_api_url, pytestconfig):
         assert True
-
-        
 
 
 class TestGET(object):
