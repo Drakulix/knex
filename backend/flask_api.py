@@ -142,8 +142,8 @@ def get_projects():
     else:
         return make_response('Invalid parameters', 400)
 
-    entries=res[:]
-    resArr=[]
+    entries = res[:]
+    resArr = []
     for entry in entries:
         resArr.append(entry)
 
