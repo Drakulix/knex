@@ -500,24 +500,39 @@ font-weight: 300;
 }
 
 .btn-info {
-    height: 42px;
-    background-color: #333333;
-    border: solid 1px #333333;
-    font-family: 'Open Sans', sans-serif;
-    font-weight: 300;
-    font-size: 18px;
-    text-align: center;
-    color: #ffffff;
-    margin-top: 30px;
-    margin-bottom: 10px;
-    float: left;
-    border-radius: 0px;
+  width: 92px;
+  height: 42px;
+  background-color: #333333;
+  border: solid 1px #333333;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  font-size: 18px;
+  text-align: center;
+  color: #ffffff;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  float: left;
+  border-radius: 0px;
 }
 
 .btn-info:hover {
     color: #fff;
     background-color: #ff5500;
     border-color: #ff5500;
+}
+
+.btn-cancel {
+  width: 92px;
+  height: 42px;
+  background-color: #ff5500;
+  border: solid 1px #ff5500;
+  color: white;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  font-size: 18px;
+  margin-top: 46px;
+  display: block;
+  margin-left: 110px;
 }
 
 

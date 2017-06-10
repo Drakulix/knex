@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import CreateProjectLink from '../pages/CreateProjectLink.jsx';
 import Form from "react-jsonschema-form";
 
+const BACKEND_URL = 'http://localhost:5000';
+
 const schema = {
   type: "object",
   required: ["title"],
@@ -52,8 +54,15 @@ const log = (type) => console.log.bind(console, type);
 
 export default class UploadByPattern extends React.Component {
 
-  onSubmit() {
-  	alert('submitted!');
+  onSubmit = ({formData}) => {
+    fetch('http://localhost:5000/api/projects', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData)
+    })
   }
 
   render(){
@@ -65,6 +74,9 @@ export default class UploadByPattern extends React.Component {
               onChange={log("changed")}
               onSubmit={this.onSubmit}
               onError={log("errors")} />
+            <Link to="/createbylink">
+              <button className="btn-cancel">Cancel</button>
+            </Link>
         </div>
       </div>
   )
