@@ -3,7 +3,6 @@ import os
 import sys
 
 import json5
-from bson.json_util import dumps
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import RequestError
 from flask import Flask, request, jsonify, make_response
