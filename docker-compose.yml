@@ -16,3 +16,10 @@ services:
             - "5000:5000"
         volumes:
             - ./backend:/backend
+
+    mongo-connector:
+        build: 
+            context: ./backend
+            dockerfile: Dockerfile_mongo-connector
+        volumes:
+            - ./backend:/mongo-connector
