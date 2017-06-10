@@ -11,6 +11,7 @@ from jsonschema import FormatChecker, Draft4Validator
 from pymongo import MongoClient
 from werkzeug.utils import secure_filename
 from flask_security import Security, UserMixin, RoleMixin, MongoEngineUserDatastore, login_required
+from flask_security.core import current_user, current_app
 from flask_principal import Permission, RoleNeed
 from flask_mongoengine import MongoEngine
 
@@ -61,6 +62,21 @@ user_datastore = MongoEngineUserDatastore(me, User, Role)
 security = Security(app, user_datastore)
 
 
+@app.errorhandler(ApiException)
+def handle_invalid_usage(error):
+    """Handler for the ApiException error class.
+
+    Args:
+        error: Error which needs to be handled.
+
+    Returns:
+        response (json): Error in json format
+    """
+    response = jsonify(error.to_dict())
+    response.status_code = error.status_code
+    return response
+
+
 @app.before_first_request
 def initialize_users():
     """Executed once on Flask iniitialization, sets up default Users
@@ -71,30 +87,16 @@ def initialize_users():
     user_datastore.create_user(email='admin@knex.com', password='admin', roles=[admin_role])
 
 
-def has_permission(user, project):
+def has_permission(user: User, project):
     """Returns if a user has permission to access rights to a project
     """
     if 'admin' in user.roles:
         return True
-    elif 'user' in user.roles:
+    elif 'user' in user.roles:  # user.has_role('user')
         for author in projects['authors']:
             if author['email'] == user.email:
                 return True
     return False
-
-
-@app.route('/userpanel', methods=['GET'])
-@login_required
-@user_permission.require()
-def user_panel():
-    return make_response("User Panel")
-
-
-@app.route('/adminarea', methods=['GET'])
-@login_required
-@admin_permission.require()
-def admin_area():
-    return make_response("Admin Area")
 
 
 @app.route('/', methods=['GET'])
@@ -152,34 +154,18 @@ def add_project():
             return make_response("error: " + str(err), '500')
 
 
-@app.errorhandler(ApiException)
-def handle_invalid_usage(error):
-    """Handler for the ApiException error class.
 
-    Args:
-        error: Error which needs to be handled.
-
-    Returns:
-        response (json): Error in json format
+@app.route('/api/projects', methods=['PUT'])
+@login_required
+@user_permission.require()
+def update_project():
+    """Updates the project in the database if it exists, prototype, implementation missing
+    @krisselchen is working on it
     """
-    response = jsonify(error.to_dict())
-    response.status_code = error.status_code
-    return response
-
-
-@app.route('/upload', methods=['GET'])
-def uploads():
-    """TODO:
-    remove this later, default multi file uploader for testing purposes
-    """
-    if request.method == 'GET':
-        return """<!doctype html>
-        <title>Upload multiple files</title>
-        <h1>Upload multiple files</h1>
-        <form action="" method=post enctype=multipart/form-data>
-        <input type=file name="file[]" multiple>
-        <input type=submit value=Upload>
-        </form>"""
+    if not has_permission(current_user, request.json):  ##TODO: handle json5, see POST
+        raise ApiException("Current User doesn't have permission to update a project", 401)
+    
+    return None
 
 
 @app.route('/api/projects', methods=['GET'])
@@ -191,7 +177,6 @@ def get_projects():
     """
     limit = request.args.get('limit', type=int)
     skip = request.args.get('skip', type=int)
-
     argc = len(request.args)
 
     if coll.count() == 0:
@@ -215,7 +200,6 @@ def get_projects():
 
     res = make_response(jsonify(resArr))
     res.headers['Content-Type'] = 'application/json'
-
     return res
 
 
@@ -236,6 +220,8 @@ def get_project_by_id(project_id):
 
 
 @app.route('/api/projects/<uuid:project_id>', methods=['DELETE'])
+@login_required
+@admin_permission.require()
 def delete_project(project_id):
     """Deletes a project by ID.
 
