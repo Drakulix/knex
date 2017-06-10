@@ -105,13 +105,15 @@ def save_manifest_to_db(manifest):
                 coll.insert(entry)
                 print("mongo insert: ", file=sys.stderr)
                 es.create(index="projects-index", doc_type='Project',
-                            id=entry["_id"], refresh=True, body={})
+                          id=entry["_id"], refresh=True, body={})
                 print("Successfully inserted content: ", file=sys.stderr)
                 print(entry, file=sys.stderr)
                 ids.append(entry['_id'])
             return ids
         else:
-            raise ApiException("Validation Error: " + str(is_valid), 400, [err.message for err in sorted(validator.iter_errors(manifest), key=str)])
+            raise ApiException(
+                "Validation Error: " + str(is_valid), 400,
+                [err.message for err in sorted(validator.iter_errors(manifest), key=str)])
             errors = sorted(validator.iter_errors(manifest), key=str)
             validation_error = {}
             validation_error["errors"] = []
