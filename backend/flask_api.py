@@ -70,17 +70,14 @@ def add_project():
 
     else:  # no files attached
         try:
-            return_ids = []
             if request.json:
-                return_ids = uploader.save_manifest_to_db(request.json)
-
+                return_ids_and_errors = uploader.save_manifest_to_db(request.json)
             else:
                 print(request.data.decode("utf-8"), file=sys.stderr)
-                return_ids = uploader.save_manifest_to_db(
+                return_ids_and_errors = uploader.save_manifest_to_db(
                     json5.loads(request.data.decode("utf-8")))
-                print(return_ids)
 
-            return jsonify(return_ids)
+            return jsonify(return_ids_and_errors)
         except ApiException as e:
             raise e
         except Exception as err:
@@ -143,7 +140,7 @@ def get_projects():
     else:
         return make_response('Invalid parameters', 400)
 
-    res = make_response(dumps(res))
+    res = make_response(jsonify([x for x in res[:]]))
     res.headers['Content-Type'] = 'application/json'
 
     return res
