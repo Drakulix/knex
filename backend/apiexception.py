@@ -1,5 +1,6 @@
 """ This module defines the Exception class for Flask API errors. """
 
+
 class ApiException(Exception):
     """ Exception for errors of the Flask API."""
     status_code = 400

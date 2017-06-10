@@ -32,6 +32,7 @@ ALLOWED_EXTENSIONS = {'txt', 'json', 'json5'}
 app.config['UPLOAD_FOLDER'] = ''
 app.config['MAX_CONTENT_PATH'] = 1000000  # 100.000 byte = 100kb
 
+
 @app.route('/', methods=['GET'])
 def index():
     """Index of knex
@@ -76,7 +77,7 @@ def add_project():
                 ids_and_errors = uploader.save_manifest_to_db(
                     json5.loads(request.data.decode("utf-8")))
 
-            return jsonify(ids_and_errors[0]) # list of ids, errors currently not returned 
+            return jsonify(ids_and_errors[0])  # list of ids, errors currently not returned
         except ApiException as e:
             raise e
         except Exception as err:
