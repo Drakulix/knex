@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 import CreateProjectLink from '../pages/CreateProjectLink.jsx';
 import Form from "../libraries/react-jsonschema-form";
-
-import exampleJSON from "../../data/test_project.json";
+import { Redirect } from 'react-router-dom';
+//import exampleJSON from "../../data/test_project.json";
 
 const schema = {
   type: "object",
@@ -36,6 +36,7 @@ const schema = {
     date_creation: {
       type: "string",
       title: "Creation Date",
+      //format: "date-time",
       default: "2011-12-12"
     },
     description: {
@@ -44,13 +45,8 @@ const schema = {
       default: "A Description"
     },
     status: {
-      type: "array",
-        title: "A multiple choices list",
-        items: {
-          type: "string",
-          enum: ["pending", "in progress", "done", "no status"],
-        },
-        uniqueItems: true
+      type: "string",
+        title: "Status"
     },
     url: {
       type: "string",
@@ -76,6 +72,9 @@ const uiSchema = {
   url: {
     "ui:placeholder": "http://"
   },
+  url_two: {
+    "ui:placeholder": "http://"
+  },
   description: {
     "ui:widget": "textarea"
   },
@@ -93,7 +92,7 @@ const uiSchema = {
 };
 
 const formData = {
-
+  //to be continued
 }
 
 const log = (type) => console.log.bind(console, type);
@@ -111,9 +110,10 @@ export default class UploadByPattern extends React.Component {
       //body: JSON.stringify(exampleJSON)
     }),
     console.log(formData);
+    alert("New Project added!");
   }
 
-  render(){
+  render() {
     return(
       <div className="container">
         <div className="innerContainer">
@@ -129,6 +129,6 @@ export default class UploadByPattern extends React.Component {
             </Link>
         </div>
       </div>
-  )
+    )
   }
 }
