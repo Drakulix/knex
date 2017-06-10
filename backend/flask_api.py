@@ -140,7 +140,7 @@ def get_projects():
         res = coll.find({}, skip=skip)
     else:
         return make_response('Invalid parameters', 400)
-    
+
     res = make_response(jsonify([x for x in res[:]]))
     res.headers['Content-Type'] = 'application/json'
     return res
