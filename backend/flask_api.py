@@ -3,7 +3,6 @@ import os
 import sys
 
 import json5
-from bson.json_util import dumps
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import RequestError
 from flask import Flask, request, jsonify, make_response
@@ -143,7 +142,12 @@ def get_projects():
     else:
         return make_response('Invalid parameters', 400)
 
-    res = make_response(dumps(res))
+    entries = res[:]
+    resArr = []
+    for entry in entries:
+        resArr.append(entry)
+
+    res = make_response(jsonify(resArr))
     res.headers['Content-Type'] = 'application/json'
 
     return res
