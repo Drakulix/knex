@@ -70,13 +70,12 @@ def add_project():
     else:  # no files attached
         try:
             if request.json:
-                ids_and_errors = uploader.save_manifest_to_db(request.json)
+                return_ids = uploader.save_manifest_to_db(request.json)
             else:
-                print(request.data.decode("utf-8"), file=sys.stderr)
-                ids_and_errors = uploader.save_manifest_to_db(
+                return_ids = uploader.save_manifest_to_db(
                     json5.loads(request.data.decode("utf-8")))
 
-            return jsonify(ids_and_errors[0])  # list of ids, errors currently not returned
+            return jsonify(return_ids)
         except ApiException as e:
             raise e
         except Exception as err:

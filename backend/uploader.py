@@ -86,8 +86,7 @@ def save_manifest_to_db(manifest):
         manifest: The manifest to be saved, may contain multiple json objects
 
     Returns:
-        tuple[0]: The IDs of the manifests successfully stored
-        tuple[1]: ApiExceptions of manifests that failed to be stored
+        ids: The IDs of the manifests successfully stored
 
     Raises:
         ApiException: Error while trying to save the document.
@@ -98,28 +97,21 @@ def save_manifest_to_db(manifest):
         if is_valid:
             manifestlist = manifest if isinstance(manifest, list) else [manifest]
             ids = []
-            errors = []
             for entry in manifestlist:
-                try:
-                    entry['date_creation'] = time.strftime("%Y-%m-%d")
-                    entry['date_update'] = time.strftime("%Y-%m-%d")
-                    entry['_id'] = uuid.uuid4()
-                    print("manifest is valid", file=sys.stderr)
-                    coll.insert(entry)
-                    print("mongo insert: ", file=sys.stderr)
-                    es.create(index="projects-index", doc_type='Project',
-                              id=entry["_id"], refresh=True, body={})
-                    print("Successfully inserted content: ", file=sys.stderr)
-                    print(entry, file=sys.stderr)
-                    ids.append(entry['_id'])
-                except ApiException as e:
-                    errors.append(e)
-                except Exception as err:
-                    errors.append(ApiException(
-                        "Manifest " + entry + "failed with the message: " + err.message))
-            return (ids, errors)
+                entry['date_creation'] = time.strftime("%Y-%m-%d")
+                entry['date_update'] = time.strftime("%Y-%m-%d")
+                entry['_id'] = uuid.uuid4()
+                print("manifest is valid", file=sys.stderr)
+                coll.insert(entry)
+                print("mongo insert: ", file=sys.stderr)
+                es.create(index="projects-index", doc_type='Project',
+                            id=entry["_id"], refresh=True, body={})
+                print("Successfully inserted content: ", file=sys.stderr)
+                print(entry, file=sys.stderr)
+                ids.append(entry['_id'])
+            return ids
         else:
-            print(is_valid, file=sys.stderr)
+            raise ApiException("Validation Error: " + str(is_valid), 400, [err.message for err in sorted(validator.iter_errors(manifest), key=str)])
             errors = sorted(validator.iter_errors(manifest), key=str)
             validation_error = {}
             validation_error["errors"] = []
