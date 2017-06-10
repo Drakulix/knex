@@ -21,5 +21,8 @@ services:
         build: 
             context: ./backend
             dockerfile: Dockerfile_mongo-connector
+        links:
+            - mongodb
+            - elasticsearch
         volumes:
             - ./backend:/mongo-connector
