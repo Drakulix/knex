@@ -48,18 +48,18 @@ def save_file_to_db(filename):
                 jsonfile.close()
                 manifest['date_creation'] = time.strftime("%Y-%m-%d")
                 manifest['date_update'] = time.strftime("%Y-%m-%d")
-                manifest['id'] = uuid.uuid4()
+                manifest['_id'] = uuid.uuid4()
 
                 res = es.index(index="projects-index", doc_type='Project',
-                               id=manifest['id'], body=manifest)
+                               id=manifest['_id'], body=manifest)
                 if res['created']:
                     coll.insert_one(manifest)
 
                     print("Successfully validated file. ID is " +
-                          str(manifest['id']), file=sys.stderr)
+                          str(manifest['_id']), file=sys.stderr)
                     print("File content is: ", file=sys.stderr)
                     print(manifest, file=sys.stderr)
-                    return manifest['id']
+                    return manifest['_id']
                 else:
                     print(is_valid, file=sys.stderr)
                     raise ApiException("ElasticSearch Index Error: \n" + str(is_valid), 500)
