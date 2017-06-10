@@ -109,7 +109,6 @@ class TestPOST(object):
         assert response.status_code == 400
 
 
-
 class TestDELETE(object):
 
     def test_unknown_id(self, flask_api_url):
