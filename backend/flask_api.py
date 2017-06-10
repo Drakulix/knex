@@ -85,7 +85,7 @@ def add_project():
         except ApiException as e:
             raise e
         except Exception as err:
-            raise make_response("Error: " + str(err), 500)
+            return make_response("Error: " + str(err), 500)
 
 
 @app.errorhandler(ApiException)
