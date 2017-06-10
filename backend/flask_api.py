@@ -128,7 +128,6 @@ def get_projects():
     """
     limit = request.args.get('limit', type=int)
     skip = request.args.get('skip', type=int)
-
     argc = len(request.args)
 
     if coll.count() == 0:
@@ -145,14 +144,8 @@ def get_projects():
     else:
         return make_response('Invalid parameters', 400)
 
-    entries = res[:]
-    resArr = []
-    for entry in entries:
-        resArr.append(entry)
-
-    res = make_response(jsonify(resArr))
+    res = make_response(jsonify([x for x in res[:]]))
     res.headers['Content-Type'] = 'application/json'
-
     return res
 
 
