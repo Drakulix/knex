@@ -87,7 +87,7 @@ def save_manifest_to_db(manifest):
 
     Returns:
         tuple[0]: The IDs of the manifests successfully stored
-        tuple[1]: APIExceptions of manifests that failed to be stored
+        tuple[1]: ApiExceptions of manifests that failed to be stored
 
     Raises:
         ApiException: Error while trying to save the document.
