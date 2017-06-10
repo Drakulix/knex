@@ -1,6 +1,7 @@
 import json
 import os
 from uuid import UUID
+import uuid
 
 import requests
 
@@ -114,6 +115,14 @@ class TestDELETE(object):
     def test_unknown_id(self, flask_api_url):
         """ Test for 404 when a project with unknown ID is to be deleted.
         """
+        unknown_id = str(uuid.uuid4())
+        response = requests.delete(flask_api_url + "/api/projects/" + unknown_id)
+        print(response.text)
+        assert response.status_code == 404
+
+    def test_invalid_id(self, flask_api_url):
+        """ Test for 404 when a project with ID of invalid format is to be deleted.
+        """
         invalid_id = "invalid"
         response = requests.delete(flask_api_url + "/api/projects/" + invalid_id)
         print(response.text)
@@ -149,6 +158,14 @@ class TestGET(object):
 
     def test_unknown_id(self, flask_api_url):
         """ Test for 404 when a project with unknown ID is to be deleted.
+        """
+        unknown_id = str(uuid.uuid4())
+        response = requests.get(flask_api_url + "/api/projects/" + unknown_id)
+        print(response.text)
+        assert response.status_code == 404
+
+    def test_invaid_id(self, flask_api_url):
+        """ Test for 404 when a project with ID in invalid format is to be deleted.
         """
         invalid_id = "invalid"
         response = requests.get(flask_api_url + "/api/projects/" + invalid_id)
