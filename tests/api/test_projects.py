@@ -8,8 +8,12 @@ import requests
 class TestPOST(object):
 
     def test_empty_post(self, flask_api_url):
-        # TODO
-        assert True
+        """ Tests for 400 when the post body is empty.
+        """
+        response = requests.post(flask_api_url + "/api/projects")
+        print(response.text)
+
+        assert response.status_code == 400
 
     def test_success_json5(self, flask_api_url, pytestconfig):
         test_manifest = os.path.join(
@@ -102,6 +106,7 @@ class TestPOST(object):
                                  headers={'Content-Type': 'image/gif'})
         print(response.text)
         assert response.status_code == 400
+
 
 
 class TestDELETE(object):
