@@ -1,70 +1,105 @@
 import React, { Component } from 'react';
+import {fetchProjectDetails, fetchJson} from '../common/Backend'
 
-class ProjectContainer extends Component {
+export default class ProjectContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      state:null
+      projectInf: []
     };
   }
 
+  componentWillReceiveProps(nextProps){
+    this.loadProjectInf(nextProps)
+  }
+
+  componentDidMount(){
+    this.loadProjectInf(this.props);
+  }
+
+  loadProjectInf(props) {
+    fetchProjectDetails(props.uuid).then(data => {
+      console.log(data);
+      this.setState({projectInf: data})
+    });
+  }
+
+
+
+
+  //
+
   render(){
+    const { _id, authors, date_creation, date_update, description } = this.state.projectInf;
+    const { status, tags, title, url} = this.state.projectInf;
+
+    var authors_string = null;
+    if (authors != null){
+      var author_container = []
+      for (var i = 0; i < authors.length; i++){
+        author_container.push(authors[i].name);
+      }
+      authors_string = author_container.join(", ")
+    } else {
+      authors_string = ''
+    }
+
+    var tag_string = null;
+    if (tags != null){
+      var tag_container = []
+      for (var i = 0; i < tags.length; i++){
+        tag_container.push(tags[i])
+      }
+      tag_string = tag_container.join(", ")
+    } else {
+      tag_string = ''
+    }
+
     return(
       <div className="container">
         <div className="projecttitle">
           <p>
-            {"Title: Contextual music information retrieval and recommendation: State of the art and challenges"}
+            Title: {title}
           </p>
         </div>
         <div className="status">
           <p>
-          {"Status: In progress"}
+          Status: {status}
           </p>
         </div>
         <div className="author">
           <p>
-            {"Authors: Marius Kaminskas"}
+            Authors: {authors_string}
           </p>
           <p>
             {"Date of creation: 2017-01-16"}
           </p>
           <p>
-            {"Last time updated: " + this.props.date_last_updated}
+            {"Last time updated: " + date_update}
           </p>
           <p>
-            {"Team: " + this.props.team}
+            {"Team: " }
           </p>
           <p>
-            {"Tags: " + this.props.tags}
+            {"Tags: " + tag_string}
           </p>
           <p>
-            {"Git URL:"}
+            {"Github:"}
           </p>
           <p>
-            {this.props.git_url}
+            {url}
           </p>
           <p>
-            {"Description: test"}
+            {"Description:"}
           </p>
           <p>
-            {this.props.description}
+            {description}
           </p>
           <p>
-            {"Future work: "}
-          </p>
-          <p>
-            {this.props.future_work}
-          </p>
-          <p>
-            {"Related Projects: "}
-          </p>
-          <p>
-            {this.props.related_projects}
+            {}
           </p>
         </div>
       </div>
     );
   }
 }
-
-export default ProjectContainer;
