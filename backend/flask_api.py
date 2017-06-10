@@ -32,7 +32,6 @@ ALLOWED_EXTENSIONS = {'txt', 'json', 'json5'}
 app.config['UPLOAD_FOLDER'] = ''
 app.config['MAX_CONTENT_PATH'] = 1000000  # 100.000 byte = 100kb
 
-
 @app.route('/', methods=['GET'])
 def index():
     """Index of knex
@@ -62,11 +61,11 @@ def add_project():
                 print("Successful files: ", successful_files, '\n', file=sys.stderr)
                 print("Unsuccessful files: ", unsuccessful_files, '\n', file=sys.stderr)
         return """<!doctype html>
-                    <title>Upload multiple files</title>
-                    <h1>Upload multiple files</h1>
-                    <body>Successful files: """ + ', '.join(e for e in successful_files) + '<br />' + """
-                    Unsuccessful files: """ + ', '.join(e for e in unsuccessful_files) + """
-                    </body>"""
+        <title>Upload multiple files</title>
+        <h1>Upload multiple files</h1>
+        <body>Successful files: """ + ', '.join(e for e in successful_files) + '<br />' + """
+        Unsuccessful files: """ + ', '.join(e for e in unsuccessful_files) + """
+        </body>"""
 
     else:  # no files attached
         try:

@@ -55,8 +55,7 @@ def save_file_to_db(filename):
                 if res['created']:
                     coll.insert_one(manifest)
 
-                    print("Successfully validated file. ID is " +
-                          str(manifest['id']), file=sys.stderr)
+                    print("Successfully validated file. ID is " + str(manifest['id']), file=sys.stderr)
                     print("File content is: ", file=sys.stderr)
                     print(manifest, file=sys.stderr)
                     return manifest['id']
@@ -107,15 +106,16 @@ def save_manifest_to_db(manifest):
                     print("manifest is valid", file=sys.stderr)
                     coll.insert(entry)
                     print("mongo insert: ", file=sys.stderr)
-                    es.create(index="projects-index", doc_type='Project',
-                                id=entry["_id"], refresh=True, body={})
+                    es.create(index="projects-index", doc_type='Project', 
+                              id=entry["_id"], refresh=True, body={})
                     print("Successfully inserted content: ", file=sys.stderr)
                     print(entry, file=sys.stderr)
                     ids.append(entry['_id'])
                 except ApiException as e:
                     errors.append(e)
                 except Exception as err:
-                    errors.append(ApiException("Manifest " + entry + "failed with the message: " + err.message))
+                    errors.append(ApiException(
+                        "Manifest " + entry + "failed with the message: " + err.message))
             return (ids, errors)
         else:
             print(is_valid, file=sys.stderr)
