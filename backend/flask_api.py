@@ -84,8 +84,6 @@ def add_project():
             return jsonify(return_ids)
         except ApiException as e:
             raise e
-        except Exception as err:
-            return make_response("Error: " + str(err), 500)
 
 
 @app.errorhandler(ApiException)
