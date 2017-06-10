@@ -177,10 +177,6 @@ font-weight: 300;
   border-radius: 0px;
 }
 
-.form-control {
-  height: 38px;
-}
-
 .sign-button {
   width: 250px;
   height: 43px;
@@ -193,6 +189,7 @@ font-weight: 300;
 .btn-primary {
   background-color: #ff5500 !important;
   border-color: #ff5500 !important;
+  border-radius: 0px !important;
 }
 
 .sign-button:hover {
@@ -233,10 +230,6 @@ font-weight: 300;
 .hidden-divider {
   margin-bottom: 5em;
   visibility: hidden;
-}
-
-.btn-primary {
-  border-radius: 0px !important;
 }
 
 .form-control {
@@ -313,6 +306,7 @@ font-weight: 300;
   font-size: 30px;
   color: #000000;
   margin-top: 100px;
+  margin-bottom: 50px;
 }
 
 .caption{
@@ -504,6 +498,28 @@ font-weight: 300;
   margin-top: 30px;
   margin-bottom: 10px;
 }
+
+.btn-info {
+    height: 42px;
+    background-color: #333333;
+    border: solid 1px #333333;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
+    font-size: 18px;
+    text-align: center;
+    color: #ffffff;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    float: left;
+    border-radius: 0px;
+}
+
+.btn-info:hover {
+    color: #fff;
+    background-color: #ff5500;
+    border-color: #ff5500;
+}
+
 
 .nav-tabs .nav-link {
     border: 1px solid transparent;
