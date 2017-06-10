@@ -51,7 +51,7 @@ def save_file_to_db(filename):
                 manifest['_id'] = uuid.uuid4()
 
                 res = es.index(index="projects-index", doc_type='Project',
-                               id=manifest['id'], body=manifest)
+                               id=manifest['_id'], body=manifest)
                 if res['created']:
                     coll.insert_one(manifest)
 
