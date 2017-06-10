@@ -23,7 +23,7 @@ class ApiException(Exception):
     def to_dict(self):
         """ Turn error message and payload into Python dictionary.
         Returns:
-            rv (dict): Dictionary of error message and payload.
+            return_value (dict): Dictionary of error message and payload.
         """
         return_value = dict()
         return_value['message'] = self.message
