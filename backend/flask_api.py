@@ -73,11 +73,14 @@ def add_project():
             if request.json:
                 return_ids = uploader.save_manifest_to_db(request.json)
 
-            else:
+            elif request.data:
                 print(request.data.decode("utf-8"), file=sys.stderr)
                 return_ids = uploader.save_manifest_to_db(
                     json5.loads(request.data.decode("utf-8")))
                 print(return_ids)
+
+            else:
+                return make_response("Error: empty post body", '400')
 
             return jsonify(return_ids)
         except ApiException as e:
