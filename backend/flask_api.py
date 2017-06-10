@@ -154,7 +154,6 @@ def add_project():
             return make_response("error: " + str(err), '500')
 
 
-
 @app.route('/api/projects', methods=['PUT'])
 @login_required
 @user_permission.require()
@@ -162,7 +161,7 @@ def update_project():
     """Updates the project in the database if it exists, prototype, implementation missing
     @krisselchen is working on it
     """
-    if not has_permission(current_user, request.json):  ##TODO: handle json5, see POST
+    if not has_permission(current_user, request.json):  # TODO: handle json5, see POST
         raise ApiException("Current User doesn't have permission to update a project", 401)
     
     return None
