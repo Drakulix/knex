@@ -125,7 +125,7 @@ def save_manifest_to_db(manifest):
                     print("manifest is valid", file=sys.stderr)
                     coll.insert(entry)
                     print("mongo insert: ", file=sys.stderr)
-                    es.create(index="projects-index", doc_type='Project', 
+                    es.create(index="projects-index", doc_type='Project',
                               id=entry["_id"], refresh=True, body={})
                     print("Successfully inserted content: ", file=sys.stderr)
                     print(entry, file=sys.stderr)

@@ -31,6 +31,7 @@ ALLOWED_EXTENSIONS = {'txt', 'json', 'json5'}
 app.config['UPLOAD_FOLDER'] = ''
 app.config['MAX_CONTENT_PATH'] = 1000000  # 100.000 byte = 100kb
 
+
 @app.route('/', methods=['GET'])
 def index():
     """Index of knex
@@ -79,6 +80,7 @@ def add_project():
                 print(return_ids)
 
             return jsonify(return_ids)
+
         except ApiException as e:
             raise e
         except Exception as err:
