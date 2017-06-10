@@ -532,7 +532,7 @@ legend {
   font-size: 18px;
   text-align: center;
   color: #ffffff;
-  margin-top: 30px;
+  margin-top: 10px;
   margin-bottom: 10px;
   float: left;
   border-radius: 0px;
@@ -553,7 +553,7 @@ legend {
   font-family: 'Open Sans', sans-serif;
   font-weight: 300;
   font-size: 18px;
-  margin-top: 46px;
+  margin-top: 26px;
   display: block;
   margin-left: 110px;
 }
