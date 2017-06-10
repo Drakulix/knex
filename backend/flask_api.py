@@ -1,8 +1,8 @@
-import json
 import os
 import sys
-
+import json
 import json5
+
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import RequestError
 from flask import Flask, request, jsonify, make_response
@@ -10,15 +10,13 @@ from flask_cors import CORS
 from jsonschema import FormatChecker, Draft4Validator
 from pymongo import MongoClient
 from werkzeug.utils import secure_filename
+from flask_security import Security, UserMixin, RoleMixin, MongoEngineUserDatastore, login_required
+from flask_principal import Permission, RoleNeed
+from flask_mongoengine import MongoEngine
 
 import uploader
 from apiexception import ApiException
 
-es = Elasticsearch([{'host': 'elasticsearch', 'port': 9200}])
-
-client = MongoClient('mongodb:27017')
-db = client.knexDB
-coll = db.projects
 
 app = Flask(__name__)
 CORS(app)
@@ -30,6 +28,72 @@ validator = Draft4Validator(schema, format_checker=FormatChecker())
 ALLOWED_EXTENSIONS = {'txt', 'json', 'json5'}
 app.config['UPLOAD_FOLDER'] = ''
 app.config['MAX_CONTENT_PATH'] = 1000000  # 100.000 byte = 100kb
+app.config['MONGODB_DB'] = 'knexDB'
+app.config['MONGODB_HOST'] = 'mongodb'
+app.config['MONGODB_PORT'] = 27017
+
+es = Elasticsearch([{'host': 'elasticsearch', 'port': 9200}])
+
+# client = MongoClient('mongodb:27017')
+db = MongoEngine(app)
+coll = db.projects
+
+admin_permission = Permission(RoleNeed('admin'))
+user_permission = Permission(RoleNeed('user'))
+
+
+class Role(db.Document, RoleMixin):
+    name = db.StringField(max_length=80, unique=True)
+    description = db.StringField(max_length=255)
+
+
+class User(db.Document, UserMixin):
+    email = db.StringField(max_length=255)
+    firstname = db.StringField(max_length=255)
+    lastname = db.StringField(max_length=255)
+    password = db.StringField(max_length=255)
+    active = db.BooleanField(default=True)
+    roles = db.ListField(db.ReferenceField(Role), default=[])
+
+
+user_datastore = MongoEngineUserDatastore(db, User, Role)
+security = Security(app, user_datastore)
+
+
+@app.before_first_request
+def initialize_users():
+    """Executed once on Flask iniitialization, sets up default Users
+    """
+    user_role = user_datastore.find_or_create_role('user')
+    user_datastore.create_user(email='user@knex.com', password='user', roles=[user_role])
+    admin_role = user_datastore.find_or_create_role('admin')
+    user_datastore.create_user(email='admin@knex.com', password='admin', roles=[admin_role])
+
+
+def has_permission(user, project):
+    """Returns if a user has permission to access rights to a project
+    """
+    if 'admin' in user.roles:
+        return True
+    elif 'user' in user.roles:
+        for author in projects['authors']:
+            if author['email'] == user.email:
+                return True
+    return False
+
+
+@app.route('/userpanel', methods=['GET'])
+@login_required
+@user_permission.require()
+def user_panel():
+    return make_response("User Panel")
+
+
+@app.route('/adminarea', methods=['GET'])
+@login_required
+@admin_permission.require()
+def admin_area():
+    return make_response("Admin Area")
 
 
 @app.route('/', methods=['GET'])
