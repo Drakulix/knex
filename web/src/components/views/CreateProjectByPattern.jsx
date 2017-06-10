@@ -27,7 +27,8 @@ const schema = {
           },
           email: {
             "title": "E-Mail",
-            "type": "string"
+            "type": "string",
+            "format": "email"
           }
         }
       }
@@ -36,7 +37,6 @@ const schema = {
       type: "string",
       title: "Creation Date",
       default: "2011-12-12"
-      //format: "uri"
     },
     description: {
       type: "string",
@@ -62,6 +62,13 @@ const schema = {
       title: "Other URL",
       format: "uri"
     },
+    tags: {
+      title: "Tags",
+      type: "array",
+      items: {
+        type: "string"
+      }
+    }
   }
 };
 
@@ -72,8 +79,16 @@ const uiSchema = {
   description: {
     "ui:widget": "textarea"
   },
+  tags: {
+    "ui:help": "Add tags!"
+  },
   authors: {
     "ui:help": "Add author!"
+  },
+  foo: {
+    "ui:options":  {
+      addable: true
+    }
   }
 };
 
