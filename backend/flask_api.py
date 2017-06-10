@@ -77,16 +77,15 @@ def add_project():
                 print(request.data.decode("utf-8"), file=sys.stderr)
                 return_ids = uploader.save_manifest_to_db(
                     json5.loads(request.data.decode("utf-8")))
-                print(return_ids)
 
             else:
-                raise ApiException("Error: empty POST body", status_code = 400)
+                return make_response("Error: empty POST body", 400)
 
             return jsonify(return_ids)
         except ApiException as e:
             raise e
         except Exception as err:
-            raise ApiException("Error: " + str(err), status_code = 500)
+            raise make_response("Error: " + str(err), 500)
 
 
 @app.errorhandler(ApiException)
