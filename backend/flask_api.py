@@ -80,13 +80,13 @@ def add_project():
                 print(return_ids)
 
             else:
-                return make_response("Error: empty post body", '400')
+                raise ApiException("Error: empty POST body", status_code = 400)
 
             return jsonify(return_ids)
         except ApiException as e:
             raise e
         except Exception as err:
-            return make_response("error: " + str(err), '500')
+            raise ApiException("Error: " + str(err), status_code = 500)
 
 
 @app.errorhandler(ApiException)
