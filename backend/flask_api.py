@@ -121,7 +121,6 @@ def get_projects():
     """
     limit = request.args.get('limit', type=int)
     skip = request.args.get('skip', type=int)
-
     argc = len(request.args)
 
     if coll.count() == 0:
@@ -140,7 +139,6 @@ def get_projects():
 
     res = make_response(jsonify([x for x in res[:]]))
     res.headers['Content-Type'] = 'application/json'
-
     return res
 
 
