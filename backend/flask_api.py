@@ -163,7 +163,7 @@ def update_project():
     """
     if not has_permission(current_user, request.json):  # TODO: handle json5, see POST
         raise ApiException("Current User doesn't have permission to update a project", 401)
-    
+
     return None
 
 
