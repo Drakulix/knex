@@ -4,41 +4,46 @@ import { Link } from 'react-router-dom';
 import CreateProjectLink from '../pages/CreateProjectLink.jsx';
 import Form from "react-jsonschema-form";
 
-const BACKEND_URL = 'http://localhost:5000';
+import exampleJSON from "../../data/test_project.json";
 
 const schema = {
   type: "object",
-  required: ["title"],
+  required: ["title", "authors", "date_creation", "description", "status"],
   properties: {
     title: {
       type: "string",
       title: "Title",
       default: "A new task"
     },
-    list: {
+    authors: {
       type: "array",
+      items: {
+        type: "object",
+        properties: {
+          name: {
+            "type": "string"
+          },
+          email: {
+            "type": "string"
+          }
+        }
+      }
+    },
+    date_creation: {
+      type: "string",
+      title: "Creation Date",
+      default: "2011-12-12"
+      //format: "uri"
+    },
+    description: {
+      type: "string",
+      title: "Description",
+      default: "A Description"
+    },
+    status: {
+      type: "string",
       title: "A multiple choices list",
-      items: {
-        type: "string",
-        enum: ["foo", "bar", "fuzz", "qux"],
-      },
-      uniqueItems: true
-    },
-    ttztestst: {
-      type: "string", format: "uri"
-    },
-    tes: {
-      type: "string",
-      title: "Title",
-      default: "A new task"
-    },
-    bla: {
-      type: "array", title: "A multiple choices list",
-      items: {
-      type: "string",
-      enum: ["foo", "bar", "fuzz", "qux"]
-      },
-      uniqueItems: true
+      default: "in progress"
     }
   }
 };
@@ -62,7 +67,9 @@ export default class UploadByPattern extends React.Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(formData)
-    })
+      //body: JSON.stringify(exampleJSON)
+    }),
+    console.log(formData);
   }
 
   render(){
