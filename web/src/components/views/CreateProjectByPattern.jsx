@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 import CreateProjectLink from '../pages/CreateProjectLink.jsx';
-import Form from "react-jsonschema-form";
+import Form from "../libraries/react-jsonschema-form";
 
 import exampleJSON from "../../data/test_project.json";
 
@@ -17,13 +17,16 @@ const schema = {
     },
     authors: {
       type: "array",
+      title: "Author",
       items: {
         type: "object",
         properties: {
           name: {
+            "title": "Name",
             "type": "string"
           },
           email: {
+            "title": "E-Mail",
             "type": "string"
           }
         }
@@ -41,19 +44,42 @@ const schema = {
       default: "A Description"
     },
     status: {
+      type: "array",
+        title: "A multiple choices list",
+        items: {
+          type: "string",
+          enum: ["pending", "in progress", "done", "no status"],
+        },
+        uniqueItems: true
+    },
+    url: {
       type: "string",
-      title: "A multiple choices list",
-      default: "in progress"
-    }
+      title: "Github URL",
+      format: "uri"
+    },
+    url_two: {
+      type: "string",
+      title: "Other URL",
+      format: "uri"
+    },
   }
 };
 
 const uiSchema = {
-  "ui:widget": "checkboxes",
-  "ui:widget": "password",
-  "ui:help": "Hint: Make it strong!",
-  "ui:placeholder": "http://"
+  url: {
+    "ui:placeholder": "http://"
+  },
+  description: {
+    "ui:widget": "textarea"
+  },
+  authors: {
+    "ui:help": "Add author!"
+  }
 };
+
+const formData = {
+
+}
 
 const log = (type) => console.log.bind(console, type);
 
@@ -78,6 +104,8 @@ export default class UploadByPattern extends React.Component {
         <div className="innerContainer">
           <div className="headerCreation">Create New Project</div>
             <Form schema={schema}
+              uiSchema={uiSchema}
+              formData={formData}
               onChange={log("changed")}
               onSubmit={this.onSubmit}
               onError={log("errors")} />

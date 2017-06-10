@@ -186,6 +186,10 @@ font-weight: 300;
   font-weight: 200;
 }
 
+.btn {
+  border-radius: 0rem;
+}
+
 .btn-primary {
   background-color: #ff5500 !important;
   border-color: #ff5500 !important;
@@ -244,6 +248,14 @@ font-weight: 300;
 
 /* createProjectByPattern.js and createProjectView.js */
 
+legend {
+  font-size: 1rem;
+}
+
+.field-array {
+  margin-top: 45px;
+}
+
 .header{
   height: 41px;
   font-family: 'Open Sans', sans-serif;
@@ -281,6 +293,17 @@ font-weight: 300;
   display: block;
   margin-left: auto;
   margin-right: auto;
+}
+
+.array-item {
+  width: 290px;
+  margin-top: 30px;
+}
+
+.help-block {
+  font-style: italic;
+  color: grey;
+  margin-bottom: 30px !important;
 }
 
 .submit{
@@ -501,7 +524,7 @@ font-weight: 300;
 
 .btn-info {
   width: 92px;
-  height: 42px;
+  height: 39px;
   background-color: #333333;
   border: solid 1px #333333;
   font-family: 'Open Sans', sans-serif;
@@ -523,7 +546,7 @@ font-weight: 300;
 
 .btn-cancel {
   width: 92px;
-  height: 42px;
+  height: 39px;
   background-color: #ff5500;
   border: solid 1px #ff5500;
   color: white;
@@ -534,6 +557,17 @@ font-weight: 300;
   display: block;
   margin-left: 110px;
 }
+
+.btn-danger {
+    color: #fff;
+    height: 39px;
+    background-color: #d9534f;
+    border-color: #d9534f;
+    border: solid 1px #d9534f;
+    border-radius: 0px;
+}
+
+
 
 
 .nav-tabs .nav-link {
