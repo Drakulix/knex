@@ -34,29 +34,30 @@ app.config['MONGODB_PORT'] = 27017
 
 es = Elasticsearch([{'host': 'elasticsearch', 'port': 9200}])
 
-# client = MongoClient('mongodb:27017')
-db = MongoEngine(app)
+client = MongoClient('mongodb:27017')
+db = client.knexDB
 coll = db.projects
+me = MongoEngine(app)
 
 admin_permission = Permission(RoleNeed('admin'))
 user_permission = Permission(RoleNeed('user'))
 
 
-class Role(db.Document, RoleMixin):
-    name = db.StringField(max_length=80, unique=True)
-    description = db.StringField(max_length=255)
+class Role(me.Document, RoleMixin):
+    name = me.StringField(max_length=80, unique=True)
+    description = me.StringField(max_length=255)
 
 
-class User(db.Document, UserMixin):
-    email = db.StringField(max_length=255)
-    firstname = db.StringField(max_length=255)
-    lastname = db.StringField(max_length=255)
-    password = db.StringField(max_length=255)
-    active = db.BooleanField(default=True)
-    roles = db.ListField(db.ReferenceField(Role), default=[])
+class User(me.Document, UserMixin):
+    email = me.StringField(max_length=255)
+    firstname = me.StringField(max_length=255)
+    lastname = me.StringField(max_length=255)
+    password = me.StringField(max_length=255)
+    active = me.BooleanField(default=True)
+    roles = me.ListField(me.ReferenceField(Role), default=[])
 
 
-user_datastore = MongoEngineUserDatastore(db, User, Role)
+user_datastore = MongoEngineUserDatastore(me, User, Role)
 security = Security(app, user_datastore)
 
 
