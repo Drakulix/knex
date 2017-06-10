@@ -4,8 +4,6 @@ import { Link } from 'react-router-dom';
 import CreateProjectLink from '../pages/CreateProjectLink.jsx';
 import Form from "../libraries/react-jsonschema-form";
 
-import exampleJSON from "../../data/test_project.json";
-
 const schema = {
   type: "object",
   required: ["title", "authors", "date_creation", "description", "status"],
@@ -108,7 +106,6 @@ export default class UploadByPattern extends React.Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(formData)
-      //body: JSON.stringify(exampleJSON)
     }),
     console.log(formData);
   }
