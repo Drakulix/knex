@@ -95,15 +95,10 @@ def save_manifest_to_db(manifest):
         is_valid = validator.is_valid(manifest)
 
         if is_valid:
-            manifestlist = []
+            manifestlist = manifest if isinstance(manifest, list) else [manifest]
             ids = []
-            if isinstance(manifest, list):
-                manifestlist = manifest
-            else:
-                manifestlist.append(manifest)
 
             for entry in manifestlist:
-<<<<<<< HEAD
                 entry['date_creation'] = time.strftime("%Y-%m-%d")
                 entry['date_update'] = time.strftime("%Y-%m-%d")
                 entry['_id'] = uuid.uuid4()
@@ -115,28 +110,8 @@ def save_manifest_to_db(manifest):
                 print("Successfully inserted content: ", file=sys.stderr)
                 print(entry, file=sys.stderr)
                 ids.append(entry['_id'])
-
             return ids
-=======
-                try:
-                    entry['date_creation'] = time.strftime("%Y-%m-%d")
-                    entry['date_update'] = time.strftime("%Y-%m-%d")
-                    entry['_id'] = uuid.uuid4()
-                    print("manifest is valid", file=sys.stderr)
-                    coll.insert(entry)
-                    print("mongo insert: ", file=sys.stderr)
-                    es.create(index="projects-index", doc_type='Project',
-                              id=entry["_id"], refresh=True, body={})
-                    print("Successfully inserted content: ", file=sys.stderr)
-                    print(entry, file=sys.stderr)
-                    ids.append(entry['_id'])
-                except ApiException as e:
-                    errors.append(e)
-                except Exception as err:
-                    errors.append(ApiException(
-                        "Manifest " + entry + "failed with the message: " + err.message))
-            return (ids, errors)
->>>>>>> 70b4248... enforced pylint (pep8 standards)
+
         else:
             print(is_valid, file=sys.stderr)
             errors = sorted(validator.iter_errors(manifest), key=str)
