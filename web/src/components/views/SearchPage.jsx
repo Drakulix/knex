@@ -320,7 +320,7 @@ class Table extends Component {
       if(results[i].status.includes(this.props.status))
         filtered_results.push(results[i]);
     }
-  return (filtered_results);
+    return (filtered_results);
   };
 
   filterDate(results){
@@ -334,7 +334,7 @@ class Table extends Component {
       if(date_creation.getTime()>=fromDate.getTime() && date_creation.getTime()<=toDate.getTime())
         filtered_results.push(results[i]);
     }
-  return (filtered_results);
+    return (filtered_results);
   };
 
 
@@ -429,7 +429,6 @@ class Table extends Component {
         </span>
       );
     }
-
   }
 
   renderPrevButton(){
@@ -457,6 +456,23 @@ class Table extends Component {
       return(
         <div>
           <div className="row">
+            <div className="col-xs-1">
+              <label for="n-results"> Show Results:&nbsp;</label>
+              <select class="selectpicker"
+                      id="n-results"
+                      onChange={event => this.setState({
+                         pageSize : parseInt(event.target.value),
+                         pageNumber : 0,
+                         dirty : true,
+                       })}
+                      value={this.state.pageSize}>
+                <option value="4">4</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+              </select>
+            </div>
+          </div>
+          <div className="row">
             <table className="table table-hover">
               <tr>
                 <th className="col-xs-3">Project</th>
@@ -470,23 +486,11 @@ class Table extends Component {
             </table>
           </div>
           <div className="row">
-            <div className="col-xs-1 offset-md-5">
-              <label for="n-results"> Show Results:</label>
-              <select class="selectpicker"
-                      id="n-results"
-                      onChange={event => this.setState({
-                         pageSize : event.target.value,
-                         dirty : true,
-                       })}
-                      value={this.state.pageSize}>
-                <option value="4">4</option>
-                <option value="10">10</option>
-                <option value="20">20</option>
-              </select>
-            </div>
-            <div className="col-xs-4 offset-md-1 allign-right">
-              {this.renderPrevButton()}
-              {this.renderNextButton()}
+            <div className="col-xs-4 offset-md-5 allign-center">
+              <div className=" container span12">
+                {this.renderPrevButton()}
+                {this.renderNextButton()}
+              </div>
             </div>
           </div>
         </div>
@@ -517,6 +521,9 @@ class Table extends Component {
                 validatedData.push(data[i]._source);
             }
           }
+          console.log(that.state.numberOfResults);
+          console.log(typeof that.state.pageSize);
+          console.log(typeof that.state.pageNumber);
           var hasNext = true;
           if(that.state.numberOfResults-(that.state.pageSize+that.state.pageNumber)<=0){
             hasNext = false;
