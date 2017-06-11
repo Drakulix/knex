@@ -180,6 +180,47 @@ def delete_project(project_id):
             return make_response('Success')
 
 
+#TODO
+@app.route('/api/projects/<uuid:project_id>', methods=['PUT'])
+def update_project(project_id):
+    try:
+        res = coll.find_one({'_id': project_id})
+        if res is None:
+            raise ApiException("Project not found", 404)
+        #TODO checkmimetype
+        elif request.is_json:
+            manifest = request.json
+            if manifest['_id'] != str(project_id):
+                raise ApiException("Updated project owns different id", 409)
+            is_valid = validator.is_valid(manifest)
+            print(is_valid, file=sys.stderr)
+            if is_valid:
+                manifest['_id'] = project_id
+                entry['date_update'] = time.strftime("%Y-%m-%d")
+                coll.find_one_and_replace({'_id': project_id}, manifest,
+                                          return_document=ReturnDocument.AFTER)
+                print("mongo replaced: ", file=sys.stderr)
+                es.index(index="projects-index", doc_type='Project',
+                          id=entry["_id"], refresh=True, body={})
+                print("Successfully replaced content: ", file=sys.stderr)
+                print(entry, file=sys.stderr)
+                return make_response('Success')
+            else:
+                v = validator.iter_errors(manifest)
+                if v is not None:
+                    validation_error = []
+                    for error in sorted(validator.iter_errors(manifest), key=str):
+                        print(error.message, file=sys.stderr)
+                        validation_error.append(error.message)
+                raise ApiException("Validation Error: \n" + str(is_valid), 400, validation_error)
+        else:
+            raise ApiException("Not Json", 400)
+    except ApiException as e:
+        raise e
+    except Exception as err:
+        raise ApiException(str(err), 500)
+
+
 @app.route('/api/projects/search', methods=['POST'])
 def search():
     """Receive body of elasticsearch query

@@ -63,7 +63,6 @@ def save_file_to_db(file, filename):
             if errors is not None:
                 validation_error = [error for error in sorted(errors, key=str)]
                 raise ApiException("Validation Error: \n" + str(is_valid), 400)
-
     except ApiException as e:
         raise e
     except Exception as err:
