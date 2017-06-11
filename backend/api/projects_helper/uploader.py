@@ -54,7 +54,7 @@ def save_file_to_db(filename):
                 manifest['_id'] = uuid.uuid4()
 
                 res = g.es.index(index="projects-index", doc_type='Project',
-                               id=manifest['_id'], body=manifest)
+                                 id=manifest['_id'], body=manifest)
                 if res['created']:
                     g.coll.insert_one(manifest)
 
@@ -113,7 +113,7 @@ def save_manifest_to_db(manifest):
                 g.coll.insert(entry)
                 print("mongo insert: ", file=sys.stderr)
                 g.es.create(index="projects-index", doc_type='Project',
-                          id=entry["_id"], refresh=True, body={})
+                            id=entry["_id"], refresh=True, body={})
                 print("Successfully inserted content: ", file=sys.stderr)
                 print(entry, file=sys.stderr)
                 ids.append(entry['_id'])

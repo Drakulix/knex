@@ -6,8 +6,6 @@ from api.projects import projects
 app = Flask(__name__)
 CORS(app)
 
-
-
 app.config['UPLOAD_FOLDER'] = ''
 app.config['MAX_CONTENT_PATH'] = 1000000  # 100.000 byte = 100kb
 
