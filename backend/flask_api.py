@@ -73,17 +73,17 @@ def add_project():
             if request.json:
                 return_ids = uploader.save_manifest_to_db(request.json)
 
-            else:
+            elif request.data:
                 print(request.data.decode("utf-8"), file=sys.stderr)
                 return_ids = uploader.save_manifest_to_db(
                     json5.loads(request.data.decode("utf-8")))
-                print(return_ids)
+
+            else:
+                return make_response("Error: empty POST body", 400)
 
             return jsonify(return_ids)
         except ApiException as e:
             raise e
-        except Exception as err:
-            return make_response("error: " + str(err), '500')
 
 
 @app.errorhandler(ApiException)
@@ -125,7 +125,6 @@ def get_projects():
     """
     limit = request.args.get('limit', type=int)
     skip = request.args.get('skip', type=int)
-
     argc = len(request.args)
 
     if coll.count() == 0:
@@ -142,14 +141,8 @@ def get_projects():
     else:
         return make_response('Invalid parameters', 400)
 
-    entries = res[:]
-    resArr = []
-    for entry in entries:
-        resArr.append(entry)
-
-    res = make_response(jsonify(resArr))
+    res = make_response(jsonify([x for x in res[:]]))
     res.headers['Content-Type'] = 'application/json'
-
     return res
 
 
