@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import BackendTest, {fetchJson, sendJson} from '../common/Backend'
-import Pagination from '../common/Pagination'
-import data from '../../data/test_data.json';
-// Main Code
+import {fetchJson, sendJson} from '../common/Backend'
 
 class Headline extends Component {
   render() {
@@ -33,9 +30,6 @@ class Searchbar extends Component {
 }
 
 class AdvancedSearch extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   //View for advanced search, the onChange in the <input> parses the state all the way to the parent
   render() {
@@ -322,7 +316,7 @@ class Table extends Component {
     return names.join(", ");
   }
 
-  renderLine(result){
+  renderLine(result,index){
 
     var title = result.title;
     var authors = result.authors;
@@ -334,7 +328,7 @@ class Table extends Component {
     var shortenedDescription = this.fitLength(description, 100);
 
     return(
-        <tr>
+        <tr key ={"result"+index}>
           <td>
             <Link to="/projects" className="table-project-name">
               <a className="table-project-name" >
@@ -354,7 +348,7 @@ class Table extends Component {
   renderLines(results){
     var lines = [];
     for (var i = 0; i < results.length; i++) {
-      lines.push(this.renderLine(results[i]));
+      lines.push(this.renderLine(results[i],i));
     }
     return(lines);
   }
@@ -426,11 +420,11 @@ class Table extends Component {
         <div>
           <div className="row">
             <div className="col-xs-1">
-              <label for="n-results"> Show Results:&nbsp;</label>
-              <select class="selectpicker"
+              <label htmlFor="n-results"> Show Results:&nbsp;</label>
+              <select className="selectpicker"
                       id="n-results"
                       onChange={event => this.setState({
-                         pageSize : parseInt(event.target.value),
+                         pageSize : parseInt(event.target.value, 10),
                          pageNumber : 0,
                          dirty : true,
                        })}
@@ -454,7 +448,9 @@ class Table extends Component {
                     <th className="col-xs-1">Fav</th>
                   </tr>
                 </thead>
-                {this.renderLines(results)}
+                <tbody>
+                  {this.renderLines(results)}
+                </tbody>
               </table>
             </div>
           </div>
@@ -499,7 +495,7 @@ class Table extends Component {
             hasNext = false;
           }
           var hasPrev = true;
-          if(that.state.pageNumber==0){
+          if(that.state.pageNumber===0){
             hasPrev = false;
           }
           that.setState({
