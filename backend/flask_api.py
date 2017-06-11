@@ -4,6 +4,7 @@ Defines API points and starts the application
 
 import os
 import sys
+import time
 import json
 import json5
 
@@ -12,7 +13,7 @@ from elasticsearch.exceptions import RequestError
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 from jsonschema import FormatChecker, Draft4Validator
-from pymongo import MongoClient
+from pymongo import MongoClient, ReturnDocument
 from werkzeug.utils import secure_filename
 
 import uploader
@@ -180,14 +181,14 @@ def delete_project(project_id):
             return make_response('Success')
 
 
-#TODO
+# TODO
 @app.route('/api/projects/<uuid:project_id>', methods=['PUT'])
 def update_project(project_id):
     try:
         res = coll.find_one({'_id': project_id})
         if res is None:
             raise ApiException("Project not found", 404)
-        #TODO checkmimetype
+        # TODO checkmimetype
         elif request.is_json:
             manifest = request.json
             if manifest['_id'] != str(project_id):
@@ -195,15 +196,16 @@ def update_project(project_id):
             is_valid = validator.is_valid(manifest)
             print(is_valid, file=sys.stderr)
             if is_valid:
+                print(manifest['_id'])
                 manifest['_id'] = project_id
-                entry['date_update'] = time.strftime("%Y-%m-%d")
+                manifest['date_update'] = time.strftime("%Y-%m-%d")
                 coll.find_one_and_replace({'_id': project_id}, manifest,
                                           return_document=ReturnDocument.AFTER)
                 print("mongo replaced: ", file=sys.stderr)
                 es.index(index="projects-index", doc_type='Project',
-                          id=entry["_id"], refresh=True, body={})
+                          id=manifest["_id"], refresh=True, body={})
                 print("Successfully replaced content: ", file=sys.stderr)
-                print(entry, file=sys.stderr)
+                print(manifest, file=sys.stderr)
                 return make_response('Success')
             else:
                 v = validator.iter_errors(manifest)
