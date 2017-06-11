@@ -1,3 +1,7 @@
 {
-    "__comment": "so far there is no config, but this is where you can e.g. blacklist/whitelist"
+    "__comment": "so far there is no config, but this is where you can e.g. blacklist/whitelist",
+
+    "logging": {
+    	"type": "stream"
+    }
 }
