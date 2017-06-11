@@ -450,13 +450,9 @@ class Table extends Component {
                     <th className="col-xs-1">Fav</th>
                   </tr>
                 </thead>
-<<<<<<< HEAD
                 <tbody>
                   {this.renderLines(results)}
                 </tbody>
-=======
-                {this.renderLines(results)}
->>>>>>> 388c5d5... now using the proposed table layout from the admin area in the
               </table>
             </div>
           </div>
