@@ -61,15 +61,14 @@ def add_project():
                 print("Successful files: ", successful_files, '\n', file=sys.stderr)
                 print("Unsuccessful files: ", unsuccessful_files, '\n', file=sys.stderr)
         return """<!doctype html>
-                    <title>Upload multiple files</title>
-                    <h1>Upload multiple files</h1>
-                    <body>Successful files: """ + ', '.join(e for e in successful_files) + '<br />' + """
-                    Unsuccessful files: """ + ', '.join(e for e in unsuccessful_files) + """
-                    </body>"""
+        <title>Upload multiple files</title>
+        <h1>Upload multiple files</h1>
+        <body>Successful files: """ + ', '.join(e for e in successful_files) + '<br />' + """
+        Unsuccessful files: """ + ', '.join(e for e in unsuccessful_files) + """
+        </body>"""
 
     else:  # no files attached
         try:
-            return_ids = []
             if request.json:
                 return_ids = uploader.save_manifest_to_db(request.json)
 
