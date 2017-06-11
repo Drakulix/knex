@@ -17,6 +17,7 @@ import UserCollection from './components/pages/UserCollection';
 import SignIn from './components/pages/SignIn.jsx';
 import SignUp from './components/pages/SignUp.jsx';
 import AdminArea from './components/pages/AdminArea';
+import ProfileDetails from './components/pages/ProfileDetails.jsx';
 
 ReactDOM.render(
 <BrowserRouter>
@@ -27,6 +28,7 @@ ReactDOM.render(
     <Route path="/createbylink" component={CreateProjectLink} />
     <Route path="/projects" component={ProjectDetails} />
     <Route path="/collection" component={UserCollection} />
+    <Route path="/profile" component={ProfileDetails} />
     <Route path="/register" component={SignUp} />
     <Route exact path="/" component={SignIn} />
  </div>

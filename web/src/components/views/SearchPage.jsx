@@ -40,10 +40,8 @@ results.push(result_six);
 class Headline extends Component {
   render() {
     return(
-      <div className="row">
-        <div className="header-title">
-          <h1>Looking for a Project?</h1>
-        </div>
+      <div className="header">
+        Looking for a Project?
       </div>
     );
   }

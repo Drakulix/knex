@@ -3,7 +3,7 @@ import ProfileContainer from '../views/ProfileContainer.jsx';
 import TopBar from '../common/TopBar';
 import { Link } from 'react-router-dom';
 
-export default class ProfileContainer extends Component {
+export default class ProfileDetails extends Component {
   constructor(props) {
     super(props);
 

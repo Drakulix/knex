@@ -262,7 +262,7 @@ legend {
   font-weight: 300;
   font-size: 30px;
   color: #000000;
-  margin-top: 200px;
+  margin-top: 4em;
   text-align: center;
 }
 
@@ -567,11 +567,43 @@ legend {
     border-radius: 0px;
 }
 
-
-
-
 .nav-tabs .nav-link {
     border: 1px solid transparent;
     border-top-left-radius: 0rem;
     border-top-right-radius: 0rem;
+}
+
+/* Profile Details */
+
+.profile-header {
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+.profile-info {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-weight: 300;
+}
+
+.profile-icon-text {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.profile-icon {
+  width: 200px;
+  height: 200px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: grey;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 30px;
+}
+
+.change-password {
+  margin-top: 100px;
+  margin-bottom: 100px;
 }
