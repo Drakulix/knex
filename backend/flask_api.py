@@ -55,35 +55,36 @@ def add_project():
                     newId = uploader.save_file_to_db(securefilename)
                     # represent original filename
                     successful_files.append(file.filename + " " + str(newId))
-                except Exception as e:
+                except ApiException as e:
                     unsuccessful_files.append(file.filename + str(e))
 
                 print("Successful files: ", successful_files, '\n', file=sys.stderr)
                 print("Unsuccessful files: ", unsuccessful_files, '\n', file=sys.stderr)
-        return """<!doctype html>
-                    <title>Upload multiple files</title>
-                    <h1>Upload multiple files</h1>
-                    <body>Successful files: """ + ', '.join(e for e in successful_files) + '<br />' + """
-                    Unsuccessful files: """ + ', '.join(e for e in unsuccessful_files) + """
-                    </body>"""
+        return make_response('Successful files: ' +
+                             ', '.join(e for e in successful_files) +
+                             '<br />' + " Unsuccessful files: " +
+                             ', '.join(e for e in unsuccessful_files))
 
-    else:  # no files attached
+    elif request.content_type == 'application/json' or request.content_type == 'application/json5':
         try:
             return_ids = []
             if request.json:
                 return_ids = uploader.save_manifest_to_db(request.json)
 
-            else:
+            elif request.data:
                 print(request.data.decode("utf-8"), file=sys.stderr)
                 return_ids = uploader.save_manifest_to_db(
                     json5.loads(request.data.decode("utf-8")))
-                print(return_ids)
+
+            else:
+                return make_response("Error: empty POST body", 400)
 
             return jsonify(return_ids)
         except ApiException as e:
             raise e
-        except Exception as err:
-            return make_response("error: " + str(err), '500')
+
+    else:
+        raise ApiException("Wrong content header and no files attached", 400)
 
 
 @app.errorhandler(ApiException)
@@ -125,7 +126,6 @@ def get_projects():
     """
     limit = request.args.get('limit', type=int)
     skip = request.args.get('skip', type=int)
-
     argc = len(request.args)
 
     if coll.count() == 0:
@@ -142,14 +142,8 @@ def get_projects():
     else:
         return make_response('Invalid parameters', 400)
 
-    entries = res[:]
-    resArr = []
-    for entry in entries:
-        resArr.append(entry)
-
-    res = make_response(jsonify(resArr))
+    res = make_response(jsonify([x for x in res[:]]))
     res.headers['Content-Type'] = 'application/json'
-
     return res
 
 
