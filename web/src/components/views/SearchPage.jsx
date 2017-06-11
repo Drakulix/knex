@@ -442,17 +442,21 @@ class Table extends Component {
             </div>
           </div>
           <div className="row">
-            <table className="table table-hover">
-              <tr>
-                <th className="col-xs-3">Project</th>
-                <th className="col-xs-2">Author</th>
-                <th className="col-xs-1">Status</th>
-                <th className="col-xs-3">Description</th>
-                <th className="col-xs-2">Date</th>
-                <th className="col-xs-1">Fav</th>
-              </tr>
-              {this.renderLines(results)}
-            </table>
+            <div className="table-container">
+              <table className="table">
+                <thead className="thead-default">
+                  <tr>
+                    <th className="col-xs-3">Project</th>
+                    <th className="col-xs-2">Author</th>
+                    <th className="col-xs-1">Status</th>
+                    <th className="col-xs-3">Description</th>
+                    <th className="col-xs-2">Date</th>
+                    <th className="col-xs-1">Fav</th>
+                  </tr>
+                </thead>
+                {this.renderLines(results)}
+              </table>
+            </div>
           </div>
           <div className="row">
             <div className="col-xs-4 offset-md-5 allign-center">
@@ -490,9 +494,6 @@ class Table extends Component {
                 validatedData.push(data[i]._source);
             }
           }
-          console.log(that.state.numberOfResults);
-          console.log(typeof that.state.pageSize);
-          console.log(typeof that.state.pageNumber);
           var hasNext = true;
           if(that.state.numberOfResults-(that.state.pageSize+that.state.pageNumber)<=0){
             hasNext = false;
