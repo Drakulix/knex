@@ -454,9 +454,8 @@ class Table extends Component {
       }
     }
 
-  render() {
-    var new_results=this.state.results;
-
+  componentDidUpdate(){
+    //Load current table page
     if(this.state.dirty){
       var that = this;
       this.setState({
@@ -482,6 +481,10 @@ class Table extends Component {
         }
       });
     }
+  }
+
+  render() {
+    var new_results=this.state.results;
 
     //temporarily disabled filters
     if(false){
