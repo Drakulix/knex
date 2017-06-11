@@ -216,10 +216,12 @@ class Table extends Component {
       }
     })
     .then(function(data) {
-      that.setState({
-        numberOfResults : data.hits.hits.length,
-        hasNext : data.hits.hits.length>defaultPageSize,
-      });
+      if(data != null){
+        that.setState({
+          numberOfResults : data.hits.hits.length,
+          hasNext : data.hits.hits.length>defaultPageSize,
+        });
+      }
     });
     fetchJson('/api/projects/search/simple/' + this.state.pageNumber + '/' + this.state.pageSize + '/?q=Music')
     .then(function(data) {
