@@ -56,7 +56,6 @@ export default class ProfileContainer extends React.Component {
             <thead className="thead-default">
               <tr>
                 <th>Project Name</th>
-                <th>Author</th>
                 <th>Status</th>
                 <th>Description</th>
                 <th>Date</th>
@@ -66,9 +65,8 @@ export default class ProfileContainer extends React.Component {
             <tbody>
               <tr>
                 <th scope="row">Contextual music information retrieval and recommendation</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
+                <td>pending</td>
+                <td>descriptions are useful</td>
                 <td>22/06/17</td>
                 <td>
                   <i className="fa fa-bookmark" aria-hidden="true"></i>
@@ -76,9 +74,8 @@ export default class ProfileContainer extends React.Component {
               </tr>
               <tr>
                 <th scope="row">Semantic Analysis of Song Lyrics</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
+                <td>pending</td>
+                <td>descriptions are great</td>
                 <td>22/06/17</td>
                 <td>
                   <i className="fa fa-bookmark-o" aria-hidden="true"></i>
@@ -86,9 +83,8 @@ export default class ProfileContainer extends React.Component {
               </tr>
               <tr>
                 <th scope="row">Combining Audio Content and Social Context for Semantic Music Discovery</th>
-                <td>Larry</td>
-                <td>the Bird</td>
-                <td>@twitter</td>
+                <td>done</td>
+                <td>descriptions are love</td>
                 <td>22/06/17</td>
                 <td>
                   <i className="fa fa-bookmark-o" aria-hidden="true"></i>
@@ -97,6 +93,27 @@ export default class ProfileContainer extends React.Component {
             </tbody>
           </table>
         </div>
+        <div className="pagination-container">
+          <div className="text-xs-center">
+            <ul className="pagination">
+              <li className="page-item">
+                <a className="page-link" href="#" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                  <span className="sr-only">Previous</span>
+                </a>
+              </li>
+              <li className="page-item"><a className="page-link" href="#">1</a></li>
+              <li className="page-item"><a className="page-link" href="#">2</a></li>
+              <li className="page-item"><a className="page-link" href="#">3</a></li>
+              <li className="page-item">
+              <a className="page-link" href="#" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+                <span className="sr-only">Next</span>
+                </a>
+              </li>
+            </ul>
+        </div>
+      </div>
       </div>
     );
   }

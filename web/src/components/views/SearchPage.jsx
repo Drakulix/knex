@@ -124,7 +124,6 @@ class AdvancedSearch extends Component {
             </div>
           </div>
         </div>
-
       </div>
     );
   }
