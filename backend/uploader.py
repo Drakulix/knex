@@ -95,12 +95,8 @@ def save_manifest_to_db(manifest):
         is_valid = validator.is_valid(manifest)
 
         if is_valid:
-            manifestlist = []
+            manifestlist = manifest if isinstance(manifest, list) else [manifest]
             ids = []
-            if isinstance(manifest, list):
-                manifestlist = manifest
-            else:
-                manifestlist.append(manifest)
 
             for entry in manifestlist:
                 entry['date_creation'] = time.strftime("%Y-%m-%d")
@@ -114,8 +110,8 @@ def save_manifest_to_db(manifest):
                 print("Successfully inserted content: ", file=sys.stderr)
                 print(entry, file=sys.stderr)
                 ids.append(entry['_id'])
-
             return ids
+
         else:
             print(is_valid, file=sys.stderr)
             errors = sorted(validator.iter_errors(manifest), key=str)

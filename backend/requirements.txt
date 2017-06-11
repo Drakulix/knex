@@ -5,3 +5,6 @@ requests
 json5
 jsonschema
 flask-cors
+flask-security
+flask-mongoengine
+flask-principal
