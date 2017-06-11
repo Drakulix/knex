@@ -37,6 +37,7 @@ class AdvancedSearch extends Component {
     super(props);
   }
 
+  //View for advanced search, the onChange in the <input> parses the state all the way to the parent
   render() {
     return(
       <div className="panel panel-body">
@@ -155,39 +156,7 @@ class AdvancedSearch extends Component {
 class Search extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      expanded : false,
-      filter_project_name: "",
-      filter_author: "",
-      filter_tags: "",
-      filter_from: "",
-      filter_to: "",
-      filter_description: "",
-      filter_status: ""};
-  }
-
-  changeStateName(name){
-    this.props.changeStateName(name);
-  }
-
-  changeStateAuthor(author){
-    this.props.changeStateAuthor(author);
-  }
-
-  changeStateFrom(from){
-    this.props.changeStateFrom(from);
-  }
-
-  changeStateTo(to){
-    this.props.changeStateTo(to);
-  }
-
-  ChangeStateStatus(state){
-    this.props.ChangeStateStatus(state);
-  }
-
-  changeStateTags(tags){
-    this.props.changeStateTags(tags);
+    this.state = {expanded : false};
   }
 
 
@@ -583,21 +552,25 @@ export default class SearchPage extends Component {
       filter_status: ""};
   }
 
+  /*
+    functions to get the state of the advanced search via the search element, the value of the input fields is given to the <table> and filtered
+  */
   changeStateAuthor(author){
     this.setState({filter_author: author });
   }
 
   changeStateFrom(from){
-    this.setState({filter_from: from });
+    this.setState({filter_date_from: from });
   }
 
   changeStateTo(to){
-    this.setState({filter_to: to });
+    this.setState({filter_date_to: to });
   }
 
-  ChangeStateStatus(state){
-    this.setState({filter_status: state });
+  changeStateStatus(status){
+    this.setState({filter_status: status});
   }
+
   changeStateName(name){
     this.setState({filter_project_name: name });
   }

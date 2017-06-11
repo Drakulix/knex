@@ -1,10 +1,9 @@
-[ 
-    {
+{
         title             :     'Auralist: Introducing Serendipity into Music Recommendation',
         description     :    'Recommendation systems exist to help users discover content in a large body of items. An ideal recommendation system should mimic the actions of a trusted friend or expert, producing a personalised collection of recommendations that balance between the desired goals of accuracy, diversity, novelty and serendipity. We introduce the Auralist recommendation framework, a system that – in contrast to previouswork – attempts to balance and improve all four factors simultaneously. Using a collection of novel algorithms inspired by principles of ‘serendipitous discovery’, we demonstrate a method of successfully injecting serendipity, novelty and diversity into recommendations whilst limiting the impact on accuracy. We evaluate Auralist quantitatively over a broad set of metrics and, with a user study on music recommendation, show that Auralist’s emphasis on serendipity indeed improves user satisfaction.',
         status            :     'DONE',
         date_creation        :    '2011-12-12',
-        url            :    'http://example5.org',
+        url            :    ['http://example5.org'],
         tags             :     ['Algorithms', 'Experimentation', 'Human Factors'],
         authors         :    [
             {    name        :    'Yuan Cao Zhang',
@@ -21,5 +20,4 @@
                 email        :    't.jambor@cs.ucl.ac.uk'
             }
         ]
-    }
-]
+}

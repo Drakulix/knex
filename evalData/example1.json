@@ -1,0 +1,20 @@
+{
+  "title": "Semantic Analysis of Song Lyrics",
+  "authors": [
+    {"name": "Beth Logan",
+     "email": "Beth.Logan@hp.com"
+    },
+    {"name": "Pedro Moreno",
+     "email": "Pedro.Moreno@hp.com"
+    }
+  ],
+  "url": ["http://example1.org"],
+  "status": "DONE",
+  "description": "We explore the use of song lyrics for automatic indexing of music. Using lyrics mined from the Web we apply a standard text processing technique to characterize their semantic content. We then determine artist similarity in this space. We found lyrics can be used to discover natural genre clusters. Experiments on a publicly available set of 399 artists showed that determining artist similarity using lyrics is better than random but inferior to a state-of-the-art acoustic similarity technique. However, the approaches made different errors, suggesting they could be profitably combined.",
+  "date_creation": "2014-04-14",
+  "tags": [
+    "multimedia indexing",
+    "rich media",
+    "music information retrieval"
+  ]
+}

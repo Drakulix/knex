@@ -25,9 +25,11 @@ class TopBar extends Component {
             </form>
           </div>
           <div className="col-1">
-            <p className="top-bar-text">
-              Collection
-            </p>
+            <Link to="/collection">
+              <p className="top-bar-text">
+                Collection
+              </p>
+            </Link>
           </div>
           <div className="col-1">
             <p className="top-bar-text">

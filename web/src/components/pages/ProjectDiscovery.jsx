@@ -36,7 +36,7 @@ export default class ProjectDetails extends Component {
                   </Link>
                 </li>
                 <li className="list-group-item">
-                  <Link to="/discovery">
+                  <Link to="/admin">
                     {this.state.menu.adminArea}
                   </Link>
                 </li>

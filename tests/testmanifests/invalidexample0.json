@@ -1,7 +1,7 @@
 {
-  "project":
+  "projectaaaa":
   {
-    "title": "test_project1",
+    "title": "invalid_stuff",
     "url": "www.github.com/knex/",
     "analysis":
     {
@@ -11,7 +11,7 @@
     "authors":
     [
       {
-      "name": "test_owner1",
+      "name": "test_owner",
       "email": "email@address.com"
       }
     ],
@@ -41,7 +41,7 @@
     ],
     "future_work":
     [
-      "this is something related to this work",
+      "this is something related to this work"
     ],
     "related_projects":
     [
