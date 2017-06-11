@@ -232,227 +232,269 @@ class Search extends Component {
 }
 
 class Table extends Component {
-    constructor(props) {
-      super(props);
-      this.state = {
-        results : [],
-        pageSize : 4,
-        pageNumber : 0,
-        numberOfResults : 0,
-        dirty : false,
-      };
+  constructor(props) {
+    super(props);
+    const defaultPageSize = 4;
+    this.state = {
+      results : [],
+      pageSize : defaultPageSize,
+      pageNumber : 0,
+      numberOfResults : 0,
+      dirty : false,
+      hasPrev: false,
+      hasNext: false,
+    };
 
-      // Get Data from Elasticsearch and put it in this.state.results
-      var that = this;
-      sendJson('POST', '/api/projects/search', {
-        "query": {
-          "match_all": {}
+    // Get Data from Elasticsearch and put it in this.state.results
+    var that = this;
+    sendJson('POST', '/api/projects/search', {
+      "query": {
+        "match_all": {}
+      }
+    })
+    .then(function(data) {
+      that.setState({
+        numberOfResults : data.hits.hits.length,
+        hasNext : data.hits.hits.length>defaultPageSize,
+      });
+    });
+    fetchJson('/api/projects/search/simple/' + this.state.pageNumber + '/' + this.state.pageSize + '/?q=Music')
+    .then(function(data) {
+      if(data != null){
+        var validatedData = [];
+        for(var i = 0;i<data.length;i++){
+          if (data[i]._source!=null&&
+              data[i]._source.title!=null &&
+              data[i]._source.authors!=null&&
+              data[i]._source.date_creation!=null&&
+              data[i]._source.description!=null&&
+              data[i]._source.status!=null){
+                validatedData.push(data[i]._source);
+              }
         }
-      })
-      .then(function(data) {
         that.setState({
-          numberOfResults : data.length,
+           results : validatedData,
         });
-      });
-      fetchJson('/api/projects/search/simple/' + this.state.pageNumber + '/' + this.state.pageSize + '/?q=Music')
-      .then(function(data) {
-        if(data != null){
-          var validatedData = [];
-          for(var i = 0;i<data.length;i++){
-            if (data[i]._source!=null&&
-                data[i]._source.title!=null &&
-                data[i]._source.authors!=null&&
-                data[i]._source.date_creation!=null&&
-                data[i]._source.description!=null&&
-                data[i]._source.status!=null){
-                  validatedData.push(data[i]._source);
-                }
-          }
-          that.setState({
-             results : validatedData,
-          });
-        }
-      });
+      }
+    });
+  }
+
+  filterProjectName(results){
+    var filtered_results=[];
+    for(var i=0; i<results.length;i++){
+      if(results[i].title.includes(this.props.project_name))
+        filtered_results.push(results[i]);
     }
+    return (filtered_results );
+  };
 
-    filterProjectName(results){
-      var filtered_results=[];
-      for(var i=0; i<results.length;i++){
-        if(results[i].title.includes(this.props.project_name))
+  filterAuthors(results){
+    var filtered_results=[];
+    for(var i=0; i<results.length;i++){
+      for (var j=0; j < results[i].authors.length; j++){
+        if (results[i].authors[j].name.includes(this.props.authors)){
           filtered_results.push(results[i]);
-      }
-      return (filtered_results );
-    };
-
-    filterAuthors(results){
-      var filtered_results=[];
-      for(var i=0; i<results.length;i++){
-        for (var j=0; j < results[i].authors.length; j++){
-          if (results[i].authors[j].name.includes(this.props.authors)){
-            filtered_results.push(results[i]);
-            break;
-          }
+          break;
         }
       }
-      return (filtered_results);
-    };
-
-    filterTags(results){
-      var filtered_results=[];
-      for(var i=0; i<results.length;i++){
-        for (var j=0; j<results[i]._source.tags.length; j++){
-          if(results[i]._source.tags[j].includes(this.props.tags)){
-            filtered_results.push(results[i]);
-            break;
-          }
-        }
-      }
-      return (filtered_results);
-    };
-
-    filterStatus(results){
-      var filtered_results=[];
-      for(var i=0; i<results.length;i++){
-        if(results[i].status.includes(this.props.status))
-          filtered_results.push(results[i]);
-      }
+    }
     return (filtered_results);
-    };
+  };
 
-    filterDate(results){
-      var fromDate= new Date(Number(this.props.from.substring(0,4)), Number(this.props.from.substring(5,7))-1, Number(this.props.from.substring(8,10)));
-      var toDate= new Date(Number(this.props.to.substring(0,4)), Number(this.props.to.substring(5,7))-1, Number(this.props.to.substring(8,10)));
-      var date_creation;
-      var filtered_results=[];
-      for(var i=0; i<results.length;i++){
-
-        date_creation= new Date(Number(results[i]._source.date_creation.substring(0,4)), Number(results[i]._source.date_creation.substring(5,7))-1, Number(results[i]._source.date_creation.substring(8,10)));
-        if(date_creation.getTime()>=fromDate.getTime() && date_creation.getTime()<=toDate.getTime())
+  filterTags(results){
+    var filtered_results=[];
+    for(var i=0; i<results.length;i++){
+      for (var j=0; j<results[i]._source.tags.length; j++){
+        if(results[i]._source.tags[j].includes(this.props.tags)){
           filtered_results.push(results[i]);
+          break;
+        }
       }
+    }
     return (filtered_results);
-    };
+  };
 
-
-    fitLength(string, maxLength){
-      if(string.length>maxLength){
-        return string.substring(0, maxLength) + " ...";
-      }
-      else return string;
+  filterStatus(results){
+    var filtered_results=[];
+    for(var i=0; i<results.length;i++){
+      if(results[i].status.includes(this.props.status))
+        filtered_results.push(results[i]);
     }
+  return (filtered_results);
+  };
 
-    authorsArrayToNameString(authors){
-      var names = [];
-      for(var i = 0 ;i < authors.length;i++){
-        names.push(authors[i].name);
-      }
-      return names.join(", ");
+  filterDate(results){
+    var fromDate= new Date(Number(this.props.from.substring(0,4)), Number(this.props.from.substring(5,7))-1, Number(this.props.from.substring(8,10)));
+    var toDate= new Date(Number(this.props.to.substring(0,4)), Number(this.props.to.substring(5,7))-1, Number(this.props.to.substring(8,10)));
+    var date_creation;
+    var filtered_results=[];
+    for(var i=0; i<results.length;i++){
+
+      date_creation= new Date(Number(results[i]._source.date_creation.substring(0,4)), Number(results[i]._source.date_creation.substring(5,7))-1, Number(results[i]._source.date_creation.substring(8,10)));
+      if(date_creation.getTime()>=fromDate.getTime() && date_creation.getTime()<=toDate.getTime())
+        filtered_results.push(results[i]);
     }
+  return (filtered_results);
+  };
 
-    renderLine(result){
 
-      var title = result.title;
-      var authors = result.authors;
-      var description = result.description;
-      var status = result.status;
-      var date_creation = result.date_creation;
+  fitLength(string, maxLength){
+    if(string.length>maxLength){
+      return string.substring(0, maxLength) + " ...";
+    }
+    else return string;
+  }
 
-      authors = this.authorsArrayToNameString(authors);
-      var shortenedDescription = this.fitLength(description, 100);
+  authorsArrayToNameString(authors){
+    var names = [];
+    for(var i = 0 ;i < authors.length;i++){
+      names.push(authors[i].name);
+    }
+    return names.join(", ");
+  }
 
+  renderLine(result){
+
+    var title = result.title;
+    var authors = result.authors;
+    var description = result.description;
+    var status = result.status;
+    var date_creation = result.date_creation;
+
+    authors = this.authorsArrayToNameString(authors);
+    var shortenedDescription = this.fitLength(description, 100);
+
+    return(
+        <tr>
+          <td>
+            <Link to="/projects" className="table-project-name">
+              <a className="table-project-name" >
+                <u>{title}</u>
+              </a>
+            </Link>
+          </td>
+          <td> {authors}</td>
+          <td> {status} </td>
+          <td data-toggle="tooltip" title={description}> {shortenedDescription} </td>
+          <td> {date_creation} </td>
+          <td> - </td>
+        </tr>
+    );
+  }
+
+  renderLines(results){
+    var lines = [];
+    for (var i = 0; i < results.length; i++) {
+      lines.push(this.renderLine(results[i]));
+    }
+    return(lines);
+  }
+
+  /*
+   * Load a new Page.
+   * Set changeIndex to the number of pages you want to go forward
+   * or backward using positive or negative integers respectively.
+   */
+  newPage(changeIndex){
+    var newPageIndex = this.state.pageNumber + (changeIndex * this.state.pageSize);
+
+    if( newPageIndex>0){
+      this.setState({
+        dirty : true,
+        pageNumber : newPageIndex,
+      });
+    } else {
+      this.setState({
+        dirty : true,
+        pageNumber : 0,
+      })
+    }
+  }
+
+  renderNextButton(){
+    if(this.state.hasNext){
       return(
-          <tr>
-            <td>
-              <Link to="/projects" className="table-project-name">
-                <a className="table-project-name" >
-                  <u>{title}</u>
-                </a>
-              </Link>
-            </td>
-            <td> {authors}</td>
-            <td> {status} </td>
-            <td data-toggle="tooltip" title={description}> {shortenedDescription} </td>
-            <td> {date_creation} </td>
-            <td> - </td>
-          </tr>
+        <span className="input-group-button">
+          <button className="btn btn-secondary" onClick = {() => {this.newPage(1)}}>
+            next
+          </button>
+        </span>
+      );
+    } else {
+      return(
+        <span className="input-group-button">
+          <button className="btn btn-secondary disabled">
+            next
+          </button>
+        </span>
       );
     }
 
-    renderLines(results){
-      var lines = [];
-      for (var i = 0; i < results.length; i++) {
-        lines.push(this.renderLine(results[i]));
-      }
-      return(lines);
+  }
+
+  renderPrevButton(){
+    if(this.state.hasPrev){
+      return(
+        <span className="input-group-button">
+          <button className="btn btn-secondary" onClick = {() => {this.newPage(-1)}}>
+            prev
+          </button>
+        </span>
+      );
+    } else {
+      return(
+        <span className="input-group-button">
+          <button className="btn btn-secondary disabled">
+            prev
+          </button>
+        </span>
+      );
     }
+  }
 
-    newPage(changeIndex){
-      var newPageIndex = this.state.pageNumber + (changeIndex * this.state.pageSize);
-
-      if( newPageIndex>0){
-        this.setState({
-          dirty : true,
-          pageNumber : newPageIndex,
-        });
-      } else {
-        this.setState({
-          dirty : true,
-          pageNumber : 0,
-        })
-      }
-    }
-
-    renderTable(results){
-      if(results.length>0){
-        return(
-          <div>
-            <div className="row">
-              <table className="table table-hover">
-                <tr>
-                  <th className="col-xs-3">Project</th>
-                  <th className="col-xs-2">Author</th>
-                  <th className="col-xs-1">Status</th>
-                  <th className="col-xs-3">Description</th>
-                  <th className="col-xs-2">Date</th>
-                  <th className="col-xs-1">Fav</th>
-                </tr>
-                {this.renderLines(results)}
-              </table>
+  renderTable(results){
+    if(results.length>0){
+      return(
+        <div>
+          <div className="row">
+            <table className="table table-hover">
+              <tr>
+                <th className="col-xs-3">Project</th>
+                <th className="col-xs-2">Author</th>
+                <th className="col-xs-1">Status</th>
+                <th className="col-xs-3">Description</th>
+                <th className="col-xs-2">Date</th>
+                <th className="col-xs-1">Fav</th>
+              </tr>
+              {this.renderLines(results)}
+            </table>
+          </div>
+          <div className="row">
+            <div className="col-xs-1 offset-md-5">
+              <label for="n-results"> Show Results:</label>
+              <select class="selectpicker"
+                      id="n-results"
+                      onChange={event => this.setState({
+                         pageSize : event.target.value,
+                         dirty : true,
+                       })}
+                      value={this.state.pageSize}>
+                <option value="4">4</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+              </select>
             </div>
-            <div className="row">
-              <div className="col-xs-1 offset-md-5">
-                <label for="n-results"> Show Results:</label>
-                <select class="selectpicker"
-                        id="n-results"
-                        onChange={event => this.setState({
-                           pageSize : event.target.value,
-                           dirty : true,
-                         })}
-                        value={this.state.pageSize}>
-                  <option value="4">4</option>
-                  <option value="10">10</option>
-                  <option value="20">20</option>
-                </select>
-              </div>
-              <div className="col-xs-4 offset-md-1 allign-right">
-                <span className="input-group-button">
-                  <button className="btn btn-secondary" onClick = {() => {this.newPage(-1)}}>
-                    prev
-                  </button>
-                </span>
-                <span className="input-group-button">
-                  <button className="btn btn-secondary" onClick = {() => {this.newPage(1)}}>
-                    next
-                  </button>
-                </span>
-              </div>
+            <div className="col-xs-4 offset-md-1 allign-right">
+              {this.renderPrevButton()}
+              {this.renderNextButton()}
             </div>
           </div>
-        );
-      } else {
-        return null;
-      }
+        </div>
+      );
+    } else {
+      return null;
     }
+  }
 
   componentDidUpdate(){
     //Load current table page
@@ -472,11 +514,21 @@ class Table extends Component {
                 data[i]._source.date_creation!=null&&
                 data[i]._source.description!=null&&
                 data[i]._source.status!=null){
-                  validatedData.push(data[i]._source);
-                }
+                validatedData.push(data[i]._source);
+            }
+          }
+          var hasNext = true;
+          if(that.state.numberOfResults-(that.state.pageSize+that.state.pageNumber)<=0){
+            hasNext = false;
+          }
+          var hasPrev = true;
+          if(that.state.pageNumber==0){
+            hasPrev = false;
           }
           that.setState({
              results : validatedData,
+             hasPrev : hasPrev,
+             hasNext : hasNext,
           });
         }
       });
@@ -505,6 +557,7 @@ class Table extends Component {
         new_results=this.filterStatus(new_results);
       }
     }
+
     return this.renderTable(new_results);
   }
 }
