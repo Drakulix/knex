@@ -55,19 +55,17 @@ def add_project():
                     newId = uploader.save_file_to_db(securefilename)
                     # represent original filename
                     successful_files.append(file.filename + " " + str(newId))
-                except Exception as e:
+                except ApiException as e:
                     unsuccessful_files.append(file.filename + str(e))
 
                 print("Successful files: ", successful_files, '\n', file=sys.stderr)
                 print("Unsuccessful files: ", unsuccessful_files, '\n', file=sys.stderr)
-        return """<!doctype html>
-                    <title>Upload multiple files</title>
-                    <h1>Upload multiple files</h1>
-                    <body>Successful files: """ + ', '.join(e for e in successful_files) + '<br />' + """
-                    Unsuccessful files: """ + ', '.join(e for e in unsuccessful_files) + """
-                    </body>"""
+        return make_response('Successful files: ' +
+                             ', '.join(e for e in successful_files) +
+                             '<br />' + " Unsuccessful files: " +
+                             ', '.join(e for e in unsuccessful_files))
 
-    else:  # no files attached
+    elif request.content_type == 'application/json' or request.content_type == 'application/json5':
         try:
             return_ids = []
             if request.json:
@@ -84,6 +82,9 @@ def add_project():
             return jsonify(return_ids)
         except ApiException as e:
             raise e
+
+    else:
+        raise ApiException("Wrong content header and no files attached", 400)
 
 
 @app.errorhandler(ApiException)
