@@ -218,7 +218,7 @@ def search_offset_count(offset, count):
         return (str(e), 400)
 
 
-#get projects containing having the search string somewhere within the tag field 
+#get projects containing having the search string somewhere within the tag field
 @app.route('/api/projects/search/tag/<int:offset>/<int:count>/', methods=['GET'])
 def search_tag(offset, count):
     tag = request.args.get('q', type=str)
@@ -245,65 +245,6 @@ def search_title():
         return (jsonify(res['suggest']['phraseSuggestion'][0]['options']))
     except RequestError as e:
         return (str(e), 400)
-
-# dummy add a few projects to es
-# Also sets up the mappings in elasticsearch which is necessary to do once in order to get suggestion
-#Note: deleting these projects will throw not found error bcause they are in es only, but they are deleted
-@app.route('/api/projects/dummyadd', methods=['GET'])
-def dummyadd():
-
-    settings = '{ "settings" : {"number_of_shards" : 1, "number_of_replicas" : 0}, "mappings" : {"suggest" : {"type" : "completion"},"title" : {"type": "completion"}, "description" : {"type": "string"}}}'
-    es.create(index="projects-index",doc_type='Project',id=0,body=settings)
-
-    output = "["
-
-    f = open('jsonprojectexamples/example0.json5', 'r')
-    doc =f.read()
-    res = es.index(index="projects-index", doc_type='Project', id=1, body=doc)
-    output += json.dumps(res) + " , "
-
-    f = open('jsonprojectexamples/example1.json5', 'r')
-    doc =f.read()
-    res = es.index(index="projects-index", doc_type='Project', id=2, body=doc)
-    output += json.dumps(res) + " , "
-
-    f = open('jsonprojectexamples/example2.json5', 'r')
-    doc =f.read()
-    res = es.index(index="projects-index", doc_type='Project', id=3, body=doc)
-    output += json.dumps(res) + " , "
-
-    f = open('jsonprojectexamples/example3.json5', 'r')
-    doc =f.read()
-    res = es.index(index="projects-index", doc_type='Project', id=4, body=doc)
-    output += json.dumps(res) + " , "
-
-    f = open('jsonprojectexamples/example4.json5', 'r')
-    doc =f.read()
-    res = es.index(index="projects-index", doc_type='Project', id=5, body=doc)
-    output += json.dumps(res) + " , "
-
-    f = open('jsonprojectexamples/example5.json5', 'r')
-    doc =f.read()
-    res = es.index(index="projects-index", doc_type='Project', id=6, body=doc)
-    output += json.dumps(res) + " , "
-
-    f = open('jsonprojectexamples/example6.json5', 'r')
-    doc =f.read()
-    res = es.index(index="projects-index", doc_type='Project', id=7, body=doc)
-    output += json.dumps(res) + " , "
-
-    f = open('jsonprojectexamples/example7.json5', 'r')
-    doc =f.read()
-    res = es.index(index="projects-index", doc_type='Project', id=8, body=doc)
-    output += json.dumps(res) + " , "
-
-    f = open('jsonprojectexamples/example8.json5', 'r')
-    doc =f.read()
-    res = es.index(index="projects-index", doc_type='Project', id=9, body=doc)
-    output += json.dumps(res) + " ]"
-
-    return (output)
-
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
