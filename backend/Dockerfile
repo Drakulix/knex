@@ -9,4 +9,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 WORKDIR /backend
 
-CMD [ "python", "flask_api.py" ]
+CMD [ "python", "init.py" ]
