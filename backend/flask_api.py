@@ -198,11 +198,11 @@ def update_project(project_id):
         res = coll.find_one({'_id': project_id})
         if res is None:
             raise ApiException("Project not found", 404)
-        elif request.is_json or request.headers['content-type']=="application/json5":
+        elif request.is_json or request.headers['content-type'] == "application/json5":
             if request.is_json:
                 manifest = request.json
                 if manifest['_id'] != str(project_id):
-                  raise ApiException("Updated project owns different id", 409)
+                    raise ApiException("Updated project owns different id", 409)
             else:
                 manifest = json5.loads(request.data.decode("utf-8"))
                 if '_id' in manifest:
@@ -217,7 +217,7 @@ def update_project(project_id):
                                           return_document=ReturnDocument.AFTER)
                 print("mongo replaced: ", file=sys.stderr)
                 es.index(index="projects-index", doc_type='Project',
-                          id=manifest["_id"], refresh=True, body={})
+                         id=manifest["_id"], refresh=True, body={})
                 print("Successfully replaced content: ", file=sys.stderr)
                 print(manifest, file=sys.stderr)
                 return make_response('Success')

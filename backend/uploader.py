@@ -56,7 +56,6 @@ def save_file_to_db(file, filename):
             coll.insert_one(manifest)
 
             return curid
-
         else:
             print(is_valid, file=sys.stderr)
             errors = validator.iter_errors(manifest)
@@ -91,9 +90,7 @@ def save_manifest_to_db(manifest):
             for entry in manifestlist:
                 entry['date_creation'] = time.strftime("%Y-%m-%d")
                 entry['date_last_updated'] = time.strftime("%Y-%m-%d")
-
                 curid = uuid.uuid4()
-
                 es.create(index="projects-index", doc_type='Project',
                           id=curid, refresh=True, body=entry)
 
