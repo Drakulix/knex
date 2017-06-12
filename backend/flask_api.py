@@ -181,24 +181,38 @@ def delete_project(project_id):
             return make_response('Success')
 
 
-# TODO
 @app.route('/api/projects/<uuid:project_id>', methods=['PUT'])
 def update_project(project_id):
+    """Updates Project by ID
+
+    Args:
+        project_id, updated manifest in json/json5 format
+
+    Returns:
+        response: Success response
+                  or 404 if project is not found
+                  or 409 if project_id differs from manifestID
+                  or 500 in case of validation error
+    """
     try:
         res = coll.find_one({'_id': project_id})
         if res is None:
             raise ApiException("Project not found", 404)
-        # TODO checkmimetype
-        elif request.is_json:
-            manifest = request.json
-            if manifest['_id'] != str(project_id):
-                raise ApiException("Updated project owns different id", 409)
+        elif request.is_json or request.headers['content-type']=="application/json5":
+            if request.is_json:
+                manifest = request.json
+                if manifest['_id'] != str(project_id):
+                  raise ApiException("Updated project owns different id", 409)
+            else:
+                manifest = json5.loads(request.data.decode("utf-8"))
+                if '_id' in manifest:
+                    if manifest['_id'] != str(project_id):
+                        raise ApiException("Updated project owns different id", 409)
             is_valid = validator.is_valid(manifest)
-            print(is_valid, file=sys.stderr)
             if is_valid:
-                print(manifest['_id'])
+                print("manifest validated", file=sys.stderr)
                 manifest['_id'] = project_id
-                manifest['date_update'] = time.strftime("%Y-%m-%d")
+                manifest['date_last_updated'] = time.strftime("%Y-%m-%d")
                 coll.find_one_and_replace({'_id': project_id}, manifest,
                                           return_document=ReturnDocument.AFTER)
                 print("mongo replaced: ", file=sys.stderr)
@@ -216,7 +230,7 @@ def update_project(project_id):
                         validation_error.append(error.message)
                 raise ApiException("Validation Error: \n" + str(is_valid), 400, validation_error)
         else:
-            raise ApiException("Not Json", 400)
+            raise ApiException("Manifest had wrong format", 400)
     except ApiException as e:
         raise e
     except Exception as err:
