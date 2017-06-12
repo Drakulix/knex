@@ -1,11 +1,13 @@
+"""Module to upload or save manifests to the databases.
+"""
+
 import sys
 import time
 import uuid
-
 import json5
 
 from apiexception import ApiException
-from flask_api import validator, ALLOWED_EXTENSIONS, coll, es
+from flask_api import validator, ALLOWED_EXTENSIONS, coll, es  # TODO: Fix cyclic imports
 
 
 def allowed_file(filename):
@@ -65,10 +67,10 @@ def save_file_to_db(filename):
                     raise ApiException("ElasticSearch Index Error: \n" + str(is_valid), 500)
             else:
                 print(is_valid, file=sys.stderr)
-                v = validator.iter_errors(manifest)
-                if v is not None:
+                errors = validator.iter_errors(manifest)
+                if errors is not None:
                     validation_error = []
-                    for error in sorted(validator.iter_errors(manifest), key=str):
+                    for error in sorted(errors, key=str):
                         print(error.message, file=sys.stderr)
                         validation_error.append(error.message)
                 raise ApiException("Validation Error: \n" + str(is_valid), 400)
@@ -133,4 +135,4 @@ def save_manifest_to_db(manifest):
     except ApiException as e:
         raise e
     except Exception as err:
-        raise ApiException("Error while trying to save the document(s) into db." + err.message)
+        raise ApiException("Error while trying to save the document(s) into db." + str(err))
