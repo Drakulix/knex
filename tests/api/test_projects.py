@@ -1,10 +1,9 @@
 import json
 import os
-from uuid import UUID
+import requests
 import uuid
 
-import requests
-
+from uuid import UUID
 
 class TestPOST(object):
 
