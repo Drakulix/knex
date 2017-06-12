@@ -198,19 +198,20 @@ def search():
         return (str(e), 400)
 
 
-
 # Search function which gets a text and does a full text search on all attributes
 @app.route('/api/projects/search/simple/<int:offset>/<int:count>/', methods=['GET'])
 def search_offset_count(offset, count):
     text = request.args.get("q", type=str)
-    print(request.args.get("st", type=str),file=sys.stderr)
-#^3 is boosting the attribute, *_is allowing wildcards to be used
-    request_string = '{"from" : 1, "size" : 1, "query": {"multi_match" : {"query" : "" , "fields" : [ "tags^2", "title^2", "description" ] } } }'
+    print(request.args.get("st", type=str), file=sys.stderr)
+# ^3 is boosting the attribute, *_is allowing wildcards to be used
+    request_string = ('{"from" : 1, "size" : 1, "query":'
+                      '{"multi_match" : {"query" : "" , "fields" : '
+                      '[ "tags^2", "title^2", "description" ] } } }')
     request_json = json.loads(request_string)
     request_json['query']['multi_match']['query'] = text
     request_json['from'] = offset
     request_json['size'] = count
-    print(json.dumps(request_json),file=sys.stderr)
+    print(json.dumps(request_json), file=sys.stderr)
     try:
         res = es.search(index="projects-index", doc_type="Project", body=request_json)
         return jsonify(res['hits']['hits'])
@@ -218,11 +219,12 @@ def search_offset_count(offset, count):
         return (str(e), 400)
 
 
-#get projects containing having the search string somewhere within the tag field
+# get projects containing having the search string somewhere within the tag field
 @app.route('/api/projects/search/tag/<int:offset>/<int:count>/', methods=['GET'])
 def search_tag(offset, count):
     tag = request.args.get('q', type=str)
-    request_string = '{"from" : 1, "size" : 1, "query": {"bool": {"must": [{"match_phrase": {"tags": ""} } ] } } }'
+    request_string = ('{"from" : 1, "size" : 1, "query": '
+                      '{"bool": {"must": [{"match_phrase": {"tags": ""} } ] } } }')
     request_json = json.loads(request_string)
     request_json['query']['bool']['must'][0]['match_phrase']['tags'] = tag
     request_json['from'] = offset
