@@ -52,13 +52,14 @@ class TestPOST(object):
             'testmanifests',
             'validexample0.json'
         )
-        with open(test_manifest, 'r', encoding='UTF-32') as tf:
+        with open(test_manifest, 'r', encoding='UTF-8') as tf:
             data = str(tf.read().replace('\n', ''))
         print(data)
-        response = requests.post(flask_api_url + "/api/projects", data=data,
+        data32 = data.encode('utf-32')
+        response = requests.post(flask_api_url + "/api/projects", data=data32,
                                  headers={'Content-Type': 'application/json'})
         assert response.status_code == 400
-        assert 'not in utf-8' in response.text
+        assert 'request body does not appear to be utf-8' in response.text
 
     def test_validation_error(self, flask_api_url, pytestconfig):
         test_manifest = os.path.join(

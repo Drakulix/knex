@@ -84,8 +84,9 @@ def add_project():
 
         except ApiException as e:
             raise e
-        except UnicodeError as ue:
-            raise ApiException("Request Body is not in utf-8: " + str(ue), 400)
+        except (UnicodeError, UnicodeDecodeError) as ue:
+            raise ApiException('Only utf-8 compatible charsets are supported, ' +
+                               'the request body does not appear to be utf-8.', 400)
         except Exception as err:
             raise ApiException(str(err), 400)
 
