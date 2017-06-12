@@ -3,12 +3,16 @@ version: '3'
 services:
     mongodb:
         image: mongo
+        command: ["/usr/bin/mongod", "--replSet", "rs"]
         volumes: 
             - ./backend:/backend
         entrypoint: ["/bin/sh", "/backend/mongosetup.sh"]
 
     elasticsearch:
         image: elasticsearch
+        expose:
+          - "9200"
+          - "9300"
 
     flask:
         build: ./backend
@@ -29,5 +33,3 @@ services:
             - elasticsearch
         volumes:
             - ./backend:/mongo-connector
-        depends_on:
-            - mongodb

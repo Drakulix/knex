@@ -3,5 +3,7 @@
 
     "logging": {
     	"type": "stream"
-    }
+    },
+
+    "noDump": true
 }

@@ -1,10 +1,10 @@
 #!/bin/bash
 
-mongod --replSet rs0
+/usr/bin/mongod --replSet rs
 
 mongo <<EOF
 	rs.initiate( {
-		"_id": 'rs0',
+		"_id": 'rs',
 		"members": [
 			{
 				"_id": 1,
@@ -12,4 +12,4 @@ mongo <<EOF
 			}
 		]
 	})
-EOF>>
+EOF
