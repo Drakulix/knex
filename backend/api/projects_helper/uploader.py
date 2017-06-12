@@ -3,9 +3,11 @@ import time
 import uuid
 
 import json5
+from flask import g
 
-from apiexception import ApiException
-from flask_api import validator, ALLOWED_EXTENSIONS, coll, es
+from api.exceptions.apiexception import ApiException
+
+ALLOWED_EXTENSIONS = {'txt', 'json', 'json5'}
 
 
 def allowed_file(filename):
@@ -17,6 +19,7 @@ def allowed_file(filename):
     Returns:
         bool: True if the file is allowed, False otherwise.
     """
+
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -41,7 +44,7 @@ def save_file_to_db(filename):
                 raise ApiException('File ' + str(filename) + ' is empty.', 400)
             jsonfile.seek(0)
             manifest = json5.load(jsonfile)
-            is_valid = validator.is_valid(manifest)
+            is_valid = g.validator.is_valid(manifest)
 
             if is_valid:
                 jsonfile.seek(0)
@@ -50,10 +53,10 @@ def save_file_to_db(filename):
                 manifest['date_update'] = time.strftime("%Y-%m-%d")
                 manifest['_id'] = uuid.uuid4()
 
-                res = es.index(index="projects-index", doc_type='Project',
-                               id=manifest['_id'], body=manifest)
+                res = g.es.index(index="projects-index", doc_type='Project',
+                                 id=manifest['_id'], body=manifest)
                 if res['created']:
-                    coll.insert_one(manifest)
+                    g.coll.insert_one(manifest)
 
                     print("Successfully validated file. ID is " +
                           str(manifest['_id']), file=sys.stderr)
@@ -65,10 +68,10 @@ def save_file_to_db(filename):
                     raise ApiException("ElasticSearch Index Error: \n" + str(is_valid), 500)
             else:
                 print(is_valid, file=sys.stderr)
-                v = validator.iter_errors(manifest)
+                v = g.validator.iter_errors(manifest)
                 if v is not None:
                     validation_error = []
-                    for error in sorted(validator.iter_errors(manifest), key=str):
+                    for error in sorted(g.validator.iter_errors(manifest), key=str):
                         print(error.message, file=sys.stderr)
                         validation_error.append(error.message)
                 raise ApiException("Validation Error: \n" + str(is_valid), 400)
@@ -92,7 +95,7 @@ def save_manifest_to_db(manifest):
         ApiException: Error while trying to save the document.
     """
     try:
-        is_valid = validator.is_valid(manifest)
+        is_valid = g.validator.is_valid(manifest)
 
         if is_valid:
             manifestlist = []
@@ -107,10 +110,10 @@ def save_manifest_to_db(manifest):
                 entry['date_update'] = time.strftime("%Y-%m-%d")
                 entry['_id'] = uuid.uuid4()
                 print("manifest is valid", file=sys.stderr)
-                coll.insert(entry)
+                g.coll.insert(entry)
                 print("mongo insert: ", file=sys.stderr)
-                es.create(index="projects-index", doc_type='Project',
-                          id=entry["_id"], refresh=True, body={})
+                g.es.create(index="projects-index", doc_type='Project',
+                            id=entry["_id"], refresh=True, body={})
                 print("Successfully inserted content: ", file=sys.stderr)
                 print(entry, file=sys.stderr)
                 ids.append(entry['_id'])
@@ -118,10 +121,8 @@ def save_manifest_to_db(manifest):
             return ids
         else:
             print(is_valid, file=sys.stderr)
-            errors = sorted(validator.iter_errors(manifest), key=str)
-            validation_error = {}
-            validation_error["errors"] = []
-            validation_error["sub_errors"] = []
+            errors = sorted(g.validator.iter_errors(manifest), key=str)
+            validation_error = {"errors": [], "sub_errors": []}
             for error in errors:
                 validation_error["errors"].append(error.message)
                 print(error.message, file=sys.stderr)
