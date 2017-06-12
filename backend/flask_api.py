@@ -1,8 +1,12 @@
-import json
+"""Main Module of knex
+Defines API points and starts the application
+"""
+
 import os
 import sys
-
+import json
 import json5
+
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import RequestError
 from flask import Flask, request, jsonify, make_response
@@ -52,9 +56,9 @@ def add_project():
             if file and uploader.allowed_file(securefilename):
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], securefilename))
                 try:
-                    newId = uploader.save_file_to_db(securefilename)
+                    newid = uploader.save_file_to_db(securefilename)
                     # represent original filename
-                    successful_files.append(file.filename + " " + str(newId))
+                    successful_files.append(file.filename + " " + str(newid))
                 except ApiException as e:
                     unsuccessful_files.append(file.filename + str(e))
 
@@ -65,26 +69,22 @@ def add_project():
                              '<br />' + " Unsuccessful files: " +
                              ', '.join(e for e in unsuccessful_files))
 
-    elif request.content_type == 'application/json' or request.content_type == 'application/json5':
+    else:
         try:
             return_ids = []
-            if request.json:
-                return_ids = uploader.save_manifest_to_db(request.json)
-
-            elif request.data:
-                print(request.data.decode("utf-8"), file=sys.stderr)
+            if request.content_type == 'application/json':
+                return_ids = uploader.save_manifest_to_db(request.get_json())
+            elif request.content_type == 'application/json5':
                 return_ids = uploader.save_manifest_to_db(
                     json5.loads(request.data.decode("utf-8")))
-
             else:
-                return make_response("Error: empty POST body", 400)
-
+                raise ApiException("Wrong content header and no files attached", 400)
             return jsonify(return_ids)
+
         except ApiException as e:
             raise e
-
-    else:
-        raise ApiException("Wrong content header and no files attached", 400)
+        except Exception as err:
+            raise ApiException(str(err), 400)
 
 
 @app.errorhandler(ApiException)
@@ -175,14 +175,12 @@ def delete_project(project_id):
     """
     try:
         es.delete(index="projects-index", doc_type='Project', id=project_id, refresh=True)
-    except Exception as e:
+        return make_response('Success')
+    except Exception:
         if coll.delete_one({'_id': project_id}).deleted_count == 0:
             return make_response('Project not found', 404)
         else:
             return make_response('Success')
-    else:
-        coll.delete_one({'_id': project_id})
-        return make_response('Success')
 
 
 @app.route('/api/projects/search', methods=['POST'])
