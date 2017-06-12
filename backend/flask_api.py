@@ -1,8 +1,12 @@
-import json
+"""Main Module of knex
+Defines API points and starts the application
+"""
+
 import os
 import sys
-
+import json
 import json5
+
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import RequestError
 from flask import Flask, request, jsonify, make_response
@@ -52,9 +56,9 @@ def add_project():
             if file and uploader.allowed_file(securefilename):
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], securefilename))
                 try:
-                    newId = uploader.save_file_to_db(securefilename)
+                    newid = uploader.save_file_to_db(securefilename)
                     # represent original filename
-                    successful_files.append(file.filename + " " + str(newId))
+                    successful_files.append(file.filename + " " + str(newid))
                 except ApiException as e:
                     unsuccessful_files.append(file.filename + str(e))
 
@@ -65,26 +69,22 @@ def add_project():
                              '<br />' + " Unsuccessful files: " +
                              ', '.join(e for e in unsuccessful_files))
 
-    elif request.content_type == 'application/json' or request.content_type == 'application/json5':
+    else:
         try:
             return_ids = []
-            if request.json:
-                return_ids = uploader.save_manifest_to_db(request.json)
-
-            elif request.data:
-                print(request.data.decode("utf-8"), file=sys.stderr)
+            if request.content_type == 'application/json':
+                return_ids = uploader.save_manifest_to_db(request.get_json())
+            elif request.content_type == 'application/json5':
                 return_ids = uploader.save_manifest_to_db(
                     json5.loads(request.data.decode("utf-8")))
-
             else:
-                return make_response("Error: empty POST body", 400)
-
+                raise ApiException("Wrong content header and no files attached", 400)
             return jsonify(return_ids)
+
         except ApiException as e:
             raise e
-
-    else:
-        raise ApiException("Wrong content header and no files attached", 400)
+        except Exception as err:
+            raise ApiException(str(err), 400)
 
 
 @app.errorhandler(ApiException)
@@ -175,14 +175,12 @@ def delete_project(project_id):
     """
     try:
         es.delete(index="projects-index", doc_type='Project', id=project_id, refresh=True)
-    except Exception as e:
+        return make_response('Success')
+    except Exception:
         if coll.delete_one({'_id': project_id}).deleted_count == 0:
             return make_response('Project not found', 404)
         else:
             return make_response('Success')
-    else:
-        coll.delete_one({'_id': project_id})
-        return make_response('Success')
 
 
 @app.route('/api/projects/search', methods=['POST'])
@@ -199,55 +197,174 @@ def search():
         return (str(e), 400)
 
 
-# Search function which gets a text and does a full text search on all attributes
-@app.route('/api/projects/search/simple/<int:offset>/<int:count>/', methods=['GET'])
-def search_offset_count(offset, count):
+@app.route('/api/projects/search/simple/', methods=['GET'])
+def search_simple():
+    """Search projects
+
+    Returns:
+        res (json): JSON containing Projects and metadata
+
+    """
     text = request.args.get("q", type=str)
-    print(request.args.get("st", type=str), file=sys.stderr)
-# ^3 is boosting the attribute, *_is allowing wildcards to be used
-    request_string = ('{"from" : 1, "size" : 1, "query":'
-                      '{"multi_match" : {"query" : "" , "fields" : '
-                      '[ "tags^2", "title^2", "description" ] } } }')
-    request_json = json.loads(request_string)
-    request_json['query']['multi_match']['query'] = text
-    request_json['from'] = offset
-    request_json['size'] = count
-    print(json.dumps(request_json), file=sys.stderr)
+    sorting = request.args.get('sort', type=str)
+    order = request.args.get('order', type=str)
+    offset = request.args.get('offset', type=int)
+    if offset is None:
+        offset = 0
+    count = request.args.get('count', type=int)
+    if count is None:
+        count = 10
+
+    # ^3 is boosting the attribute, *_is allowing wildcards to be used
+    request_json = {
+        'query': {
+            'multi_match': {
+                'query': text,
+                'fields': [
+                    'tags^2',
+                    'title^2',
+                    'description',
+                 ],
+            },
+        },
+        'from': offset,
+        'size': count,
+    }
+    if (sorting is not None) and (order is not None):
+        request_json["sort"] = dict()
+        request_json["sort"][sorting] = {
+            'order': order,
+        }
+
     try:
         res = es.search(index="projects-index", doc_type="Project", body=request_json)
-        return jsonify(res['hits']['hits'])
+        return jsonify(res['hits'])
     except RequestError as e:
         return (str(e), 400)
 
 
-# get projects containing having the search string somewhere within the tag field
-@app.route('/api/projects/search/tag/<int:offset>/<int:count>/', methods=['GET'])
-def search_tag(offset, count):
-    tag = request.args.get('q', type=str)
-    request_string = ('{"from" : 1, "size" : 1, "query": '
-                      '{"bool": {"must": [{"match_phrase": {"tags": ""} } ] } } }')
-    request_json = json.loads(request_string)
-    request_json['query']['bool']['must'][0]['match_phrase']['tags'] = tag
-    request_json['from'] = offset
-    request_json['size'] = count
+@app.route('/api/projects/search/advanced/', methods=['GET'])
+def search_avanced():
+    """Advanced search with filters
+
+    Returns:
+        res (json): JSON containing Projects and metadata
+
+    """
+    text = request.args.get("q", type=str)
+    sorting = request.args.get('sort', type=str)
+    order = request.args.get('order', type=str)
+    offset = request.args.get('offset', type=int)
+    if offset is None:
+        offset = 0
+    count = request.args.get('count', type=int)
+    if count is None:
+        count = 10
+
+    # ^3 is boosting the attribute, *_is allowing wildcards to be used
+    request_json = {
+        'query': {
+            'query_string': {
+                'query': text,
+            },
+        },
+        'from': offset,
+        'size': count,
+    }
+    if (sorting is not None) and (order is not None):
+        request_json["sort"] = dict()
+        request_json["sort"][sorting] = {
+            'order': order,
+        }
     try:
         res = es.search(index="projects-index", doc_type="Project", body=request_json)
-        return jsonify(res['hits']['hits'])
+        return jsonify(res['hits'])
+    except RequestError as e:
+        return (str(e), 400)
+
+
+@app.route('/api/projects/search/tag/', methods=['GET'])
+def search_tag():
+    """Search projects
+
+    Returns:
+        res (json): JSON containing Projects and metadata
+    """
+    tag = request.args.get('q', type=str)
+    sorting = request.args.get('sort', type=str)
+    order = request.args.get('order', type=str)
+    offset = request.args.get('offset', type=int)
+    if offset is None:
+        offset = 0
+    count = request.args.get('count', type=int)
+    if count is None:
+        count = 10
+
+    request_json = {
+        'query': {
+            'bool': {
+                'must': [
+                    {
+                        'match_phrase': {
+                            'tags': tag,
+                        },
+                    },
+                ],
+            },
+        },
+        'from': offset,
+        'size': count,
+    }
+    if (sorting is not None) and (order is not None):
+        request_json["sort"] = dict()
+        request_json["sort"][sorting] = {
+            'order': order,
+        }
+    try:
+        res = es.search(index="projects-index", doc_type="Project", body=request_json)
+        return (jsonify(res['hits']))
     except RequestError as e:
         return (str(e), 400)
 
 
 @app.route('/api/projects/search/suggest/', methods=['GET'])
-def search_title():
+def search_suggest():
+    """Suggests search improvements
+
+    Returns:
+        res (json): JSON containing suggested search terms
+    """
     text = request.args.get('q', type=str)
-    request_string = '{"suggest": {"text" : "","phraseSuggestion" : {"phrase":{"field" : "description","direct_generator":[{"field": "description","size": 10,"suggest_mode":"missing", "min_word_length": 3,"prefix_length":2}],"highlight": {"pre_tag": "<em>","post_tag": "</em>"} } } }}'
-    request_json = json.loads(request_string)
-    request_json['suggest']['text'] = text
+
+    request_json = {
+        'suggest': {
+            'text': text,
+            'phraseSuggestion': {
+                'phrase': {
+                    'field': "description",
+                    'highlight': {
+                        'pre_tag': '<em>',
+                        'post_tag': '</em>',
+                    },
+                    'direct_generator': [
+                        {
+                            'field': 'description',
+                            'size': 10,
+                            'suggest_mode': 'missing',
+                            'min_word_length': 3,
+                            'prefix_length': 2,
+                        }
+                    ],
+                },
+            },
+        },
+    }
     try:
         res = es.search(index="projects-index", doc_type="Project", body=request_json)
         return (jsonify(res['suggest']['phraseSuggestion'][0]['options']))
     except RequestError as e:
         return (str(e), 400)
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
