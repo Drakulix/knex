@@ -45,7 +45,7 @@ class TestPOST(object):
         for id in response.json():
             assert UUID(id, version=4)
 
-    def test_validtion_error(self, flask_api_url, pytestconfig):
+    def test_validation_error(self, flask_api_url, pytestconfig):
         test_manifest = os.path.join(
             str(pytestconfig.rootdir),
             'tests',
@@ -59,7 +59,7 @@ class TestPOST(object):
                                  headers={'Content-Type': 'application/json'})
         print(response.text)
 
-    def test_missformed_json_error(self, flask_api_url, pytestconfig):
+    def test_misformed_json_error(self, flask_api_url, pytestconfig):
         """Test both invalid json and for json which does not match,
         test for Bad Request and Validation Error.
         """
@@ -107,6 +107,40 @@ class TestPOST(object):
                                  headers={'Content-Type': 'image/gif'})
         print(response.text)
         assert response.status_code == 400
+
+    def test_jsonheader_json5file(self, flask_api_url, pytestconfig):
+        """Test if a json5-file with a json-content header still gets accepted.
+        Should not pass.
+        """
+        test_manifest = os.path.join(
+            str(pytestconfig.rootdir),
+            'tests',
+            'testmanifests',
+            'validexample0.json5'
+        )
+        with open(test_manifest, 'r', encoding='utf-8') as tf:
+            data = str(tf.read().replace('\n', ''))
+        response = requests.post(flask_api_url + "/api/projects", data=data.encode('utf-8'),
+                                 headers={'Content-Type': 'application/json'})
+        print(response.text)
+        assert response.status_code == 400
+
+    def test_json5header_jsonfile(self, flask_api_url, pytestconfig):
+        """Test if a json-file with a json5-content header still gets accepted.
+        Should pass because of backwards compatibility
+        """
+        test_manifest = os.path.join(
+            str(pytestconfig.rootdir),
+            'tests',
+            'testmanifests',
+            'validexample0.json'
+        )
+        with open(test_manifest, 'r', encoding='utf-8') as tf:
+            data = str(tf.read().replace('\n', ''))
+        response = requests.post(flask_api_url + "/api/projects", data=data.encode('utf-8'),
+                                 headers={'Content-Type': 'application/json5'})
+        print(response.text)
+        assert response.status_code == 200
 
 
 class TestDELETE(object):
@@ -163,7 +197,7 @@ class TestGET(object):
         print(response.text)
         assert response.status_code == 404
 
-    def test_invaid_id(self, flask_api_url):
+    def test_invalid_id(self, flask_api_url):
         """ Test for 404 when a project with ID in invalid format is to be deleted.
         """
         invalid_id = "invalid"
