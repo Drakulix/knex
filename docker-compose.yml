@@ -3,6 +3,9 @@ version: '3'
 services:
     mongodb:
         image: mongo
+        volumes: 
+            - ./backend:/backend
+        entrypoint: ["/bin/sh", "/backend/mongosetup.sh"]
 
     elasticsearch:
         image: elasticsearch
@@ -26,3 +29,5 @@ services:
             - elasticsearch
         volumes:
             - ./backend:/mongo-connector
+        depends_on:
+            - mongodb
