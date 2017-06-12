@@ -1,8 +1,9 @@
 import json
 import os
 import sys
-
 import json5
+
+from flask_login import  LoginManager
 from bson.json_util import dumps
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import RequestError
@@ -11,9 +12,13 @@ from flask_cors import CORS
 from jsonschema import FormatChecker, Draft4Validator
 from pymongo import MongoClient
 from werkzeug.utils import secure_filename
-
+from mongoengine.fields import UUIDField
 import uploader
 from apiexception import ApiException
+from flask_mongoengine import MongoEngine
+from flask_security import Security, MongoEngineUserDatastore, \
+    UserMixin, RoleMixin, login_required, roles_required, login_user, logout_user
+from passlib.hash import pbkdf2_sha256
 
 es = Elasticsearch([{'host': 'elasticsearch', 'port': 9200}])
 
@@ -22,7 +27,14 @@ db = client.knexDB
 coll = db.projects
 
 app = Flask(__name__)
+
+
 CORS(app)
+
+
+
+
+
 
 with app.open_resource("manifest_schema.json") as schema_file:
     schema = json.load(schema_file)
@@ -37,7 +49,89 @@ app.config['MAX_CONTENT_PATH'] = 1000000  # 100.000 byte = 100kb
 def index():
     """Index of knex
     """
-    return make_response('', 404)
+    return "Hello World"
+
+
+
+# Create app
+app = Flask(__name__)
+app.config['DEBUG'] = True
+app.config['SECRET_KEY'] = 'super-secret'
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+# MongoDB Config
+app.config['MONGODB_DB'] = 'knexDB'
+app.config['MONGODB_HOST'] = 'mongodb'
+app.config['MONGODB_PORT'] = 27017
+
+# Create database connection object
+db = MongoEngine(app)
+
+class Role(db.Document, RoleMixin):
+    name = db.StringField(max_length=80, unique=True)
+    description = db.StringField(max_length=255)
+
+class User(db.Document, UserMixin):
+    email = db.StringField(max_length=255)
+    first_name = db.StringField(max_length=255)
+    last_name = db.StringField(max_length=255)
+    password = db.StringField(max_length=255)
+    active = db.BooleanField(default=True)
+    bio = db.StringField(max_length=255)
+    bookmarks = db.ListField(UUIDField(), default=[])
+    roles = db.ListField(db.ReferenceField(Role), default=[])
+
+
+
+# Setup Flask-Security
+user_datastore = MongoEngineUserDatastore(db, User, Role)
+security = Security(app, user_datastore)
+
+
+@app.before_first_request
+def initialize_users():
+    user_role = user_datastore.find_or_create_role('user')
+    user_datastore.create_user(email='user@knex.com', password=pbkdf2_sha256.hash("user"), roles=[user_role])
+    admin_role = user_datastore.find_or_create_role('admin')
+    user_datastore.create_user(email='admin@knex.com', password=pbkdf2_sha256.hash("admin"), roles=[admin_role])
+
+
+
+#GET is only for testing!!
+@app.route('/api/users/login', methods=['GET','POST'])
+def login():
+    if request.method == 'GET':
+        return '''
+                   <form action='login' method='POST'>
+                    <input type='text' name='email' id='email' placeholder='email'></input>
+                    <input type='password' name='password' id='password' placeholder='password'></input>
+                    <input type='submit' name='submit'></input>
+                   </form>
+                   '''
+
+    email = request.form['email']
+    password = request.form['password']
+    user = user_datastore.get_user(email)
+    if user is None:
+        return 'Username oder Password invalid'
+
+
+    if pbkdf2_sha256.verify(password, user["password"]):
+        login_user(user)
+        return "Login successful"
+
+    return 'Username oder Password invalid'
+
+
+@app.route('/api/users/logout')
+def logout():
+    logout_user()
+    return 'Logged out'
+
+
+
 
 
 @app.route('/api/projects', methods=['POST'])
@@ -199,6 +293,63 @@ def search():
         return jsonify(res)
     except RequestError as e:
         return (str(e), 400)
+
+
+
+@app.route('/api/users', methods=['PUT'])
+@roles_required('admin')
+def createUser():
+
+    try:
+        user = request.get_json()
+
+        # still without json validation
+        # a new user does not have bookmarks
+        hash = pbkdf2_sha256.hash(user["password"])
+        role = user_datastore.find_or_create_role(user['role'])
+        user_datastore.create_user(first_name = user["first name"],last_name = user["last name"],
+                                   email = user["email"],password = hash, bio = user["bio"],roles=[role])
+
+        return jsonify(user_datastore.get_user(user['email']))
+
+    except ApiException as e:
+        raise e
+    except Exception as err:
+        raise ApiException(str(err), 500)
+
+
+
+
+
+@app.route('/api/users/', methods=['PUT'])
+@roles_required('admin')
+def updateUser():
+
+    return "What should be updated??"
+
+
+
+
+
+
+@app.route('/api/users/<string:mail>', methods=['GET'])
+@login_required
+def getUsers(mail):
+
+    #
+
+    """Return user with given mail as json
+
+        Returns:
+            res: A user with given mail as json
+        """
+    res = user_datastore.get_user(mail)
+    if res is None:
+        return make_response('Unknown User with Email-address: ' + mail, 500)
+
+    #return res
+    return jsonify(res)
+
 
 
 if __name__ == "__main__":
