@@ -97,12 +97,8 @@ def save_manifest_to_db(manifest):
         is_valid = validator.is_valid(manifest)
 
         if is_valid:
-            manifestlist = []
+            manifestlist = manifest if isinstance(manifest, list) else [manifest]
             ids = []
-            if isinstance(manifest, list):
-                manifestlist = manifest
-            else:
-                manifestlist.append(manifest)
 
             for entry in manifestlist:
                 entry['date_creation'] = time.strftime("%Y-%m-%d")

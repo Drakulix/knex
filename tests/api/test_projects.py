@@ -57,7 +57,7 @@ class TestPOST(object):
         print(data)
         data32 = data.encode('utf-32')
         response = requests.post(flask_api_url + "/api/projects", data=data32,
-                                 headers={'Content-Type': 'application/json'})
+                                 headers={'Content-Type': 'application/json5'})
         assert response.status_code == 400
         assert 'request body does not appear to be utf-8' in response.text
 
