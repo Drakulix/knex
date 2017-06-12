@@ -45,6 +45,21 @@ class TestPOST(object):
         for id in response.json():
             assert UUID(id, version=4)
 
+    def test_encoding_error(self, flask_api_url, pytestconfig):
+        test_manifest = os.path.join(
+            str(pytestconfig.rootdir),
+            'tests',
+            'testmanifests',
+            'validexample0.json'
+        )
+        with open(test_manifest, 'r', encoding='UTF-32') as tf:
+            data = str(tf.read().replace('\n', ''))
+        print(data)
+        response = requests.post(flask_api_url + "/api/projects", data=data,
+                                 headers={'Content-Type': 'application/json'})
+        assert response.status_code == 400
+        assert 'not in utf-8' in response.text
+
     def test_validation_error(self, flask_api_url, pytestconfig):
         test_manifest = os.path.join(
             str(pytestconfig.rootdir),
