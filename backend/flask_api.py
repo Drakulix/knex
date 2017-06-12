@@ -72,9 +72,10 @@ def add_project():
     else:
         try:
             return_ids = []
-            if request.content_type == 'application/json':
+            if ('application/json' in request.content_type) and \
+                    ('application/json5' not in request.content_type):
                 return_ids = uploader.save_manifest_to_db(request.get_json())
-            elif request.content_type == 'application/json5':
+            elif 'application/json5' in request.content_type:
                 return_ids = uploader.save_manifest_to_db(
                     json5.loads(request.data.decode("utf-8")))
             else:
@@ -83,6 +84,8 @@ def add_project():
 
         except ApiException as e:
             raise e
+        except UnicodeError as ue:
+            raise ApiException("Request Body is not in utf-8: " + str(ue), 400)
         except Exception as err:
             raise ApiException(str(err), 400)
 
