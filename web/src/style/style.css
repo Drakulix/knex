@@ -177,10 +177,6 @@ font-weight: 300;
   border-radius: 0px;
 }
 
-.form-control {
-  height: 38px;
-}
-
 .sign-button {
   width: 250px;
   height: 43px;
@@ -190,9 +186,14 @@ font-weight: 300;
   font-weight: 200;
 }
 
+.btn {
+  border-radius: 0rem;
+}
+
 .btn-primary {
   background-color: #ff5500 !important;
   border-color: #ff5500 !important;
+  border-radius: 0px !important;
 }
 
 .sign-button:hover {
@@ -243,10 +244,6 @@ font-weight: 300;
   visibility: hidden;
 }
 
-.btn-primary {
-  border-radius: 0px !important;
-}
-
 .form-control {
   border-radius: 0px !important;
 }
@@ -258,6 +255,14 @@ font-weight: 300;
 }
 
 /* createProjectByPattern.js and createProjectView.js */
+
+legend {
+  font-size: 1rem;
+}
+
+.field-array {
+  margin-top: 45px;
+}
 
 .header{
   height: 41px;
@@ -298,6 +303,17 @@ font-weight: 300;
   margin-right: auto;
 }
 
+.array-item {
+  width: 290px;
+  margin-top: 30px;
+}
+
+.help-block {
+  font-style: italic;
+  color: grey;
+  margin-bottom: 30px !important;
+}
+
 .submit{
   width: 250px;
   height: 43px;
@@ -321,6 +337,7 @@ font-weight: 300;
   font-size: 30px;
   color: #000000;
   margin-top: 100px;
+  margin-bottom: 50px;
 }
 
 .caption{
@@ -512,6 +529,54 @@ font-weight: 300;
   margin-top: 30px;
   margin-bottom: 10px;
 }
+
+.btn-info {
+  width: 92px;
+  height: 39px;
+  background-color: #333333;
+  border: solid 1px #333333;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  font-size: 18px;
+  text-align: center;
+  color: #ffffff;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  float: left;
+  border-radius: 0px;
+}
+
+.btn-info:hover {
+    color: #fff;
+    background-color: #ff5500;
+    border-color: #ff5500;
+}
+
+.btn-cancel {
+  width: 92px;
+  height: 39px;
+  background-color: #ff5500;
+  border: solid 1px #ff5500;
+  color: white;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  font-size: 18px;
+  margin-top: 26px;
+  display: block;
+  margin-left: 110px;
+}
+
+.btn-danger {
+    color: #fff;
+    height: 39px;
+    background-color: #d9534f;
+    border-color: #d9534f;
+    border: solid 1px #d9534f;
+    border-radius: 0px;
+}
+
+
+
 
 .nav-tabs .nav-link {
     border: 1px solid transparent;

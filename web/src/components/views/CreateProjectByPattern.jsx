@@ -2,47 +2,133 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 import CreateProjectLink from '../pages/CreateProjectLink.jsx';
+import Form from "../libraries/react-jsonschema-form";
+import { Redirect } from 'react-router-dom';
+//import exampleJSON from "../../data/test_project.json";
 
+const schema = {
+  type: "object",
+  required: ["title", "authors", "date_creation", "description", "status"],
+  properties: {
+    title: {
+      type: "string",
+      title: "Title",
+      default: "A new task"
+    },
+    authors: {
+      type: "array",
+      title: "Author",
+      items: {
+        type: "object",
+        properties: {
+          name: {
+            "title": "Name",
+            "type": "string"
+          },
+          email: {
+            "title": "E-Mail",
+            "type": "string",
+            "format": "email"
+          }
+        }
+      }
+    },
+    date_creation: {
+      type: "string",
+      title: "Creation Date",
+      //format: "date-time",
+      default: "2011-12-12"
+    },
+    description: {
+      type: "string",
+      title: "Description",
+      default: "A Description"
+    },
+    status: {
+      type: "string",
+        title: "Status"
+    },
+    url: {
+      type: "string",
+      title: "Github URL",
+      format: "uri"
+    },
+    url_two: {
+      type: "string",
+      title: "Other URL",
+      format: "uri"
+    },
+    tags: {
+      title: "Tags",
+      type: "array",
+      items: {
+        type: "string"
+      }
+    }
+  }
+};
+
+const uiSchema = {
+  url: {
+    "ui:placeholder": "http://"
+  },
+  url_two: {
+    "ui:placeholder": "http://"
+  },
+  description: {
+    "ui:widget": "textarea"
+  },
+  tags: {
+    "ui:help": "Add tags!"
+  },
+  authors: {
+    "ui:help": "Add author!"
+  },
+  foo: {
+    "ui:options":  {
+      addable: true
+    }
+  }
+};
+
+const formData = {
+  //to be continued
+}
+
+const log = (type) => console.log.bind(console, type);
 
 export default class UploadByPattern extends React.Component {
-  render(){
+
+  onSubmit = ({formData}) => {
+    fetch('http://localhost:5000/api/projects', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData)
+      //body: JSON.stringify(exampleJSON)
+    }),
+    console.log(formData);
+    alert("New Project added!");
+  }
+
+  render() {
     return(
       <div className="container">
         <div className="innerContainer">
           <div className="headerCreation">Create New Project</div>
-          <h3 className="caption">Project Name</h3>
-          <input className="enterValue" type="text"  ></input>
-          <h3 className="caption">Author Name</h3>
-          <input className="enterValue" type="text"  ></input>
-          <h3 className="caption">Team</h3>
-          <select className="dropdown" name="Select Team" size="1">
-            <option></option>
-            <option></option>
-            <option></option>
-            <option></option>
-            <option></option>
-          </select>
-          <h3 className="caption">Status</h3>
-          <select className="dropdown " name="Select Team" size="1">
-            <option>finished</option>
-            <option>pending</option>
-            <option>reviewed</option>
-          </select>
-          <h3 className="caption">Description</h3>
-          <textarea className="enterDescription" type="text"  ></textarea>
-          <h3 className="caption">Tags</h3>
-          <input className="tags" type="text">
-            {//To be filled
-            }
-          </input>
-          <div className="buttons">
-            <button className="saveButton" >Save</button>
-              <Link to="/createbylink">
-                <button className="cancelButton">Cancel</button>
-              </Link>
-          </div>
+            <Form schema={schema}
+              uiSchema={uiSchema}
+              formData={formData}
+              onChange={log("changed")}
+              onSubmit={this.onSubmit}
+              onError={log("errors")} />
+            <Link to="/createbylink">
+              <button className="btn-cancel">Cancel</button>
+            </Link>
         </div>
       </div>
-  )
+    )
   }
 }
