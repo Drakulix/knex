@@ -5,6 +5,7 @@ import uuid
 
 from uuid import UUID
 
+
 class TestPOST(object):
 
     def test_empty_post(self, flask_api_url):
