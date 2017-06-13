@@ -215,20 +215,25 @@ def update_project(project_id):
                 manifest['date_last_updated'] = time.strftime("%Y-%m-%d")
                 coll.find_one_and_replace({'_id': project_id}, manifest,
                                           return_document=ReturnDocument.AFTER)
-                print("mongo replaced: ", file=sys.stderr)
-                es.index(index="projects-index", doc_type='Project',
-                         id=manifest["_id"], refresh=True, body={})
-                print("Successfully replaced content: ", file=sys.stderr)
+                print("mongo replaced:", file=sys.stderr)
                 print(manifest, file=sys.stderr)
+                manifest.pop('_id', None)
+                es.index(index="projects-index", doc_type='Project',
+                         id=project_id, refresh=True, body=manifest)
+                print("Successfully replaced in ES", file=sys.stderr)
                 return make_response('Success')
+            elif on_json_loading_failed() is not None:
+                raise ApiException("Json could not be parsed", 400, on_json_loading_failed())
             else:
                 validation_errs = [error for error in sorted(validator.iter_errors(manifest))]
                 if validation_errs is not None:
                     raise ApiException("Validation Error: \n" + str(is_valid), 400, validation_errs)
         else:
             raise ApiException("Manifest had wrong format", 400)
-    except ApiException as e:
-        raise e
+    except ApiException as error:
+        raise error
+    except UnicodeDecodeError as unicodeerr:
+        raise ApiException("utf8 decoding not possible", 400, unicodeerr)
     except Exception as err:
         raise ApiException(str(err), 500)
 
