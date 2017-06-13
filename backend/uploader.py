@@ -52,7 +52,7 @@ def save_file_to_db(filename):
                 manifest['date_update'] = time.strftime("%Y-%m-%d")
                 manifest['_id'] = uuid.uuid4()
 
-                res = es.create(index="projects-index", doc_type='Project',
+                res = es.index(index="projects-index", doc_type='Project',
                                id=manifest['_id'], body=manifest)
                 if res['created']:
                     coll.insert_one(manifest)
@@ -111,8 +111,8 @@ def save_manifest_to_db(manifest):
                 print("manifest is valid", file=sys.stderr)
                 coll.insert(entry)
                 print("mongo insert: ", file=sys.stderr)
-                es.create(index="projects-index", doc_type='Project',
-                          id=entry["_id"], refresh=True, body=entry)
+                es.index(index="projects-index", doc_type='Project',
+                         id=entry["_id"], refresh=True, body=entry)
                 print("Successfully inserted content: ", file=sys.stderr)
                 print(entry, file=sys.stderr)
                 ids.append(entry['_id'])
