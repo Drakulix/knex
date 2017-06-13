@@ -12,6 +12,7 @@ from flask_cors import CORS
 from jsonschema import FormatChecker, Draft4Validator
 from pymongo import MongoClient
 from werkzeug.utils import secure_filename
+from werkzeug.routing import BaseConverter
 from mongoengine.fields import UUIDField
 import uploader
 from apiexception import ApiException
@@ -25,7 +26,7 @@ es = Elasticsearch([{'host': 'elasticsearch', 'port': 9200}])
 client = MongoClient('mongodb:27017')
 db = client.knexDB
 coll = db.projects
-
+coll_user = db.user
 app = Flask(__name__)
 
 
@@ -83,12 +84,14 @@ class User(db.Document, UserMixin):
     bookmarks = db.ListField(UUIDField(), default=[])
     roles = db.ListField(db.ReferenceField(Role), default=[])
 
+class EmailConverter(BaseConverter):
+    regex = r"([a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`""{|}~-]+)*(@|\sat\s)(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(\.|""\sdot\s))+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)"
 
 
 # Setup Flask-Security
 user_datastore = MongoEngineUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
-
+app.url_map.converters['email'] = EmailConverter
 
 @app.before_first_request
 def initialize_users():
@@ -307,6 +310,10 @@ def createUser():
         # a new user does not have bookmarks
         hash = pbkdf2_sha256.hash(user["password"])
         role = user_datastore.find_or_create_role(user['role'])
+        res = coll_user.find({'email' : user["email"]})
+        if res is not None:
+            return make_response('User already exists',500)
+
         user_datastore.create_user(first_name = user["first name"],last_name = user["last name"],
                                    email = user["email"],password = hash, bio = user["bio"],roles=[role])
 
@@ -324,19 +331,31 @@ def createUser():
 @app.route('/api/users/', methods=['PUT'])
 @roles_required('admin')
 def updateUser():
+    user = request.get_json()
+    res = coll_user.find({'email' : user['email']})
+    if res is None:
+        return make_response('User with email: ' + user['email'] + ' not found', 404)
 
-    return "What should be updated??"
+    hash = pbkdf2_sha256.hash(user["password"])
+    role = user['role']
+    coll_user.update_many(
+        {'email':'user@knex.com'},
+        {'$set':{'first_name' : user["first name"], 'last_name' : user["last name"], 'password' : hash, 'bio' : user["bio"], 'roles' : role }},
+    upsert = False)
+
+
+
+    res = make_response(dumps(res))
+    res.headers['Content-Type'] = 'application/json'
+
+    return make_response("User with email: " + user['mail'] + 'updated', '200')
 
 
 
 
-
-
-@app.route('/api/users/<string:mail>', methods=['GET'])
+@app.route('/api/users/<email:mail>', methods=['GET'])
 @login_required
-def getUsers(mail):
-
-    #
+def getUser(mail):
 
     """Return user with given mail as json
 
@@ -349,6 +368,27 @@ def getUsers(mail):
 
     #return res
     return jsonify(res)
+
+
+@app.route('/api/users/', methods=['GET'])
+@login_required
+def getUsers():
+
+    """Return a list with all user
+
+        Returns:
+            res: A list with all user as json
+        """
+    res = coll_user.find({})
+    if res is None:
+        return make_response('User list is empty', 500)
+
+    res = make_response(dumps(res))
+    res.headers['Content-Type'] = 'application/json'
+
+    return res
+
+
 
 
 
