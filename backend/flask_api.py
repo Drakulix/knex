@@ -198,7 +198,7 @@ def update_project(project_id):
         res = coll.find_one({'_id': project_id})
         if res is None:
             raise ApiException("Project not found", 404)
-        elif request.is_json or request.content_type == "application/json5;charset: utf-8":
+        elif request.is_json or "application/json5" in request.content_type:
             if request.is_json:
                 manifest = request.get_json()
                 if manifest['_id'] != str(project_id):
@@ -221,9 +221,10 @@ def update_project(project_id):
                 print("Successfully replaced content: ", file=sys.stderr)
                 print(manifest, file=sys.stderr)
                 return make_response('Success')
-            elif validator.iter_errors(manifest) is not None:
-                validation_errors = [error for error in sorted(validator.iter_errors(manifest))]
-                raise ApiException("Validation Error: \n" + str(is_valid), 400, validation_errors)
+            else:
+                validation_errs = [error for error in sorted(validator.iter_errors(manifest))]
+                if validation_errs is not None:
+                    raise ApiException("Validation Error: \n" + str(is_valid), 400, validation_errs)
         else:
             raise ApiException("Manifest had wrong format", 400)
     except ApiException as e:
