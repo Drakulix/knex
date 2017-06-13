@@ -95,13 +95,15 @@ def save_manifest_to_db(manifest):
                 entry['date_creation'] = time.strftime("%Y-%m-%d")
                 entry['date_update'] = time.strftime("%Y-%m-%d")
 
-                es.create(index="projects-index", doc_type='Project',
-                          id=entry["id"], refresh=True, body=entry)
+                curid = uuid.uuid4()
 
-                entry['_id'] = uuid.uuid4()
+                es.create(index="projects-index", doc_type='Project',
+                          id=curid, refresh=True, body=entry)
+
+                entry['_id'] = curid
                 coll.insert(entry)
 
-                ids.append(entry['_id'])
+                ids.append(curid)
 
             return ids
         else:
