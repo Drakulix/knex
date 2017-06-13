@@ -72,7 +72,7 @@ class TestPOST(object):
             print(response.text)
             for id in response.json():
                 assert UUID(id, version=4)
-                
+
     def test_encoding_error(self, flask_api_url, pytestconfig):
         test_manifest = os.path.join(
             str(pytestconfig.rootdir),
