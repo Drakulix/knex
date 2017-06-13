@@ -45,6 +45,32 @@ class TestPOST(object):
         for id in response.json():
             assert UUID(id, version=4)
 
+    def test_success_json5_upload(self, flask_api_url, pytestconfig):
+        test_manifest = os.path.join(
+            str(pytestconfig.rootdir),
+            'tests',
+            'testmanifests',
+            'validexample0.json5'
+        )
+        with open(test_manifest, 'r', encoding='utf-8') as tf:
+            response = requests.post(flask_api_url + "/api/projects", files={'file': tf})
+            print(response.text)
+            for id in response.json():
+                assert UUID(id, version=4)
+
+    def test_success_json_upload(self, flask_api_url, pytestconfig):
+        test_manifest = os.path.join(
+            str(pytestconfig.rootdir),
+            'tests',
+            'testmanifests',
+            'validexample0.json'
+        )
+        with open(test_manifest, 'r') as tf:
+            response = requests.post(flask_api_url + "/api/projects", files={'file': tf})
+            print(response.text)
+            for id in response.json():
+                assert UUID(id, version=4)
+
     def test_validation_error(self, flask_api_url, pytestconfig):
         test_manifest = os.path.join(
             str(pytestconfig.rootdir),
