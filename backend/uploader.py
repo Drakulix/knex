@@ -45,7 +45,7 @@ def save_file_to_db(file, filename):
 
         if is_valid:
             manifest['date_creation'] = time.strftime("%Y-%m-%d")
-            manifest['date_update'] = time.strftime("%Y-%m-%d")
+            manifest['date_last_updated'] = time.strftime("%Y-%m-%d")
 
             curid = uuid.uuid4()
 
@@ -91,7 +91,7 @@ def save_manifest_to_db(manifest):
 
             for entry in manifestlist:
                 entry['date_creation'] = time.strftime("%Y-%m-%d")
-                entry['date_update'] = time.strftime("%Y-%m-%d")
+                entry['date_last_updated'] = time.strftime("%Y-%m-%d")
 
                 curid = uuid.uuid4()
 
