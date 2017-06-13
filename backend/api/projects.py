@@ -22,6 +22,7 @@ def init_global_manifest_validator():
         schema = json.load(schema_file)
     g.validator = Draft4Validator(schema, format_checker=FormatChecker())
 
+
 @projects.before_app_first_request
 def init_gloabl_elasticsearch():
     global es
@@ -32,6 +33,7 @@ def init_gloabl_elasticsearch():
 def init_gloabl_mongoclienth():
     global mongoclient
     mongoclient = MongoClient('mongodb:27017')
+
 
 @projects.before_request
 def init_gloabl_elasticsearch():
