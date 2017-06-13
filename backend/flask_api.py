@@ -49,7 +49,7 @@ app.config['MAX_CONTENT_PATH'] = 1000000  # 100.000 byte = 100kb
 def index():
     """Index of knex
     """
-    return "Hello World"
+    return make_response('', 404)
 
 
 
