@@ -72,17 +72,21 @@ def add_project():
     else:
         try:
             return_ids = []
-            if request.content_type == 'application/json':
+            if ('application/json' in request.content_type) and \
+                    ('application/json5' not in request.content_type):
                 return_ids = uploader.save_manifest_to_db(request.get_json())
-            elif request.content_type == 'application/json5':
+            elif 'application/json5' in request.content_type:
                 return_ids = uploader.save_manifest_to_db(
-                    json5.loads(request.data.decode("utf-8")))
+                    json5.loads(request.data.decode('utf-8')))
             else:
                 raise ApiException("Wrong content header and no files attached", 400)
             return jsonify(return_ids)
 
         except ApiException as e:
             raise e
+        except UnicodeDecodeError as ue:
+            raise ApiException('Only utf-8 compatible charsets are supported, ' +
+                               'the request body does not appear to be utf-8.', 400)
         except Exception as err:
             raise ApiException(str(err), 400)
 
