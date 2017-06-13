@@ -233,7 +233,8 @@ def update_project(project_id):
     except ApiException as error:
         raise error
     except UnicodeDecodeError as unicodeerr:
-        raise ApiException("utf8 decoding not possible", 400, unicodeerr)
+        raise ApiException('Only utf-8 compatible charsets are supported, ' +
+                           'the request body does not appear to be utf-8.', 400)
     except Exception as err:
         raise ApiException(str(err), 500)
 
