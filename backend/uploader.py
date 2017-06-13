@@ -80,7 +80,7 @@ def save_manifest_to_db(manifest):
         id: The ID of the manifest
 
     Raises:
-        ApiException: Error while trying to save the document.
+        ApiException: Error while trying to save the documents.
     """
     try:
         is_valid = validator.is_valid(manifest)
