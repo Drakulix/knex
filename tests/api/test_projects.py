@@ -54,7 +54,7 @@ class TestPOST(object):
         )
         with open(test_manifest, 'rb') as tf:
             response = requests.post(flask_api_url + "/api/projects",
-                                     files={'file': (test_manifest, tf)})
+                                     files={'file[]': [(test_manifest, tf)]})
             print(response.text)
             for id in response.json():
                 assert UUID(id, version=4)
@@ -68,7 +68,7 @@ class TestPOST(object):
         )
         with open(test_manifest, 'rb') as tf:
             response = requests.post(flask_api_url + "/api/projects",
-                                     files={'file': (test_manifest, tf)})
+                                     files={'file[]': [(test_manifest, tf)]})
             print(response.text)
             for id in response.json():
                 assert UUID(id, version=4)
