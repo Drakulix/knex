@@ -50,27 +50,20 @@ def save_file_to_db(filename):
                 jsonfile.close()
                 manifest['date_creation'] = time.strftime("%Y-%m-%d")
                 manifest['date_update'] = time.strftime("%Y-%m-%d")
-                manifest['_id'] = uuid.uuid4()
+                manifest['id'] = uuid.uuid4()
 
                 res = es.create(index="projects-index", doc_type='Project',
-                               id=manifest['_id'], body=manifest)
+                                id=manifest['id'], body=manifest)
                 coll.insert_one(manifest)
 
-                print("Successfully validated file. ID is " +
-                        str(manifest['_id']), file=sys.stderr)
-                print("File content is: ", file=sys.stderr)
-                print(manifest, file=sys.stderr)
-                return manifest['_id']
+                return manifest['id']
 
             else:
                 print(is_valid, file=sys.stderr)
                 errors = validator.iter_errors(manifest)
                 if errors is not None:
-                    validation_error = []
-                    for error in sorted(errors, key=str):
-                        print(error.message, file=sys.stderr)
-                        validation_error.append(error.message)
-                raise ApiException("Validation Error: \n" + str(is_valid), 400)
+                    validation_error = [error for error in sorted(errors, key=str)]
+                    raise ApiException("Validation Error: \n" + str(is_valid), 400)
 
     except ApiException as e:
         raise e
@@ -94,25 +87,19 @@ def save_manifest_to_db(manifest):
         is_valid = validator.is_valid(manifest)
 
         if is_valid:
-            manifestlist = []
+            manifestlist = manifest if isinstance(manifest, list) else [manifest]
             ids = []
-            if isinstance(manifest, list):
-                manifestlist = manifest
-            else:
-                manifestlist.append(manifest)
 
             for entry in manifestlist:
                 entry['date_creation'] = time.strftime("%Y-%m-%d")
                 entry['date_update'] = time.strftime("%Y-%m-%d")
-                entry['_id'] = uuid.uuid4()
-                print("manifest is valid", file=sys.stderr)
-                coll.insert(entry)
-                print("mongo insert: ", file=sys.stderr)
+                entry['id'] = uuid.uuid4()
+
                 es.create(index="projects-index", doc_type='Project',
-                         id=entry["_id"], refresh=True, body=entry)
-                print("Successfully inserted content: ", file=sys.stderr)
-                print(entry, file=sys.stderr)
-                ids.append(entry['_id'])
+                         id=entry["id"], refresh=True, body=entry)
+                coll.insert(entry)
+
+                ids.append(entry['id'])
 
             return ids
         else:

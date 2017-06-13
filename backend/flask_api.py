@@ -157,7 +157,7 @@ def get_project_by_id(project_id):
     Returns:
         res (json): Project corresponding to the ID
     """
-    res = coll.find_one({'_id': project_id})
+    res = coll.find_one({'id': project_id})
     if res is None:
         return make_response('Project not found', 404)
     return jsonify(res)
@@ -177,7 +177,7 @@ def delete_project(project_id):
         es.delete(index="projects-index", doc_type='Project', id=project_id, refresh=True)
         return make_response('Success')
     except Exception:
-        if coll.delete_one({'_id': project_id}).deleted_count == 0:
+        if coll.delete_one({'id': project_id}).deleted_count == 0:
             return make_response('Project not found', 404)
         else:
             return make_response('Success')
