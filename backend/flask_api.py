@@ -61,9 +61,6 @@ def add_project():
                 except ApiException as e:
                     unsuccessful_files.append(file.filename + str(e))
 
-                print("Successful files: ", successful_ids, '\n', file=sys.stderr)
-                print("Unsuccessful files: ", unsuccessful_files, '\n', file=sys.stderr)
-
         return jsonify(successful_ids)
 
     else:
