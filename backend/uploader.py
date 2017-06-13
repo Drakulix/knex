@@ -56,14 +56,12 @@ def save_file_to_db(filename):
                                id=manifest['_id'], body=manifest)
                 coll.insert_one(manifest)
 
-                    print("Successfully validated file. ID is " +
-                          str(manifest['_id']), file=sys.stderr)
-                    print("File content is: ", file=sys.stderr)
-                    print(manifest, file=sys.stderr)
-                    return manifest['_id']
-                else:
-                    print(is_valid, file=sys.stderr)
-                    raise ApiException("ElasticSearch Index Error: \n" + str(is_valid), 500)
+                print("Successfully validated file. ID is " +
+                        str(manifest['_id']), file=sys.stderr)
+                print("File content is: ", file=sys.stderr)
+                print(manifest, file=sys.stderr)
+                return manifest['_id']
+
             else:
                 print(is_valid, file=sys.stderr)
                 errors = validator.iter_errors(manifest)
