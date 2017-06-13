@@ -51,13 +51,15 @@ def save_file_to_db(filename):
                 manifest['date_creation'] = time.strftime("%Y-%m-%d")
                 manifest['date_update'] = time.strftime("%Y-%m-%d")
 
-                res = es.create(index="projects-index", doc_type='Project',
-                                id=manifest['_id'], body=manifest)
+                curid = uuid.uuid4()
 
-                manifest['_id'] = uuid.uuid4()
+                res = es.create(index="projects-index", doc_type='Project',
+                                id=uuid.uuid4(), body=manifest)
+
+                manifest['_id'] = curid
                 coll.insert_one(manifest)
 
-                return manifest['_id']
+                return curid
 
             else:
                 print(is_valid, file=sys.stderr)
