@@ -50,13 +50,14 @@ def save_file_to_db(filename):
                 jsonfile.close()
                 manifest['date_creation'] = time.strftime("%Y-%m-%d")
                 manifest['date_update'] = time.strftime("%Y-%m-%d")
-                manifest['id'] = uuid.uuid4()
 
                 res = es.create(index="projects-index", doc_type='Project',
-                                id=manifest['id'], body=manifest)
+                                id=manifest['_id'], body=manifest)
+
+                manifest['_id'] = uuid.uuid4()
                 coll.insert_one(manifest)
 
-                return manifest['id']
+                return manifest['_id']
 
             else:
                 print(is_valid, file=sys.stderr)
@@ -93,13 +94,14 @@ def save_manifest_to_db(manifest):
             for entry in manifestlist:
                 entry['date_creation'] = time.strftime("%Y-%m-%d")
                 entry['date_update'] = time.strftime("%Y-%m-%d")
-                entry['id'] = uuid.uuid4()
 
                 es.create(index="projects-index", doc_type='Project',
-                         id=entry["id"], refresh=True, body=entry)
+                          id=entry["id"], refresh=True, body=entry)
+
+                entry['_id'] = uuid.uuid4()
                 coll.insert(entry)
 
-                ids.append(entry['id'])
+                ids.append(entry['_id'])
 
             return ids
         else:
