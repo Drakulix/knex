@@ -23,7 +23,7 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def save_file_to_db(filename):
+def save_file_to_db(file, filename):
     """Save file to the Database.
 
     Args:
@@ -36,37 +36,33 @@ def save_file_to_db(filename):
         ApiException: Error while trying to open/save the file or ElasticSearch Index Error.
     """
     try:
-        with open(filename) as jsonfile:
-            if not jsonfile:
-                raise ApiException('Could not open ' + str(filename), 400)
-            if not jsonfile.read():
-                raise ApiException('File ' + str(filename) + ' is empty.', 400)
-            jsonfile.seek(0)
-            manifest = json5.load(jsonfile)
-            is_valid = validator.is_valid(manifest)
+        jsonstr = file.read()
+        file.close()
+        if not jsonstr:
+            raise ApiException('File ' + str(filename) + ' is empty.', 400)
+        manifest = json5.loads(jsonstr)
+        is_valid = validator.is_valid(manifest)
 
-            if is_valid:
-                jsonfile.seek(0)
-                jsonfile.close()
-                manifest['date_creation'] = time.strftime("%Y-%m-%d")
-                manifest['date_update'] = time.strftime("%Y-%m-%d")
+        if is_valid:
+            manifest['date_creation'] = time.strftime("%Y-%m-%d")
+            manifest['date_update'] = time.strftime("%Y-%m-%d")
 
-                curid = uuid.uuid4()
+            curid = uuid.uuid4()
 
-                res = es.create(index="projects-index", doc_type='Project',
-                                id=uuid.uuid4(), body=manifest)
+            res = es.create(index="projects-index", doc_type='Project',
+                            id=curid, body=manifest)
 
-                manifest['_id'] = curid
-                coll.insert_one(manifest)
+            manifest['_id'] = curid
+            coll.insert_one(manifest)
 
-                return curid
+            return curid
 
-            else:
-                print(is_valid, file=sys.stderr)
-                errors = validator.iter_errors(manifest)
-                if errors is not None:
-                    validation_error = [error for error in sorted(errors, key=str)]
-                    raise ApiException("Validation Error: \n" + str(is_valid), 400)
+        else:
+            print(is_valid, file=sys.stderr)
+            errors = validator.iter_errors(manifest)
+            if errors is not None:
+                validation_error = [error for error in sorted(errors, key=str)]
+                raise ApiException("Validation Error: \n" + str(is_valid), 400)
 
     except ApiException as e:
         raise e

@@ -54,9 +54,8 @@ def add_project():
         for file in uploaded_files:
             securefilename = secure_filename(file.filename)
             if file and uploader.allowed_file(securefilename):
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], securefilename))
                 try:
-                    newid = uploader.save_file_to_db(securefilename)
+                    newid = uploader.save_file_to_db(file, securefilename)
                     ids.append(newid)
                 except ApiException as e:
                     unsuccessful_files.append(file.filename + str(e))
