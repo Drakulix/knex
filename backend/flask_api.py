@@ -4,6 +4,7 @@ Defines API points and starts the application
 
 import os
 import sys
+import time
 import json
 import json5
 
@@ -12,7 +13,7 @@ from elasticsearch.exceptions import RequestError
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 from jsonschema import FormatChecker, Draft4Validator
-from pymongo import MongoClient
+from pymongo import MongoClient, ReturnDocument
 from werkzeug.utils import secure_filename
 
 import uploader
@@ -178,6 +179,64 @@ def delete_project(project_id):
             return make_response('Project not found', 404)
         else:
             return make_response('Success')
+
+
+@app.route('/api/projects/<uuid:project_id>', methods=['PUT'])
+def update_project(project_id):
+    """Updates Project by ID
+
+    Args:
+        project_id, updated manifest in json/json5 format
+
+    Returns:
+        response: Success response
+                  or 404 if project is not found
+                  or 409 if project_id differs from manifestID
+                  or 500 in case of validation error
+    """
+    try:
+        res = coll.find_one({'_id': project_id})
+        if res is None:
+            raise ApiException("Project not found", 404)
+        elif request.is_json or "application/json5" in request.content_type:
+            if request.is_json:
+                manifest = request.get_json()
+                if manifest['_id'] != str(project_id):
+                    raise ApiException("Updated project owns different id", 409)
+            else:
+                manifest = json5.loads(request.data.decode("utf-8"))
+                if '_id' in manifest:
+                    if manifest['_id'] != str(project_id):
+                        raise ApiException("Updated project owns different id", 409)
+            is_valid = validator.is_valid(manifest)
+            if is_valid:
+                print("manifest validated", file=sys.stderr)
+                manifest['_id'] = project_id
+                manifest['date_last_updated'] = time.strftime("%Y-%m-%d")
+                coll.find_one_and_replace({'_id': project_id}, manifest,
+                                          return_document=ReturnDocument.AFTER)
+                print("mongo replaced:", file=sys.stderr)
+                print(manifest, file=sys.stderr)
+                manifest.pop('_id', None)
+                es.index(index="projects-index", doc_type='Project',
+                         id=project_id, refresh=True, body=manifest)
+                print("Successfully replaced in ES", file=sys.stderr)
+                return make_response('Success')
+            elif on_json_loading_failed() is not None:
+                raise ApiException("Json could not be parsed", 400, on_json_loading_failed())
+            else:
+                validation_errs = [error for error in sorted(validator.iter_errors(manifest))]
+                if validation_errs is not None:
+                    raise ApiException("Validation Error: \n" + str(is_valid), 400, validation_errs)
+        else:
+            raise ApiException("Manifest had wrong format", 400)
+    except ApiException as error:
+        raise error
+    except UnicodeDecodeError as unicodeerr:
+        raise ApiException('Only utf-8 compatible charsets are supported, ' +
+                           'the request body does not appear to be utf-8.', 400)
+    except Exception as err:
+        raise ApiException(str(err), 500)
 
 
 @app.route('/api/projects/search', methods=['POST'])
