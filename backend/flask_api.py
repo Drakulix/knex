@@ -4,6 +4,7 @@ Defines API points and starts the application
 
 import os
 import sys
+import time
 import json
 import json5
 
@@ -12,7 +13,7 @@ from elasticsearch.exceptions import RequestError
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 from jsonschema import FormatChecker, Draft4Validator
-from pymongo import MongoClient
+from pymongo import MongoClient, ReturnDocument
 from werkzeug.utils import secure_filename
 
 import uploader
@@ -47,42 +48,39 @@ def index():
 def add_project():
     """Receive manifest as a jsonstring and return new ID
     """
-    successful_files = []
+    successful_ids = []
     unsuccessful_files = []
     uploaded_files = request.files.getlist("file[]")
     if len(uploaded_files) is not 0:
         for file in uploaded_files:
             securefilename = secure_filename(file.filename)
             if file and uploader.allowed_file(securefilename):
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], securefilename))
                 try:
-                    newid = uploader.save_file_to_db(securefilename)
-                    # represent original filename
-                    successful_files.append(file.filename + " " + str(newid))
+                    newid = uploader.save_file_to_db(file, securefilename)
+                    ids.append(newid)
                 except ApiException as e:
                     unsuccessful_files.append(file.filename + str(e))
 
-                print("Successful files: ", successful_files, '\n', file=sys.stderr)
-                print("Unsuccessful files: ", unsuccessful_files, '\n', file=sys.stderr)
-        return make_response('Successful files: ' +
-                             ', '.join(e for e in successful_files) +
-                             '<br />' + " Unsuccessful files: " +
-                             ', '.join(e for e in unsuccessful_files))
+        return jsonify(successful_ids)
 
     else:
         try:
             return_ids = []
-            if request.content_type == 'application/json':
+            if ('application/json' in request.content_type) and \
+                    ('application/json5' not in request.content_type):
                 return_ids = uploader.save_manifest_to_db(request.get_json())
-            elif request.content_type == 'application/json5':
+            elif 'application/json5' in request.content_type:
                 return_ids = uploader.save_manifest_to_db(
-                    json5.loads(request.data.decode("utf-8")))
+                    json5.loads(request.data.decode('utf-8')))
             else:
                 raise ApiException("Wrong content header and no files attached", 400)
             return jsonify(return_ids)
 
         except ApiException as e:
             raise e
+        except UnicodeDecodeError as ue:
+            raise ApiException('Only utf-8 compatible charsets are supported, ' +
+                               'the request body does not appear to be utf-8.', 400)
         except Exception as err:
             raise ApiException(str(err), 400)
 
@@ -183,6 +181,64 @@ def delete_project(project_id):
             return make_response('Success')
 
 
+@app.route('/api/projects/<uuid:project_id>', methods=['PUT'])
+def update_project(project_id):
+    """Updates Project by ID
+
+    Args:
+        project_id, updated manifest in json/json5 format
+
+    Returns:
+        response: Success response
+                  or 404 if project is not found
+                  or 409 if project_id differs from manifestID
+                  or 500 in case of validation error
+    """
+    try:
+        res = coll.find_one({'_id': project_id})
+        if res is None:
+            raise ApiException("Project not found", 404)
+        elif request.is_json or "application/json5" in request.content_type:
+            if request.is_json:
+                manifest = request.get_json()
+                if manifest['_id'] != str(project_id):
+                    raise ApiException("Updated project owns different id", 409)
+            else:
+                manifest = json5.loads(request.data.decode("utf-8"))
+                if '_id' in manifest:
+                    if manifest['_id'] != str(project_id):
+                        raise ApiException("Updated project owns different id", 409)
+            is_valid = validator.is_valid(manifest)
+            if is_valid:
+                print("manifest validated", file=sys.stderr)
+                manifest['_id'] = project_id
+                manifest['date_last_updated'] = time.strftime("%Y-%m-%d")
+                coll.find_one_and_replace({'_id': project_id}, manifest,
+                                          return_document=ReturnDocument.AFTER)
+                print("mongo replaced:", file=sys.stderr)
+                print(manifest, file=sys.stderr)
+                manifest.pop('_id', None)
+                es.index(index="projects-index", doc_type='Project',
+                         id=project_id, refresh=True, body=manifest)
+                print("Successfully replaced in ES", file=sys.stderr)
+                return make_response('Success')
+            elif on_json_loading_failed() is not None:
+                raise ApiException("Json could not be parsed", 400, on_json_loading_failed())
+            else:
+                validation_errs = [error for error in sorted(validator.iter_errors(manifest))]
+                if validation_errs is not None:
+                    raise ApiException("Validation Error: \n" + str(is_valid), 400, validation_errs)
+        else:
+            raise ApiException("Manifest had wrong format", 400)
+    except ApiException as error:
+        raise error
+    except UnicodeDecodeError as unicodeerr:
+        raise ApiException('Only utf-8 compatible charsets are supported, ' +
+                           'the request body does not appear to be utf-8.', 400)
+    except Exception as err:
+        raise ApiException(str(err), 500)
+
+
 @app.route('/api/projects/search', methods=['POST'])
 def search():
     """Receive body of elasticsearch query
@@ -193,6 +249,175 @@ def search():
     try:
         res = es.search(index="projects-index", doc_type="Project", body=request.json)
         return jsonify(res)
+    except RequestError as e:
+        return (str(e), 400)
+
+
+@app.route('/api/projects/search/simple/', methods=['GET'])
+def search_simple():
+    """Search projects
+
+    Returns:
+        res (json): JSON containing Projects and metadata
+
+    """
+    text = request.args.get("q", type=str)
+    sorting = request.args.get('sort', type=str)
+    order = request.args.get('order', type=str)
+    offset = request.args.get('offset', type=int)
+    if offset is None:
+        offset = 0
+    count = request.args.get('count', type=int)
+    if count is None:
+        count = 10
+
+    # ^3 is boosting the attribute, *_is allowing wildcards to be used
+    request_json = {
+        'query': {
+            'multi_match': {
+                'query': text,
+                'fields': [
+                    'tags^2',
+                    'title^2',
+                    'description',
+                 ],
+            },
+        },
+        'from': offset,
+        'size': count,
+    }
+    if (sorting is not None) and (order is not None):
+        request_json["sort"] = dict()
+        request_json["sort"][sorting] = {
+            'order': order,
+        }
+
+    try:
+        res = es.search(index="projects-index", doc_type="Project", body=request_json)
+        return jsonify(res['hits'])
+    except RequestError as e:
+        return (str(e), 400)
+
+
+@app.route('/api/projects/search/advanced/', methods=['GET'])
+def search_avanced():
+    """Advanced search with filters
+
+    Returns:
+        res (json): JSON containing Projects and metadata
+
+    """
+    text = request.args.get("q", type=str)
+    sorting = request.args.get('sort', type=str)
+    order = request.args.get('order', type=str)
+    offset = request.args.get('offset', type=int)
+    if offset is None:
+        offset = 0
+    count = request.args.get('count', type=int)
+    if count is None:
+        count = 10
+
+    # ^3 is boosting the attribute, *_is allowing wildcards to be used
+    request_json = {
+        'query': {
+            'query_string': {
+                'query': text,
+            },
+        },
+        'from': offset,
+        'size': count,
+    }
+    if (sorting is not None) and (order is not None):
+        request_json["sort"] = dict()
+        request_json["sort"][sorting] = {
+            'order': order,
+        }
+    try:
+        res = es.search(index="projects-index", doc_type="Project", body=request_json)
+        return jsonify(res['hits'])
+    except RequestError as e:
+        return (str(e), 400)
+
+
+@app.route('/api/projects/search/tag/', methods=['GET'])
+def search_tag():
+    """Search projects
+
+    Returns:
+        res (json): JSON containing Projects and metadata
+    """
+    tag = request.args.get('q', type=str)
+    sorting = request.args.get('sort', type=str)
+    order = request.args.get('order', type=str)
+    offset = request.args.get('offset', type=int)
+    if offset is None:
+        offset = 0
+    count = request.args.get('count', type=int)
+    if count is None:
+        count = 10
+
+    request_json = {
+        'query': {
+            'bool': {
+                'must': [
+                    {
+                        'match_phrase': {
+                            'tags': tag,
+                        },
+                    },
+                ],
+            },
+        },
+        'from': offset,
+        'size': count,
+    }
+    if (sorting is not None) and (order is not None):
+        request_json["sort"] = dict()
+        request_json["sort"][sorting] = {
+            'order': order,
+        }
+    try:
+        res = es.search(index="projects-index", doc_type="Project", body=request_json)
+        return (jsonify(res['hits']))
+    except RequestError as e:
+        return (str(e), 400)
+
+
+@app.route('/api/projects/search/suggest/', methods=['GET'])
+def search_suggest():
+    """Suggests search improvements
+
+    Returns:
+        res (json): JSON containing suggested search terms
+    """
+    text = request.args.get('q', type=str)
+
+    request_json = {
+        'suggest': {
+            'text': text,
+            'phraseSuggestion': {
+                'phrase': {
+                    'field': "description",
+                    'highlight': {
+                        'pre_tag': '<em>',
+                        'post_tag': '</em>',
+                    },
+                    'direct_generator': [
+                        {
+                            'field': 'description',
+                            'size': 10,
+                            'suggest_mode': 'missing',
+                            'min_word_length': 3,
+                            'prefix_length': 2,
+                        }
+                    ],
+                },
+            },
+        },
+    }
+    try:
+        res = es.search(index="projects-index", doc_type="Project", body=request_json)
+        return (jsonify(res['suggest']['phraseSuggestion'][0]['options']))
     except RequestError as e:
         return (str(e), 400)
 

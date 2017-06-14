@@ -23,7 +23,7 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def save_file_to_db(filename):
+def save_file_to_db(file, filename):
     """Save file to the Database.
 
     Args:
@@ -36,45 +36,32 @@ def save_file_to_db(filename):
         ApiException: Error while trying to open/save the file or ElasticSearch Index Error.
     """
     try:
-        with open(filename) as jsonfile:
-            if not jsonfile:
-                raise ApiException('Could not open ' + str(filename), 400)
-            if not jsonfile.read():
-                raise ApiException('File ' + str(filename) + ' is empty.', 400)
-            jsonfile.seek(0)
-            manifest = json5.load(jsonfile)
-            is_valid = validator.is_valid(manifest)
+        jsonstr = file.read()
+        file.close()
+        if not jsonstr:
+            raise ApiException('File ' + str(filename) + ' is empty.', 400)
+        manifest = json5.loads(jsonstr)
+        is_valid = validator.is_valid(manifest)
 
-            if is_valid:
-                jsonfile.seek(0)
-                jsonfile.close()
-                manifest['date_creation'] = time.strftime("%Y-%m-%d")
-                manifest['date_update'] = time.strftime("%Y-%m-%d")
-                manifest['_id'] = uuid.uuid4()
+        if is_valid:
+            manifest['date_creation'] = time.strftime("%Y-%m-%d")
+            manifest['date_last_updated'] = time.strftime("%Y-%m-%d")
 
-                res = es.index(index="projects-index", doc_type='Project',
-                               id=manifest['_id'], body=manifest)
-                if res['created']:
-                    coll.insert_one(manifest)
+            curid = uuid.uuid4()
 
-                    print("Successfully validated file. ID is " +
-                          str(manifest['_id']), file=sys.stderr)
-                    print("File content is: ", file=sys.stderr)
-                    print(manifest, file=sys.stderr)
-                    return manifest['_id']
-                else:
-                    print(is_valid, file=sys.stderr)
-                    raise ApiException("ElasticSearch Index Error: \n" + str(is_valid), 500)
-            else:
-                print(is_valid, file=sys.stderr)
-                errors = validator.iter_errors(manifest)
-                if errors is not None:
-                    validation_error = []
-                    for error in sorted(errors, key=str):
-                        print(error.message, file=sys.stderr)
-                        validation_error.append(error.message)
+            res = es.create(index="projects-index", doc_type='Project',
+                            id=curid, body=manifest)
+
+            manifest['_id'] = curid
+            coll.insert_one(manifest)
+
+            return curid
+        else:
+            print(is_valid, file=sys.stderr)
+            errors = validator.iter_errors(manifest)
+            if errors is not None:
+                validation_error = [error for error in sorted(errors, key=str)]
                 raise ApiException("Validation Error: \n" + str(is_valid), 400)
-
     except ApiException as e:
         raise e
     except Exception as err:
@@ -91,31 +78,26 @@ def save_manifest_to_db(manifest):
         id: The ID of the manifest
 
     Raises:
-        ApiException: Error while trying to save the document.
+        ApiException: Error while trying to save the documents.
     """
     try:
         is_valid = validator.is_valid(manifest)
 
         if is_valid:
-            manifestlist = []
+            manifestlist = manifest if isinstance(manifest, list) else [manifest]
             ids = []
-            if isinstance(manifest, list):
-                manifestlist = manifest
-            else:
-                manifestlist.append(manifest)
 
             for entry in manifestlist:
                 entry['date_creation'] = time.strftime("%Y-%m-%d")
-                entry['date_update'] = time.strftime("%Y-%m-%d")
-                entry['_id'] = uuid.uuid4()
-                print("manifest is valid", file=sys.stderr)
-                coll.insert(entry)
-                print("mongo insert: ", file=sys.stderr)
+                entry['date_last_updated'] = time.strftime("%Y-%m-%d")
+                curid = uuid.uuid4()
                 es.create(index="projects-index", doc_type='Project',
-                          id=entry["_id"], refresh=True, body={})
-                print("Successfully inserted content: ", file=sys.stderr)
-                print(entry, file=sys.stderr)
-                ids.append(entry['_id'])
+                          id=curid, refresh=True, body=entry)
+
+                entry['_id'] = curid
+                coll.insert(entry)
+
+                ids.append(curid)
 
             return ids
         else:
