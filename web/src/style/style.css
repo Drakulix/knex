@@ -226,6 +226,14 @@ font-weight: 300;
   color : #000000;
 }
 
+.th-search {
+  background-color: #333333;
+}
+
+.th-search th {
+  color: #ffffff
+}
+
 .horizontal-divider {
   margin-top: 3em;
   margin-bottom: 5em;
