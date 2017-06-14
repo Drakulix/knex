@@ -67,8 +67,6 @@ const PROJECT_URL = '/api/projects/'
           }
         }
       })
-      // .then(json => console.log(json))
-
       return (
         <div></div>
       );
