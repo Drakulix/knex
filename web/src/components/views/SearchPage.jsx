@@ -5,10 +5,8 @@ import {fetchJson, sendJson} from '../common/Backend'
 class Headline extends Component {
   render() {
     return(
-      <div className="row">
-        <div className="header-title">
-          <h1>Looking for a Project?</h1>
-        </div>
+      <div className="header">
+        Looking for a Project?
       </div>
     );
   }
@@ -141,7 +139,6 @@ class AdvancedSearch extends Component {
             </div>
           </div>
         </div>
-
       </div>
     );
   }

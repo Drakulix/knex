@@ -32,9 +32,11 @@ class TopBar extends Component {
             </Link>
           </div>
           <div className="col-1">
-            <p className="top-bar-text">
-              Profile
-            </p>
+            <Link to="/profile">
+              <p className="top-bar-text">
+                Profile
+              </p>
+            </Link>
           </div>
           <div className="col-1">
             <p className="top-bar-text">
