@@ -47,42 +47,39 @@ def index():
 def add_project():
     """Receive manifest as a jsonstring and return new ID
     """
-    successful_files = []
+    successful_ids = []
     unsuccessful_files = []
     uploaded_files = request.files.getlist("file[]")
     if len(uploaded_files) is not 0:
         for file in uploaded_files:
             securefilename = secure_filename(file.filename)
             if file and uploader.allowed_file(securefilename):
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], securefilename))
                 try:
-                    newid = uploader.save_file_to_db(securefilename)
-                    # represent original filename
-                    successful_files.append(file.filename + " " + str(newid))
+                    newid = uploader.save_file_to_db(file, securefilename)
+                    ids.append(newid)
                 except ApiException as e:
                     unsuccessful_files.append(file.filename + str(e))
 
-                print("Successful files: ", successful_files, '\n', file=sys.stderr)
-                print("Unsuccessful files: ", unsuccessful_files, '\n', file=sys.stderr)
-        return make_response('Successful files: ' +
-                             ', '.join(e for e in successful_files) +
-                             '<br />' + " Unsuccessful files: " +
-                             ', '.join(e for e in unsuccessful_files))
+        return jsonify(successful_ids)
 
     else:
         try:
             return_ids = []
-            if request.content_type == 'application/json':
+            if ('application/json' in request.content_type) and \
+                    ('application/json5' not in request.content_type):
                 return_ids = uploader.save_manifest_to_db(request.get_json())
-            elif request.content_type == 'application/json5':
+            elif 'application/json5' in request.content_type:
                 return_ids = uploader.save_manifest_to_db(
-                    json5.loads(request.data.decode("utf-8")))
+                    json5.loads(request.data.decode('utf-8')))
             else:
                 raise ApiException("Wrong content header and no files attached", 400)
             return jsonify(return_ids)
 
         except ApiException as e:
             raise e
+        except UnicodeDecodeError as ue:
+            raise ApiException('Only utf-8 compatible charsets are supported, ' +
+                               'the request body does not appear to be utf-8.', 400)
         except Exception as err:
             raise ApiException(str(err), 400)
 
