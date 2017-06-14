@@ -56,14 +56,12 @@ def save_file_to_db(file, filename):
             coll.insert_one(manifest)
 
             return curid
-
         else:
             print(is_valid, file=sys.stderr)
             errors = validator.iter_errors(manifest)
             if errors is not None:
                 validation_error = [error for error in sorted(errors, key=str)]
                 raise ApiException("Validation Error: \n" + str(is_valid), 400)
-
     except ApiException as e:
         raise e
     except Exception as err:
@@ -92,9 +90,7 @@ def save_manifest_to_db(manifest):
             for entry in manifestlist:
                 entry['date_creation'] = time.strftime("%Y-%m-%d")
                 entry['date_last_updated'] = time.strftime("%Y-%m-%d")
-
                 curid = uuid.uuid4()
-
                 es.create(index="projects-index", doc_type='Project',
                           id=curid, refresh=True, body=entry)
 
