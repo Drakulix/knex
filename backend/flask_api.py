@@ -47,27 +47,20 @@ def index():
 def add_project():
     """Receive manifest as a jsonstring and return new ID
     """
-    successful_files = []
+    successful_ids = []
     unsuccessful_files = []
     uploaded_files = request.files.getlist("file[]")
     if len(uploaded_files) is not 0:
         for file in uploaded_files:
             securefilename = secure_filename(file.filename)
             if file and uploader.allowed_file(securefilename):
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], securefilename))
                 try:
-                    newid = uploader.save_file_to_db(securefilename)
-                    # represent original filename
-                    successful_files.append(file.filename + " " + str(newid))
+                    newid = uploader.save_file_to_db(file, securefilename)
+                    ids.append(newid)
                 except ApiException as e:
                     unsuccessful_files.append(file.filename + str(e))
 
-                print("Successful files: ", successful_files, '\n', file=sys.stderr)
-                print("Unsuccessful files: ", unsuccessful_files, '\n', file=sys.stderr)
-        return make_response('Successful files: ' +
-                             ', '.join(e for e in successful_files) +
-                             '<br />' + " Unsuccessful files: " +
-                             ', '.join(e for e in unsuccessful_files))
+        return jsonify(successful_ids)
 
     else:
         try:
