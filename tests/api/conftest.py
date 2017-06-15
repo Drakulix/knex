@@ -25,8 +25,7 @@ def flask_api_url():
 def mongo_client():
     client = MongoClient('localhost', 27017)
     db = client.knexDB
-    coll = db.projects
-    return coll
+    return db
 
 
 @pytest.fixture(scope='session')
