@@ -118,20 +118,20 @@ def login():
     password = request.form['password']
     user = user_datastore.get_user(email)
     if user is None:
-        return 'Username oder Password invalid'
+        return make_response('Username oder Password invalid', '500')
 
 
     if verify_password(password, user["password"]):
         login_user(user)
-        return "Login successful"
+        return make_response('Login successful', '200')
 
-    return 'Username oder Password invalid'
+    return make_response('Username oder Password invalid', '500')
 
 
 @app.route('/api/users/logout')
 def logout():
     logout_user()
-    return 'Logged out'
+    return make_response('Logged out', '200')
 
 
 
