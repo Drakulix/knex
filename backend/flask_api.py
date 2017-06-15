@@ -93,12 +93,12 @@ user_datastore = MongoEngineUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
 app.url_map.converters['email'] = EmailConverter
 
-@app.before_first_request
-def initialize_users():
-    user_role = user_datastore.find_or_create_role('user')
-    user_datastore.create_user(email='user@knex.com', password=encrypt_password("user"), roles=[user_role])
-    admin_role = user_datastore.find_or_create_role('admin')
-    user_datastore.create_user(email='admin@knex.com', password=encrypt_password("admin"), roles=[admin_role])
+#@app.before_first_request
+#def initialize_users():
+#    user_role = user_datastore.find_or_create_role('user')
+#    user_datastore.create_user(email='user@knex.com', password=encrypt_password("user"), roles=[user_role])
+#    admin_role = user_datastore.find_or_create_role('admin')
+#    user_datastore.create_user(email='admin@knex.com', password=encrypt_password("admin"), roles=[admin_role])
 
 
 
