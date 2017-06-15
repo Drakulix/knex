@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import {fetchJson, sendJson} from '../common/Backend'
 
 const defaultPageSize = 4;
-const defaultSearchString = "Music";
+const defaultSearchString = "simple/?q=music";
 
 class Headline extends Component {
   render() {
@@ -161,12 +161,12 @@ class Search extends Component {
           <div className="row">
             <form className="form-horizontal col-md-12">
               <AdvancedSearch
-                changeStateName={(name) => this.changeStateName(name)}
-                changeStateAuthor={(author) => this.changeStateAuthor(author)}
-                changeStateFrom={(from) => this.changeStateFrom(from)}
-                changeStateTo={(to) => this.changeStateTo(to)}
-                ChangeStateStatus={(state) => this.ChangeStateStatus(state)}
-                changeStateTags={(tags) => this.changeStateTags(tags)}
+                changeStateName={(name) => this.props.changeStateName(name)}
+                changeStateAuthor={(author) => this.props.changeStateAuthor(author)}
+                changeStateFrom={(from) => this.props.changeStateFrom(from)}
+                changeStateTo={(to) => this.props.changeStateTo(to)}
+                ChangeStateStatus={(status) => this.props.ChangeStateStatus(status)}
+                changeStateTags={(tags) => this.props.changeStateTags(tags)}
               />
             </form>
             <a onClick={() => this.setState({expanded : false})}  className="clickable-text col-md-2">
@@ -210,8 +210,17 @@ class Table extends Component {
 
     // Get Data from Elasticsearch and put it in this.state.results
     var that = this;
-    fetchJson('/api/projects/search/simple/'+
-              '?q='+ this.state.searchString +'&'+
+
+    /*if(this.props.searchString == "" ||this.props.searchString =="advanced/?q=" || this.props.searchString == null){
+      this.setState({searchString: defaultSearchStringe});
+    }else {
+      this.setState({searchString: this.props.SearchString})
+    }
+    */
+
+
+    fetchJson('/api/projects/search/'+
+             this.state.searchString+'&'+
               'offset='+ this.state.pageNumber+'&'+
               'count='+ this.state.pageSize)
     .then(function(data) {
@@ -239,63 +248,6 @@ class Table extends Component {
     });
   }
 
-  filterProjectName(results){
-    var filtered_results=[];
-    for(var i=0; i<results.length;i++){
-      if(results[i].title.includes(this.props.project_name))
-        filtered_results.push(results[i]);
-    }
-    return (filtered_results );
-  };
-
-  filterAuthors(results){
-    var filtered_results=[];
-    for(var i=0; i<results.length;i++){
-      for (var j=0; j < results[i].authors.length; j++){
-        if (results[i].authors[j].name.includes(this.props.authors)){
-          filtered_results.push(results[i]);
-          break;
-        }
-      }
-    }
-    return (filtered_results);
-  };
-
-  filterTags(results){
-    var filtered_results=[];
-    for(var i=0; i<results.length;i++){
-      for (var j=0; j<results[i]._source.tags.length; j++){
-        if(results[i]._source.tags[j].includes(this.props.tags)){
-          filtered_results.push(results[i]);
-          break;
-        }
-      }
-    }
-    return (filtered_results);
-  };
-
-  filterStatus(results){
-    var filtered_results=[];
-    for(var i=0; i<results.length;i++){
-      if(results[i].status.includes(this.props.status))
-        filtered_results.push(results[i]);
-    }
-    return (filtered_results);
-  };
-
-  filterDate(results){
-    var fromDate= new Date(Number(this.props.from.substring(0,4)), Number(this.props.from.substring(5,7))-1, Number(this.props.from.substring(8,10)));
-    var toDate= new Date(Number(this.props.to.substring(0,4)), Number(this.props.to.substring(5,7))-1, Number(this.props.to.substring(8,10)));
-    var date_creation;
-    var filtered_results=[];
-    for(var i=0; i<results.length;i++){
-
-      date_creation= new Date(Number(results[i]._source.date_creation.substring(0,4)), Number(results[i]._source.date_creation.substring(5,7))-1, Number(results[i]._source.date_creation.substring(8,10)));
-      if(date_creation.getTime()>=fromDate.getTime() && date_creation.getTime()<=toDate.getTime())
-        filtered_results.push(results[i]);
-    }
-    return (filtered_results);
-  };
 
 
   fitLength(string, maxLength){
@@ -412,7 +364,8 @@ class Table extends Component {
   }
 
   renderTable(results){
-    if(results.length>0){
+
+    if(true){
       return(
         <div>
           <div className="row">
@@ -437,8 +390,8 @@ class Table extends Component {
               <table className="table">
                 <thead className="thead-default">
                   <tr>
-                    <th className="col-xs-3">Project</th>
-                    <th className="col-xs-2">Author</th>
+                    <th className="col-xs-3">{this.state.searchString}</th>
+                    <th className="col-xs-2">{this.props.searchString}</th>
                     <th className="col-xs-1">Status</th>
                     <th className="col-xs-3">Description</th>
                     <th className="col-xs-2">Date</th>
@@ -515,27 +468,6 @@ class Table extends Component {
 
   render() {
     var new_results=this.state.results;
-
-    //temporarily disabled filters
-    if(false){
-      if(this.props.project_name != null){
-        new_results=this.filterProjectName(new_results);
-      }
-      if(this.props.from != "" && this.props.to!= ""){
-        new_results=this.filterDate(new_results);
-      }
-      if(this.props.authors != null){
-        new_results=this.filterAuthors(new_results);
-      }
-      if(this.props.tags != null){
-        new_results=this.filterTags(new_results);
-      }
-      // TODO(gitmirgut) status doesn't work yet.
-      if(this.props.status!= null){
-        new_results=this.filterStatus(new_results);
-      }
-    }
-
     return this.renderTable(new_results);
   }
 }
@@ -548,11 +480,63 @@ export default class SearchPage extends Component {
       filter_project_name: "",
       filter_author: "",
       filter_tags: "",
-      filter_from: "",
-      filter_to: "",
-      filter_description: "",
-      filter_status: ""};
+      filter_date_from: "",
+      filter_date_to: "",
+      filter_status: "",
+      searchString: ""};
   }
+
+  filter(){
+
+      var searchstring="advanced/?q=";
+      var filter_set = 0;
+
+      if(this.state.filter_project_name != ""){
+        searchstring = searchstring.concat("(title: ", this.state.filter_project_name, ")");
+        filter_set++;
+      }
+
+
+      if(this.state.filter_date_from !== "" || this.state.filter_date_to!== ""){
+        if(filter_set > 0){
+          searchstring = searchstring.concat(" AND ");
+          filter_set--;
+        }
+        searchstring = searchstring.concat("(date: [", this.state.filter_date_from, " TO " , this.state.filter_date_to, "])");
+        filter_set++;
+      }
+
+
+      if(this.state.filter_author != ""){
+        if(filter_set > 0){
+          searchstring = searchstring.concat(" AND ");
+          filter_set--;
+        }
+        searchstring = searchstring.concat("(authors: ", this.state.filter_author, ")");
+        filter_set++;
+
+      }
+      if(this.state.filter_tags != ""){
+        if(filter_set > 0){
+          searchstring = searchstring.concat(" AND ");
+          filter_set--;
+        }
+        searchstring = searchstring.concat("(tags: ", this.state.filter_tags, ")");
+      }
+
+      if(this.state.filter_status!= ""){
+        if(filter_set > 0){
+          searchstring = searchstring.concat(" AND ");
+          filter_set--;
+        }
+        searchstring = searchstring.concat("status: ", this.state.filter_status);
+        filter_set--;
+      }
+      return searchstring;
+    }
+
+
+
 
   /*
     functions to get the state of the advanced search via the search element, the value of the input fields is given to the <table> and filtered
@@ -562,11 +546,19 @@ export default class SearchPage extends Component {
   }
 
   changeStateFrom(from){
-    this.setState({filter_date_from: from });
+    if(from == ""){
+      this.setState({filter_date_to: "1900/01/01" });
+    }else{
+      this.setState({filter_date_to: from });
+    }
   }
 
   changeStateTo(to){
-    this.setState({filter_date_to: to });
+    if(to == ""){
+      this.setState({filter_date_to: "2050/12/12" });
+    }else{
+      this.setState({filter_date_to: to });
+    }
   }
 
   changeStateStatus(status){
@@ -581,6 +573,7 @@ export default class SearchPage extends Component {
     this.setState({filter_tags: tags });
   }
 
+
   render() {
     return (
       <div className="inner-content">
@@ -588,23 +581,19 @@ export default class SearchPage extends Component {
           <div className="row">
             <div className="col">
                 <Headline />
+                <h1>{this.filter()}</h1>
                 <hr className="hidden-divider"/>
                 <Search
                   changeStateName={(name) => this.changeStateName(name)}
                   changeStateAuthor={(author) => this.changeStateAuthor(author)}
                   changeStateFrom={(from) => this.changeStateFrom(from)}
                   changeStateTo={(to) => this.changeStateTo(to)}
-                  ChangeStateStatus={(state) => this.ChangeStateStatus(state)}
+                  ChangeStateStatus={(status) => this.changeStateStatus(status)}
                   changeStateTags={(tags) => this.changeStateTags(tags)}
                 />
                 <hr className="horizontal-divider"/>
                 <Table
-                  project_name= {this.state.filter_project_name}
-                  authors= {this.state.filter_author}
-                  tags= {this.state.filter_tags}
-                  from = {this.state.filter_from}
-                  to= {this.state.filter_to}
-                  status= {this.filter_status}
+                searchString  = {this.filter()} key = {this.filter()}
                 />
             </div>
           </div>

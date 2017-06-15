@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import 'babel-polyfill';
 import 'isomorphic-fetch';
 const BACKEND_URL = 'http://localhost:5000'
 const PROJECT_URL = '/api/projects/'

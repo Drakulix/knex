@@ -1,4 +1,4 @@
-"use strict";
+/*"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -145,6 +145,7 @@ function unwrapErrorHandler(errorHandler) {
  * function, which receives the form data and an `errorHandler` object that
  * will be used to add custom validation errors for each field.
  */
+ /*
 function validateFormData(formData, schema, customValidate, transformErrors) {
   var _jsonValidate = (0, _jsonschema.validate)(formData, schema),
       errors = _jsonValidate.errors;
@@ -168,3 +169,4 @@ function validateFormData(formData, schema, customValidate, transformErrors) {
 
   return { errors: newErrors, errorSchema: newErrorSchema };
 }
+*/
