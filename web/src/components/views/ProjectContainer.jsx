@@ -9,6 +9,10 @@ export default class ProjectContainer extends Component {
     };
   }
 
+  componentWillMount(){
+    this.loadProjectInf(this.props);
+  }
+
   componentWillReceiveProps(nextProps){
     this.loadProjectInf(nextProps)
   }
@@ -19,7 +23,6 @@ export default class ProjectContainer extends Component {
 
   loadProjectInf(props) {
     fetchProjectDetails(props.uuid).then(data => {
-      console.log(data);
       this.setState({projectInf: data})
     });
   }
