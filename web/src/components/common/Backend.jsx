@@ -22,7 +22,21 @@ const PROJECT_URL = '/api/projects/'
       console.error('parsing failes', ex);
     });
   }
-
+  export function updateProjectDetails(method, payload, uuid){
+    const url = `${BACKEND_URL}${PROJECT_URL}${uuid}`
+    return fetch(url, {
+      method: method,
+      body: JSON.stringify(payload),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }).then(response => response.json())
+    // .then(json => console.dir(json))
+      .catch(ex => {
+      console.error('parsing failed', ex)
+    });
+  }
   export function sendJson(method, path, payload) {
     //use this function to make a POST requst
     const url = `${BACKEND_URL}${path}`
