@@ -26,7 +26,6 @@ es = Elasticsearch([{'host': 'elasticsearch', 'port': 9200}])
 client = MongoClient('mongodb:27017')
 db = client.knexDB
 coll = db.projects
-coll_user = db.user
 app = Flask(__name__)
 
 
