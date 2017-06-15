@@ -93,12 +93,12 @@ user_datastore = MongoEngineUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
 app.url_map.converters['email'] = EmailConverter
 
-#@app.before_first_request
-#def initialize_users():
-#    user_role = user_datastore.find_or_create_role('user')
-#    user_datastore.create_user(email='user@knex.com', password=encrypt_password("user"), roles=[user_role])
-#    admin_role = user_datastore.find_or_create_role('admin')
-#    user_datastore.create_user(email='admin@knex.com', password=encrypt_password("admin"), roles=[admin_role])
+@app.before_first_request
+def initialize_users():
+    user_role = user_datastore.find_or_create_role('user')
+    user_datastore.create_user(email='user@knex.com', password=encrypt_password("user"), roles=[user_role])
+    admin_role = user_datastore.find_or_create_role('admin')
+    user_datastore.create_user(email='admin@knex.com', password=encrypt_password("admin"), roles=[admin_role])
 
 
 
@@ -368,23 +368,23 @@ def getUser(mail):
     return jsonify(res)
 
 
-@app.route('/api/users/', methods=['GET'])
-@login_required
-def getUsers():
+#@app.route('/api/users/', methods=['GET'])
+#@login_required
+#def getUsers():
 
-    """Return a list with all user
+#    """Return a list with all user
 
-        Returns:
-            res: A list with all user as json
-        """
-    res = coll_user.find({})
-    if res is None:
-        return make_response('User list is empty', 500)
+#        Returns:
+#            res: A list with all user as json
+#        """
+#    res = coll_user.find({})
+#    if res is None:
+#        return make_response('User list is empty', 500)#
 
-    res = make_response(dumps(res))
-    res.headers['Content-Type'] = 'application/json'
+ #   res = make_response(dumps(res))
+ #   res.headers['Content-Type'] = 'application/json'
 
-    return res
+  #  return res
 
 
 
