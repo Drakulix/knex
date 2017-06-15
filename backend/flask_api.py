@@ -19,7 +19,7 @@ from apiexception import ApiException
 from flask_mongoengine import MongoEngine
 from flask_security import Security, MongoEngineUserDatastore, \
     UserMixin, RoleMixin, login_required, roles_required, login_user, logout_user
-from passlib.hash import pbkdf2_sha256
+from flask_security.utils import verify_password,encrypt_password
 
 es = Elasticsearch([{'host': 'elasticsearch', 'port': 9200}])
 
@@ -66,7 +66,8 @@ login_manager.init_app(app)
 app.config['MONGODB_DB'] = 'knexDB'
 app.config['MONGODB_HOST'] = 'mongodb'
 app.config['MONGODB_PORT'] = 27017
-
+app.config['SECURITY_PASSWORD_HASH'] = 'pbkdf2_sha512'
+app.config['SECURITY_PASSWORD_SALT'] = 'THISISMYOWNSALT'
 # Create database connection object
 db = MongoEngine(app)
 
@@ -96,9 +97,9 @@ app.url_map.converters['email'] = EmailConverter
 @app.before_first_request
 def initialize_users():
     user_role = user_datastore.find_or_create_role('user')
-    user_datastore.create_user(email='user@knex.com', password=pbkdf2_sha256.hash("user"), roles=[user_role])
+    user_datastore.create_user(email='user@knex.com', password=encrypt_password("user"), roles=[user_role])
     admin_role = user_datastore.find_or_create_role('admin')
-    user_datastore.create_user(email='admin@knex.com', password=pbkdf2_sha256.hash("admin"), roles=[admin_role])
+    user_datastore.create_user(email='admin@knex.com', password=encrypt_password("admin"), roles=[admin_role])
 
 
 
@@ -121,7 +122,7 @@ def login():
         return 'Username oder Password invalid'
 
 
-    if pbkdf2_sha256.verify(password, user["password"]):
+    if verify_password(password, user["password"]):
         login_user(user)
         return "Login successful"
 
@@ -308,14 +309,14 @@ def createUser():
 
         # still without json validation
         # a new user does not have bookmarks
-        hash = pbkdf2_sha256.hash(user["password"])
+        
         role = user_datastore.find_or_create_role(user['role'])
         res = coll_user.find({'email' : user["email"]})
-        if res is not None:
-            return make_response('User already exists',500)
+        #if res is not None:
+        #    return make_response('User already exists',500)
 
         user_datastore.create_user(first_name = user["first name"],last_name = user["last name"],
-                                   email = user["email"],password = hash, bio = user["bio"],roles=[role])
+                                   email = user["email"],password = encrypt_password(user["password"]), bio = user["bio"],roles=[role])
 
         return jsonify(user_datastore.get_user(user['email']))
 
@@ -332,23 +333,21 @@ def createUser():
 @roles_required('admin')
 def updateUser():
     user = request.get_json()
-    res = coll_user.find({'email' : user['email']})
+
+    res = user_datastore.get_user(user['email'])
     if res is None:
-        return make_response('User with email: ' + user['email'] + ' not found', 404)
-
-    hash = pbkdf2_sha256.hash(user["password"])
-    role = user['role']
-    coll_user.update_many(
-        {'email':'user@knex.com'},
-        {'$set':{'first_name' : user["first name"], 'last_name' : user["last name"], 'password' : hash, 'bio' : user["bio"], 'roles' : role }},
-    upsert = False)
-
-
-
+        return make_response('Unknown User with Email-address: ' + user['email'], 500)
+    res.first_name = user['first name']
+    res.last_name = user['last name']
+    res.password = encrypt_password(user['password'])
+    res.bio = user['bio']
+    res.roles = []
+    res.roles.append(user_datastore.find_or_create_role(user['role']))
+    res.save()
     res = make_response(dumps(res))
     res.headers['Content-Type'] = 'application/json'
 
-    return make_response("User with email: " + user['mail'] + 'updated', '200')
+    return make_response("User with email: " + user['email'] + ' updated', '200')
 
 
 
