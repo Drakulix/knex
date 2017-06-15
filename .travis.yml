@@ -28,9 +28,11 @@ install:
 
 before_script:
   - docker-compose up -d
+  - sleep 60
+  - docker ps
 
 script:
-  - sleep 60
+
   - pytest tests/
   - pep8 --max-line-length=100 .
 

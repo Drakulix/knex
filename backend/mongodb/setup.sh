@@ -24,6 +24,7 @@ mongo --host ${MONGODB}:27017 <<EOF
     rs.initiate(cfg, { force: true });
     rs.reconfig(cfg, { force: true });
     db.getMongo().setReadPref('nearest');
+    rs.slaveOk();
 EOF
 
 ping 127.0.0.1 > /dev/null
