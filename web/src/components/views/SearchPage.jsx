@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import {fetchJson, sendJson} from '../common/Backend'
 
+const defaultPageSize = 4;
+const defaultSearchString = "Music";
+
 class Headline extends Component {
   render() {
     return(
@@ -194,9 +197,9 @@ class Search extends Component {
 class Table extends Component {
   constructor(props) {
     super(props);
-    const defaultPageSize = 4;
     this.state = {
       results : [],
+      searchString : defaultSearchString,
       pageSize : defaultPageSize,
       pageNumber : 0,
       numberOfResults : 0,
@@ -207,22 +210,17 @@ class Table extends Component {
 
     // Get Data from Elasticsearch and put it in this.state.results
     var that = this;
-    sendJson('POST', '/api/projects/search', {
-      "query": {
-        "match_all": {}
-      }
-    })
+    fetchJson('/api/projects/search/simple/'+
+              '?q='+ this.state.searchString +'&'+
+              'offset='+ this.state.pageNumber+'&'+
+              'count='+ this.state.pageSize)
     .then(function(data) {
       if(data != null){
         that.setState({
-          numberOfResults : data.hits.hits.length,
-          hasNext : data.hits.hits.length>defaultPageSize,
+          numberOfResults : data.total,
+          hasNext : data.total > defaultPageSize,
         });
-      }
-    });
-    fetchJson('/api/projects/search/simple/' + this.state.pageNumber + '/' + this.state.pageSize + '/?q=Music')
-    .then(function(data) {
-      if(data != null){
+        data = data.hits;
         var validatedData = [];
         for(var i = 0;i<data.length;i++){
           if (data[i]._source!=null&&
@@ -231,8 +229,8 @@ class Table extends Component {
               data[i]._source.date_creation!=null&&
               data[i]._source.description!=null&&
               data[i]._source.status!=null){
-                validatedData.push(data[i]._source);
-              }
+              validatedData.push(data[i]._source);
+          }
         }
         that.setState({
            results : validatedData,
@@ -475,9 +473,17 @@ class Table extends Component {
       this.setState({
         dirty : false,
       });
-      fetchJson('/api/projects/search/simple/' + this.state.pageNumber + '/' + this.state.pageSize + '/?q=Music')
+      fetchJson('/api/projects/search/simple/'+
+                '?q='+ this.state.searchString +'&'+
+                'offset='+ this.state.pageNumber+'&'+
+                'count='+ this.state.pageSize)
       .then(function(data) {
         if(data != null){
+          that.setState({
+            numberOfResults : data.total,
+          });
+          console.log(data.total);
+          data = data.hits;
           var validatedData = [];
           for(var i = 0;i<data.length;i++){
             if (data[i]._source!=null&&
