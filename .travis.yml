@@ -31,6 +31,7 @@ before_script:
   - docker ps
   - sleep 10
   - /bin/bash wait_for_mongo.sh
+  - sleep 18
   - docker ps
 
 script:
