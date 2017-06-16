@@ -16,12 +16,13 @@ class Headline extends Component {
 }
 
 class Searchbar extends Component {
+
   render() {
     return(
       <div className="input-group">
-        <input className="form-control" type="text" name="search"/>
+        <input className="form-control" type="text" name="search" / >
         <span className="input-group-button">
-          <button className="btn btn-primary" type="submit">
+          <button className="btn btn-primary" type="submit"  >
             Search!
           </button>
         </span>
@@ -133,12 +134,24 @@ class AdvancedSearch extends Component {
   }
 }
 
-class Search extends Component {
+class Search extends Component{
   constructor(props) {
     super(props);
     this.state = {expanded : false};
   }
 
+  /*
+    Function to toggle between advanced and simplesearch
+  */
+  toggle(){
+    if(this.state.expanded){
+      this.setState({expanded: false});
+      this.props.changeStateAdvanced(this.state.expanded);
+    }else{
+      this.setState({expanded: true});
+      this.props.changeStateAdvanced(this.state.expanded);
+    }
+  }
 
   render() {
     if(this.state.expanded){
@@ -155,7 +168,7 @@ class Search extends Component {
                 changeStateTags={(tags) => this.props.changeStateTags(tags)}
               />
             </form>
-            <a onClick={() => this.setState({expanded : false})}  className="clickable-text col-md-2">
+            <a onClick={() => this.toggle()}  className="clickable-text col-md-2">
               <u>Minimize</u>
             </a>
           </div>
@@ -166,11 +179,11 @@ class Search extends Component {
         <div>
           <div className="row">
             <form className="form-horizontal col-md-12">
-              <Searchbar/>
+              <Searchbar getSearchString = {(str) => this.props.getSearchString(str)}/>
             </form>
           </div>
           <div className="row padding">
-            <a onClick={() => this.setState({expanded : true})} className="clickable-text text-right">
+            <a onClick={() => this.toggle()} className="clickable-text text-right">
               <u>Advanced Search</u>
             </a>
           </div>
@@ -373,10 +386,12 @@ class Table extends Component {
   }
 
   renderTable(results){
-    if(this.props.searchString != "advanced/?q="){
+    if(this.props.searchString != "advanced/?q=" && this.props.searchString != "simple/?q="){
       this.getData(this.props.searchString)
+    }else{
+      this.getData(defaultSearchString)
     }
-    if(true){
+    if(results.length > 0){
       return(
         <div>
           <div className="row">
@@ -401,8 +416,8 @@ class Table extends Component {
               <table className="table">
                 <thead className="thead-default">
                   <tr>
-                    <th className="col-xs-3">{this.state.searchString}</th>
-                    <th className="col-xs-2">{this.props.searchString}</th>
+                    <th className="col-xs-3">Project Name</th>
+                    <th className="col-xs-2">Authors</th>
                     <th className="col-xs-1">Status</th>
                     <th className="col-xs-3">Description</th>
                     <th className="col-xs-2">Date</th>
@@ -497,7 +512,9 @@ export default class SearchPage extends Component {
       filter_date_to: "",
       filter_status: "",
       searchString: "",
-      advanced: false};
+      advanced: false,
+      simple_searchstring: "music",
+    };
   }
 
   filter(){
@@ -591,15 +608,34 @@ export default class SearchPage extends Component {
     this.setState({advanced: advanced})
   }
 
+  getSearchString(str){
+    this.setState({simple_searchstring: str})
+  }
+
+  simplesearch(){
+    var searchString = "simple/?q=";
+    searchString = searchString.concat(this.state.simple_searchstring);
+    return searchString;
+
+  }
+
 
   render() {
+    var searchString
+    /*if(this.state.advanced){
+      searchString = this.filter();
+    }else{
+      searchString= this.simplesearch();
+    }
+    */
+    searchString = this.filter();
     return (
       <div className="inner-content">
         <div className="container">
           <div className="row">
             <div className="col">
+                <h1>{searchString}</h1>
                 <Headline />
-                <h1>{this.filter()}</h1>
                 <hr className="hidden-divider"/>
                 <Search
                   changeStateName={(name) => this.changeStateName(name)}
@@ -609,10 +645,11 @@ export default class SearchPage extends Component {
                   ChangeStateStatus={(status) => this.changeStateStatus(status)}
                   changeStateTags={(tags) => this.changeStateTags(tags)}
                   changeStateAdvanced = {(advanced) => this.changeStateAdvanced(advanced)}
+                  getSearchString = {(str)=> this.getSearchString(str)}
                 />
                 <hr className="horizontal-divider"/>
                 <Table
-                searchString  = {this.filter()}
+                searchString  = {searchString}
                 />
             </div>
           </div>
