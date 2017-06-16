@@ -423,35 +423,83 @@ legend {
 }
 
  /* Project Container */
-.projecttitle {
-  margin-top: 100px;
+ .projecttitle {
+  margin-top: 78px;
+  margin-left: 40px;
+  position: relative;
+  width: 1001px;
+  height: 24px;
   font-family: 'Open Sans', sans-serif;
   font-weight: 400;
   font-size: 18px;
   text-align: left;
   color: #000000;
-}
-.status {
-  margin-top: 40px;
+ }
+ .status {
+  margin-left: 40px;
+  position: relative;
+  margin-top: 14px;
+  width: 300px;
+  height: 16px;
   font-family: 'Open Sans', sans-serif;
   font-weight: 300;
   font-size: 16px;
   text-align: left;
   color: #000000;
-}
-.projectbox {
+ }
+ .projectbox {
+  position: relative;
+  top:19px;
+  margin-left: 40px;
   width: 835px;
   height: 674px;
-  margin-top: 70px;
   text-align: left;
   color: #000000;
-  border: 2px;
-  border-style: outset;
-  border-color: grey;
-}
+ }
+ .overviewbar{
 
-.author {
-  top:70px;
+  position: relative;
+  top:20px;
+  width: 1177px;
+  height: 44px;
+
+ }
+ .overviewButton {
+  margin-left: 40px;
+  width: 110px;
+  height: 30px;
+  background-color: #e7e7e7;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 300;
+  text-align: center;
+  color: #898989;
+ }
+ .overviewbar-text{
+  top: 14px;
+  left:17px;
+  position:relative;
+  width: 83px;
+  height: 24px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 300;
+  text-align: center;
+  color: #898989;
+ }
+ .list_project_info_title {
+  position: relative;
+  margin-top:10px;
+  width: 835px;
+  height: 16px;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  text-align: left;
+  color: #000000;
+ }
+ .list_project_info_content {
+  position: relative;
   width: 835px;
   height: 16px;
   font-family: 'Open Sans', sans-serif;
@@ -459,17 +507,45 @@ legend {
   font-size: 16px;
   text-align: left;
   color: #000000;
-}
-
-/* User Collection */
-
-.collection-header {
-   margin-top: 5em;
-  margin-bottom: 2em;
-  text-align: center;
-  font-size: 32px;
+ }
+ .star-edit-button {
+  width: 58px;
+  height: 34px;
+  background-color: #333333;
+  border: solid 1px #ff5500;
+  margin: 25px !important;
+  font-family: 'Open Sans', sans-serif;
   font-weight: 300;
-}
+  font-size: 18px;
+  text-align: center;
+  color: #ffffff;
+  float: right;
+  margin-top: 30px;
+  margin-bottom: 10px;
+
+ }
+
+ .trash-button{
+
+  width: 58px;
+  height: 34px;
+  background-color: #c0392b;
+  border: solid 1px #ff5500;
+  margin: 25px !important;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  font-size: 18px;
+  text-align: center;
+  color: #ffffff;
+  float: right;
+  margin-top: 30px;
+  margin-bottom: 10px;
+
+ }
+ .white{
+  color: white;
+  position: relative;
+ }
 /* Admin Area Start */
 
 .adminarea-header {
