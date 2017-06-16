@@ -28,7 +28,8 @@ install:
 
 before_script:
   - docker-compose up -d
-  - sleep 60
+  - sleep 10
+  - /bin/bash wait_for_mongo.sh
   - docker ps
 
 script:
