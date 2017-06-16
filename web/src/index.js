@@ -18,6 +18,7 @@ import SignIn from './components/pages/SignIn.jsx';
 import SignUp from './components/pages/SignUp.jsx';
 import AdminArea from './components/pages/AdminArea';
 import ProfileDetails from './components/pages/ProfileDetails.jsx';
+import UpdateProject from './components/pages/UpdateProject';
 
 ReactDOM.render(
 <BrowserRouter>
@@ -25,6 +26,7 @@ ReactDOM.render(
     <Route path="/discovery" component={ProjectDiscovery} />
     <Route path="/admin" component={AdminArea} />
     <Route path="/create" component={CreateProject} />
+    <Route path="/update" component={UpdateProject} />
     <Route path="/createbylink" component={CreateProjectLink} />
     <Route path="/projects/:uuid" component={ProjectDetails} />
     <Route path="/collection" component={UserCollection} />

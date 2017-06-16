@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import {fetchProjectDetails, fetchJson} from '../common/Backend'
+import { Link } from 'react-router-dom';
 
+const update_url='/update/'
 export default class ProjectContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      projectInf: []
+      projectInf: [],
+      myid: "dd594cb7-9e0f-48d5-8ac7-ac4bbd7c2def"
     };
   }
 
@@ -22,15 +25,13 @@ export default class ProjectContainer extends Component {
   }
 
   loadProjectInf(props) {
-    fetchProjectDetails(props.uuid).then(data => {
+    fetchProjectDetails(this.state.myid).then(data => {
       this.setState({projectInf: data})
     });
   }
 
 
-
-
-  //
+//
 
   render(){
     const { _id, authors, date_creation, date_update, description } = this.state.projectInf;
@@ -57,50 +58,80 @@ export default class ProjectContainer extends Component {
     } else {
       tag_string = ''
     }
-
+    var a=this.state.myid;
     return(
       <div className="container">
         <div className="projecttitle">
           <p>
-            Title: {title}
+            Title: {this.state.projectInf.title}
           </p>
         </div>
         <div className="status">
           <p>
-          Status: {status}
+          Status: {this.state.projectInf.status}
           </p>
         </div>
-        <div className="author">
-          <p>
-            Authors: {authors_string}
-          </p>
-          <p>
-            {"Date of creation: 2017-01-16"}
-          </p>
-          <p>
-            {"Last time updated: " + date_update}
-          </p>
-          <p>
-            {"Team: " }
-          </p>
-          <p>
-            {"Tags: " + tag_string}
-          </p>
-          <p>
-            {"Github:"}
-          </p>
-          <p>
-            {url}
-          </p>
-          <p>
-            {"Description:"}
-          </p>
-          <p>
-            {description}
-          </p>
-          <p>
-            {}
-          </p>
+        <ul className="nav nav-tabs overviewbar">
+          <li className="nav-item ">
+            <p className="nav-link active" href="#">Overview</p>
+          </li>
+          <li className="nav-item ">
+            <p className="nav-link" href="#">Comments</p>
+          </li>
+          <li className="nav-item ">
+            <p className="nav-link" href="#">GitHub</p>
+          </li>
+        </ul>
+
+        <button className="btn btn-default star-edit-button">
+          <span className="glyphicon glyphicon-star white"></span>
+        </button>
+
+        <Link to={`${update_url}${this.state.myid}`}>
+
+
+          <button className="btn btn-default star-edit-button">
+            <span className="glyphicon glyphicon-pencil white"></span>
+          </button>
+        </Link>
+        <button className="btn btn-default trash-button">
+          <span className="glyphicon glyphicon-trash white"></span>
+        </button>
+
+        <div className="projectbox">
+
+          <div className="list_project_info_title">
+            <p>
+              Authors: {authors_string}
+            </p>
+            <p>
+              {"Date of creation: 2017-01-16"}
+            </p>
+            <p>
+              {"Last time updated: " + date_update}
+            </p>
+            <p>
+              {"Team: " }
+            </p>
+            <p>
+              {"Tags: " + tag_string}
+            </p>
+            <p>
+              {"Github:"}
+            </p>
+            <p>
+              {url}
+            </p>
+            <p>
+              {"Description:"}
+            </p>
+            <p>
+              {description}
+            </p>
+            <p>
+              {}
+            </p>
+          </div>
         </div>
       </div>
     );
