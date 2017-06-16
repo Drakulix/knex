@@ -25,7 +25,7 @@ export default class ProjectContainer extends Component {
   }
 
   loadProjectInf(props) {
-    fetchProjectDetails(this.state.myid).then(data => {
+    fetchProjectDetails(props.uuid).then(data => {
       this.setState({projectInf: data})
     });
   }
