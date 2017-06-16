@@ -228,8 +228,11 @@ class Table extends Component {
               data[i]._source.authors!=null&&
               data[i]._source.date_creation!=null&&
               data[i]._source.description!=null&&
-              data[i]._source.status!=null){
-              validatedData.push(data[i]._source);
+              data[i]._source.status!=null&&
+              data[i]._id!=null){
+                var export_data = data[i]._source
+                export_data["_id"] = data[i]._id
+                validatedData.push(export_data)
           }
         }
         that.setState({
@@ -315,6 +318,7 @@ class Table extends Component {
 
   renderLine(result,index){
 
+    var id = result._id;
     var title = result.title;
     var authors = result.authors;
     var description = result.description;
@@ -323,11 +327,10 @@ class Table extends Component {
 
     authors = this.authorsArrayToNameString(authors);
     var shortenedDescription = this.fitLength(description, 100);
-
     return(
         <tr key ={"result"+index}>
           <td>
-            <Link to="/projects" className="table-project-name">
+            <Link to={"/projects/" + id} className="table-project-name">
               <a className="table-project-name" >
                 <u>{title}</u>
               </a>
@@ -482,7 +485,6 @@ class Table extends Component {
           that.setState({
             numberOfResults : data.total,
           });
-          console.log(data.total);
           data = data.hits;
           var validatedData = [];
           for(var i = 0;i<data.length;i++){
@@ -491,8 +493,11 @@ class Table extends Component {
                 data[i]._source.authors!=null&&
                 data[i]._source.date_creation!=null&&
                 data[i]._source.description!=null&&
-                data[i]._source.status!=null){
-                validatedData.push(data[i]._source);
+                data[i]._source.status!=null&&
+                data[i]._id!=null){
+                  var export_data = data[i]._source
+                  export_data["_id"] = data[i]._id
+                  validatedData.push(export_data)
             }
           }
           var hasNext = true;

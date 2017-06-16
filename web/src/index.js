@@ -28,7 +28,7 @@ ReactDOM.render(
     <Route path="/create" component={CreateProject} />
     <Route path="/update" component={UpdateProject} />
     <Route path="/createbylink" component={CreateProjectLink} />
-    <Route path="/projects" component={ProjectDetails} />
+    <Route path="/projects/:uuid" component={ProjectDetails} />
     <Route path="/collection" component={UserCollection} />
     <Route path="/profile" component={ProfileDetails} />
     <Route path="/register" component={SignUp} />
