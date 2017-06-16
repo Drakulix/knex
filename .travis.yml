@@ -27,7 +27,7 @@ install:
   - "pip install -r ./tests/requirements.txt"
 
 before_script:
-  - docker-compose up -d
+  - docker-compose up -d --build
   - docker ps
   - sleep 10
   - /bin/bash wait_for_mongo.sh
