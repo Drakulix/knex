@@ -205,39 +205,11 @@ class Table extends Component {
       dirty : false,
       hasPrev: false,
       hasNext: false,
+      lastString: ""
     };
 
     // Get Data from Elasticsearch and put it in this.state.results
     var that = this;
-    /*fetchJson('/api/projects/search/'+
-             this.state.searchString+'&'+
-              'offset='+ this.state.pageNumber+'&'+
-              'count='+ this.state.pageSize)
-    .then(function(data) {
-      if(data != null){
-        that.setState({
-          numberOfResults : data.total,
-          hasNext : data.total > defaultPageSize,
-        });
-        data = data.hits;
-        var validatedData = [];
-        for(var i = 0;i<data.length;i++){
-          if (data[i]._source!=null&&
-              data[i]._source.title!=null &&
-              data[i]._source.authors!=null&&
-              data[i]._source.date_creation!=null&&
-              data[i]._source.description!=null&&
-              data[i]._source.status!=null){
-              validatedData.push(data[i]._source);
-          }
-        }
-        that.setState({
-           results : validatedData,
-        });
-      }
-    });
-    */
-
     this.getData(this.state.searchString);
   }
 
@@ -386,10 +358,13 @@ class Table extends Component {
   }
 
   renderTable(results){
-    if(this.props.searchString != "advanced/?q=" && this.props.searchString != "simple/?q="){
-      this.getData(this.props.searchString)
-    }else{
-      this.getData(defaultSearchString)
+    if(this.state.lastString != this.props.searchString){
+      if(this.props.searchString != "advanced/?q=" && this.props.searchString != "simple/?q="){
+        this.getData(this.props.searchString)
+        this.setState({lastString: this.props.searchString})
+      }else{
+        this.getData(defaultSearchString)
+      }
     }
     if(results.length > 0){
       return(
@@ -494,8 +469,7 @@ class Table extends Component {
   }
 
   render() {
-    //this.setState({searchString: this.props.searchString})
-    //this.getData(this.state.searchString)
+
     return this.renderTable(this.state.results);
   }
 }
@@ -533,7 +507,7 @@ export default class SearchPage extends Component {
           searchstring = searchstring.concat(" AND ");
           filter_set--;
         }
-        searchstring = searchstring.concat("(date: [", this.state.filter_date_from, " TO " , this.state.filter_date_to, "])");
+        searchstring = searchstring.concat("(date_creation: [", this.state.filter_date_from, " TO " , this.state.filter_date_to, "])");
         filter_set++;
       }
 
@@ -543,7 +517,7 @@ export default class SearchPage extends Component {
           searchstring = searchstring.concat(" AND ");
           filter_set--;
         }
-        searchstring = searchstring.concat("(authors: ", this.state.filter_author, ")");
+        searchstring = searchstring.concat("(authors.name: ", this.state.filter_author, ")");
         filter_set++;
 
       }
@@ -560,7 +534,7 @@ export default class SearchPage extends Component {
           searchstring = searchstring.concat(" AND ");
           filter_set--;
         }
-        searchstring = searchstring.concat("status: ", this.state.filter_status);
+        searchstring = searchstring.concat("(status: ", this.state.filter_status, ")");
         filter_set--;
       }
       return searchstring;
@@ -578,15 +552,15 @@ export default class SearchPage extends Component {
 
   changeStateFrom(from){
     if(from == ""){
-      this.setState({filter_date_to: "1900/01/01" });
+      this.setState({filter_date_from: "1900-01-01" });
     }else{
-      this.setState({filter_date_to: from });
+      this.setState({filter_date_from: from });
     }
   }
 
   changeStateTo(to){
     if(to == ""){
-      this.setState({filter_date_to: "2050/12/12" });
+      this.setState({filter_date_to: "2050-06-06" });
     }else{
       this.setState({filter_date_to: to });
     }
@@ -628,13 +602,12 @@ export default class SearchPage extends Component {
       searchString= this.simplesearch();
     }
     */
-    searchString = this.filter();
+    setTimeout(searchString = this.filter(), 200);
     return (
       <div className="inner-content">
         <div className="container">
           <div className="row">
             <div className="col">
-                <h1>{searchString}</h1>
                 <Headline />
                 <hr className="hidden-divider"/>
                 <Search
