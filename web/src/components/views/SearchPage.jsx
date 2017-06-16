@@ -116,20 +116,6 @@ class AdvancedSearch extends Component {
           <div className="col-md-6">
             <div className="input-group form-inline panel">
               <span className ="input-group-addon primary">
-                Description
-              </span>
-              <input
-                className="form-control"
-                type="text"
-                id="description"
-                name="description"
-                onChange={(value) => this.setState({filter_description: value.target.value})}
-              />
-            </div>
-          </div>
-          <div className="col-md-6">
-            <div className="input-group form-inline panel">
-              <span className ="input-group-addon primary">
                 Status
               </span>
               <input
@@ -210,16 +196,7 @@ class Table extends Component {
 
     // Get Data from Elasticsearch and put it in this.state.results
     var that = this;
-
-    /*if(this.props.searchString == "" ||this.props.searchString =="advanced/?q=" || this.props.searchString == null){
-      this.setState({searchString: defaultSearchStringe});
-    }else {
-      this.setState({searchString: this.props.SearchString})
-    }
-    */
-
-
-    fetchJson('/api/projects/search/'+
+    /*fetchJson('/api/projects/search/'+
              this.state.searchString+'&'+
               'offset='+ this.state.pageNumber+'&'+
               'count='+ this.state.pageSize)
@@ -246,9 +223,41 @@ class Table extends Component {
         });
       }
     });
+    */
+
+    this.getData(this.state.searchString);
   }
 
-
+    getData(searchString){
+    var that = this;
+    fetchJson('/api/projects/search/'+
+             searchString +'&'+
+              'offset='+ this.state.pageNumber+'&'+
+              'count='+ this.state.pageSize)
+    .then(function(data) {
+      if(data != null){
+        that.setState({
+          numberOfResults : data.total,
+          hasNext : data.total > defaultPageSize,
+        });
+        data = data.hits;
+        var validatedData = [];
+        for(var i = 0;i<data.length;i++){
+          if (data[i]._source!=null&&
+              data[i]._source.title!=null &&
+              data[i]._source.authors!=null&&
+              data[i]._source.date_creation!=null&&
+              data[i]._source.description!=null&&
+              data[i]._source.status!=null){
+              validatedData.push(data[i]._source);
+          }
+        }
+        that.setState({
+           results : validatedData,
+        });
+      }
+    });
+  }
 
   fitLength(string, maxLength){
     if(string.length>maxLength){
@@ -364,7 +373,9 @@ class Table extends Component {
   }
 
   renderTable(results){
-
+    if(this.props.searchString != "advanced/?q="){
+      this.getData(this.props.searchString)
+    }
     if(true){
       return(
         <div>
@@ -426,8 +437,9 @@ class Table extends Component {
       this.setState({
         dirty : false,
       });
-      fetchJson('/api/projects/search/simple/'+
-                '?q='+ this.state.searchString +'&'+
+
+      fetchJson('/api/projects/search/'+
+                this.state.searchString +'&'+
                 'offset='+ this.state.pageNumber+'&'+
                 'count='+ this.state.pageSize)
       .then(function(data) {
@@ -467,8 +479,9 @@ class Table extends Component {
   }
 
   render() {
-    var new_results=this.state.results;
-    return this.renderTable(new_results);
+    //this.setState({searchString: this.props.searchString})
+    //this.getData(this.state.searchString)
+    return this.renderTable(this.state.results);
   }
 }
 
@@ -483,7 +496,8 @@ export default class SearchPage extends Component {
       filter_date_from: "",
       filter_date_to: "",
       filter_status: "",
-      searchString: ""};
+      searchString: "",
+      advanced: false};
   }
 
   filter(){
@@ -573,6 +587,10 @@ export default class SearchPage extends Component {
     this.setState({filter_tags: tags });
   }
 
+  changeStateAdvanced(advanced){
+    this.setState({advanced: advanced})
+  }
+
 
   render() {
     return (
@@ -590,10 +608,11 @@ export default class SearchPage extends Component {
                   changeStateTo={(to) => this.changeStateTo(to)}
                   ChangeStateStatus={(status) => this.changeStateStatus(status)}
                   changeStateTags={(tags) => this.changeStateTags(tags)}
+                  changeStateAdvanced = {(advanced) => this.changeStateAdvanced(advanced)}
                 />
                 <hr className="horizontal-divider"/>
                 <Table
-                searchString  = {this.filter()} key = {this.filter()}
+                searchString  = {this.filter()}
                 />
             </div>
           </div>
