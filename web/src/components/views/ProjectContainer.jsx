@@ -8,7 +8,6 @@ export default class ProjectContainer extends Component {
     super(props);
     this.state = {
       projectInf: [],
-      myid: "dd594cb7-9e0f-48d5-8ac7-ac4bbd7c2def"
     };
   }
 
@@ -58,7 +57,6 @@ export default class ProjectContainer extends Component {
     } else {
       tag_string = ''
     }
-    var a=this.state.myid;
     return(
       <div className="container">
         <div className="projecttitle">
@@ -87,7 +85,7 @@ export default class ProjectContainer extends Component {
           <span className="glyphicon glyphicon-star white"></span>
         </button>
 
-        <Link to={`${update_url}${this.state.myid}`}>
+        <Link to={`${update_url}${this.props.uuid}`}>
 
 
           <button className="btn btn-default star-edit-button">
