@@ -448,6 +448,8 @@ legend {
   color: #000000;
  }
  .projectbox {
+  margin-top: 6em;
+  margin-bottom: 30px;
   position: relative;
   top:19px;
   margin-left: 40px;
@@ -461,7 +463,37 @@ legend {
    font-weight: bold;
  }
 
+ .projectbox .authors{
+   margin-bottom: 1em;
+ }
+
+ .projectbox .team{
+   margin-bottom: 1em;
+ }
+
+ .projectbox .tags-pb{
+   margin-bottom: 1em;
+ }
+
+ .projectbox .github{
+   margin-top: 2em;
+ }
+
+ .projectbox .description-elem{
+   text-align: justify;
+   margin-top: 3em;
+ }
+
+ .projectbox .date-group{
+   margin-top: 2em;
+ }
+
+ .projectbox .creation-date-elem{
+   float:right
+ }
+
  .github-link{
+   margin-top: 50px;
    color: blue;
  }
  .overviewbar{

@@ -99,36 +99,31 @@ export default class ProjectContainer extends Component {
         <div className="projectbox">
 
           <div className="list_project_info_title">
-            <p>
-              <span className="sec-label">Authors:</span> {authors_string}
-            </p>
-            <p>
-              <span className="sec-label">Date of creation:</span> {"2017-01-16"}
-            </p>
-            <p>
-              <span className="sec-label">Last time updated:</span> {date_update}
-            </p>
-            <p>
-              <span className="sec-label">Team: </span>
-            </p>
-            <p>
+            <div className="authors">
+              <span className="sec-label">Authors: </span> {authors_string}
+            </div>
+            <div className="team">
+              <span className="sec-label">Team: </span> {"Knex"}
+            </div>
+            <div className="tags-pb">
               <span className="sec-label">Tags: </span> {tag_string}
-            </p>
-            <p>
-              <span className="sec-label">Github:</span>
-            </p>
-            <p>
-            <a className="github-link" href={url}>{url}</a>
-            </p>
-            <p>
-              <span className="sec-label">Description:</span>
-            </p>
-            <p>
+            </div>
+            <div className="github">
+                <span className="sec-label">Github: </span>
+                <a className="github-link" href={url}>{url}</a>
+            </div>
+            <div className="description-elem">
+              <div className="sec-label">Description:</div>
               {description}
-            </p>
-            <p>
-              {}
-            </p>
+            </div>
+            <div className="date-group">
+            <div className="creation-date-elem">
+              <span className="sec-label">Date of creation: </span> {"2017-01-16"}
+            </div>
+            <div className="update-date-elem">
+              <span className="sec-label">Last time updated: </span> {date_update}
+            </div>
+            </div>
           </div>
         </div>
       </div>
