@@ -8,7 +8,7 @@ services:
         volumes:
             - ./backend/mongodb:/scripts
         command: [ "/bin/bash", "/scripts/setup.sh" ]
-        restart: "always"
+        restart: "on-failure"
 
     mongodb:
         image: mongo
@@ -17,12 +17,10 @@ services:
             - "27017:27017"
         entrypoint: [ "/usr/bin/mongod", "--replSet", "projectsRepSet", "--journal","--dbpath","/data/db","--smallfiles", "--rest" ]
 
-
     elasticsearch:
         image: elasticsearch
         ports:
             - "9200:9200"
-
 
     flask:
         build: ./backend
@@ -45,4 +43,3 @@ services:
         volumes:
             - ./backend:/mongo_connector
         restart: "always"
-
