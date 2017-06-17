@@ -38,6 +38,8 @@ script:
 
   - pytest tests/
   - pep8 --max-line-length=100 .
+  - sleep 15
+  - docker ps
 
 after_script:
   - docker-compose down
