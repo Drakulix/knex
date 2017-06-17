@@ -118,20 +118,20 @@ def login():
     password = request.form['password']
     user = user_datastore.get_user(email)
     if user is None:
-        return make_response('Username oder Password invalid', '500')
+        return make_response('Username oder Password invalid', 500)
 
 
     if verify_password(password, user["password"]):
         login_user(user)
-        return make_response('Login successful', '200')
+        return make_response('Login successful', 200)
 
-    return make_response('Username oder Password invalid', '500')
+    return make_response('Username oder Password invalid', 500)
 
 
 @app.route('/api/users/logout')
 def logout():
     logout_user()
-    return make_response('Logged out', '200')
+    return make_response('Logged out', 200)
 
 
 
@@ -181,7 +181,7 @@ def add_project():
         except ApiException as e:
             raise e
         except Exception as err:
-            return make_response("error: " + str(err), '500')
+            return make_response("error: " + str(err), 500)
 
 
 @app.errorhandler(ApiException)
@@ -346,7 +346,7 @@ def updateUser():
     res = make_response(dumps(res))
     res.headers['Content-Type'] = 'application/json'
 
-    return make_response("User with email: " + user['email'] + ' updated', '200')
+    return make_response("User with email: " + user['email'] + ' updated', 200)
 
 
 
