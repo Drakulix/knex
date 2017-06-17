@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import {fetchJson, sendJson} from '../common/Backend'
 
 const defaultPageSize = 4;
-const defaultSearchString = "simple/?q=music";
+const defaultSearchString = "advanced/?q=*";
 
 class Headline extends Component {
   render() {
@@ -17,18 +17,12 @@ class Headline extends Component {
 
 class Searchbar extends Component {
 
-  getData(){
-    if(this.getElementById("simplesearch").value != null && this.getElementById("simplesearch").value.target.value != ""){
-      this.props.getSearchString("context");
-    }
-  }
-
   render() {
     return(
       <div className="input-group">
         <input className="form-control" type="text" name="search" ref='simplesearch' onChange={()=> this.props.getSearchString(this.refs.simplesearch.value)} / >
         <span className="input-group-button">
-          <button className="btn btn-primary" onClick = {()=> this.props.getSearchString(this.refs.simplesearch.value)} >
+          <button className="btn btn-primary" onClick = {()=> this.props.getSearchString(document.getElementById.value.value())} >
             Search!
           </button>
         </span>
@@ -586,7 +580,7 @@ export default class SearchPage extends Component {
 
   simplesearch(){
     var searchString = "simple/?q=";
-    searchString = searchString.concat(this.state.simple_searchstring);
+    searchString = searchString.concat(this.state.simple_searchstring + "*");
     return searchString;
 
   }
@@ -602,7 +596,7 @@ export default class SearchPage extends Component {
       }
     }else{
       searchString = this.simplesearch();
-      if(searchString == "simple/?q="){
+      if(searchString == "simple/?q=*"){
         searchString = defaultSearchString;
       }
     }
@@ -613,7 +607,6 @@ export default class SearchPage extends Component {
           <div className="row">
             <div className="col">
                 <Headline />
-                <h1>{this.state.simple_searchstring}</h1>
                 <hr className="hidden-divider"/>
                 <Search
                   changeStateName={(name) => this.changeStateName(name)}
