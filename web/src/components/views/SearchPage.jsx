@@ -17,12 +17,16 @@ class Headline extends Component {
 
 class Searchbar extends Component {
 
+  getData(){
+    this.props.getSearchString(this.getElementById('simplesearch').value);
+  }
+
   render() {
     return(
       <div className="input-group">
-        <input className="form-control" type="text" name="search" / >
+        <input className="form-control" type="text" name="search" id='simplesearch' / >
         <span className="input-group-button">
-          <button className="btn btn-primary" type="submit"  >
+          <button className="btn btn-primary" type="submit" onClick = {()=> this.getData()} >
             Search!
           </button>
         </span>
@@ -144,13 +148,8 @@ class Search extends Component{
     Function to toggle between advanced and simplesearch
   */
   toggle(){
-    if(this.state.expanded){
-      this.setState({expanded: false});
-      this.props.changeStateAdvanced(this.state.expanded);
-    }else{
-      this.setState({expanded: true});
-      this.props.changeStateAdvanced(this.state.expanded);
-    }
+      this.setState({expanded: !this.state.expanded});
+      this.props.changeStateAdvanced();
   }
 
   render() {
@@ -359,12 +358,9 @@ class Table extends Component {
 
   renderTable(results){
     if(this.state.lastString != this.props.searchString){
-      if(this.props.searchString != "advanced/?q=" && this.props.searchString != "simple/?q="){
         this.getData(this.props.searchString)
         this.setState({lastString: this.props.searchString})
-      }else{
-        this.getData(defaultSearchString)
-      }
+
     }
     if(results.length > 0){
       return(
@@ -487,7 +483,7 @@ export default class SearchPage extends Component {
       filter_status: "",
       searchString: "",
       advanced: false,
-      simple_searchstring: "music",
+      simple_searchstring: "",
     };
   }
 
@@ -578,8 +574,8 @@ export default class SearchPage extends Component {
     this.setState({filter_tags: tags });
   }
 
-  changeStateAdvanced(advanced){
-    this.setState({advanced: advanced})
+  changeStateAdvanced(){
+    this.setState({advanced: !this.state.advanced})
   }
 
   getSearchString(str){
@@ -602,16 +598,26 @@ export default class SearchPage extends Component {
       searchString= this.simplesearch();
     }
     */
-    searchString = this.filter();
-    if(searchString == "advanced/?q="){
-      searchString = defaultSearchString;
+
+    if(this.state.advanced){
+      searchString = this.filter();
+      if(searchString == "advanced/?q="){
+        searchString = defaultSearchString;
+      }
+    }else{
+      searchString = this.simplesearch();
+      if(searchString == "simple/?q="){
+        searchString = defaultSearchString;
+      }
     }
+
     return (
       <div className="inner-content">
         <div className="container">
           <div className="row">
             <div className="col">
                 <Headline />
+                <h1>{this.state.simple_searchstring}</h1>
                 <hr className="hidden-divider"/>
                 <Search
                   changeStateName={(name) => this.changeStateName(name)}
