@@ -3,7 +3,7 @@ import os
 import sys
 import json5
 
-from flask_login import  LoginManager
+from flask_login import LoginManager
 from bson.json_util import dumps
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import RequestError
@@ -18,23 +18,17 @@ import uploader
 from apiexception import ApiException
 from flask_mongoengine import MongoEngine
 from flask_security import Security, MongoEngineUserDatastore, \
-    UserMixin, RoleMixin, login_required, roles_required, login_user, logout_user
-from flask_security.utils import verify_password,encrypt_password
+    UserMixin, RoleMixin, login_required, \
+    roles_required, login_user, logout_user
+from flask_security.utils import verify_password, encrypt_password
+
 
 es = Elasticsearch([{'host': 'elasticsearch', 'port': 9200}])
-
 client = MongoClient('mongodb:27017')
 db = client.knexDB
 coll = db.projects
 app = Flask(__name__)
-
-
 CORS(app)
-
-
-
-
-
 
 with app.open_resource("manifest_schema.json") as schema_file:
     schema = json.load(schema_file)
@@ -50,8 +44,6 @@ def index():
     """Index of knex
     """
     return make_response('', 404)
-
-
 
 # Create app
 app = Flask(__name__)
@@ -70,9 +62,11 @@ app.config['SECURITY_PASSWORD_SALT'] = 'THISISMYOWNSALT'
 # Create database connection object
 db = MongoEngine(app)
 
+
 class Role(db.Document, RoleMixin):
     name = db.StringField(max_length=80, unique=True)
     description = db.StringField(max_length=255)
+
 
 class User(db.Document, UserMixin):
     email = db.StringField(max_length=255)
@@ -84,8 +78,12 @@ class User(db.Document, UserMixin):
     bookmarks = db.ListField(UUIDField(), default=[])
     roles = db.ListField(db.ReferenceField(Role), default=[])
 
+
 class EmailConverter(BaseConverter):
-    regex = r"([a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`""{|}~-]+)*(@|\sat\s)(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(\.|""\sdot\s))+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)"
+    regex = r"([a-z0-9!#$%&'*+\/=?^_`{|}~-]\
+    +(?:\.[a-z0-9!#$%&'*+\/=?^_`""{|}~-]+)\
+    *(@|\sat\s)(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])\
+    ?(\.|""\sdot\s))+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)"
 
 
 # Setup Flask-Security
@@ -93,33 +91,26 @@ user_datastore = MongoEngineUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
 app.url_map.converters['email'] = EmailConverter
 
+
 @app.before_first_request
 def initialize_users():
     user_role = user_datastore.find_or_create_role('user')
-    user_datastore.create_user(email='user@knex.com', password=encrypt_password("user"), roles=[user_role])
+    pw = encrypt_password("user")
+    user_datastore.\
+        create_user(email='user@knex.com', password=pw, roles=[user_role])
     admin_role = user_datastore.find_or_create_role('admin')
-    user_datastore.create_user(email='admin@knex.com', password=encrypt_password("admin"), roles=[admin_role])
+    pw = encrypt_password("admin")
+    user_datastore.\
+        create_user(email='admin@knex.com', password=pw, roles=[admin_role])
 
 
-
-#GET is only for testing!!
-@app.route('/api/users/login', methods=['GET','POST'])
+@app.route('/api/users/login', methods=['POST'])
 def login():
-    if request.method == 'GET':
-        return '''
-                   <form action='login' method='POST'>
-                    <input type='text' name='email' id='email' placeholder='email'></input>
-                    <input type='password' name='password' id='password' placeholder='password'></input>
-                    <input type='submit' name='submit'></input>
-                   </form>
-                   '''
-
     email = request.form['email']
     password = request.form['password']
     user = user_datastore.get_user(email)
     if user is None:
         return make_response('Username oder Password invalid', 500)
-
 
     if verify_password(password, user["password"]):
         login_user(user)
@@ -132,9 +123,6 @@ def login():
 def logout():
     logout_user()
     return make_response('Logged out', 200)
-
-
-
 
 
 @app.route('/api/projects', methods=['POST'])
@@ -298,7 +286,6 @@ def search():
         return (str(e), 400)
 
 
-
 @app.route('/api/users', methods=['PUT'])
 @roles_required('admin')
 def createUser():
@@ -308,14 +295,15 @@ def createUser():
 
         # still without json validation
         # a new user does not have bookmarks
-        
         role = user_datastore.find_or_create_role(user['role'])
-        res = coll_user.find({'email' : user["email"]})
-        #if res is not None:
-        #    return make_response('User already exists',500)
+        # if res is not None:
+        # return make_response('User already exists',500)
 
-        user_datastore.create_user(first_name = user["first name"],last_name = user["last name"],
-                                   email = user["email"],password = encrypt_password(user["password"]), bio = user["bio"],roles=[role])
+        user_datastore.create_user(first_name=user["first name"],
+                                   last_name=user["last name"],
+                                   email=user["email"],
+                                   password=encrypt_password(user["password"]),
+                                   bio=user["bio"], roles=[role])
 
         return jsonify(user_datastore.get_user(user['email']))
 
@@ -325,9 +313,6 @@ def createUser():
         raise ApiException(str(err), 500)
 
 
-
-
-
 @app.route('/api/users/', methods=['PUT'])
 @roles_required('admin')
 def updateUser():
@@ -335,7 +320,8 @@ def updateUser():
 
     res = user_datastore.get_user(user['email'])
     if res is None:
-        return make_response('Unknown User with Email-address: ' + user['email'], 500)
+        return make_response('Unknown User with Email-address: ' +
+                             user['email'], 500)
     res.first_name = user['first name']
     res.last_name = user['last name']
     res.password = encrypt_password(user['password'])
@@ -347,8 +333,6 @@ def updateUser():
     res.headers['Content-Type'] = 'application/json'
 
     return make_response("User with email: " + user['email'] + ' updated', 200)
-
-
 
 
 @app.route('/api/users/<email:mail>', methods=['GET'])
@@ -364,30 +348,7 @@ def getUser(mail):
     if res is None:
         return make_response('Unknown User with Email-address: ' + mail, 500)
 
-    #return res
     return jsonify(res)
-
-
-#@app.route('/api/users/', methods=['GET'])
-#@login_required
-#def getUsers():
-
-#    """Return a list with all user
-
-#        Returns:
-#            res: A list with all user as json
-#        """
-#    res = coll_user.find({})
-#    if res is None:
-#        return make_response('User list is empty', 500)#
-
- #   res = make_response(dumps(res))
- #   res.headers['Content-Type'] = 'application/json'
-
-  #  return res
-
-
-
 
 
 if __name__ == "__main__":
