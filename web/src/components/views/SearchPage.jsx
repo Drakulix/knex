@@ -1,64 +1,27 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import {fetchJson, sendJson} from '../common/Backend'
 
-import data from '../../data/test_data.json';
-//Return Value Simulation
-
-class Result extends Component{
-  constructor(name, author, status, description, date, fav, tags) {
-    super();
-    this.name = name;
-    this.author = author;
-    this.status = status;
-    this.description = description;
-    this.date = date;
-    this.fav = fav;
-    this.tags=tags;
-  }
-
-
-}
-
-const result_one = new Result(data.project_one.title, data.project_one.authors, data.project_one.status, data.project_one.description, data.project_one.date_created, "yes", data.project_one.tags);
-const result_two  = new Result(data.project_two.title, data.project_two.authors, data.project_two.status, data.project_two.description, data.project_two.date_created, "yes", data.project_two.tags);
-const result_three = new Result(data.project_three.title, data.project_three.authors, data.project_three.status, data.project_three.description, data.project_three.date_created, "yes", data.project_three.tags);
-const result_four = new Result(data.project_four.title, data.project_four.authors, data.project_four.status, data.project_four.description, data.project_four.date_created, "yes", data.project_four.tags);
-const result_five = new Result(data.project_five.title, data.project_five.authors, data.project_five.status, data.project_five.description, data.project_five.date_created, "yes", data.project_five.tags);
-const result_six = new Result(data.project_six.title, data.project_six.authors, data.project_six.status, data.project_six.description, data.project_six.date_created, "yes", data.project_six.tags);
-
-const results = [result_one];
-results.push(result_two);
-results.push(result_three);
-results.push(result_four);
-results.push(result_five);
-results.push(result_six);
-
-
-
-// Main Code
+const defaultPageSize = 4;
+const defaultSearchString = "advanced/?q=*";
 
 class Headline extends Component {
   render() {
     return(
-      <div className="row">
-        <div className="header-title">
-          <h1>Looking for a Project?</h1>
-        </div>
+      <div className="header">
+        Looking for a Project?
       </div>
     );
   }
 }
 
 class Searchbar extends Component {
+
   render() {
+    var searchString
     return(
       <div className="input-group">
-        <input className="form-control" type="text" name="search"/>
-        <span className="input-group-button">
-          <button className="btn btn-primary" type="submit">
-            Search!
-          </button>
-        </span>
+        <input className="form-control" type="text" name="search" ref='simplesearch' onChange={()=> this.props.getSearchString(this.refs.simplesearch.value)} / >
       </div>
     );
   }
@@ -76,7 +39,13 @@ class AdvancedSearch extends Component {
               <span className ="input-group-addon primary">
                 Project Name
               </span>
-              <input className="form-control full-width" type="text" id="projectName" name="projectName" onChange={(value) => this.props.changeStateName(value.target.value)}/>
+              <input
+                className="form-control full-width"
+                type="text"
+                id="projectName"
+                name="projectName"
+                onChange={(value) => this.props.changeStateName(value.target.value)}
+              />
             </div>
           </div>
           <div className="col-md-6">
@@ -84,7 +53,13 @@ class AdvancedSearch extends Component {
               <span className ="input-group-addon primary">
                 Author
               </span>
-              <input className="form-control" type="search" id="author" name="author" onChange={(value) => this.props.changeStateAuthor(value.target.value)}/>
+              <input
+                className="form-control"
+                type="search"
+                id="author"
+                name="author"
+                onChange={(value) => this.props.changeStateAuthor(value.target.value)}
+              />
             </div>
           </div>
         </div>
@@ -95,7 +70,13 @@ class AdvancedSearch extends Component {
                 <span className ="input-group-addon primary">
                   Tags
                 </span>
-                <input className="form-control" type="text" id="tags" name="tags" onChange={(value) => this.props.changeStateTags(value.target.value)}/>
+                <input
+                  className="form-control"
+                  type="text"
+                  id="tags"
+                  name="tags"
+                  onChange={(value) => this.props.changeStateTags(value.target.value)}
+                />
               </div>
             </div>
             <div className="col-md-4">
@@ -103,7 +84,13 @@ class AdvancedSearch extends Component {
                 <span className ="input-group-addon primary">
                   From
                 </span>
-                <input className="form-control" type="date" id="dateStart" name="dateStart" onChange={(value) => this.props.changeStateFrom(value.target.value)}/>
+                <input
+                  className="form-control"
+                  type="date"
+                  id="dateStart"
+                  name="dateStart"
+                  onChange={(value) => this.props.changeStateFrom(value.target.value)}
+                />
               </div>
             </div>
             <div className="col-md-4">
@@ -111,7 +98,13 @@ class AdvancedSearch extends Component {
                 <span className ="input-group-addon primary">
                   To
                 </span>
-                <input className="form-control" type="date" id="dateEnd" name="dateEnd" onChange={(value) => this.props.changeStateTo(value.target.value)}/>
+                <input
+                  className="form-control"
+                  type="date"
+                  id="dateEnd"
+                  name="dateEnd"
+                  onChange={(value) => this.props.changeStateTo(value.target.value)}
+                />
               </div>
             </div>
           </div>
@@ -122,24 +115,34 @@ class AdvancedSearch extends Component {
               <span className ="input-group-addon primary">
                 Status
               </span>
-              <input className="form-control" type="text" id="status" name="status" onChange={(value) => this.props.changeStateStatus(value.target.value)}/>
+              <input
+                className="form-control"
+                type="text"
+                id="status"
+                name="status"
+                onChange={(value) => this.props.ChangeStateStatus(value.target.value)}
+              />
             </div>
           </div>
         </div>
-
       </div>
     );
   }
 }
 
-
-
-class Search extends Component {
+class Search extends Component{
   constructor(props) {
     super(props);
     this.state = {expanded : false};
   }
 
+  /*
+    Function to toggle between advanced and simplesearch
+  */
+  toggle(){
+      this.setState({expanded: !this.state.expanded});
+      this.props.changeStateAdvanced();
+  }
 
   render() {
     if(this.state.expanded){
@@ -147,9 +150,16 @@ class Search extends Component {
         <div>
           <div className="row">
             <form className="form-horizontal col-md-12">
-              <AdvancedSearch changeStateName={(name) => this.props.changeStateName(name)} changeStateAuthor={(author) => this.props.changeStateAuthor(author)} changeStateFrom={(from) => this.props.changeStateFrom(from)} changeStateTo={(to) => this.props.changeStateTo(to)} changeStateStatus={(status) => this.props.changeStateStatus(status)} changeStateTags={(tags) => this.props.changeStateTags(tags)} />
+              <AdvancedSearch
+                changeStateName={(name) => this.props.changeStateName(name)}
+                changeStateAuthor={(author) => this.props.changeStateAuthor(author)}
+                changeStateFrom={(from) => this.props.changeStateFrom(from)}
+                changeStateTo={(to) => this.props.changeStateTo(to)}
+                ChangeStateStatus={(status) => this.props.ChangeStateStatus(status)}
+                changeStateTags={(tags) => this.props.changeStateTags(tags)}
+              />
             </form>
-            <a onClick={() => this.setState({expanded : false})}  className="clickable-text col-md-2">
+            <a onClick={() => this.toggle()}  className="clickable-text col-md-2">
               <u>Minimize</u>
             </a>
           </div>
@@ -160,11 +170,11 @@ class Search extends Component {
         <div>
           <div className="row">
             <form className="form-horizontal col-md-12">
-              <Searchbar/>
+              <Searchbar getSearchString = {(str) => this.props.getSearchString(str)}  />
             </form>
           </div>
           <div className="row padding">
-            <a onClick={() => this.setState({expanded : true})} className="clickable-text text-right">
+            <a onClick={() => this.toggle()} className="clickable-text text-right">
               <u>Advanced Search</u>
             </a>
           </div>
@@ -175,140 +185,356 @@ class Search extends Component {
 }
 
 class Table extends Component {
-
-
-    filterProjectName(results){
-      var filtered_results=[];
-      for(var i=0; i<results.length;i++){
-        if(results[i].name.toLowerCase().includes(this.props.project_name.toLowerCase()))
-          filtered_results.push(results[i]);
-      }
-      return (filtered_results );
+  constructor(props) {
+    super(props);
+    this.state = {
+      results : [],
+      searchString : defaultSearchString,
+      pageSize : defaultPageSize,
+      pageNumber : 0,
+      numberOfResults : 0,
+      dirty : false,
+      hasPrev: false,
+      hasNext: false,
+      lastString: ""
     };
 
-    filterAuthors(results){
-      var filtered_results=[];
-      for(var i=0; i<results.length;i++){
-        if(results[i].author.toLowerCase().includes(this.props.authors.toLowerCase()))
-          filtered_results.push(results[i]);
+    // Get Data from Elasticsearch and put it in this.state.results
+    var that = this;
+    this.getData(this.state.searchString);
+  }
+
+    getData(searchString){
+    var that = this;
+    fetchJson('/api/projects/search/'+
+             this.props.searchString +'&'+
+              'offset='+ this.state.pageNumber+'&'+
+              'count='+ this.state.pageSize)
+    .then(function(data) {
+      if(data != null){
+        that.setState({
+          numberOfResults : data.total,
+          hasNext : data.total > defaultPageSize,
+        });
+        data = data.hits;
+        var validatedData = [];
+        for(var i = 0;i<data.length;i++){
+          if (data[i]._source!=null&&
+              data[i]._source.title!=null &&
+              data[i]._source.authors!=null&&
+              data[i]._source.date_creation!=null&&
+              data[i]._source.description!=null&&
+              data[i]._source.status!=null&&
+              data[i]._id!=null){
+                var export_data = data[i]._source
+                export_data["_id"] = data[i]._id
+                validatedData.push(export_data)
+          }
+        }
+        that.setState({
+           results : validatedData,
+        });
       }
-      return (filtered_results);
-    };
+    });
+  }
 
-    filterTags(results){
-      var filtered_results=[];
-      for(var i=0; i<results.length;i++){
-        if(results[i].tags.toLowerCase().includes(this.props.tags.toLowerCase()))
-          filtered_results.push(results[i]);
-      }
-      return (filtered_results);
-    };
+  fitLength(string, maxLength){
+    if(string.length>maxLength){
+      return string.substring(0, maxLength) + " ...";
+    }
+    else return string;
+  }
 
-    filterStatus(results){
-      var filtered_results=[];
-      for(var i=0; i<results.length;i++){
-        if(results[i].status.toLowerCase().includes(this.props.status.toLowerCase()))
-          filtered_results.push(results[i]);
-      }
-    return (filtered_results);
-    };
+  authorsArrayToNameString(authors){
+    var names = [];
+    for(var i = 0 ;i < authors.length;i++){
+      names.push(authors[i].name);
+    }
+    return names.join(", ");
+  }
 
-    filterDate(results){
+  renderLine(result,index){
 
+    var id = result._id;
+    var title = result.title;
+    var authors = result.authors;
+    var description = result.description;
+    var status = result.status;
+    var date_creation = result.date_creation;
 
-      var fromDate= new Date(Number(this.props.from.substring(0,4)), Number(this.props.from.substring(5,7))-1, Number(this.props.from.substring(8,10)));
-      var toDate= new Date(Number(this.props.to.substring(0,4)), Number(this.props.to.substring(5,7))-1, Number(this.props.to.substring(8,10)));
-      var date_creation;
-      var filtered_results=[];
-      for(var i=0; i<results.length;i++){
+    authors = this.authorsArrayToNameString(authors);
+    var shortenedDescription = this.fitLength(description, 100);
+    return(
+        <tr key ={"result"+index}>
+          <td>
+            <Link to={"/projects/" + id} className="table-project-name">
+              <a className="table-project-name" >
+                <u>{title}</u>
+              </a>
+            </Link>
+          </td>
+          <td> {authors}</td>
+          <td> {status} </td>
+          <td data-toggle="tooltip" title={description}> {shortenedDescription} </td>
+          <td> {date_creation} </td>
+          <td> - </td>
+        </tr>
+    );
+  }
 
-        date_creation= new Date(Number(results[i].date.substring(0,4)), Number(results[i].date.substring(5,7))-1, Number(results[i].date.substring(8,10)));
-        if(date_creation.getTime()>=fromDate.getTime() && date_creation.getTime()<=toDate.getTime())
-          filtered_results.push(results[i]);
-      }
-    return (filtered_results);
-    };
+  renderLines(results){
+    var lines = [];
+    for (var i = 0; i < results.length; i++) {
+      lines.push(this.renderLine(results[i],i));
+    }
+    return(lines);
+  }
 
-    renderLine(result){
+  /*
+   * Load a new Page.
+   * Set changeIndex to the number of pages you want to go forward
+   * or backward using positive or negative integers respectively.
+   */
+  newPage(changeIndex){
+    var newPageIndex = this.state.pageNumber + (changeIndex * this.state.pageSize);
+
+    if( newPageIndex>0){
+      this.setState({
+        dirty : true,
+        pageNumber : newPageIndex,
+      });
+    } else {
+      this.setState({
+        dirty : true,
+        pageNumber : 0,
+      })
+    }
+  }
+
+  renderNextButton(){
+    if(this.state.hasNext){
       return(
-          <tr>
-            <td>
-              <Link to="/projects" className="table-project-name">
-                <a className="table-project-name" >
-                  <u>{result.name}</u>
-                </a>
-              </Link>
-            </td>
-            <td> {result.author} </td>
-            <td> {result.status} </td>
-            <td> {result.description} </td>
-            <td> {result.date} </td>
-            <td> {result.fav} </td>
-          </tr>
+        <span className="input-group-button">
+          <button className="btn btn-secondary" onClick = {() => {this.newPage(1)}}>
+            next
+          </button>
+        </span>
+      );
+    } else {
+      return(
+        <span className="input-group-button">
+          <button className="btn btn-secondary disabled">
+            next
+          </button>
+        </span>
       );
     }
+  }
 
-    renderLines(results){
-      var lines = [];
-      for (var i = 0; i < results.length; i++) {
-        lines.push(this.renderLine(results[i]));
-      }
-      return(lines);
+  renderPrevButton(){
+    if(this.state.hasPrev){
+      return(
+        <span className="input-group-button">
+          <button className="btn btn-secondary" onClick = {() => {this.newPage(-1)}}>
+            prev
+          </button>
+        </span>
+      );
+    } else {
+      return(
+        <span className="input-group-button">
+          <button className="btn btn-secondary disabled">
+            prev
+          </button>
+        </span>
+      );
     }
-    renderTable(results){
-      if(results.length>0){
-        return(
+  }
+
+  renderTable(results){
+    if(this.state.lastString != this.props.searchString){
+        this.getData(this.props.searchString)
+        this.setState({lastString: this.props.searchString})
+
+    }
+    if(results.length > 0){
+      return(
+        <div>
           <div className="row">
-            <table className="table table-hover">
-              <tr>
-                <th className="col-3">Project</th>
-                <th className="col-2">Author</th>
-                <th className="col-1">Status</th>
-                <th className="col-4">Description</th>
-                <th className="col-1">Date</th>
-                <th className="col-1">Fav</th>
-              </tr>
-              {this.renderLines(results)}
-            </table>
+            <div className="col-xs-1">
+              <label htmlFor="n-results"> Show Results:&nbsp;</label>
+              <select className="selectpicker"
+                      id="n-results"
+                      onChange={event => this.setState({
+                         pageSize : parseInt(event.target.value, 10),
+                         pageNumber : 0,
+                         dirty : true,
+                       })}
+                      value={this.state.pageSize}>
+                <option value="4">4</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+              </select>
+            </div>
           </div>
-        );
-      } else {
-        return null;
-      }
+          <div className="row">
+            <div className="table-container">
+              <table className="table">
+                <thead className="thead-default">
+                  <tr>
+                    <th className="col-xs-3">Project Name</th>
+                    <th className="col-xs-2">Authors</th>
+                    <th className="col-xs-1">Status</th>
+                    <th className="col-xs-3">Description</th>
+                    <th className="col-xs-2">Date</th>
+                    <th className="col-xs-1">Fav</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {this.renderLines(results)}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-xs-4 offset-md-5 allign-center">
+              <div className=" container span12">
+                {this.renderPrevButton()}
+                {this.renderNextButton()}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    } else {
+      return null;
     }
+  }
+
+  componentDidUpdate(){
+    //Load current table page
+    if(this.state.dirty){
+      var that = this;
+      this.setState({
+        dirty : false,
+      });
+
+      fetchJson('/api/projects/search/'+
+                this.props.searchString +'&'+
+                'offset='+ this.state.pageNumber+'&'+
+                'count='+ this.state.pageSize)
+      .then(function(data) {
+        if(data != null){
+          that.setState({
+            numberOfResults : data.total,
+          });
+          data = data.hits;
+          var validatedData = [];
+          for(var i = 0;i<data.length;i++){
+            if (data[i]._source!=null&&
+                data[i]._source.title!=null &&
+                data[i]._source.authors!=null&&
+                data[i]._source.date_creation!=null&&
+                data[i]._source.description!=null&&
+                data[i]._source.status!=null&&
+                data[i]._id!=null){
+                  var export_data = data[i]._source
+                  export_data["_id"] = data[i]._id
+                  validatedData.push(export_data)
+            }
+          }
+          var hasNext = true;
+          if(that.state.numberOfResults-(that.state.pageSize+that.state.pageNumber)<=0){
+            hasNext = false;
+          }
+          var hasPrev = true;
+          if(that.state.pageNumber===0){
+            hasPrev = false;
+          }
+          that.setState({
+             results : validatedData,
+             hasPrev : hasPrev,
+             hasNext : hasNext,
+          });
+        }
+      });
+    }
+  }
 
   render() {
-    var new_results=results;
-    if(this.props.project_name != null){
-      new_results=this.filterProjectName(new_results);
 
-    }
-    if(this.props.from !== "" && this.props.to!== ""){
-      new_results=this.filterDate(new_results);
-
-    }
-    if(this.props.authors != null){
-      new_results=this.filterAuthors(new_results);
-
-    }
-    if(this.props.tags != null){
-      new_results=this.filterTags(new_results);
-
-    }
-    if(this.props.status!= null){
-      new_results=this.filterStatus(new_results);
-
-    }
-    return this.renderTable(new_results);
+    return this.renderTable(this.state.results);
   }
 }
 
 export default class SearchPage extends Component {
   constructor(){
     super();
-    this.state = {filter_project_name: "", filter_author: "", filter_tags: "", filter_date_from: "", filter_date_to: "", filter_description: "", filter_status: ""};
-
+    this.state = {
+      currentPage: 0,
+      filter_project_name: "",
+      filter_author: "",
+      filter_tags: "",
+      filter_date_from: "1900-01-01",
+      filter_date_to: "2050-06-06",
+      filter_status: "",
+      searchString: "",
+      advanced: false,
+      simple_searchstring: "",
+    };
   }
+
+  filter(){
+
+      var searchstring="advanced/?q=";
+      var filter_set = 0;
+
+      if(this.state.filter_project_name != ""){
+        searchstring = searchstring.concat("(title: ", this.state.filter_project_name, "*)");
+        filter_set++;
+      }
+
+
+      if(this.state.filter_date_from !== "1900-01-01" || this.state.filter_date_to!== "2050-06-06"){
+        if(filter_set > 0){
+          searchstring = searchstring.concat(" AND ");
+          filter_set--;
+        }
+        searchstring = searchstring.concat("(date_creation: [", this.state.filter_date_from, " TO " , this.state.filter_date_to, "])");
+        filter_set++;
+      }
+
+
+      if(this.state.filter_author != ""){
+        if(filter_set > 0){
+          searchstring = searchstring.concat(" AND ");
+          filter_set--;
+        }
+        searchstring = searchstring.concat("(authors.name: ", this.state.filter_author, "*)");
+        filter_set++;
+
+      }
+      if(this.state.filter_tags != ""){
+        if(filter_set > 0){
+          searchstring = searchstring.concat(" AND ");
+          filter_set--;
+        }
+        searchstring = searchstring.concat("(tags: ", this.state.filter_tags, "*)");
+      }
+
+      if(this.state.filter_status!= ""){
+        if(filter_set > 0){
+          searchstring = searchstring.concat(" AND ");
+          filter_set--;
+        }
+        searchstring = searchstring.concat("(status: ", this.state.filter_status, "*)");
+        filter_set--;
+      }
+      return searchstring;
+    }
+
+
+
 
   /*
     functions to get the state of the advanced search via the search element, the value of the input fields is given to the <table> and filtered
@@ -318,11 +544,19 @@ export default class SearchPage extends Component {
   }
 
   changeStateFrom(from){
-    this.setState({filter_date_from: from });
+    if(from == ""){
+      this.setState({filter_date_from: "1900-01-01" });
+    }else{
+      this.setState({filter_date_from: from });
+    }
   }
 
   changeStateTo(to){
-    this.setState({filter_date_to: to });
+    if(to == ""){
+      this.setState({filter_date_to: "2050-06-06" });
+    }else{
+      this.setState({filter_date_to: to });
+    }
   }
 
   changeStateStatus(status){
@@ -337,7 +571,37 @@ export default class SearchPage extends Component {
     this.setState({filter_tags: tags });
   }
 
+  changeStateAdvanced(){
+    this.setState({advanced: !this.state.advanced})
+  }
+
+  getSearchString(str){
+    this.setState({simple_searchstring: str})
+  }
+
+  simplesearch(){
+    var searchString = "simple/?q=";
+    searchString = searchString.concat(this.state.simple_searchstring + "*");
+    return searchString;
+
+  }
+
+
   render() {
+    var searchString
+
+    if(this.state.advanced){
+      searchString = this.filter();
+      if(searchString == "advanced/?q="){
+        searchString = defaultSearchString;
+      }
+    }else{
+      searchString = this.simplesearch();
+      if(searchString == "simple/?q=*"){
+        searchString = defaultSearchString;
+      }
+    }
+
     return (
       <div className="inner-content">
         <div className="container">
@@ -345,9 +609,22 @@ export default class SearchPage extends Component {
             <div className="col">
                 <Headline />
                 <hr className="hidden-divider"/>
-                <Search changeStateName={(name) => this.changeStateName(name)} changeStateAuthor={(author) => this.changeStateAuthor(author)} changeStateFrom={(from) => this.changeStateFrom(from)} changeStateTo={(to) => this.changeStateTo(to)} changeStateStatus={(status) => this.changeStateStatus(status)}  changeStateTags={(tags) => this.changeStateTags(tags)}/>
+                <Search
+                  changeStateName={(name) => this.changeStateName(name)}
+                  changeStateAuthor={(author) => this.changeStateAuthor(author)}
+                  changeStateFrom={(from) => this.changeStateFrom(from)}
+                  changeStateTo={(to) => this.changeStateTo(to)}
+                  ChangeStateStatus={(status) => this.changeStateStatus(status)}
+                  changeStateTags={(tags) => this.changeStateTags(tags)}
+                  changeStateAdvanced = {(advanced) => this.changeStateAdvanced(advanced)}
+                  getSearchString = {(str)=> this.getSearchString(str)}
+                  simple_searchString= {this.state.simple_searchString
+                }
+                />
                 <hr className="horizontal-divider"/>
-                <Table project_name= {this.state.filter_project_name} authors= {this.state.filter_author} tags= {this.state.filter_tags} from = {this.state.filter_date_from} to= {this.state.filter_date_to} status= {this.state.filter_status} />
+                <Table
+                searchString  = {searchString}
+                />
             </div>
           </div>
         </div>
