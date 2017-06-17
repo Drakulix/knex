@@ -13,7 +13,7 @@ export default class CollectionTable extends React.Component {
                 <th>Project Name</th>
                 <th>Author</th>
                 <th>Status</th>
-                <th>Descrption</th>
+                <th>Description</th>
                 <th>Date</th>
                 <th></th>
               </tr>

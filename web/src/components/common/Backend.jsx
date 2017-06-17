@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import 'babel-polyfill';
 import 'isomorphic-fetch';
 const BACKEND_URL = 'http://localhost:5000'
+const PROJECT_URL = '/api/projects/'
 
   export function fetchJson(path) {
     // use this function to make a GET request.
@@ -13,6 +14,29 @@ const BACKEND_URL = 'http://localhost:5000'
 
   }
 
+  export function fetchProjectDetails(uuid){
+    // Return project details from project with specified uuid
+    const url = `${BACKEND_URL}${PROJECT_URL}${uuid}`
+
+    return fetch(url).then(response => response.json()).catch(ex => {
+      console.error('parsing failes', ex);
+    });
+  }
+  export function updateProjectDetails(method, payload, uuid){
+    const url = `${BACKEND_URL}${PROJECT_URL}${uuid}`
+    return fetch(url, {
+      method: method,
+      body: JSON.stringify(payload),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }).then(response => response.json())
+    // .then(json => console.dir(json))
+      .catch(ex => {
+      console.error('parsing failed', ex)
+    });
+  }
   export function sendJson(method, path, payload) {
     //use this function to make a POST requst
     const url = `${BACKEND_URL}${path}`
@@ -57,8 +81,6 @@ const BACKEND_URL = 'http://localhost:5000'
           }
         }
       })
-      // .then(json => console.log(json))
-
       return (
         <div></div>
       );
