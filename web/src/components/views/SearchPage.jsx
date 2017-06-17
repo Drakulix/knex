@@ -22,11 +22,6 @@ class Searchbar extends Component {
     return(
       <div className="input-group">
         <input className="form-control" type="text" name="search" ref='simplesearch' onChange={()=> this.props.getSearchString(this.refs.simplesearch.value)} / >
-        <span className="input-group-button">
-          <button className="btn btn-primary" onClick = {()=> this.props.getSearchString(this.refs.simplesearch.value)} >
-            Search!
-          </button>
-        </span>
       </div>
     );
   }
