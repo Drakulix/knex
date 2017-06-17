@@ -100,28 +100,28 @@ export default class ProjectContainer extends Component {
 
           <div className="list_project_info_title">
             <p>
-              Authors: {authors_string}
+              <span className="sec-label">Authors:</span> {authors_string}
             </p>
             <p>
-              {"Date of creation: 2017-01-16"}
+              <span className="sec-label">Date of creation:</span> {"2017-01-16"}
             </p>
             <p>
-              {"Last time updated: " + date_update}
+              <span className="sec-label">Last time updated:</span> {date_update}
             </p>
             <p>
-              {"Team: " }
+              <span className="sec-label">Team: </span>
             </p>
             <p>
-              {"Tags: " + tag_string}
+              <span className="sec-label">Tags: </span> {tag_string}
             </p>
             <p>
-              {"Github:"}
+              <span className="sec-label">Github:</span>
             </p>
             <p>
-              {url}
+            <a className="github-link" href={url}>{url}</a>
             </p>
             <p>
-              {"Description:"}
+              <span className="sec-label">Description:</span>
             </p>
             <p>
               {description}

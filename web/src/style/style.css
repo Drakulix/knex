@@ -456,6 +456,14 @@ legend {
   text-align: left;
   color: #000000;
  }
+
+ .projectbox .sec-label{
+   font-weight: bold;
+ }
+
+ .github-link{
+   color: blue;
+ }
  .overviewbar{
 
   position: relative;
