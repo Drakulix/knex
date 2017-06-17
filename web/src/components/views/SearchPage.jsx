@@ -18,11 +18,12 @@ class Headline extends Component {
 class Searchbar extends Component {
 
   render() {
+    var searchString
     return(
       <div className="input-group">
         <input className="form-control" type="text" name="search" ref='simplesearch' onChange={()=> this.props.getSearchString(this.refs.simplesearch.value)} / >
         <span className="input-group-button">
-          <button className="btn btn-primary" onClick = {()=> this.props.getSearchString(document.getElementById.value.value())} >
+          <button className="btn btn-primary" onClick = {()=> this.props.getSearchString(this.refs.simplesearch.value)} >
             Search!
           </button>
         </span>
@@ -474,8 +475,8 @@ export default class SearchPage extends Component {
       filter_project_name: "",
       filter_author: "",
       filter_tags: "",
-      filter_date_from: "",
-      filter_date_to: "",
+      filter_date_from: "1900-01-01",
+      filter_date_to: "2050-06-06",
       filter_status: "",
       searchString: "",
       advanced: false,
@@ -494,7 +495,7 @@ export default class SearchPage extends Component {
       }
 
 
-      if(this.state.filter_date_from !== "" || this.state.filter_date_to!== ""){
+      if(this.state.filter_date_from !== "1900-01-01" || this.state.filter_date_to!== "2050-06-06"){
         if(filter_set > 0){
           searchstring = searchstring.concat(" AND ");
           filter_set--;
