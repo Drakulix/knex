@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+/*import React, { Component } from 'react';
 import ProfileContainer from '../views/ProfileContainer.jsx';
 import TopBar from '../common/TopBar';
 import { Link } from 'react-router-dom';
@@ -48,3 +48,4 @@ export default class ProfileDetails extends Component {
     );
   }
 }
+*/

@@ -4,7 +4,7 @@ import os
 import json
 
 if __name__ == "__main__":
-    conn = http.client.HTTPConnection("0.0.0.0", 5000)
+    conn = http.client.HTTPConnection("localhost", 5000)
 
     for file in os.listdir("."):
 
