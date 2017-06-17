@@ -99,36 +99,34 @@ export default class ProjectContainer extends Component {
         <div className="projectbox">
 
           <div className="list_project_info_title">
-            <p>
-              Authors: {authors_string}
-            </p>
-            <p>
-              {"Date of creation: 2017-01-16"}
-            </p>
-            <p>
-              {"Last time updated: " + date_update}
-            </p>
-            <p>
-              {"Team: " }
-            </p>
-            <p>
-              {"Tags: " + tag_string}
-            </p>
-            <p>
-              {"Github:"}
-            </p>
-            <p>
-              {url}
-            </p>
-            <p>
-              {"Description:"}
-            </p>
-            <p>
-              {description}
-            </p>
-            <p>
-              {}
-            </p>
+            <div className="authors">
+              <span className="sec-label">Authors: </span> {authors_string}
+            </div>
+            <div className="team">
+              <span className="sec-label">Team: </span> {"Knex"}
+            </div>
+            <div className="tags-pb">
+              <span className="sec-label">Tags: </span> {tag_string}
+            </div>
+            <div className="github">
+                <div className="sec-label">Github: </div>
+                <div className="github-link">
+                <a className="github-link" href={url}>{url}</a>
+                </div>
+            </div>
+            <div className="description-elem">
+              <div className="sec-label desc-label">Description:</div>
+              <div className="desc-val">{description}
+              </div>
+            </div>
+            <div className="date-group">
+            <div className="creation-date-elem">
+              <span className="sec-label">Date of creation: </span> {"2017-01-16"}
+            </div>
+            <div className="update-date-elem">
+              <span className="sec-label">Last time updated: </span> {date_update}
+            </div>
+            </div>
           </div>
         </div>
       </div>
