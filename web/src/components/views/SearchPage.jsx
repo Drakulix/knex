@@ -495,7 +495,7 @@ export default class SearchPage extends Component {
       var filter_set = 0;
 
       if(this.state.filter_project_name != ""){
-        searchstring = searchstring.concat("(title: ", this.state.filter_project_name, ")");
+        searchstring = searchstring.concat("(title: ", this.state.filter_project_name, "*)");
         filter_set++;
       }
 
@@ -515,7 +515,7 @@ export default class SearchPage extends Component {
           searchstring = searchstring.concat(" AND ");
           filter_set--;
         }
-        searchstring = searchstring.concat("(authors.name: ", this.state.filter_author, ")");
+        searchstring = searchstring.concat("(authors.name: ", this.state.filter_author, "*)");
         filter_set++;
 
       }
@@ -524,7 +524,7 @@ export default class SearchPage extends Component {
           searchstring = searchstring.concat(" AND ");
           filter_set--;
         }
-        searchstring = searchstring.concat("(tags: ", this.state.filter_tags, ")");
+        searchstring = searchstring.concat("(tags: ", this.state.filter_tags, "*)");
       }
 
       if(this.state.filter_status!= ""){
@@ -532,7 +532,7 @@ export default class SearchPage extends Component {
           searchstring = searchstring.concat(" AND ");
           filter_set--;
         }
-        searchstring = searchstring.concat("(status: ", this.state.filter_status, ")");
+        searchstring = searchstring.concat("(status: ", this.state.filter_status, "*)");
         filter_set--;
       }
       return searchstring;
