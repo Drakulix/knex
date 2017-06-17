@@ -602,7 +602,10 @@ export default class SearchPage extends Component {
       searchString= this.simplesearch();
     }
     */
-    setTimeout(searchString = this.filter(), 200);
+    searchString = this.filter();
+    if(searchString == "advanced/?q="){
+      searchString = defaultSearchString;
+    }
     return (
       <div className="inner-content">
         <div className="container">
