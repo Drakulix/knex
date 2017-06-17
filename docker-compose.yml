@@ -15,8 +15,7 @@ services:
         hostname: mongodb
         ports:
             - "27017:27017"
-        entrypoint: [ "/usr/bin/mongod" , "--replSet", "projectsRepSet", "--dbpath", "/data/db", "--smallfiles", "--rest", "--httpinterface" ]
-        # "--journal", 
+        entrypoint: [ "/usr/bin/mongod" , "--replSet", "projectsRepSet", "--dbpath", "/data/db", "--journal", "--smallfiles", "--rest", "--httpinterface" ]
         
     elasticsearch:
         image: elasticsearch
