@@ -18,15 +18,17 @@ class Headline extends Component {
 class Searchbar extends Component {
 
   getData(){
-    this.props.getSearchString(this.getElementById('simplesearch').value);
+    if(this.getElementById("simplesearch").value != null && this.getElementById("simplesearch").value.target.value != ""){
+      this.props.getSearchString("context");
+    }
   }
 
   render() {
     return(
       <div className="input-group">
-        <input className="form-control" type="text" name="search" id='simplesearch' / >
+        <input className="form-control" type="text" name="search" ref='simplesearch' onChange={()=> this.props.getSearchString(this.refs.simplesearch.value)} / >
         <span className="input-group-button">
-          <button className="btn btn-primary" type="submit" onClick = {()=> this.getData()} >
+          <button className="btn btn-primary" onClick = {()=> this.props.getSearchString(this.refs.simplesearch.value)} >
             Search!
           </button>
         </span>
@@ -178,7 +180,7 @@ class Search extends Component{
         <div>
           <div className="row">
             <form className="form-horizontal col-md-12">
-              <Searchbar getSearchString = {(str) => this.props.getSearchString(str)}/>
+              <Searchbar getSearchString = {(str) => this.props.getSearchString(str)}  />
             </form>
           </div>
           <div className="row padding">
@@ -215,7 +217,7 @@ class Table extends Component {
     getData(searchString){
     var that = this;
     fetchJson('/api/projects/search/'+
-             searchString +'&'+
+             this.props.searchString +'&'+
               'offset='+ this.state.pageNumber+'&'+
               'count='+ this.state.pageSize)
     .then(function(data) {
@@ -425,7 +427,7 @@ class Table extends Component {
       });
 
       fetchJson('/api/projects/search/'+
-                this.state.searchString +'&'+
+                this.props.searchString +'&'+
                 'offset='+ this.state.pageNumber+'&'+
                 'count='+ this.state.pageSize)
       .then(function(data) {
@@ -592,12 +594,6 @@ export default class SearchPage extends Component {
 
   render() {
     var searchString
-    /*if(this.state.advanced){
-      searchString = this.filter();
-    }else{
-      searchString= this.simplesearch();
-    }
-    */
 
     if(this.state.advanced){
       searchString = this.filter();
@@ -628,6 +624,8 @@ export default class SearchPage extends Component {
                   changeStateTags={(tags) => this.changeStateTags(tags)}
                   changeStateAdvanced = {(advanced) => this.changeStateAdvanced(advanced)}
                   getSearchString = {(str)=> this.getSearchString(str)}
+                  simple_searchString= {this.state.simple_searchString
+                }
                 />
                 <hr className="horizontal-divider"/>
                 <Table
