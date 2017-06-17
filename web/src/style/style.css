@@ -476,12 +476,20 @@ legend {
  }
 
  .projectbox .github{
-   margin-top: 2em;
+   margin-top: 2.5em;
  }
 
  .projectbox .description-elem{
    text-align: justify;
    margin-top: 3em;
+ }
+
+ .projectbox .desc-label{
+   margin-bottom: 1.5em;
+ }
+
+ .projectbox .desc-val{
+   margin-left: 1em;
  }
 
  .projectbox .date-group{
@@ -493,14 +501,15 @@ legend {
  }
 
  .github-link{
-   margin-top: 50px;
+   margin-top: 0.5em;
    color: blue;
+   text-decoration: underline;
+   margin-left: 0.7em;
  }
  .overviewbar{
-
+  background-color: #f8f8f8;
   position: relative;
   top:20px;
-  width: 1177px;
   height: 44px;
 
  }

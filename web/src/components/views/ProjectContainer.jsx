@@ -109,12 +109,15 @@ export default class ProjectContainer extends Component {
               <span className="sec-label">Tags: </span> {tag_string}
             </div>
             <div className="github">
-                <span className="sec-label">Github: </span>
+                <div className="sec-label">Github: </div>
+                <div className="github-link">
                 <a className="github-link" href={url}>{url}</a>
+                </div>
             </div>
             <div className="description-elem">
-              <div className="sec-label">Description:</div>
-              {description}
+              <div className="sec-label desc-label">Description:</div>
+              <div className="desc-val">{description}
+              </div>
             </div>
             <div className="date-group">
             <div className="creation-date-elem">
