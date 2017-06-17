@@ -42,7 +42,7 @@ export default class ProjectDetails extends Component {
             </ul>
           </div>
           <div className="col-10">
-            <ProjectContainer title={data.project_two.title}/>
+            <ProjectContainer uuid={this.props.match.params.uuid}/>
           </div>
         </div>
       </div>
