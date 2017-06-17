@@ -3,3 +3,5 @@ web/node_modules
 .vs
 *.pyproj
 *.sln
+*__pycache__/
+*.cache
