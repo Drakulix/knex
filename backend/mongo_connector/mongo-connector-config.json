@@ -5,7 +5,7 @@
     	"type": "stream"
     },
     "__namespaces": {
-      "excluded.collection": false
+      "knexDB.user": true
     }
 
 
