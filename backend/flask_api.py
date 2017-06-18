@@ -4,28 +4,29 @@ Defines API points and starts the application
 
 import os
 import sys
-import json5
 import time
 import json
 import json5
+
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import RequestError
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
+from flask_login import LoginManager
+from flask_mongoengine import MongoEngine
+from flask_security import Security, MongoEngineUserDatastore, \
+        UserMixin, RoleMixin, login_required, \
+        roles_required, login_user, logout_user
+from flask_security.utils import verify_password, encrypt_password
 from jsonschema import FormatChecker, Draft4Validator
 from pymongo import MongoClient, ReturnDocument
 from werkzeug.utils import secure_filename
 from werkzeug.routing import BaseConverter
 from mongoengine.fields import UUIDField
-import uploader
-from flask_login import LoginManager
 from bson.json_util import dumps
+
+import uploader
 from apiexception import ApiException
-from flask_mongoengine import MongoEngine
-from flask_security import Security, MongoEngineUserDatastore, \
-    UserMixin, RoleMixin, login_required, \
-    roles_required, login_user, logout_user
-from flask_security.utils import verify_password, encrypt_password
 
 
 es = Elasticsearch([{'host': 'elasticsearch', 'port': 9200}])
@@ -43,12 +44,6 @@ ALLOWED_EXTENSIONS = {'txt', 'json', 'json5'}
 app.config['UPLOAD_FOLDER'] = ''
 app.config['MAX_CONTENT_PATH'] = 1000000  # 100.000 byte = 100kb
 
-
-@app.route('/', methods=['GET'])
-def index():
-    """Index of knex
-    """
-    return make_response('', 404)
 
 # Create app
 app = Flask(__name__)
@@ -86,9 +81,9 @@ class User(db.Document, UserMixin):
 
 class EmailConverter(BaseConverter):
     regex = r"([a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\." +\
-            "[a-z0-9!#$%&'*+\/=?^_`""{|}~-]+)" +\
-            "*(@|\sat\s)(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" +\
-            "(\.|""\sdot\s))+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)"
+            r"[a-z0-9!#$%&'*+\/=?^_`""{|}~-]+)" +\
+            r"*(@|\sat\s)(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" +\
+            r"(\.|"r"\sdot\s))+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)"
 
 
 # Setup Flask-Security
@@ -97,16 +92,24 @@ security = Security(app, user_datastore)
 app.url_map.converters['email'] = EmailConverter
 
 
+# Flask URL methods
+@app.route('/', methods=['GET'])
+def index():
+    """Index of knex
+    """
+    return make_response('', 404)
+
+
 @app.before_first_request
 def initialize_users():
     user_role = user_datastore.find_or_create_role('user')
     pw = encrypt_password("user")
-    user_datastore.\
-        create_user(email='user@knex.com', password=pw, roles=[user_role])
+    user_datastore.create_user(
+        email='user@knex.com', password=pw, roles=[user_role])
     admin_role = user_datastore.find_or_create_role('admin')
     pw = encrypt_password("admin")
-    user_datastore.\
-        create_user(email='admin@knex.com', password=pw, roles=[admin_role])
+    user_datastore.create_user(
+        email='admin@knex.com', password=pw, roles=[admin_role])
 
 
 @app.route('/api/users/login', methods=['POST'])
@@ -115,13 +118,13 @@ def login():
     password = request.form['password']
     user = user_datastore.get_user(email)
     if user is None:
-        return make_response('Username oder Password invalid', 500)
+        return make_response("Username oder Password invalid", 500)
 
     if verify_password(password, user["password"]):
         login_user(user)
         return make_response('Login successful', 200)
 
-    return make_response('Username oder Password invalid', 500)
+    return make_response("Username oder Password invalid", 500)
 
 
 @app.route('/api/users/logout')
@@ -159,17 +162,17 @@ def add_project():
                 return_ids = uploader.save_manifest_to_db(
                     json5.loads(request.data.decode('utf-8')))
             else:
-                raise ApiException("Wrong content header\
-                 and no files attached", 400)
+                raise ApiException("Wrong content header" +
+                                   "and no files attached", 400)
             return jsonify(return_ids)
 
         except ApiException as e:
             raise e
 
         except UnicodeDecodeError as ue:
-            raise ApiException('Only utf-8 compatible charsets are ' +
-                               'supported, the request body does not ' +
-                               'appear to be utf-8.', 400)
+            raise ApiException("Only utf-8 compatible charsets are " +
+                               "supported, the request body does not " +
+                               "appear to be utf-8.", 400)
         except Exception as err:
             raise ApiException(str(err), 400)
 
@@ -216,7 +219,7 @@ def get_projects():
     argc = len(request.args)
 
     if coll.count() == 0:
-        return make_response('There are no projects', 500)
+        return make_response("There are no projects", 500)
 
     if argc == 0:
         res = coll.find({})
@@ -246,7 +249,7 @@ def get_project_by_id(project_id):
     """
     res = coll.find_one({'_id': project_id})
     if res is None:
-        return make_response('Project not found', 404)
+        return make_response("Project not found", 404)
     return jsonify(res)
 
 
@@ -263,12 +266,12 @@ def delete_project(project_id):
     try:
         es.delete(index="projects-index",
                   doc_type='Project', id=project_id, refresh=True)
-        return make_response('Success')
+        return make_response("Success")
     except Exception:
         if coll.delete_one({'_id': project_id}).deleted_count == 0:
-            return make_response('Project not found', 404)
+            return make_response("Project not found", 404)
         else:
-            return make_response('Success')
+            return make_response("Success")
 
 
 @app.route('/api/projects/<uuid:project_id>', methods=['PUT'])
@@ -318,9 +321,8 @@ def update_project(project_id):
                 raise ApiException("Json could not be parsed",
                                    400, on_json_loading_failed())
             else:
-                validation_errs = \
-                    [error for error in
-                     sorted(validator.iter_errors(manifest))]
+                validation_errs = [error for error in
+                                   sorted(validator.iter_errors(manifest))]
                 if validation_errs is not None:
                     raise ApiException("Validation Error: \n" +
                                        str(is_valid), 400, validation_errs)
@@ -329,8 +331,8 @@ def update_project(project_id):
     except ApiException as error:
         raise error
     except UnicodeDecodeError as unicodeerr:
-        raise ApiException('Only utf-8 compatible charsets are supported, ' +
-                           'the request body does not appear to be utf-8.',
+        raise ApiException("Only utf-8 compatible charsets are supported, " +
+                           "the request body does not appear to be utf-8",
                            400)
     except Exception as err:
         raise ApiException(str(err), 500)
@@ -378,7 +380,7 @@ def search_simple():
                     'tags^2',
                     'title^2',
                     'description',
-                 ],
+                ],
             },
         },
         'from': offset,
@@ -416,7 +418,6 @@ def search_avanced():
     if count is None:
         count = 10
 
-    # ^3 is boosting the attribute, *_is allowing wildcards to be used
     request_json = {
         'query': {
             'query_string': {
@@ -479,7 +480,7 @@ def search_tag():
     try:
         res = es.search(index="projects-index",
                         doc_type="Project", body=request_json)
-        return (jsonify(res['hits']))
+        return jsonify(res['hits'])
     except RequestError as e:
         return (str(e), 400)
 
@@ -519,7 +520,7 @@ def search_suggest():
     try:
         res = es.search(index="projects-index",
                         doc_type="Project", body=request_json)
-        return (jsonify(res['suggest']['phraseSuggestion'][0]['options']))
+        return jsonify(res['suggest']['phraseSuggestion'][0]['options'])
     except RequestError as e:
         return (str(e), 400)
 
@@ -558,7 +559,7 @@ def updateUser():
 
     res = user_datastore.get_user(user['email'])
     if res is None:
-        return make_response('Unknown User with Email-address: ' +
+        return make_response("Unknown User with Email-address: " +
                              user['email'], 500)
     res.first_name = user['first name']
     res.last_name = user['last name']
@@ -570,7 +571,7 @@ def updateUser():
     res = make_response(dumps(res))
     res.headers['Content-Type'] = 'application/json'
 
-    return make_response("User with email: " + user['email'] + ' updated', 200)
+    return make_response("User with email: " + user['email'] + " updated", 200)
 
 
 @app.route('/api/users/<email:mail>', methods=['GET'])
@@ -581,10 +582,10 @@ def getUser(mail):
 
         Returns:
             res: A user with given mail as json
-        """
+    """
     res = user_datastore.get_user(mail)
     if res is None:
-        return make_response('Unknown User with Email-address: ' + mail, 500)
+        return make_response("Unknown User with Email-address: " + mail, 500)
 
     return jsonify(res)
 
