@@ -42,7 +42,7 @@ export default class CreateProject extends Component {
                 </li>
               </ul>
           </div>
-          <div className="col-10">
+          <div className="col-10 content">
             <UploadByLink />
           </div>
         </div>
