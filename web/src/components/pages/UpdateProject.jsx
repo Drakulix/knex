@@ -30,7 +30,6 @@ export default class UpdateProject extends Component {
                   </Link>
                 </li>
                 <li className="list-group-item">
-                  
                   <Link to="/create">
                     {this.state.menu.createProject}
                   </Link>
@@ -42,7 +41,7 @@ export default class UpdateProject extends Component {
                 </li>
               </ul>
           </div>
-          <div className="col-10">
+          <div className="col-10 content">
             <UpdateProjectView />
           </div>
         </div>
