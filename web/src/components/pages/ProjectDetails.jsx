@@ -41,7 +41,7 @@ export default class ProjectDetails extends Component {
               </li>
             </ul>
           </div>
-          <div className="col-10">
+          <div className="col-10 content">
             <ProjectContainer uuid={this.props.match.params.uuid}/>
           </div>
         </div>
