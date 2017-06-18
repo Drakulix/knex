@@ -51,13 +51,12 @@ const schema = {
         title: "Status"
     },
     url: {
-        type: "array",
-        title: "URL",
-        items: {
-          type: "string"
-        }
-      },
-
+      type: "array",
+      title: "URL",
+      items: {
+        type: "string"
+      }
+    },
     tags: {
       title: "Tags",
       type: "array",
