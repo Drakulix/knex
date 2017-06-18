@@ -51,15 +51,13 @@ const schema = {
         title: "Status"
     },
     url: {
-      type: "string",
-      title: "Github URL",
-      format: "uri"
-    },
-    url_two: {
-      type: "string",
-      title: "Other URL",
-      format: "uri"
-    },
+        type: "array",
+        title: "URL",
+        items: {
+          type: "string"
+        }
+      },
+
     tags: {
       title: "Tags",
       type: "array",
@@ -98,8 +96,6 @@ export default class UpdateProjectView extends React.Component {
       myid: window.location.href.substring(29,65),
 
     };
-    this.handleSumbit = this.handleSubmit.bind(this);
-
 
   }
 
@@ -118,15 +114,22 @@ export default class UpdateProjectView extends React.Component {
 
       this.state.formData=data;
       this.forceUpdate();
+
     });
   }
 
 
   handleSubmit(){
-  updateProjectDetails("PUT",this.state.formData,this.state.myid);
-  alert("Project updated!");
+    console.log(this.state.formData);
+    updateProjectDetails("PUT",this.state.formData,this.state.myid);
+    alert("Project updated!");
   }
+  onSubmit = ({formData}) => {
 
+    console.log(formData);
+    updateProjectDetails("PUT",formData,this.state.myid);
+    alert("Project updated!");
+  }
   render(){
 
     return(
@@ -136,8 +139,8 @@ export default class UpdateProjectView extends React.Component {
             <Form schema={schema}
               uiSchema={uiSchema}
               formData={this.state.formData}
-              onChange={log("changed")}
-              onSubmit={this.handleSubmit}
+              onChange={this.state.forceUpdate}
+              onSubmit={this.onSubmit}
               onError={log("errors")}/>
             <Link to="/projects">
               <button className="btn-cancel">Cancel</button>
