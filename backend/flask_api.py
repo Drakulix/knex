@@ -316,7 +316,7 @@ def update_project(project_id):
                 es.index(index="projects-index", doc_type='Project',
                          id=project_id, refresh=True, body=manifest)
                 print("Successfully replaced in ES", file=sys.stderr)
-                return make_response('Success')
+                return make_response("Success")
             elif on_json_loading_failed() is not None:
                 raise ApiException("Json could not be parsed",
                                    400, on_json_loading_failed())
