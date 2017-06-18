@@ -1,4 +1,4 @@
-/*import React, { Component } from 'react';
+import React, { Component } from 'react';
 import ProfileContainer from '../views/ProfileContainer.jsx';
 import TopBar from '../common/TopBar';
 import { Link } from 'react-router-dom';
@@ -40,7 +40,7 @@ export default class ProfileDetails extends Component {
               </li>
             </ul>
           </div>
-          <div className="col-10">
+          <div className="col-10 content">
             <ProfileContainer />
           </div>
         </div>
@@ -48,4 +48,3 @@ export default class ProfileDetails extends Component {
     );
   }
 }
-*/

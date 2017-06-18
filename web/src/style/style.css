@@ -619,7 +619,7 @@ legend {
 }
 
 .pagination {
-  justify-content: center !important;
+  justify-content: center;
 }
 
 .page-item:first-child .page-link {
