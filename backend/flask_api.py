@@ -59,6 +59,7 @@ app.config['MONGODB_HOST'] = 'mongodb'
 app.config['MONGODB_PORT'] = 27017
 app.config['SECURITY_PASSWORD_HASH'] = 'pbkdf2_sha512'
 app.config['SECURITY_PASSWORD_SALT'] = 'THISISMYOWNSALT'
+
 # Create database connection object
 db = MongoEngine(app)
 
@@ -133,6 +134,22 @@ def logout():
     return make_response('Logged out', 200)
 
 
+@app.errorhandler(ApiException)
+def handle_invalid_usage(error):
+    """Handler for the ApiException error class.
+
+    Args:
+        error: Error which needs to be handled.
+
+    Returns:
+        response (json): Error in json format
+    """
+    response = jsonify(error.to_dict())
+    response.status_code = error.status_code
+    return response
+
+
+# @login_required
 @app.route('/api/projects', methods=['POST'])
 def add_project():
     """Receive manifest as a jsonstring and return new ID
@@ -175,36 +192,6 @@ def add_project():
                                "appear to be utf-8.", 400)
         except Exception as err:
             raise ApiException(str(err), 400)
-
-
-@app.errorhandler(ApiException)
-def handle_invalid_usage(error):
-    """Handler for the ApiException error class.
-
-    Args:
-        error: Error which needs to be handled.
-
-    Returns:
-        response (json): Error in json format
-    """
-    response = jsonify(error.to_dict())
-    response.status_code = error.status_code
-    return response
-
-
-@app.route('/upload', methods=['GET'])
-def uploads():
-    """TODO:
-    remove this later, default multi file uploader for testing purposes
-    """
-    if request.method == 'GET':
-        return """<!doctype html>
-        <title>Upload multiple files</title>
-        <h1>Upload multiple files</h1>
-        <form action="" method=post enctype=multipart/form-data>
-        <input type=file name="file[]" multiple>
-        <input type=submit value=Upload>
-        </form>"""
 
 
 @app.route('/api/projects', methods=['GET'])
@@ -254,6 +241,7 @@ def get_project_by_id(project_id):
 
 
 @app.route('/api/projects/<uuid:project_id>', methods=['DELETE'])
+# @roles_required('admin')
 def delete_project(project_id):
     """Deletes a project by ID.
 
@@ -275,6 +263,7 @@ def delete_project(project_id):
 
 
 @app.route('/api/projects/<uuid:project_id>', methods=['PUT'])
+# @login_required
 def update_project(project_id):
     """Updates Project by ID
 
@@ -371,7 +360,7 @@ def search_simple():
     if count is None:
         count = 10
 
-    # ^3 is boosting the attribute, *_is allowing wildcards to be used
+    # ^2 is boosting the attribute, *_is allowing wildcards to be used
     request_json = {
         'query': {
             'multi_match': {
@@ -526,7 +515,7 @@ def search_suggest():
 
 
 @app.route('/api/users', methods=['PUT'])
-@roles_required('admin')
+# @roles_required('admin')
 def createUser():
 
     try:
@@ -553,7 +542,7 @@ def createUser():
 
 
 @app.route('/api/users/', methods=['PUT'])
-@roles_required('admin')
+# @roles_required('admin')
 def updateUser():
     user = request.get_json()
 
