@@ -40,7 +40,7 @@ export default class UserCollection extends Component {
                 </li>
               </ul>
           </div>
-          <div className="col-10">
+          <div className="col-10 content">
             <CollectionTable />
           </div>
         </div>
