@@ -3,6 +3,8 @@ version: '3'
 services:
     mongodb:
         image: mongo
+        ports:
+            - "27017:27017"
         restart: "on-failure"
 
     mongodb_replica:
@@ -19,6 +21,8 @@ services:
 
     elasticsearch:
         image: elasticsearch
+        ports:
+            - "9200:9200"
         restart: "on-failure"
 
     mongo-connector:
