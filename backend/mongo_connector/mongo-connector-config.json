@@ -4,6 +4,6 @@
         "type": "stream"
     },
     "__namespaces": {
-      "knexDB.user": true
+      "knexdb.user": true
     }
 }

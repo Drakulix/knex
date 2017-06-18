@@ -22,7 +22,7 @@ from apiexception import ApiException
 es = Elasticsearch([{'host': 'elasticsearch', 'port': 9200}])
 
 client = MongoClient('mongodb:27017')
-db = client.knexDB
+db = client.knexdb
 coll = db.projects
 
 app = Flask(__name__, static_url_path='')
