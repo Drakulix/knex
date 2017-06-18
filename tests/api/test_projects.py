@@ -229,12 +229,13 @@ class TestDELETE(object):
         assert response.status_code == 404
 
     def test_invalid_id(self, flask_api_url):
-        """ Test for 404 when a project with ID of invalid format is to be deleted.
+        """ Test for 405 when a project with ID of invalid format is to be deleted.
+            The method does expect a uuid, a string will return invalid method
         """
         invalid_id = "invalid"
         response = requests.delete(flask_api_url + "/api/projects/" + invalid_id)
         print(response.text)
-        assert response.status_code == 404
+        assert response.status_code == 405
 
     def test_success(self, flask_api_url, pytestconfig):
         """ Test successful delete (after successful upload).
