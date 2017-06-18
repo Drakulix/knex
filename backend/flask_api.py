@@ -25,10 +25,10 @@ client = MongoClient('mongodb:27017')
 db = client.knexDB
 coll = db.projects
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='')
 CORS(app)
 
-with app.open_resource("manifest_schema.json") as schema_file:
+with open("manifest_schema.json") as schema_file:
     schema = json.load(schema_file)
 validator = Draft4Validator(schema, format_checker=FormatChecker())
 
@@ -41,7 +41,7 @@ app.config['MAX_CONTENT_PATH'] = 1000000  # 100.000 byte = 100kb
 def index():
     """Index of knex
     """
-    return make_response('', 404)
+    return app.send_static_file('index.html')
 
 
 @app.route('/api/projects', methods=['POST'])
@@ -171,14 +171,19 @@ def delete_project(project_id):
     Returns:
         response: Success response or 404 if project is not found
     """
+    error = False
     try:
         es.delete(index="projects-index", doc_type='Project', id=project_id, refresh=True)
-        return make_response('Success')
     except Exception:
+        error = True
+    finally:
         if coll.delete_one({'_id': project_id}).deleted_count == 0:
-            return make_response('Project not found', 404)
-        else:
-            return make_response('Success')
+            error = True
+
+    if error:
+        return make_response('Project not found', 404)
+    else:
+        return make_response('Success')
 
 
 @app.route('/api/projects/<uuid:project_id>', methods=['PUT'])

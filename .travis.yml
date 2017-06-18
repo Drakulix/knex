@@ -28,18 +28,12 @@ install:
 
 before_script:
   - docker-compose up -d --build
-  - docker ps
-  - sleep 10
-  - /bin/bash wait_for_mongo.sh
-  - sleep 18
+  - mongo --nodb backend/mongo_replica_setup/wait.js
   - docker ps
 
 script:
-
   - pytest tests/
   - pep8 --max-line-length=100 .
-  - sleep 15
-  - docker ps
 
 after_script:
   - docker-compose down

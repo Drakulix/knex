@@ -1,45 +1,38 @@
 version: '3'
 
 services:
-    mongodb_setup_replica:
+    mongodb:
+        image: mongo
+        restart: "on-failure"
+
+    mongodb_replica:
         image: mongo
         links:
             - mongodb
-        volumes:
-            - ./backend/mongodb:/scripts
-        command: [ "/bin/bash", "/scripts/setup.sh" ]
         restart: "on-failure"
+        command: [ "/usr/bin/mongod", "--replSet", "projectsRepSet" ]
 
-    mongodb:
-        image: mongo
-        hostname: mongodb
-        ports:
-            - "27017:27017"
-        entrypoint: [ "/usr/bin/mongod" , "--replSet", "projectsRepSet", "--dbpath", "/data/db", "--journal", "--smallfiles", "--rest", "--httpinterface" ]
-        
+    mongodb_replica_setup:
+        build: ./backend/mongodb_replica_setup
+        links:
+            - mongodb_replica
+
     elasticsearch:
         image: elasticsearch
-        ports:
-            - "9200:9200"
+        restart: "on-failure"
+
+    mongo-connector:
+        build: ./backend/mongo_connector
+        links:
+            - mongodb_replica
+            - elasticsearch
+        restart: "always"
 
     flask:
-        build: ./backend
+        build: .
         links:
             - mongodb
             - elasticsearch
         ports:
             - "5000:5000"
-        volumes:
-            - ./backend:/backend
-
-    mongo-connector:
-        build: 
-            context: ./backend/mongo_connector
-            dockerfile: Dockerfile
-        links:
-            - mongodb_setup_replica
-            - mongodb
-            - elasticsearch
-        volumes:
-            - ./backend:/mongo_connector
-        restart: "always"
+        restart: "on-failure"
