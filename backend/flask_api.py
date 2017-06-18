@@ -85,11 +85,10 @@ class User(db.Document, UserMixin):
 
 
 class EmailConverter(BaseConverter):
-    regex = r"([a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\."+\
-            "[a-z0-9!#$%&'*+\/=?^_`""{|}~-]+)"+\
-            "*(@|\sat\s)(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"+\
+    regex = r"([a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\." +\
+            "[a-z0-9!#$%&'*+\/=?^_`""{|}~-]+)" +\
+            "*(@|\sat\s)(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" +\
             "(\.|""\sdot\s))+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)"
-
 
 
 # Setup Flask-Security
@@ -150,7 +149,6 @@ def add_project():
 
         return jsonify(successful_ids)
 
-
     else:
         try:
             return_ids = []
@@ -169,8 +167,9 @@ def add_project():
             raise e
 
         except UnicodeDecodeError as ue:
-            raise ApiException('Only utf-8 compatible charsets are supported, ' +
-                               'the request body does not appear to be utf-8.', 400)
+            raise ApiException('Only utf-8 compatible charsets are ' +
+                               'supported, the request body does not ' +
+                               'appear to be utf-8.', 400)
         except Exception as err:
             raise ApiException(str(err), 400)
 
@@ -262,7 +261,8 @@ def delete_project(project_id):
         response: Success response or 404 if project is not found
     """
     try:
-        es.delete(index="projects-index", doc_type='Project', id=project_id, refresh=True)
+        es.delete(index="projects-index",
+                  doc_type='Project', id=project_id, refresh=True)
         return make_response('Success')
     except Exception:
         if coll.delete_one({'_id': project_id}).deleted_count == 0:
@@ -292,12 +292,14 @@ def update_project(project_id):
             if request.is_json:
                 manifest = request.get_json()
                 if manifest['_id'] != str(project_id):
-                    raise ApiException("Updated project owns different id", 409)
+                    raise ApiException("Updated project owns different id",
+                                       409)
             else:
                 manifest = json5.loads(request.data.decode("utf-8"))
                 if '_id' in manifest:
                     if manifest['_id'] != str(project_id):
-                        raise ApiException("Updated project owns different id", 409)
+                        raise ApiException("Updated project owns different id",
+                                           409)
             is_valid = validator.is_valid(manifest)
             if is_valid:
                 print("manifest validated", file=sys.stderr)
@@ -313,18 +315,23 @@ def update_project(project_id):
                 print("Successfully replaced in ES", file=sys.stderr)
                 return make_response('Success')
             elif on_json_loading_failed() is not None:
-                raise ApiException("Json could not be parsed", 400, on_json_loading_failed())
+                raise ApiException("Json could not be parsed",
+                                   400, on_json_loading_failed())
             else:
-                validation_errs = [error for error in sorted(validator.iter_errors(manifest))]
+                validation_errs = \
+                    [error for error in
+                     sorted(validator.iter_errors(manifest))]
                 if validation_errs is not None:
-                    raise ApiException("Validation Error: \n" + str(is_valid), 400, validation_errs)
+                    raise ApiException("Validation Error: \n" +
+                                       str(is_valid), 400, validation_errs)
         else:
             raise ApiException("Manifest had wrong format", 400)
     except ApiException as error:
         raise error
     except UnicodeDecodeError as unicodeerr:
         raise ApiException('Only utf-8 compatible charsets are supported, ' +
-                           'the request body does not appear to be utf-8.', 400)
+                           'the request body does not appear to be utf-8.',
+                           400)
     except Exception as err:
         raise ApiException(str(err), 500)
 
@@ -337,7 +344,8 @@ def search():
         res (json): Body of the Query
     """
     try:
-        res = es.search(index="projects-index", doc_type="Project", body=request.json)
+        res = es.search(index="projects-index",
+                        doc_type="Project", body=request.json)
         return jsonify(res)
     except RequestError as e:
         return (str(e), 400)
@@ -383,7 +391,8 @@ def search_simple():
         }
 
     try:
-        res = es.search(index="projects-index", doc_type="Project", body=request_json)
+        res = es.search(index="projects-index",
+                        doc_type="Project", body=request_json)
         return jsonify(res['hits'])
     except RequestError as e:
         return (str(e), 400)
@@ -423,7 +432,8 @@ def search_avanced():
             'order': order,
         }
     try:
-        res = es.search(index="projects-index", doc_type="Project", body=request_json)
+        res = es.search(index="projects-index",
+                        doc_type="Project", body=request_json)
         return jsonify(res['hits'])
     except RequestError as e:
         return (str(e), 400)
@@ -467,7 +477,8 @@ def search_tag():
             'order': order,
         }
     try:
-        res = es.search(index="projects-index", doc_type="Project", body=request_json)
+        res = es.search(index="projects-index",
+                        doc_type="Project", body=request_json)
         return (jsonify(res['hits']))
     except RequestError as e:
         return (str(e), 400)
@@ -506,7 +517,8 @@ def search_suggest():
         },
     }
     try:
-        res = es.search(index="projects-index", doc_type="Project", body=request_json)
+        res = es.search(index="projects-index",
+                        doc_type="Project", body=request_json)
         return (jsonify(res['suggest']['phraseSuggestion'][0]['options']))
     except RequestError as e:
         return (str(e), 400)
