@@ -6,22 +6,101 @@ import UpdateProject from '../pages/UpdateProject.jsx';
 import Form from "../libraries/react-jsonschema-form";
 import { Redirect } from 'react-router-dom';
 import 'isomorphic-fetch';
+import { connect } from 'react'
 
+const schema = {
+  type: "object",
+  required: ["title", "authors", "date_creation", "description", "status"],
+  properties: {
+    title: {
+      type: "string",
+      title: "Title",
 
+    },
+    authors: {
+      type: "array",
+      title: "Author",
+      items: {
+        type: "object",
+        properties: {
+          name: {
+            "title": "Name",
+            "type": "string"
+          },
+          email: {
+            "title": "E-Mail",
+            "type": "string",
+            "format": "email"
+          }
+        }
+      }
+    },
+    date_creation: {
+      type: "string",
+      title: "Creation Date",
+      //format: "date-time",
+
+    },
+    description: {
+      type: "string",
+      title: "Description",
+
+    },
+    status: {
+      type: "string",
+        title: "Status"
+    },
+    url: {
+      type: "string",
+      title: "Github URL",
+      format: "uri"
+    },
+    url_two: {
+      type: "string",
+      title: "Other URL",
+      format: "uri"
+    },
+    tags: {
+      title: "Tags",
+      type: "array",
+      items: {
+        type: "string"
+      }
+    }
+  }
+};
+const uiSchema = {
+
+  description: {
+    "ui:widget": "textarea"
+  },
+  tags: {
+    "ui:help": "Add tags!"
+  },
+  authors: {
+    "ui:help": "Add author!"
+  },
+  foo: {
+    "ui:options":  {
+      addable: true
+    }
+  }
+};
+
+const log = (type) => console.log.bind(console, type);
 export default class UpdateProjectView extends React.Component {
 
   constructor(props) {
     super(props);
+
     this.state = {
-      projectInf: [],
+      formData: {},
       myid: window.location.href.substring(29,65),
-      authors_string: null,
-      tag_string: null,
-      check: null
+
     };
-      this.handleSaveButton = this.handleSaveButton.bind(this);
-      this.handleChangeTitle = this.handleChangeTitle.bind(this);
-      this.handleChangeDescription = this.handleChangeDescription.bind(this);
+    this.handleSumbit = this.handleSubmit.bind(this);
+
+
   }
 
   componentWillReceiveProps(nextProps){
@@ -31,48 +110,21 @@ export default class UpdateProjectView extends React.Component {
   componentDidMount(){
     this.loadProjectInf(this.props);
   }
-  handleSaveButton(){
-    updateProjectDetails("PUT",this.state.projectInf,this.state.myid);
-  }
-  handleChangeTitle(event) {
 
-    this.state.projectInf.title=event.target.value;
-    this.forceUpdate();
-    console.log(this.state.projectInf.title);
 
-  }
-  handleChangeDescription(event) {
-    this.state.projectInf.description=event.target.value;
-    this.forceUpdate();
-
-  }
   loadProjectInf(props) {
 
     fetchProjectDetails(this.state.myid).then(data => {
-      console.log(data);
 
-      this.setState({projectInf: data})
+      this.state.formData=data;
+      this.forceUpdate();
     });
-    if ( this.state.projectInf.authors!= null){
-      var author_container = [];
-      for (var i = 0; i < this.state.projectInf.authors.length; i++){
-        author_container.push(this.state.projectInf.autors[i].name);
-      }
-      this.state.authors_string = author_container.join(", ")
-    } else {
-      this.state.authors_string = ''
-    }
-    console.log("authors: " +this.state.authors_string);
+  }
 
-    if ( this.state.projectInf.tags != null){
-      var tag_container = []
-      for (var i = 0; i < this.state.projectInf.tags.length; i++){
-        tag_container.push(this.state.projectInf.tags[i])
-      }
-      this.state.tag_string = tag_container.join(", ")
-    } else {
-      this.state.tag_string = ''
-    }
+
+  handleSubmit(){
+  updateProjectDetails("PUT",this.state.formData,this.state.myid);
+  alert("Project updated!");
   }
 
   render(){
@@ -80,37 +132,16 @@ export default class UpdateProjectView extends React.Component {
     return(
       <div className="container">
         <div className="innerContainer">
-          <div className="headerCreation">Update projects</div>
-          <h3 className="caption">Project Name</h3>
-            <input className="enterValue" type="text" value={this.state.projectInf.title} onChange={this.handleChangeTitle} ></input>
-          <h3 className="caption">Author Name</h3>
-          <input className="enterValue" type="text" value={this.state.author_string}></input>
-          <h3 className="caption">Team</h3>
-          <select className="dropdown" name="Select Team" size="1">
-            <option></option>
-            <option></option>
-            <option></option>
-            <option></option>
-            <option></option>
-          </select>
-          <h3 className="caption">Status</h3>
-          <select className="dropdown " name="Select Team" size="1">
-            <option>finished</option>
-            <option>pending</option>
-            <option>reviewed</option>
-          </select>
-          <h3 className="caption">Description</h3>
-          <textarea className="enterDescription" type="text" value= {this.state.projectInf.description} onChange={this.handleChangeDescription} ></textarea>
-          <h3 className="caption">Tags</h3>
-          <input className="tags" type="text" value={this.state.tag_string} />
-
-
-          <div className="buttons">
-            <button className="saveButton" onClick={this.handleSaveButton}>Update</button>
-
-            <button className="cancelButton">Cancel</button>
-
-          </div>
+          <div className="headerCreation">Update Project</div>
+            <Form schema={schema}
+              uiSchema={uiSchema}
+              formData={this.state.formData}
+              onChange={log("changed")}
+              onSubmit={this.handleSubmit}
+              onError={log("errors")}/>
+            <Link to="/projects">
+              <button className="btn-cancel">Cancel</button>
+            </Link>
         </div>
       </div>
     )
