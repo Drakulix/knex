@@ -173,7 +173,7 @@ def delete_project(project_id):
     """
     error = False
     try:
-        es.delete(index="projects-index", doc_type='Project', id=project_id, refresh=True)
+        es.delete(index="knexdb", doc_type='Project', id=project_id, refresh=True)
     except Exception:
         error = True
     finally:
@@ -223,7 +223,7 @@ def update_project(project_id):
                 print("mongo replaced:", file=sys.stderr)
                 print(manifest, file=sys.stderr)
                 manifest.pop('_id', None)
-                es.index(index="projects-index", doc_type='Project',
+                es.index(index="knexdb", doc_type='Project',
                          id=project_id, refresh=True, body=manifest)
                 print("Successfully replaced in ES", file=sys.stderr)
                 return make_response('Success')
@@ -252,7 +252,7 @@ def search():
         res (json): Body of the Query
     """
     try:
-        res = es.search(index="projects-index", doc_type="Project", body=request.json)
+        res = es.search(index="knexdb", doc_type="Project", body=request.json)
         return jsonify(res)
     except RequestError as e:
         return (str(e), 400)
@@ -298,7 +298,7 @@ def search_simple():
         }
 
     try:
-        res = es.search(index="projects-index", doc_type="Project", body=request_json)
+        res = es.search(index="knexdb", doc_type="Project", body=request_json)
         return jsonify(res['hits'])
     except RequestError as e:
         return (str(e), 400)
@@ -338,7 +338,7 @@ def search_avanced():
             'order': order,
         }
     try:
-        res = es.search(index="projects-index", doc_type="Project", body=request_json)
+        res = es.search(index="knexdb", doc_type="Project", body=request_json)
         return jsonify(res['hits'])
     except RequestError as e:
         return (str(e), 400)
@@ -382,7 +382,7 @@ def search_tag():
             'order': order,
         }
     try:
-        res = es.search(index="projects-index", doc_type="Project", body=request_json)
+        res = es.search(index="knexdb", doc_type="Project", body=request_json)
         return (jsonify(res['hits']))
     except RequestError as e:
         return (str(e), 400)
@@ -421,7 +421,7 @@ def search_suggest():
         },
     }
     try:
-        res = es.search(index="projects-index", doc_type="Project", body=request_json)
+        res = es.search(index="knexdb", doc_type="Project", body=request_json)
         return (jsonify(res['suggest']['phraseSuggestion'][0]['options']))
     except RequestError as e:
         return (str(e), 400)
