@@ -8,7 +8,6 @@ import json5
 import time
 import json
 import json5
-
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import RequestError
 from flask import Flask, request, jsonify, make_response
@@ -86,10 +85,11 @@ class User(db.Document, UserMixin):
 
 
 class EmailConverter(BaseConverter):
-    regex = r"([a-z0-9!#$%&'*+\/=?^_`{|}~-]\
-    +(?:\.[a-z0-9!#$%&'*+\/=?^_`""{|}~-]+)\
-    *(@|\sat\s)(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])\
-    ?(\.|""\sdot\s))+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)"
+    regex = r"([a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\."+\
+            "[a-z0-9!#$%&'*+\/=?^_`""{|}~-]+)"+\
+            "*(@|\sat\s)(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"+\
+            "(\.|""\sdot\s))+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)"
+
 
 
 # Setup Flask-Security
@@ -161,7 +161,8 @@ def add_project():
                 return_ids = uploader.save_manifest_to_db(
                     json5.loads(request.data.decode('utf-8')))
             else:
-                raise ApiException("Wrong content header and no files attached", 400)
+                raise ApiException("Wrong content header\
+                 and no files attached", 400)
             return jsonify(return_ids)
 
         except ApiException as e:
