@@ -3,7 +3,16 @@
     "logging": {
         "type": "stream"
     },
-    "__namespaces": {
-      "knexdb.user": true
-    }
+    "namespaces": {
+      "knexdb.*": false,
+      "knexdb.projects": true
+    },
+    "mainAddress" : "mongodb://mongodb_replica:27017",
+    "oplogFile" : "/data/oplog.ts",
+    "docManagers" : [
+      {
+        "docManager" : "elastic2_doc_manager",
+        "targetURL" : "elasticsearch:9200"
+      }
+    ]
 }

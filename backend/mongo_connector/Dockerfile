@@ -1,6 +1,4 @@
-FROM python:3
+FROM mgebundy/docker-mongo-connector:latest
+ENV TZ Europe/Berlin
 
-RUN pip install 'mongo-connector[elastic5]'
-
-COPY mongo-connector-config.json ./
-CMD /bin/sh -c 'sleep 15; mongo-connector --auto-commit-interval=0 -m mongodb_replica:27017 -t elasticsearch:9200 -d elastic2_doc_manager -c mongo-connector-config.json'
+COPY mongo-connector-config.json /data/config.json
