@@ -371,7 +371,7 @@ class Table extends Component {
       return(
         <div>
           <div className="row">
-            <div className="col-xs-1">
+            <div className="col-2">
               <label htmlFor="n-results"> Show Results:&nbsp;</label>
               <select className="selectpicker"
                       id="n-results"

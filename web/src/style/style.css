@@ -218,6 +218,10 @@ font-weight: 300;
 
 /* Search Styles */
 
+.selectpicker {
+  margin-top: 1em;
+  width: 70px !important;
+}
 
 .clickable-text{
   cursor : pointer;
@@ -442,7 +446,6 @@ legend {
  /* Project Container */
  .projecttitle {
   margin-top: 78px;
-  margin-left: 40px;
   position: relative;
   width: 1001px;
   height: 24px;
@@ -453,7 +456,6 @@ legend {
   color: #000000;
  }
  .status {
-  margin-left: 40px;
   position: relative;
   margin-top: 14px;
   width: 300px;
@@ -469,7 +471,6 @@ legend {
   margin-bottom: 30px;
   position: relative;
   top:19px;
-  margin-left: 40px;
   width: 835px;
   height: 674px;
   text-align: left;
@@ -521,15 +522,14 @@ legend {
    margin-top: 0.5em;
    color: blue;
    text-decoration: underline;
-   margin-left: 0.7em;
  }
  .overviewbar{
   background-color: #f8f8f8;
   position: relative;
-  top:20px;
-  height: 44px;
-
+  top: 20px;
+  height: 32px;
  }
+
  .overviewButton {
   margin-left: 40px;
   width: 110px;
@@ -578,8 +578,7 @@ legend {
   width: 58px;
   height: 34px;
   background-color: #333333;
-  border: solid 1px #ff5500;
-  margin: 25px !important;
+  margin-left: 1em;
   font-family: 'Open Sans', sans-serif;
   font-weight: 300;
   font-size: 18px;
@@ -592,12 +591,9 @@ legend {
  }
 
  .trash-button{
-
   width: 58px;
   height: 34px;
   background-color: #c0392b;
-  border: solid 1px #ff5500;
-  margin: 25px !important;
   font-family: 'Open Sans', sans-serif;
   font-weight: 300;
   font-size: 18px;

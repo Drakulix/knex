@@ -92,10 +92,8 @@ export default class UpdateProjectView extends React.Component {
 
     this.state = {
       formData: {},
-      myid: window.location.href.substring(29,65),
-
+      myid: window.location.href.substring(29,65)
     };
-
   }
 
   componentWillReceiveProps(nextProps){
@@ -104,6 +102,10 @@ export default class UpdateProjectView extends React.Component {
 
   componentDidMount(){
     this.loadProjectInf(this.props);
+  }
+
+  setBackRoute(props) {
+    return "/projects/" + this.state.myid;
   }
 
 
@@ -116,7 +118,6 @@ export default class UpdateProjectView extends React.Component {
 
     });
   }
-
 
   handleSubmit(){
     console.log(this.state.formData);
@@ -141,7 +142,7 @@ export default class UpdateProjectView extends React.Component {
               onChange={this.state.forceUpdate}
               onSubmit={this.onSubmit}
               onError={log("errors")}/>
-            <Link to="/projects">
+            <Link to={this.setBackRoute()}>
               <button className="btn-cancel">Cancel</button>
             </Link>
         </div>

@@ -100,13 +100,16 @@ export default class ProjectContainer extends Component {
 
           <div className="list_project_info_title">
             <div className="authors">
-              <span className="sec-label">Authors: </span> {authors_string}
+              <span className="sec-label">Authors:</span><br />
+                <a>{authors_string}</a>
             </div>
             <div className="team">
-              <span className="sec-label">Team: </span> {"Knex"}
+              <span className="sec-label">Team: </span><br />
+               <a>{"Knex"}</a>
             </div>
             <div className="tags-pb">
-              <span className="sec-label">Tags: </span> {tag_string}
+              <span className="sec-label">Tags: </span><br />
+              <a> {tag_string}</a>
             </div>
             <div className="github">
                 <div className="sec-label">Github: </div>
@@ -116,16 +119,15 @@ export default class ProjectContainer extends Component {
             </div>
             <div className="description-elem">
               <div className="sec-label desc-label">Description:</div>
-              <div className="desc-val">{description}
-              </div>
+              <a>{description}</a>
             </div>
             <div className="date-group">
-            <div className="creation-date-elem">
-              <span className="sec-label">Date of creation: </span> {"2017-01-16"}
-            </div>
-            <div className="update-date-elem">
-              <span className="sec-label">Last time updated: </span> {date_update}
-            </div>
+              <div className="creation-date-elem">
+                <span className="sec-label">Date of creation: </span> {"2017-01-16"}
+              </div>
+              <div className="update-date-elem">
+                <span className="sec-label">Last time updated: </span> {date_update}
+              </div>
             </div>
           </div>
         </div>
