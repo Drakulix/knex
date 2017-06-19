@@ -10,8 +10,6 @@ services:
 
     mongodb_replica:
         image: mongo
-        links:
-            - mongodb
         restart: "on-failure"
         command: [ "/usr/bin/mongod", "--replSet", "projectsRepSet" ]
         ports:
@@ -19,28 +17,24 @@ services:
 
     mongodb_replica_setup:
         build: ./backend/mongodb_replica_setup
-        links:
-            - mongodb
-            - mongodb_replica
 
     elasticsearch:
-        image: elasticsearch
+        image: docker.elastic.co/elasticsearch/elasticsearch:5.4.1
+        environment:
+            - "http.host=0.0.0.0"
+            - "transport.host=127.0.0.1"
+            - "xpack.security.enabled=false"
+            - "action.auto_create_index=true"
         ports:
             - "9200:9200"
         restart: "on-failure"
 
     mongo-connector:
         build: ./backend/mongo_connector
-        links:
-            - mongodb_replica
-            - elasticsearch
         restart: "always"
 
     flask:
         build: .
-        links:
-            - mongodb
-            - elasticsearch
         ports:
             - "5000:5000"
         restart: "on-failure"
