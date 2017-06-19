@@ -1,4 +1,4 @@
-FROM python:3.4
+FROM python:3
 
 RUN pip install 'mongo-connector[elastic5]'
 
