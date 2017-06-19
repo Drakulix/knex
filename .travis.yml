@@ -29,7 +29,7 @@ install:
 before_script:
   - docker-compose up -d --build
   - mongo --nodb wait_for_mongo.js
-  - sleep 5
+  - sleep 30
   - docker ps
 
 script:
