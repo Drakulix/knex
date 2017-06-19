@@ -13,11 +13,15 @@ services:
             - mongodb
         restart: "on-failure"
         command: [ "/usr/bin/mongod", "--replSet", "projectsRepSet" ]
+        ports:
+            - "27018:27017"
 
     mongodb_replica_setup:
         build: ./backend/mongodb_replica_setup
         links:
             - mongodb_replica
+        ports:
+            - "27019:27017"
 
     elasticsearch:
         image: elasticsearch

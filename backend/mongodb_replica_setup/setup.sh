@@ -13,7 +13,15 @@ mongo --host ${MONGODB}:27017 <<EOF
             {
                 "_id": 0,
                 "host": "${MONGODB}:27017",
-            }
+            },
+			{
+			    "_id": 1,
+				"host": "mongodb_replica:27017",
+			},
+			{
+				"_id": 2,
+				"host": "mongodb_replica_setup:27017",
+			},
         ]
     };
     rs.initiate(cfg, { force: true });
