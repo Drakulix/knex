@@ -3,17 +3,17 @@
     "logging": {
         "type": "stream"
     },
-    "namespaces": {
+    "__namespaces": {
       "knexdb.*": false,
       "knexdb.projects": true
     },
-    "mainAddress" : "mongodb://mongodb_replica:27017",
+    "mainAddress" : "mongodb://mongodb:27017",
     "oplogFile" : "/data/oplog.ts",
     "docManagers" : [
       {
         "docManager" : "elastic2_doc_manager",
         "targetURL" : "elasticsearch:9200",
-	"autoCommitInterval" : 0
+	    "autoCommitInterval" : 0
       }
     ]
 }

@@ -8,20 +8,10 @@ services:
             - "27017:27017"
         restart: "on-failure"
 
-    mongodb_replica:
-        image: mongo
-        restart: "on-failure"
-        command: [ "/usr/bin/mongod", "--replSet", "projectsRepSet" ]
-        ports:
-            - "27018:27017"
-        depends_on:
-            - "mongodb"
-
     mongodb_replica_setup:
         build: ./backend/mongodb_replica_setup
         depends_on:
             - "mongodb"
-            - "mongodb_replica"
 
     elasticsearch:
         image: docker.elastic.co/elasticsearch/elasticsearch:5.4.1
@@ -39,7 +29,6 @@ services:
         restart: "always"
         depends_on:
             - "elasticsearch"
-            - "mongodb_replica"
 
     flask:
         build: .

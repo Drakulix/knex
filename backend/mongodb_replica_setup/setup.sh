@@ -12,12 +12,7 @@ mongo --host mongodb:27017 <<EOF
                 "_id": 0,
                 "host": "mongodb:27017",
 		"priority": 1,
-            },
-            {
-                "_id": 1,
-                "host": "mongodb_replica:27017",
-		"priority": 0.1,
-            },
+            }
         ]
     };
     rs.initiate(cfg);

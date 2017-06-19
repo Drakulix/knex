@@ -49,7 +49,7 @@ def save_file_to_db(file, filename):
 
             curid = uuid.uuid4()
 
-            res = es.create(index="projects-index", doc_type='Project',
+            res = es.create(index="knexdb", doc_type='Project',
                             id=curid, body=manifest)
 
             manifest['_id'] = curid
@@ -91,7 +91,7 @@ def save_manifest_to_db(manifest):
                 entry['date_creation'] = time.strftime("%Y-%m-%d")
                 entry['date_last_updated'] = time.strftime("%Y-%m-%d")
                 curid = uuid.uuid4()
-                es.create(index="projects-index", doc_type='Project',
+                es.create(index="knexdb", doc_type='Project',
                           id=curid, refresh=True, body=entry)
 
                 entry['_id'] = curid
