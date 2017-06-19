@@ -250,19 +250,10 @@ def delete_project(project_id):
     Returns:
         response: Success response or 404 if project is not found
     """
-    error = False
-    try:
-        es.delete(index="knexdb", doc_type='Project', id=project_id, refresh=True)
-    except Exception:
-        error = True
-    finally:
-        if coll.delete_one({'_id': project_id}).deleted_count == 0:
-            error = True
-
-    if error:
-        return make_response('Project not found', 404)
+    if coll.delete_one({'_id': project_id}).deleted_count == 0:
+        return make_response("Project could not be found", 404)
     else:
-        return make_response('Success')
+        return make_response("Success")
 
 
 @app.route('/api/projects/<uuid:project_id>', methods=['PUT'])
