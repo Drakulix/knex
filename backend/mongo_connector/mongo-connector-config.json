@@ -3,8 +3,7 @@
     "logging": {
         "type": "stream"
     },
-    "__namespaces": {
-      "knexdb.*": false,
+    "namespaces": {
       "knexdb.projects": true
     },
     "mainAddress" : "mongodb://mongodb:27017",
