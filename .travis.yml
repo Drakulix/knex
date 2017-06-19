@@ -28,13 +28,13 @@ install:
 
 before_script:
   - docker-compose up -d --build
-  - mongo --nodb wait_for_mongo.js
   - sleep 30
-  - docker ps
+  - docker-compose logs -t
 
 script:
   - pytest tests/
   - pep8 --max-line-length=100 .
 
 after_script:
+  - docker-compose logs -t
   - docker-compose down
