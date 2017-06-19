@@ -9,6 +9,8 @@ import {
   Route,
 } from 'react-router-dom'
 
+import history from './components/common/history'
+
 import ProjectDetails from './components/pages/ProjectDetails';
 import CreateProject from './components/pages/CreateProject';
 import CreateProjectLink from './components/pages/CreateProjectLink';
@@ -21,11 +23,12 @@ import ProfileDetails from './components/pages/ProfileDetails.jsx';
 import UpdateProject from './components/pages/UpdateProject';
 
 ReactDOM.render(
-<BrowserRouter>
+<BrowserRouter history={history}>
   <div>
     <Route path="/discovery" component={ProjectDiscovery} />
     <Route path="/admin" component={AdminArea} />
-    <Route path="/create" component={CreateProject} />
+    <Route path="/create/:getURL" component={CreateProject} />
+    <Route exact path="/create" component={CreateProject} />
     <Route path="/update" component={UpdateProject} />
     <Route path="/createbylink" component={CreateProjectLink} />
     <Route path="/projects/:uuid" component={ProjectDetails} />

@@ -99,6 +99,15 @@ const log = (type) => console.log.bind(console, type);
 
 export default class UploadByPattern extends React.Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      title : "",
+      titleSet : false,
+      anySet : false,
+    };
+  }
+
   onSubmit = ({formData}) => {
     fetch('http://localhost:5000/api/projects', {
       method: 'POST',
@@ -113,22 +122,205 @@ export default class UploadByPattern extends React.Component {
     alert("New Project added!");
   }
 
+  loadJSON(){
+    var request = new Request(this.state.sourceURL);
+    var that = this;
+    fetch(request)
+    .then(response => response.json()).catch(ex => {
+      console.error('parsing fails', ex);
+    })
+    .then(function(data) {
+      that.setState({
+        gotoCreateByPattern : true,
+      });
+    });
+    return null
+  }
+
+  componentWillMount(){
+    var URL = encodeURI(decodeURIComponent(this.props.getURL));
+    var request = new Request(URL,{
+      method:'GET',
+      mode: 'cors',
+      header:{
+      'Access-Control-Allow-Origin':'*'
+      },
+    });
+    var that = this;
+    fetch(request)
+    .then(response => response.json()).catch(ex => {
+      console.error('parsing fails', ex);
+    })
+    .then(function(data) {
+      if(data!=null){
+        if(data.title!=null){
+          that.setState({
+            title : data.title,
+            titleSet : true,
+            anySet: true,
+          })
+        };
+        if(data.authors!=null){
+          that.setState({
+            authors : data.authors,
+            authorsSet : true,
+            anySet: true,
+          })
+        };
+        if(data.date_creation!=null){
+          that.setState({
+            creationDate : data.date_creation,
+            creationDateSet : true,
+            anySet: true,
+          })
+        };
+        if(data.description!=null){
+          that.setState({
+            description : data.description,
+            descriptionSet : true,
+            anySet: true,
+          })
+        };
+        if(data.status!=null){
+          that.setState({
+            status : data.status,
+            statusSet : true,
+            anySet: true,
+            anySet: true,
+          })
+        };
+        if(data.tags!=null){
+          that.setState({
+            tags : data.tags,
+            tagsSet : true,
+            anySet: true,
+          })
+        };
+        if(data.url!=null){
+          that.setState({
+            url : data.url,
+            urlSet : true,
+            anySet: true,
+          })
+        };
+      }
+    });
+  }
+
+  dlschema(){
+    var authorArray = [];
+    if(this.state.authors!=null){
+      for (var i = 0; i<this.state.authors.length;i++){
+        authorArray.push({
+          name : this.state.authors[i].name,
+          email : this.state.authors[i].email,
+        });
+      }
+    }
+
+
+    return {
+      type: "object",
+      required: ["title", "authors", "date_creation", "description", "status"],
+      properties: {
+        title: {
+          type: "string",
+          title: "Title",
+          default: this.state.title
+        },
+        authors: {
+          type: "array",
+          title: "Author",
+          items: {
+            type: "object",
+            properties: {
+              name: {
+                "title": "Name",
+                "type": "string"
+              },
+              email: {
+                "title": "E-Mail",
+                "type": "string",
+                "format": "email"
+              }
+            }
+          },
+          default: authorArray,
+        },
+        date_creation: {
+          type: "string",
+          title: "Creation Date",
+          //format: "date-time",
+          default: this.state.creationDate
+        },
+        description: {
+          type: "string",
+          title: "Description",
+          default: this.state.description
+        },
+        status: {
+          type: "string",
+          title: "Status",
+          default: this.state.status
+        },
+        url: {
+          type: "string",
+          title: "Github URL",
+          format: "uri"
+        },
+        url_two: {
+          type: "string",
+          title: "Other URL",
+          format: "uri",
+          default: this.state.url
+        },
+        tags: {
+          title: "Tags",
+          type: "array",
+          items: {
+            type: "string"
+          },
+          default: this.state.tags
+        }
+      }
+    };
+  }
+  
   render() {
-    return(
-      <div className="container">
-        <div className="innerContainer">
-          <div className="headerCreation">Create New Project</div>
-            <Form schema={schema}
-              uiSchema={uiSchema}
-              formData={formData}
-              onChange={log("changed")}
-              onSubmit={this.onSubmit}
-              onError={log("errors")} />
-            <Link to="/createbylink">
-              <button className="btn-cancel">Cancel</button>
-            </Link>
+    if(this.state.anySet){
+      return(
+        <div className="container">
+          <div className="innerContainer">
+            <div className="headerCreation">Create New Project</div>
+              <Form schema={this.dlschema()}
+                uiSchema={uiSchema}
+                formData={formData}
+                onChange={log("changed")}
+                onSubmit={this.onSubmit}
+                onError={log("errors")} />
+              <Link to="/createbylink">
+                <button className="btn-cancel">Cancel</button>
+              </Link>
+          </div>
         </div>
-      </div>
-    )
+      )
+    } else {
+      return(
+        <div className="container">
+          <div className="innerContainer">
+            <div className="headerCreation">Create New Project</div>
+              <Form schema={schema}
+                uiSchema={uiSchema}
+                formData={formData}
+                onChange={log("changed")}
+                onSubmit={this.onSubmit}
+                onError={log("errors")} />
+              <Link to="/createbylink">
+                <button className="btn-cancel">Cancel</button>
+              </Link>
+          </div>
+        </div>
+      )
+    }
   }
 }
