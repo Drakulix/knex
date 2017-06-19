@@ -28,7 +28,7 @@ install:
 
 before_script:
   - docker-compose up -d --build
-  - mongo --nodb backend/mongo_replica_setup/wait.js
+  - mongo --nodb backend/mongodb_replica_setup/wait.js
   - docker ps
 
 script:
