@@ -46,7 +46,7 @@ CORS(app)
 # MongoDB Config
 app.config['DEBUG'] = True
 app.config['SECRET_KEY'] = 'super-secret'
-app.config['MONGODB_DB'] = 'knexDB'
+app.config['MONGODB_DB'] = 'knexdb'
 app.config['MONGODB_HOST'] = 'mongodb'
 app.config['MONGODB_PORT'] = 27017
 app.config['SECURITY_PASSWORD_HASH'] = 'pbkdf2_sha512'
