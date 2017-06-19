@@ -1,5 +1,3 @@
-# MONGODB=`ping -c 1 mongodb_replica | head -1  | cut -d "(" -f 2 | cut -d ")" -f 1`
-
 echo "Waiting for startup.."
 mongo --nodb wait.js
 echo "Started.."

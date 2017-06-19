@@ -3,6 +3,7 @@ version: '3'
 services:
     mongodb:
         image: mongo
+        command: [ "/usr/bin/mongod", "--replSet", "projectsRepSet" ]
         ports:
             - "27017:27017"
         restart: "on-failure"
@@ -19,9 +20,8 @@ services:
     mongodb_replica_setup:
         build: ./backend/mongodb_replica_setup
         links:
+            - mongodb
             - mongodb_replica
-        ports:
-            - "27019:27017"
 
     elasticsearch:
         image: elasticsearch
