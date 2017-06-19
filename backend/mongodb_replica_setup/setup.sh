@@ -14,16 +14,13 @@ mongo --host mongodb:27017 <<EOF
                 "_id": 0,
                 "host": "mongodb:27017",
             },
-			{
-			    "_id": 1,
-				"host": "mongodb_replica:27017",
-			},
+            {
+                "_id": 1,
+                "host": "mongodb_replica:27017",
+            },
         ]
     };
-    rs.initiate(cfg, { force: true });
-    rs.reconfig(cfg, { force: true });
-    db.getMongo().setReadPref('nearest');
-    rs.slaveOk();
+    rs.initiate(cfg);
 EOF
 
 sleep infinity
