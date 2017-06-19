@@ -12,7 +12,8 @@
     "docManagers" : [
       {
         "docManager" : "elastic2_doc_manager",
-        "targetURL" : "elasticsearch:9200"
+        "targetURL" : "elasticsearch:9200",
+	"autoCommitInterval" : 0
       }
     ]
 }
