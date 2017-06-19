@@ -36,7 +36,7 @@ export default class CollectionTable extends React.Component {
                 <td>@fat</td>
                 <td>22/06/17</td>
                 <td>
-                  <i className="fa fa-bookmark-o" aria-hidden="true"></i>
+                  <i className="fa fa-bookmark" aria-hidden="true"></i>
                 </td>
               </tr>
               <tr>
@@ -46,7 +46,7 @@ export default class CollectionTable extends React.Component {
                 <td>@twitter</td>
                 <td>22/06/17</td>
                 <td>
-                  <i className="fa fa-bookmark-o" aria-hidden="true"></i>
+                  <i className="fa fa-bookmark" aria-hidden="true"></i>
                 </td>
               </tr>
             </tbody>

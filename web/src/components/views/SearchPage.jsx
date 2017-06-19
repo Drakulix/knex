@@ -277,9 +277,19 @@ class Table extends Component {
           <td> {status} </td>
           <td data-toggle="tooltip" title={description}> {shortenedDescription} </td>
           <td> {date_creation} </td>
-          <td> - </td>
+          <td> {this.shuffleBookmarks()} </td>
         </tr>
     );
+  }
+
+  shuffleBookmarks() {
+    var x = Math.floor((Math.random() * 2) + 1);
+    if (x == 1) {
+      return <i className="fa fa-bookmark" aria-hidden="true" />;
+    }
+    else {
+      return <i className="fa fa-bookmark-o" aria-hidden="true" />;
+    }
   }
 
   renderLines(results){
@@ -397,10 +407,12 @@ class Table extends Component {
             </div>
           </div>
           <div className="row">
-            <div className="col-xs-4 offset-md-5 allign-center">
-              <div className=" container span12">
-                {this.renderPrevButton()}
-                {this.renderNextButton()}
+            <div className="col-12">
+              <div className="centered-pagination">
+                <div>
+                  {this.renderPrevButton()}
+                  {this.renderNextButton()}
+                </div>
               </div>
             </div>
           </div>

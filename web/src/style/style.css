@@ -35,7 +35,7 @@ a:hover {
 }
 
 .container {
-  min-height: 1024px;
+  min-height: 100%;
 }
 
 .container-fluid {
@@ -103,11 +103,11 @@ a:hover {
 	box-shadow: 2px 0 4px 0 rgba(0, 0, 0, 0.5);
   padding-right: 0px !important;
   position: fixed;
-  width: 12em;
+  width: 15em;
 }
 
 .content{
-  left: 12em;
+  left: 20em;
   position: relative;
 }
 
@@ -224,6 +224,14 @@ font-weight: 300;
   color : #ff5500;
 }
 
+.centered-pagination {
+  width: 110px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 2em;
+  margin-bottom: 4em;
+}
+
 .table-hover tbody tr:hover td{
   background-color: #333333 !important;
   color : #ff5500 !important;
@@ -243,12 +251,12 @@ font-weight: 300;
 }
 
 .horizontal-divider {
-  margin-top: 3em;
-  margin-bottom: 5em;
+  margin-top: 2em;
+  margin-bottom: 2em;
 }
 
 .hidden-divider {
-  margin-bottom: 5em;
+  margin-bottom: 2em;
   visibility: hidden;
 }
 
@@ -279,6 +287,7 @@ legend {
   font-size: 30px;
   color: #000000;
   margin-top: 4em;
+  margin-bottom: 2em;
   text-align: center;
 }
 
@@ -619,7 +628,10 @@ legend {
 }
 
 .pagination {
-  justify-content: center;
+  display: table;
+  margin: 0 auto;
+  margin-top: 3em;
+  margin-bottom: 3em;
 }
 
 .page-item:first-child .page-link {
