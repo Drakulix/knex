@@ -21,7 +21,7 @@ export default class AdminArea extends Component {
       <div className="inner-content">
         <TopBar />
         <div className="row">
-          <div className="col-2 side-bar">
+          <div className="col-3 side-bar">
               <ul className="list-group">
                 <li className="list-group-item">
                   <Link to="/discovery">
@@ -42,7 +42,7 @@ export default class AdminArea extends Component {
                 </li>
               </ul>
           </div>
-          <div className="col-10 content">
+          <div className="col-9 content">
             <Overview />
           </div>
         </div>

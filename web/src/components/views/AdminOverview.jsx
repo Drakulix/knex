@@ -14,7 +14,7 @@ export default class AdminOverview extends React.Component {
   render() {
     return (
       <div className="container">
-        <div className="adminarea-header">Admin Area</div>
+        <div className="header">Admin Area</div>
         <ul className="nav nav-tabs">
           <li className="nav-item">
             <p className="nav-link active" href="#">Overview</p>

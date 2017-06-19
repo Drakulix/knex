@@ -35,7 +35,7 @@ a:hover {
 }
 
 .container {
-  min-height: 1024px;
+  min-height: 100%;
 }
 
 .container-fluid {
@@ -103,11 +103,11 @@ a:hover {
 	box-shadow: 2px 0 4px 0 rgba(0, 0, 0, 0.5);
   padding-right: 0px !important;
   position: fixed;
-  width: 12em;
+  width: 15em;
 }
 
 .content{
-  left: 12em;
+  left: 20em;
   position: relative;
 }
 
@@ -218,10 +218,22 @@ font-weight: 300;
 
 /* Search Styles */
 
+.selectpicker {
+  margin-top: 1em;
+  width: 70px !important;
+}
 
 .clickable-text{
   cursor : pointer;
   color : #ff5500;
+}
+
+.centered-pagination {
+  width: 110px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 2em;
+  margin-bottom: 4em;
 }
 
 .table-hover tbody tr:hover td{
@@ -243,12 +255,12 @@ font-weight: 300;
 }
 
 .horizontal-divider {
-  margin-top: 3em;
-  margin-bottom: 5em;
+  margin-top: 2em;
+  margin-bottom: 2em;
 }
 
 .hidden-divider {
-  margin-bottom: 5em;
+  margin-bottom: 2em;
   visibility: hidden;
 }
 
@@ -279,6 +291,7 @@ legend {
   font-size: 30px;
   color: #000000;
   margin-top: 4em;
+  margin-bottom: 2em;
   text-align: center;
 }
 
@@ -433,7 +446,6 @@ legend {
  /* Project Container */
  .projecttitle {
   margin-top: 78px;
-  margin-left: 40px;
   position: relative;
   width: 1001px;
   height: 24px;
@@ -444,7 +456,6 @@ legend {
   color: #000000;
  }
  .status {
-  margin-left: 40px;
   position: relative;
   margin-top: 14px;
   width: 300px;
@@ -460,7 +471,6 @@ legend {
   margin-bottom: 30px;
   position: relative;
   top:19px;
-  margin-left: 40px;
   width: 835px;
   height: 674px;
   text-align: left;
@@ -512,15 +522,14 @@ legend {
    margin-top: 0.5em;
    color: blue;
    text-decoration: underline;
-   margin-left: 0.7em;
  }
  .overviewbar{
   background-color: #f8f8f8;
   position: relative;
-  top:20px;
-  height: 44px;
-
+  top: 20px;
+  height: 32px;
  }
+
  .overviewButton {
   margin-left: 40px;
   width: 110px;
@@ -569,8 +578,7 @@ legend {
   width: 58px;
   height: 34px;
   background-color: #333333;
-  border: solid 1px #ff5500;
-  margin: 25px !important;
+  margin-left: 1em;
   font-family: 'Open Sans', sans-serif;
   font-weight: 300;
   font-size: 18px;
@@ -583,12 +591,9 @@ legend {
  }
 
  .trash-button{
-
   width: 58px;
   height: 34px;
   background-color: #c0392b;
-  border: solid 1px #ff5500;
-  margin: 25px !important;
   font-family: 'Open Sans', sans-serif;
   font-weight: 300;
   font-size: 18px;
@@ -619,7 +624,10 @@ legend {
 }
 
 .pagination {
-  justify-content: center !important;
+  display: table;
+  margin: 0 auto;
+  margin-top: 3em;
+  margin-bottom: 3em;
 }
 
 .page-item:first-child .page-link {
