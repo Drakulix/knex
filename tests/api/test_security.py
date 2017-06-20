@@ -11,7 +11,7 @@ class TestSecurity(object):
 
     def test_main_page(self, flask_api_url):
         response = requests.get(flask_api_url + '/')
-        assert response.status_code == 404
+        assert response.status_code == 200
 
     def test_login_fake_user(self, flask_api_url):
         response = requests.post(flask_api_url + '/api/users/login',
@@ -73,12 +73,12 @@ class TestSecurity(object):
     def test_update_user(self, flask_api_url):
         response = requests.get(flask_api_url + '/api/users/',
                                 data=dict(email='user@knex.com'))
-        assert response.status_code == 405  # 200?
+        assert response.status_code == 404  # 200?
 
     def test_update_user_not_exists(self, flask_api_url):
         response = requests.get(flask_api_url + '/api/users/',
                                 data=dict(email='unknownuser@knex.com'))
-        assert response.status_code == 405
+        assert response.status_code == 404
 
 
 '''
