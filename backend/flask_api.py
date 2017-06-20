@@ -22,21 +22,12 @@ from jsonschema import FormatChecker, Draft4Validator
 from pymongo import MongoClient, ReturnDocument
 from werkzeug.utils import secure_filename
 from werkzeug.routing import BaseConverter
-from mongoengine.fields import UUIDField
+from mongoengine.fields import UUIDField, ListField, StringField, BooleanField
 from bson.json_util import dumps
 
 import uploader
 from apiexception import ApiException
 
-
-es = Elasticsearch([{'host': 'elasticsearch', 'port': 9200}])
-client = MongoClient('mongodb:27017')
-db = client.knexdb
-coll = db.projects
-
-with app.open_resource("manifest_schema.json", mode='r') as schema_file:
-    schema = json.load(schema_file)
-validator = Draft4Validator(schema, format_checker=FormatChecker())
 
 # Create app
 app = Flask(__name__, static_url_path='')
@@ -57,6 +48,15 @@ ALLOWED_EXTENSIONS = {'txt', 'json', 'json5'}
 # Create login manager
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+# Inizialize globals
+es = Elasticsearch([{'host': 'elasticsearch', 'port': 9200}])
+client = MongoClient('mongodb:27017')
+db = client.knexdb
+coll = db.projects
+with app.open_resource("manifest_schema.json", mode='r') as schema_file:
+    schema = json.load(schema_file)
+validator = Draft4Validator(schema, format_checker=FormatChecker())
 
 # Create database connection object
 db = MongoEngine(app)
