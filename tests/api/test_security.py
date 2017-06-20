@@ -13,32 +13,32 @@ class TestSecurity(object):
 
     def test_main_page(self,flask_api_url):
         response = requests.get(flask_api_url + '/', follow_redirects=True)
-        self.assertEqual(response.status_code, 404)
+        assert  response.status_code == 404
 
     def test_login_fake_user(self,flask_api_url):
         response = requests.get(flask_api_url + '/api/users/login', data=dict(email='user1', password='password'))
-        self.assertEqual(response.data, 'Username oder Password invalid')
-        self.assertEqual(response.status_code, 500)
+        assert response.data == 'Username oder Password invalid'
+        assert response.status_code == 500
 
     def test_login_real_user(self,flask_api_url):
         response = requests.get(flask_api_url + '/api/users/login',
                                  data=dict(email='admin@knex.com', password="admin"))
-        self.assertEqual(response.data, 'Login successful')
-        self.assertEqual(response.status_code, 200)
+        assert response.data == 'Login successful'
+        assert response.status_code == 200
 
     def test_login_real_user_wrong_psswd(self,flask_api_url):
         response = requests.get(flask_api_url + '/api/users/login', data=dict(email='admin', password='a'))
-        self.assertEqual(response.data, 'Username oder Password invalid')
-        self.assertEqual(response.status_code, 500)
+        assert response.data =='Username oder Password invalid'
+        assert response.status_code == 500
 
     def test_logout(self,flask_api_url):
         response = requests.get(flask_api_url + '/api/users/login',
                                  data=dict(email='user@knex.com', password="user"))
         response = requests.get(flask_api_url + '/api/users/logout')
-        self.assertEqual(response.data, 'Username oder Password invalid')
-        self.assertEqual(response.status_code, 200)
+        assert response.data == 'Username oder Password invalid'
+        assert response.status_code == 200
 
-    def test_access_login_requiered_logged(self, pytestconfig):
+    def test_access_login_requiered_logged(self, pytestconfig,flask_api_url):
         test_manifest = os.path.join(
             str(pytestconfig.rootdir),
             'tests',
@@ -50,7 +50,7 @@ class TestSecurity(object):
         response = requests.post(flask_api_url + "/api/projects", data=data.encode('utf-8'),
                                  headers={'Content-Type': 'application/json5'})
 
-        self.assertEqual(response.status_code, 200)
+        assert response.status_code == 200
 
     def test_access_login_requiered_not_logged(self, pytestconfig,flask_api_url):
         test_manifest = os.path.join(
@@ -64,15 +64,15 @@ class TestSecurity(object):
         response = requests.post(flask_api_url + "/api/projects", data=data.encode('utf-8'),
                                  headers={'Content-Type': 'application/json5'})
 
-        self.assertEqual(response.status_code, 500)
+        assert response.status_code == 500
 
     def test_update_user(self, flask_api_url):
         response = requests.get(flask_api_url + '/api/users/', data=dict(email='user@knex.com'))
-        self.assertEqual(response.status_code, 200)
+        assert response.status_code == 200
 
     def test_update_user_not_exists(self, flask_api_url):
         response = requests.get(flask_api_url + '/api/users/', data=dict(email='unknownuser@knex.com'))
-        self.assertEqual(response.status_code, 500)
+        assert response.status_code == 500
 
 
 '''
