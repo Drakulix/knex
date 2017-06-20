@@ -34,10 +34,9 @@ client = MongoClient('mongodb:27017')
 db = client.knexdb
 coll = db.projects
 
-with open("manifest_schema.json") as schema_file:
+with app.open_resource("manifest_schema.json", mode='r') as schema_file:
     schema = json.load(schema_file)
 validator = Draft4Validator(schema, format_checker=FormatChecker())
-
 
 # Create app
 app = Flask(__name__, static_url_path='')
@@ -81,7 +80,7 @@ class User(db.Document, UserMixin):
 
 class EmailConverter(BaseConverter):
     regex = r"([a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\." +\
-            r"[a-z0-9!#$%&'*+\/=?^_`""{|}~-]+)" +\
+            r"[a-z0-9!#$%&'*+\/=?^_`"r"{|}~-]+)" +\
             r"*(@|\sat\s)(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" +\
             r"(\.|"r"\sdot\s))+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)"
 
@@ -295,13 +294,9 @@ def update_project(project_id):
                                           return_document=ReturnDocument.AFTER)
                 print("mongo replaced:", file=sys.stderr)
                 print(manifest, file=sys.stderr)
-                manifest.pop('_id', None)
-                es.index(index="knexdb", doc_type='Project',
-                         id=project_id, refresh=True, body=manifest)
-                print("Successfully replaced in ES", file=sys.stderr)
                 return make_response("Success")
             elif on_json_loading_failed() is not None:
-                raise ApiException("Json could not be parsed",
+                raise ApiException("json could not be parsed",
                                    400, on_json_loading_failed())
             else:
                 validation_errs = [error for error in
@@ -315,8 +310,7 @@ def update_project(project_id):
         raise error
     except UnicodeDecodeError as unicodeerr:
         raise ApiException("Only utf-8 compatible charsets are supported, " +
-                           "the request body does not appear to be utf-8",
-                           400)
+                           "the request body does not appear to be utf-8", 400)
     except Exception as err:
         raise ApiException(str(err), 500)
 
@@ -329,7 +323,7 @@ def search():
         res (json): Body of the Query
     """
     try:
-        res = es.search(index="knexdb", doc_type="Project", body=request.json)
+        res = es.search(index="knexdb", body=request.get_json())
         return jsonify(res)
     except RequestError as e:
         return (str(e), 400)
@@ -375,7 +369,7 @@ def search_simple():
         }
 
     try:
-        res = es.search(index="knexdb", doc_type="Project", body=request_json)
+        res = es.search(index="knexdb", body=request_json)
         return jsonify(res['hits'])
     except RequestError as e:
         return (str(e), 400)
@@ -414,7 +408,7 @@ def search_avanced():
             'order': order,
         }
     try:
-        res = es.search(index="knexdb", doc_type="Project", body=request_json)
+        res = es.search(index="knexdb", body=request_json)
         return jsonify(res['hits'])
     except RequestError as e:
         return (str(e), 400)
@@ -458,7 +452,7 @@ def search_tag():
             'order': order,
         }
     try:
-        res = es.search(index="knexdb", doc_type="Project", body=request_json)
+        res = es.search(index="knexdb", body=request_json)
         return jsonify(res['hits'])
     except RequestError as e:
         return (str(e), 400)
@@ -497,7 +491,7 @@ def search_suggest():
         },
     }
     try:
-        res = es.search(index="knexdb", doc_type="Project", body=request_json)
+        res = es.search(index="knexdb", body=request_json)
         return jsonify(res['suggest']['phraseSuggestion'][0]['options'])
     except RequestError as e:
         return (str(e), 400)

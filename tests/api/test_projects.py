@@ -252,7 +252,7 @@ class TestDELETE(object):
         print(post_response.text)
         for id in post_response.json():
             assert UUID(id, version=4)
-        project_id = post_response.json()[0]
+        assert pose_response.status_code == 200
 
     def test_inconsistent_delete(self, flask_api_url, pytestconfig):
         test_manifest = os.path.join(

@@ -11,7 +11,7 @@ mongo --host mongodb:27017 <<EOF
             {
                 "_id": 0,
                 "host": "mongodb:27017",
-		"priority": 1,
+                "priority": 1,
             }
         ]
     };

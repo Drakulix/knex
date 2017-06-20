@@ -31,7 +31,7 @@ def test_consistency(mongo_client, elastic_client):
     # Test if document is in mongo
     assert mongo_result == dummy_project
     # wait for the refreshed elastic database
-    time.sleep(30)
+    time.sleep(5)
     # test if document is in es
     # print es indices ( for easier debugging)
     for index in elastic_client.indices.get('*'):
