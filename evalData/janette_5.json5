@@ -1,0 +1,38 @@
+{
+  "title": "Stream Recommendation Module A/B test",
+  "url": [
+    "https://github.com/soundcloud/datascience/stream-ana5/"
+  ],
+  "analysis": [
+    {
+      "url": "https://github.com/soundcloud/datascience/stream-ana5/",
+      "description": "Python Notebook"
+    },
+    {
+      "url": "https://drive.google.com/drive/folders/11dd55",
+      "description": "Document with final plots and results"
+    }
+  ],
+  "authors": [
+    {
+      "name": "Janette Lehmann",
+      "email": "janette.lehmann@soundcloud.com"
+    }
+  ],
+  "team": {
+    "team_name": "data-science-listener"
+  },
+  "status": "DONE",
+  "description": "The analysis evaluates the A/B test from a new stream feature:
+- Social Activity - #Follows decreased
+- Listening Activity over Time - No Significant Difference
+- Stream Listening Activity - Listening to Own Content increased
+",
+  "date_creation": "2016-01-01",
+  "date_last_updated": "2016-01-01",
+  "tags": [
+    "Stream",
+    "Recommender",
+    "A/B test"
+  ],
+}

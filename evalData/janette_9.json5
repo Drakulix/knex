@@ -1,0 +1,43 @@
+{
+  "title": "Playback - 5% Gizeh Web Release",
+  "url": [
+    "https://github.com/soundcloud/datascience/playback-ana2/"
+  ],
+  "analysis": [
+    {
+      "url": "https://drive.google.com/drive/folders/rrffgghhss",
+      "description": "Document with final plots and results"
+    },
+    {
+      "url": "https://int.sc.com/playback-rel20",
+      "description": "Description of the release and corresponding changes"
+    }
+  ],
+  "authors": [
+    {
+      "name": "Janette Lehmann",
+      "email": "janette.lehmann@soundcloud.com"
+    },
+    {
+      "name": "David Rush",
+      "email": "d.rush@soundcloud.com"
+    },
+  ],
+  "team": {
+    "team_name": "data-science-listener"
+  },
+  "status": "DONE",
+  "description": "
+Assignment logic seems to work (6% Gizeh, 94% Spirit). However, at the moment we are not able to reconstruct the assignment logic.
+In addition, the fallback logic is not working as expected.
+  ",
+  "date_creation": "2016-06-01",
+  "date_last_updated": "2016-06-10",
+  "tags": [
+    "Playback",
+    "Web",
+    "Gizeh Release",
+    "A/B test"
+  ],
+  "future_work": "the fallback logic has to be fixed, then the experiment can run again"
+}

@@ -1,38 +1,41 @@
 sudo: required
 
+notifications:
+  email: false
+
 language: python
 
 python:
-  - "3.3"
-  - "3.4"
-  - "3.5"
   - "3.6"
+
 services:
   - docker
 
 before_install:
-    - sudo apt-get update
-    - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-engine
-    - sudo rm /usr/local/bin/docker-compose
-    - curl -L https://github.com/docker/compose/releases/download/1.13.0/docker-compose-`uname -s`-`uname -m` > docker-compose
-    - chmod +x docker-compose
-    - sudo mv docker-compose /usr/local/bin
-    - docker-compose -v
-    - docker -v
-    - docker ps
-    - pip install pep8
+  - sudo apt-get update
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-engine
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/1.13.0/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+  - docker-compose -v
+  - docker -v
+  - docker ps
+  - pip install pep8
 
 install:
   - "pip install flask"
   - "pip install -r ./tests/requirements.txt"
 
 before_script:
-  - docker-compose up -d
+  - docker-compose up -d --build
+  - sleep 30
+  - docker-compose logs -t
 
 script:
-  - sleep 30
   - pytest tests/
   - pep8 --max-line-length=100 .
 
 after_script:
+  - docker-compose logs -t
   - docker-compose down
