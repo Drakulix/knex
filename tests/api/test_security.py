@@ -1,13 +1,14 @@
 import requests
 import unittest
 import os
-import app
+from flask import Flask
+
 
 
 
 class TestSecurity(object):
-    flask_api_url = 'http://0.0.0.0:5000'
-
+ 
+    app = Flask(__name__)
 
     def setUp(self):
 
@@ -22,13 +23,15 @@ class TestSecurity(object):
 
 
     def test_login_fake_user(self):
-        response = self.app.post(self.flask_api_url +'/api/users/login', data=dict(email='user1', password='password'))
+        response = self.app.post(self.flask_api_url +'/api/users/login', data=dict(email='user1',
+                                                                                   password='password'))
         self.assertEqual(response.data, 'Username oder Password invalid')
         self.assertEqual(response.status_code, 500)
 
 
     def test_login_real_user(self):
-        response = self.app.post(self.flask_api_url+'/api/users/login', data=dict(email='admin@knex.com', password="admin") )
+        response = self.app.post(self.flask_api_url+'/api/users/login', data=dict(email='admin@knex.com',
+                                                                                  password="admin") )
         self.assertEqual(response.data, 'Login successful')
         self.assertEqual(response.status_code, 200)
 
@@ -40,7 +43,8 @@ class TestSecurity(object):
 
 
     def test_logout(self):
-        response = self.app.post(self.flask_api_url+'/api/users/login', data=dict(email='user@knex.com', password="user"))
+        response = self.app.post(self.flask_api_url+'/api/users/login', data=dict(email='user@knex.com',
+                                                                                  password="user"))
         response = self.app.post(self.flask_api_url +'/api/users/logout')
         self.assertEqual(response.data, 'Username oder Password invalid')
         self.assertEqual(response.status_code, 200)
@@ -86,8 +90,8 @@ class TestSecurity(object):
 
 
 
-'''
 
+'''
 if __name__ == "__main__":
     unittest.main()
 
