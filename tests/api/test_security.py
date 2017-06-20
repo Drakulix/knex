@@ -55,6 +55,7 @@ class TestSecurity(object):
         assert response.status_code == 200
 
     def test_access_login_requiered_not_logged(self, pytestconfig, flask_api_url):
+        response = requests.get(flask_api_url + '/api/users/logout')
         test_manifest = os.path.join(
             str(pytestconfig.rootdir),
             'tests',
@@ -67,7 +68,7 @@ class TestSecurity(object):
                                  data=data.encode('utf-8'),
                                  headers={'Content-Type': 'application/json5'})
 
-        assert response.status_code == 200  # or 500?
+        assert response.status_code == 405  # or 500?
 
     def test_update_user(self, flask_api_url):
         response = requests.get(flask_api_url + '/api/users/',
