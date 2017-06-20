@@ -49,14 +49,11 @@ const schema = {
         title: "Status"
     },
     url: {
-      type: "string",
-      title: "Github URL",
-      format: "uri"
-    },
-    url_two: {
-      type: "string",
-      title: "Other URL",
-      format: "uri"
+      type: "array",
+      title: "URL",
+      items: {
+        type: "string"
+      }
     },
     tags: {
       title: "Tags",
