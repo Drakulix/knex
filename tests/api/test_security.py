@@ -1,6 +1,7 @@
 import requests
 import unittest
 import os
+import app
 
 
 
@@ -85,11 +86,11 @@ class TestSecurity(object):
 
 
 
-
+'''
 
 if __name__ == "__main__":
     unittest.main()
-'''
+
 def test_unique_nickname(self):
     u = User(nickname='user1', email='user@knex.com')
     db.session.add(u)
