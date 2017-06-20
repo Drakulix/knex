@@ -1,0 +1,34 @@
+{
+  "title": "Impact of Track Policy Changes on Listening behavior",
+  "url": [
+    "https://drive.google.com/drive/folders/aappll33"
+  ],
+  "analysis": [
+    {
+      "url": "https://github.com/soundcloud/datascience/cdf.txt",
+      "description": "File with SQL queries"
+    }
+  ],
+  "authors": [
+    {
+      "name": "George Williams",
+      "email": "gw@soundcloud.com"
+    }
+  ],
+  "team": {
+    "team_name": "data-science-listener"
+  },
+  "status": "DONE",
+  "description": "
+We analyze the relationship of track policy changes and the listening behavior of users. 
+First, we look at track policy characteristics in general and investigate when and how often policies are changing. We observe, for instance, that x% of snippetized tracks become fully available after x. Then, we look at the impact of such changes on users listening behavior.
+  ",
+  "date_creation": "2017-02-02",
+  "date_last_updated": "2017-02-15",
+  "tags": [
+    "Snippets",
+    "Track Policy",
+    "Listening"
+  ]
+}
+

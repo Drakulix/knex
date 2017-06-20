@@ -1,0 +1,31 @@
+{
+  "title": "Impact of Ramadan",
+  "url": [
+    "https://drive.google.com/drive/folders/ggwwll00"
+  ],
+  "analysis": [
+    {
+      "url": "https://github.com/soundcloud/datascience/abc.txt",
+      "description": "File with SQL queries"
+    }
+  ],
+  "authors": [
+    {
+      "name": "George Williams",
+      "email": "gw@soundcloud.com"
+    }
+  ],
+  "team": {
+    "team_name": "data-science-listener"
+  },
+  "status": "DONE",
+  "description": "
+Quick analysis that investigates how Ramadan is affecting our KPI's.
+  ",
+  "date_creation": "2017-01-05",
+  "date_last_updated": "2017-03-15",
+  "tags": [
+    "Ramadan",
+    "Listener"
+  ]
+}
