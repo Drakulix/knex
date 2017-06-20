@@ -52,8 +52,7 @@ login_manager.init_app(app)
 # Inizialize globals
 es = Elasticsearch([{'host': 'elasticsearch', 'port': 9200}])
 client = MongoClient('mongodb:27017')
-db = client.knexdb
-coll = db.projects
+coll = client.knexdb.projects
 with app.open_resource("manifest_schema.json", mode='r') as schema_file:
     schema = json.load(schema_file)
 validator = Draft4Validator(schema, format_checker=FormatChecker())
