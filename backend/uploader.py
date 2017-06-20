@@ -44,18 +44,13 @@ def save_file_to_db(file, filename):
         is_valid = validator.is_valid(manifest)
 
         if is_valid:
-            manifest['date_creation'] = time.strftime("%Y-%m-%d")
+            if not manifest['date_creation']:
+                manifest['date_creation'] = time.strftime("%Y-%m-%d")
             manifest['date_last_updated'] = time.strftime("%Y-%m-%d")
-
-            curid = uuid.uuid4()
-
-            res = es.create(index="projects-index", doc_type='Project',
-                            id=curid, body=manifest)
-
-            manifest['_id'] = curid
+            manifest['_id'] = uuid.uuid4()
             coll.insert_one(manifest)
 
-            return curid
+            return manifest['_id']
         else:
             print(is_valid, file=sys.stderr)
             errors = validator.iter_errors(manifest)
@@ -88,16 +83,13 @@ def save_manifest_to_db(manifest):
             ids = []
 
             for entry in manifestlist:
-                entry['date_creation'] = time.strftime("%Y-%m-%d")
+                if not entry['date_creation']:
+                    entry['date_creation'] = time.strftime("%Y-%m-%d")
                 entry['date_last_updated'] = time.strftime("%Y-%m-%d")
-                curid = uuid.uuid4()
-                es.create(index="projects-index", doc_type='Project',
-                          id=curid, refresh=True, body=entry)
-
-                entry['_id'] = curid
+                entry['_id'] = uuid.uuid4()
                 coll.insert(entry)
 
-                ids.append(curid)
+                ids.append(entry['_id'])
 
             return ids
         else:

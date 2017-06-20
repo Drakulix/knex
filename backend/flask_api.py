@@ -22,43 +22,40 @@ from jsonschema import FormatChecker, Draft4Validator
 from pymongo import MongoClient, ReturnDocument
 from werkzeug.utils import secure_filename
 from werkzeug.routing import BaseConverter
-from mongoengine.fields import UUIDField
+from mongoengine.fields import UUIDField, ListField, StringField, BooleanField
 from bson.json_util import dumps
 
 import uploader
 from apiexception import ApiException
 
 
-es = Elasticsearch([{'host': 'elasticsearch', 'port': 9200}])
-client = MongoClient('mongodb:27017')
-db = client.knexDB
-coll = db.projects
-app = Flask(__name__)
+# Create app
+app = Flask(__name__, static_url_path='')
 CORS(app)
 
-with app.open_resource("manifest_schema.json") as schema_file:
-    schema = json.load(schema_file)
-validator = Draft4Validator(schema, format_checker=FormatChecker())
-
-ALLOWED_EXTENSIONS = {'txt', 'json', 'json5'}
-app.config['UPLOAD_FOLDER'] = ''
-app.config['MAX_CONTENT_PATH'] = 1000000  # 100.000 byte = 100kb
-
-
-# Create app
-app = Flask(__name__)
+# MongoDB Config
 app.config['DEBUG'] = True
 app.config['SECRET_KEY'] = 'super-secret'
-
-login_manager = LoginManager()
-login_manager.init_app(app)
-
-# MongoDB Config
-app.config['MONGODB_DB'] = 'knexDB'
+app.config['MONGODB_DB'] = 'knexdb'
 app.config['MONGODB_HOST'] = 'mongodb'
 app.config['MONGODB_PORT'] = 27017
 app.config['SECURITY_PASSWORD_HASH'] = 'pbkdf2_sha512'
 app.config['SECURITY_PASSWORD_SALT'] = 'THISISMYOWNSALT'
+app.config['UPLOAD_FOLDER'] = ''
+app.config['MAX_CONTENT_PATH'] = 1000000  # 100.000 byte = 100kb
+ALLOWED_EXTENSIONS = {'txt', 'json', 'json5'}
+
+# Create login manager
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+# Inizialize globals
+es = Elasticsearch([{'host': 'elasticsearch', 'port': 9200}])
+client = MongoClient('mongodb:27017')
+coll = client.knexdb.projects
+with app.open_resource("manifest_schema.json", mode='r') as schema_file:
+    schema = json.load(schema_file)
+validator = Draft4Validator(schema, format_checker=FormatChecker())
 
 # Create database connection object
 db = MongoEngine(app)
@@ -82,7 +79,7 @@ class User(db.Document, UserMixin):
 
 class EmailConverter(BaseConverter):
     regex = r"([a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\." +\
-            r"[a-z0-9!#$%&'*+\/=?^_`""{|}~-]+)" +\
+            r"[a-z0-9!#$%&'*+\/=?^_`"r"{|}~-]+)" +\
             r"*(@|\sat\s)(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" +\
             r"(\.|"r"\sdot\s))+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)"
 
@@ -98,7 +95,7 @@ app.url_map.converters['email'] = EmailConverter
 def index():
     """Index of knex
     """
-    return make_response('', 404)
+    return app.send_static_file('index.html')
 
 
 @app.before_first_request
@@ -251,15 +248,10 @@ def delete_project(project_id):
     Returns:
         response: Success response or 404 if project is not found
     """
-    try:
-        es.delete(index="projects-index",
-                  doc_type='Project', id=project_id, refresh=True)
+    if coll.delete_one({'_id': project_id}).deleted_count == 0:
+        return make_response("Project could not be found", 404)
+    else:
         return make_response("Success")
-    except Exception:
-        if coll.delete_one({'_id': project_id}).deleted_count == 0:
-            return make_response("Project not found", 404)
-        else:
-            return make_response("Success")
 
 
 @app.route('/api/projects/<uuid:project_id>', methods=['PUT'])
@@ -301,13 +293,9 @@ def update_project(project_id):
                                           return_document=ReturnDocument.AFTER)
                 print("mongo replaced:", file=sys.stderr)
                 print(manifest, file=sys.stderr)
-                manifest.pop('_id', None)
-                es.index(index="projects-index", doc_type='Project',
-                         id=project_id, refresh=True, body=manifest)
-                print("Successfully replaced in ES", file=sys.stderr)
                 return make_response("Success")
             elif on_json_loading_failed() is not None:
-                raise ApiException("Json could not be parsed",
+                raise ApiException("json could not be parsed",
                                    400, on_json_loading_failed())
             else:
                 validation_errs = [error for error in
@@ -321,8 +309,7 @@ def update_project(project_id):
         raise error
     except UnicodeDecodeError as unicodeerr:
         raise ApiException("Only utf-8 compatible charsets are supported, " +
-                           "the request body does not appear to be utf-8",
-                           400)
+                           "the request body does not appear to be utf-8", 400)
     except Exception as err:
         raise ApiException(str(err), 500)
 
@@ -335,8 +322,7 @@ def search():
         res (json): Body of the Query
     """
     try:
-        res = es.search(index="projects-index",
-                        doc_type="Project", body=request.json)
+        res = es.search(index="knexdb", body=request.get_json())
         return jsonify(res)
     except RequestError as e:
         return (str(e), 400)
@@ -382,8 +368,7 @@ def search_simple():
         }
 
     try:
-        res = es.search(index="projects-index",
-                        doc_type="Project", body=request_json)
+        res = es.search(index="knexdb", body=request_json)
         return jsonify(res['hits'])
     except RequestError as e:
         return (str(e), 400)
@@ -422,8 +407,7 @@ def search_avanced():
             'order': order,
         }
     try:
-        res = es.search(index="projects-index",
-                        doc_type="Project", body=request_json)
+        res = es.search(index="knexdb", body=request_json)
         return jsonify(res['hits'])
     except RequestError as e:
         return (str(e), 400)
@@ -467,8 +451,7 @@ def search_tag():
             'order': order,
         }
     try:
-        res = es.search(index="projects-index",
-                        doc_type="Project", body=request_json)
+        res = es.search(index="knexdb", body=request_json)
         return jsonify(res['hits'])
     except RequestError as e:
         return (str(e), 400)
@@ -507,8 +490,7 @@ def search_suggest():
         },
     }
     try:
-        res = es.search(index="projects-index",
-                        doc_type="Project", body=request_json)
+        res = es.search(index="knexdb", body=request_json)
         return jsonify(res['suggest']['phraseSuggestion'][0]['options'])
     except RequestError as e:
         return (str(e), 400)

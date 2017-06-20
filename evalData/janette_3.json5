@@ -1,0 +1,41 @@
+{
+  "title": "Stream Reposting Activity",
+  "url": [
+    "https://github.com/soundcloud/datascience/stream-ana3/"
+  ],
+  "analysis": [
+    {
+      "url": "https://drive.google.com/drive/folders/rrffgghhss",
+      "description": "Document with final plots and results"
+    }
+  ],
+  "authors": [
+    {
+      "name": "Janette Lehmann",
+      "email": "janette.lehmann@soundcloud.com"
+    },
+    {
+      "name": "Cole Mueller",
+      "email": "cole.mueller@soundcloud.com"
+    }
+  ],
+  "team": {
+    "team_name": "data-science-listener"
+  },
+  "status": "DONE",
+  "description": "The analysis provides insights for:
+- Reposts per user, #Users that use stream and also repost
+- Repost removal
+- Where do users repost (stream or also somewhere else?)
+- #reposts until user is activated
+- Listen to stream
+- Return to stream within x days
+- Impact of a repost
+",
+  "date_creation": "2017-04-01",
+  "date_last_updated": "2017-04-01",
+  "tags": [
+    "Stream",
+    "Reposting"
+  ],
+}
