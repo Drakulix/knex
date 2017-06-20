@@ -48,7 +48,8 @@ class TestSecurity(object):
         )
         with open(test_manifest, 'r', encoding='utf-8') as tf:
             data = str(tf.read().replace('\n', ''))
-        response = requests.post(flask_api_url + "/api/projects", data=data.encode('utf-8'),
+        response = requests.post(flask_api_url + "/api/projects",
+                                 data=data.encode('utf-8'),
                                  headers={'Content-Type': 'application/json5'})
 
         assert response.status_code == 200
@@ -62,17 +63,20 @@ class TestSecurity(object):
         )
         with open(test_manifest, 'r', encoding='utf-8') as tf:
             data = str(tf.read().replace('\n', ''))
-        response = requests.post(flask_api_url + "/api/projects", data=data.encode('utf-8'),
+        response = requests.post(flask_api_url + "/api/projects",
+                                 data=data.encode('utf-8'),
                                  headers={'Content-Type': 'application/json5'})
 
         assert response.status_code == 200  # or 500?
 
     def test_update_user(self, flask_api_url):
-        response = requests.get(flask_api_url + '/api/users/', data=dict(email='user@knex.com'))
+        response = requests.get(flask_api_url + '/api/users/',
+                                data=dict(email='user@knex.com'))
         assert response.status_code == 405  # 200?
 
     def test_update_user_not_exists(self, flask_api_url):
-        response = requests.get(flask_api_url + '/api/users/', data=dict(email='unknownuser@knex.com'))
+        response = requests.get(flask_api_url + '/api/users/',
+                                data=dict(email='unknownuser@knex.com'))
         assert response.status_code == 405
 
 
