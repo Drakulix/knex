@@ -12,31 +12,31 @@ class TestSecurity(object):
         pass
 
     def test_main_page(self,flask_api_url):
-        response = requests.get(flask_api_url + '/', follow_redirects=True)
+        response = requests.get(flask_api_url + '/')
         assert  response.status_code == 404
 
     def test_login_fake_user(self,flask_api_url):
         response = requests.get(flask_api_url + '/api/users/login', data=dict(email='user1', password='password'))
         print(response)
-        assert response.text == 'Username oder Password invalid'
+        assert response.reason == 'Username oder Password invalid'
         assert response.status_code == 500
 
     def test_login_real_user(self,flask_api_url):
         response = requests.get(flask_api_url + '/api/users/login',
                                  data=dict(email='admin@knex.com', password="admin"))
-        assert response.text == 'Login successful'
+        assert response.reason == 'Login successful'
         assert response.status_code == 200
 
     def test_login_real_user_wrong_psswd(self,flask_api_url):
         response = requests.get(flask_api_url + '/api/users/login', data=dict(email='admin', password='a'))
-        assert response.text =='Username oder Password invalid'
+        assert response.reason =='Username oder Password invalid'
         assert response.status_code == 500
 
     def test_logout(self,flask_api_url):
         response = requests.get(flask_api_url + '/api/users/login',
                                  data=dict(email='user@knex.com', password="user"))
         response = requests.get(flask_api_url + '/api/users/logout')
-        assert response.text == 'Username oder Password invalid'
+        assert response.reason == 'Logged out'
         assert response.status_code == 200
 
     def test_access_login_requiered_logged(self, pytestconfig,flask_api_url):
