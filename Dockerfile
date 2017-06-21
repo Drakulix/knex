@@ -24,4 +24,4 @@ RUN cp -R web/build /usr/app/static
 RUN rm -rf /usr/src/app
 
 WORKDIR /usr/app
-CMD [ "python3", "flask_api.py" ]
+CMD [ "python3", "__init__.py" ]
