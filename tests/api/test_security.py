@@ -3,8 +3,8 @@ import unittest
 import os
 
 
-class TestSecurity(object):
-    def setUp(self):
+class Testsecurity(object):
+    def setup(self):
         # app['TESTING'] = True
         # self.app = app.test_client()
         pass
@@ -16,9 +16,9 @@ class TestSecurity(object):
     def test_login_fake_user(self, flask_api_url):
         response = requests.post(flask_api_url + '/api/users/login',
                                  data=dict(email='user1', password='password'))
-        print(response)
+
         assert response.reason == 'INTERNAL SERVER ERROR'
-        assert response.status_code == 500
+        assert response.status_code == 400
 
     def test_login_real_user(self, flask_api_url):
         response = requests.post(flask_api_url + '/api/users/login',
@@ -30,7 +30,7 @@ class TestSecurity(object):
         response = requests.post(flask_api_url + '/api/users/login',
                                  data=dict(email='admin', password='a'))
         assert response.reason == 'INTERNAL SERVER ERROR'
-        assert response.status_code == 500
+        assert response.status_code == 400
 
     def test_logout(self, flask_api_url):
         response = requests.get(flask_api_url + '/api/users/login',
@@ -39,7 +39,7 @@ class TestSecurity(object):
         assert response.reason == 'OK'
         assert response.status_code == 200
 
-    def test_access_login_requiered_logged(self, pytestconfig, flask_api_url):
+    def test_access_login_required_logged(self, pytestconfig, flask_api_url):
         test_manifest = os.path.join(
             str(pytestconfig.rootdir),
             'tests',
@@ -81,7 +81,7 @@ class TestSecurity(object):
         assert response.status_code == 404
 
 
-'''
+"""
 if __name__ == "__main__":
     unittest.main()
 
@@ -97,4 +97,4 @@ def test_unique_nickname(self):
     nickname2 = User.make_unique_nickname('user1')
     assert nickname2 != user1
     assert nickname2 != user1
-'''
+"""
