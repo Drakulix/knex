@@ -1,15 +1,18 @@
 import json
 import os
 import time
-import requests
 import uuid
-
 from uuid import UUID
 
+import requests
 
-class TestPOST(object):
 
+<<<<<<< HEAD
     def test_empty_post(self, session, flask_api_url):
+=======
+class TestPOST(object):
+    def test_empty_post(self, flask_api_url):
+>>>>>>> 3d306d1... added test get all projects
         """ Tests for 400 when the post body is empty.
         """
         response = session.post(flask_api_url + "/api/projects")
@@ -216,12 +219,16 @@ class TestPOST(object):
             print("es:", es_result)
             # fails for es not found error
             assert es_result['found']
-        # Start checking both databases
+            # Start checking both databases
 
 
 class TestDELETE(object):
+<<<<<<< HEAD
 
     def test_unknown_id(self, session, flask_api_url):
+=======
+    def test_unknown_id(self, flask_api_url):
+>>>>>>> 3d306d1... added test get all projects
         """ Test for 404 when a project with unknown ID is to be deleted.
         """
         unknown_id = str(uuid.uuid4())
@@ -310,8 +317,24 @@ class TestGET(object):
         print(response.text)
         assert response.status_code == 404
 
-    def test_success_getall(self, session, flask_api_url):
-        assert True
+
+    def test_success_getall(self, session, flask_api_url,
+                            manifest_validator, mongo_client, enter_data_using_post):
+        response = session.get(flask_api_url + "/api/projects")
+        print(response.status_code)
+        assert response.status_code == 200
+        projects = response.json()
+        print(projects)
+        print(projects[0])
+        for project in projects:
+            print(project)
+            print(manifest_validator.is_valid(project))
+            assert manifest_validator.is_valid(project)
+            print("project_id: ", project["_id"])
+
+            is_in_mongo = mongo_client.projects.find_one(UUID(project["_id"]))
+            assert is_in_mongo is not None
+
 
     def test_success_getid(self, session, flask_api_url, pytestconfig):
         """ Test successful get (after successful upload).
