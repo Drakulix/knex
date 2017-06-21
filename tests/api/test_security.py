@@ -17,7 +17,7 @@ class Testsecurity(object):
         response = requests.post(flask_api_url + '/api/users/login',
                                  data=dict(email='user1', password='password'))
 
-        assert response.reason == 'INTERNAL SERVER ERROR'
+        assert response.reason == 'Bad Request'
         assert response.status_code == 400
 
     def test_login_real_user(self, flask_api_url):
@@ -29,7 +29,7 @@ class Testsecurity(object):
     def test_login_real_user_wrong_psswd(self, flask_api_url):
         response = requests.post(flask_api_url + '/api/users/login',
                                  data=dict(email='admin', password='a'))
-        assert response.reason == 'INTERNAL SERVER ERROR'
+        assert response.reason == 'Bad Request'
         assert response.status_code == 400
 
     def test_logout(self, flask_api_url):
