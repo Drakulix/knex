@@ -1,36 +1,34 @@
 {
-  "title": "Playback - Android Release A/B test",
-  "url": [
+  title: "Playback - Android Release A/B test",
+  url: [
     "https://github.com/soundcloud/datascience/playback-ana1/"
   ],
-  "analysis": [
+  analysis: [
     {
-      "url": "https://github.com/soundcloud/datascience/playback-ana1/",
-      "description": "Python Notebook"
+      url: "https://github.com/soundcloud/datascience/playback-ana1/",
+      description: "Python Notebook"
     }
   ],
-  "authors": [
+  authors: [
     {
-      "name": "Janette Lehmann",
-      "email": "janette.lehmann@soundcloud.com"
+      name: "Janette Lehmann",
+      email: "janette.lehmann@soundcloud.com"
     },
     {
-      "name": "Davide Rush",
-      "email": "d.rush@soundcloud.com"
+      name: "Davide Rush",
+      email: "d.rush@soundcloud.com"
     },
   ],
-  "team": {
-    "team_name": "data-science-listener"
+  team: {
+    team_name: "data-science-listener"
   },
-  "status": "DONE",
-  "description": "
-How does the decrease in TTP affect the user experience?
+  status: "DONE",
+  description: "How does the decrease in TTP affect the user experience?
 The average latency decreased from xx  to yy. Prefetching mainly impacted the most important connections.
-The preliminary results suggest that prefetching impacts listening time by xx (yy WoW) and LT / DAL by bb (pp WoW).
-  ",
-  "date_creation": "2015-09-01",
-  "date_last_updated": "2015-09-15",
-  "tags": [
+The preliminary results suggest that prefetching impacts listening time by xx (yy WoW) and LT / DAL by bb (pp WoW).",
+  date_creation: "2015-09-01",
+  date_last_updated: "2015-09-15",
+  tags: [
     "Playback",
     "TTP",
     "A/B test"

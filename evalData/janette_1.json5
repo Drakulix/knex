@@ -1,43 +1,43 @@
 {
-  "title": "Android Stream Redesign - A/B Test",
-  "url": [
+  title : "Android Stream Redesign - A/B Test",
+  url: [
     "https://github.com/soundcloud/datascience/stream-ana1/"
   ],
-  "analysis": [
+  analysis : [
     {
-      "url": "https://github.com/soundcloud/datascience/stream-ana1/",
-      "description": "R code of the analysis"
+      url: "https://github.com/soundcloud/datascience/stream-ana1/",
+      description: "R code of the analysis"
     },
     {
-      "url": "https://drive.google.com/drive/folders/aaabbbccc",
-      "description": "Document with final plots and results"
+      url: "https://drive.google.com/drive/folders/aaabbbccc",
+      description: "Document with final plots and results"
     }
   ],
-  "authors": [
+  authors: [
     {
-      "name": "Janette Lehmann",
-      "email": "janette.lehmann@soundcloud.com"
+      name: "Janette Lehmann",
+      email: "janette.lehmann@soundcloud.com"
     },
     {
-      "name": "Cole Mueller",
-      "email": "cole.mueller@soundcloud.com"
+      name: "Cole Mueller",
+      email: "cole.mueller@soundcloud.com"
     }
   ],
-  "team": {
-    "team_name": "data-science-listener"
+  team: {
+    team_name: "data-science-listener"
   },
-  "status": "DONE",
-  "description": "Overall listening time on Android increases and there is an overall increase in Shares. 
+  status: "DONE",
+  description: "Overall listening time on Android increases and there is an overall increase in Shares. 
 However, there is a downturn in stream shares which implies that new-stream users are using other features (instead of the stream) to share content.
 Daily shares on stream decreases by -5%. Partly this is due to the fact that users switch to other features, because new links on stream direct them to these features. The remaining change in shares remains unclear.
 ",
-  "date_creation": "2016-01-01",
-  "date_last_updated": "2016-05-11",
-  "tags": [
+  date_creation: "2016-01-01",
+  date_last_updated: "2016-05-11",
+  tags: [
     "Android",
     "Stream",
     "Design Change",
     "A/B test"
   ],
-  "future_work": "Performing a deep dive to further understand the change in shares.",
+  future_work: "Performing a deep dive to further understand the change in shares.",
 }
