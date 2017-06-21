@@ -318,8 +318,8 @@ class TestGET(object):
         assert response.status_code == 404
 
 
-    def test_success_getall(self, session, flask_api_url,
-                            manifest_validator, mongo_client, enter_data_using_post):
+    def test_success_getall(self, session, flask_api_url, manifest_validator,
+                            mongo_client, enter_data_using_post):
         response = session.get(flask_api_url + "/api/projects")
         print(response.status_code)
         assert response.status_code == 200
