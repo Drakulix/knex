@@ -43,11 +43,12 @@ def save_file_to_db(file, filename):
         if not jsonstr:
             raise ApiException('File ' + str(filename) + ' is empty.', 400)
         manifest = json5.loads(jsonstr)
+
+        if not manifest['date_creation']:
+            manifest['date_creation'] = time.strftime("%Y-%m-%d")
         is_valid = g.validator.is_valid(manifest)
 
         if is_valid:
-            if not manifest['date_creation']:
-                manifest['date_creation'] = time.strftime("%Y-%m-%d")
             manifest['date_last_updated'] = time.strftime("%Y-%m-%d")
             manifest['_id'] = uuid.uuid4()
             g.projects.insert_one(manifest)
@@ -78,15 +79,17 @@ def save_manifest_to_db(manifest):
         ApiException: Error while trying to save the documents.
     """
     try:
-        is_valid = g.validator.is_valid(manifest)
+        manifestlist = manifest if isinstance(manifest, list) else [manifest]
+        for entry in manifestlist:
+            if not entry['date_creation']:
+                entry['date_creation'] = time.strftime("%Y-%m-%d")
+
+        is_valid = g.validator.is_valid(manifestlist)
 
         if is_valid:
-            manifestlist = manifest if isinstance(manifest, list) else [manifest]
             ids = []
 
             for entry in manifestlist:
-                if not entry['date_creation']:
-                    entry['date_creation'] = time.strftime("%Y-%m-%d")
                 entry['date_last_updated'] = time.strftime("%Y-%m-%d")
                 entry['_id'] = uuid.uuid4()
                 g.projects.insert(entry)
