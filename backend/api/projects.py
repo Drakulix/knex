@@ -19,10 +19,9 @@ from api.helper.apiexception import ApiException
 
 projects = Blueprint('api_projects', __name__)
 
-# @login_required
-
 
 @projects.route('/api/projects', methods=['POST'])
+# @login_required
 def add_project():
     """Receive manifest as a jsonstring and return new ID
     """

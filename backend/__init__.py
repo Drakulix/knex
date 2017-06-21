@@ -140,8 +140,6 @@ def handle_invalid_usage(error):
     response.status_code = error.status_code
     return response
 
-# Flask URL methods
-
 
 @app.route('/', methods=['GET'])
 def index():
@@ -153,6 +151,14 @@ def index():
 app.register_blueprint(projects)
 app.register_blueprint(users)
 app.register_blueprint(search)
+
+
+@app.route('/<path:dummy>', methods=['GET'])
+def index_dummy():
+    """Index of knex
+    """
+    return app.send_static_file('index.html')
+
 
 if __name__ == "__main__":
     # remove debug for production
