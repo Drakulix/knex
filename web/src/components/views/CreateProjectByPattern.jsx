@@ -206,12 +206,18 @@ export default class UploadByPattern extends React.Component {
 
   dlschema(){
     var authorArray = [];
+    var urlArray = [];
     if(this.state.authors!=null){
       for (var i = 0; i<this.state.authors.length;i++){
         authorArray.push({
           name : this.state.authors[i].name,
           email : this.state.authors[i].email,
         });
+      }
+    };
+    if(this.state.url!=null){
+      for (var i = 0; i<this.state.url.length;i++){
+        urlArray.push(this.state.url[i]);
       }
     }
 
@@ -261,15 +267,12 @@ export default class UploadByPattern extends React.Component {
           default: this.state.status
         },
         url: {
-          type: "string",
-          title: "Github URL",
-          format: "uri"
-        },
-        url_two: {
-          type: "string",
-          title: "Other URL",
-          format: "uri",
-          default: this.state.url
+          type: "array",
+          title: "URL",
+          items: {
+            type: "string"
+          },
+          default : urlArray,
         },
         tags: {
           title: "Tags",
@@ -282,14 +285,14 @@ export default class UploadByPattern extends React.Component {
       }
     };
   }
-  
+
   render() {
     if(this.state.anySet){
       return(
         <div className="container">
           <div className="innerContainer">
             <div className="headerCreation">Create New Project</div>
-              <Form schema={this.dlschema()}
+              <Form schema={this.dlschema()}yvb
                 uiSchema={uiSchema}
                 formData={formData}
                 onChange={log("changed")}
