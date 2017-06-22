@@ -106,7 +106,7 @@ export default class UploadByPattern extends React.Component {
   }
 
   onSubmit = ({formData}) => {
-    fetch('http://localhost:5000/api/projects', {
+    fetch('/api/projects', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',

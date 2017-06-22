@@ -6,8 +6,10 @@ import time
 import uuid
 import json5
 
-from apiexception import ApiException
-from flask_api import validator, ALLOWED_EXTENSIONS, coll, es  # TODO: Fix cyclic imports
+from flask import g
+from api.helper.apiexception import ApiException
+
+ALLOWED_EXTENSIONS = {'txt', 'json', 'json5'}
 
 
 def allowed_file(filename):
@@ -41,19 +43,20 @@ def save_file_to_db(file, filename):
         if not jsonstr:
             raise ApiException('File ' + str(filename) + ' is empty.', 400)
         manifest = json5.loads(jsonstr)
-        is_valid = validator.is_valid(manifest)
+
+        if not manifest['date_creation']:
+            manifest['date_creation'] = time.strftime("%Y-%m-%d")
+        is_valid = g.validator.is_valid(manifest)
 
         if is_valid:
-            if not manifest['date_creation']:
-                manifest['date_creation'] = time.strftime("%Y-%m-%d")
             manifest['date_last_updated'] = time.strftime("%Y-%m-%d")
             manifest['_id'] = uuid.uuid4()
-            coll.insert_one(manifest)
+            g.projects.insert_one(manifest)
 
             return manifest['_id']
         else:
             print(is_valid, file=sys.stderr)
-            errors = validator.iter_errors(manifest)
+            errors = g.validator.iter_errors(manifest)
             if errors is not None:
                 validation_error = [error for error in sorted(errors, key=str)]
                 raise ApiException("Validation Error: \n" + str(is_valid), 400)
@@ -76,25 +79,27 @@ def save_manifest_to_db(manifest):
         ApiException: Error while trying to save the documents.
     """
     try:
-        is_valid = validator.is_valid(manifest)
+        manifestlist = manifest if isinstance(manifest, list) else [manifest]
+        for entry in manifestlist:
+            if not entry['date_creation']:
+                entry['date_creation'] = time.strftime("%Y-%m-%d")
+
+        is_valid = g.validator.is_valid(manifestlist)
 
         if is_valid:
-            manifestlist = manifest if isinstance(manifest, list) else [manifest]
             ids = []
 
             for entry in manifestlist:
-                if not entry['date_creation']:
-                    entry['date_creation'] = time.strftime("%Y-%m-%d")
                 entry['date_last_updated'] = time.strftime("%Y-%m-%d")
                 entry['_id'] = uuid.uuid4()
-                coll.insert(entry)
+                g.projects.insert(entry)
 
                 ids.append(entry['_id'])
 
             return ids
         else:
             print(is_valid, file=sys.stderr)
-            errors = sorted(validator.iter_errors(manifest), key=str)
+            errors = sorted(g.validator.iter_errors(manifest), key=str)
             validation_error = {}
             validation_error["errors"] = []
             validation_error["sub_errors"] = []
