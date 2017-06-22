@@ -17,11 +17,19 @@ class Headline extends Component {
 
 class Searchbar extends Component {
 
+
+  //disables Enter Button
+  onKeyPress(event) {
+    if (event.which === 13) {
+      event.preventDefault();
+    }
+  }
+
   render() {
     var searchString
     return(
       <div className="input-group">
-        <input className="form-control" type="text" name="search" ref='simplesearch' onChange={()=> this.props.getSearchString(this.refs.simplesearch.value)} / >
+        <input className="form-control" onKeyPress={this.onKeyPress} type="text" name="search" ref='simplesearch' onChange={()=> this.props.getSearchString(this.refs.simplesearch.value)} />
       </div>
     );
   }
