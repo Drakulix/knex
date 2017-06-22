@@ -43,7 +43,7 @@ export default class CreateProject extends Component {
               </ul>
           </div>
           <div className="col-9 content">
-            <UploadByPattern />
+            <UploadByPattern getURL={this.props.match.params.getURL}/>
           </div>
         </div>
       </div>
