@@ -292,7 +292,7 @@ export default class UploadByPattern extends React.Component {
         <div className="container">
           <div className="innerContainer">
             <div className="headerCreation">Create New Project</div>
-              <Form schema={this.dlschema()}yvb
+              <Form schema={this.dlschema()}
                 uiSchema={uiSchema}
                 formData={formData}
                 onChange={log("changed")}
