@@ -5,7 +5,7 @@ import {fetchJson, sendJson} from '../common/Backend'
 const defaultPageSize = 4;
 
 
-export class Table extends Component {
+export default class Table extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -186,8 +186,8 @@ and gets the data from the backend. Data is stored in state.results
 
 
   /*
-  * This function renders the table at the beginning data is fetched and it is checked
-  * if the searchstring has changed to know if its necessary to fetch new data
+  * This function renders the table
+  * at the beginning data is fetched and it is checked if the searchstring has changed to know if its necessary to fetch new data
   */
   renderTable(){
     if(this.state.lastString != this.props.searchString){
@@ -213,6 +213,9 @@ and gets the data from the backend. Data is stored in state.results
                 <option value="10">10</option>
                 <option value="20">20</option>
               </select>
+            </div>
+            <div>
+              Number of Results: {this.state.numberOfResults}
             </div>
           </div>
           <div className="row">

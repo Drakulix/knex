@@ -17,15 +17,12 @@ class Headline extends Component {
 }
 
 class Searchbar extends Component {
-
-
   //disables Enter Button
   onKeyPress(event) {
     if (event.which === 13) {
       event.preventDefault();
     }
   }
-
   render() {
     var searchString
     return(
@@ -211,7 +208,9 @@ class Search extends Component{
   }
 }
 
-
+/*
+* Top level class which creates the searchquery and parses it to the table
+*/
 
 export default class SearchPage extends Component {
   constructor(){
@@ -224,6 +223,7 @@ export default class SearchPage extends Component {
       filter_date_from: "1900-01-01",
       filter_date_to: "2050-06-06",
       filter_status: "",
+      filter_description: "",
       searchString: "",
       advanced: false,
       simple_searchstring: "",
@@ -275,8 +275,18 @@ export default class SearchPage extends Component {
           filter_set--;
         }
         searchstring = searchstring.concat("(status: ", this.state.filter_status, "*)");
-        filter_set--;
+        filter_set++;
       }
+
+      if(this.state.filter_description!= ""){
+        if(filter_set > 0){
+          searchstring = searchstring.concat(" AND ");
+          filter_set--;
+        }
+        searchstring = searchstring.concat("(description: ", this.state.filter_description, "*)");
+        filter_set++;
+      }
+
       return searchstring;
     }
 
@@ -326,7 +336,7 @@ export default class SearchPage extends Component {
   }
 
   changeStateDescription(desc){
-    this.setState({description: desc})
+    this.setState({filter_description: desc})
   }
 
 
@@ -382,8 +392,6 @@ export default class SearchPage extends Component {
                   changeStateDescription = {(desc) => this.changeStateDescription(desc)}
                   changeStateAdvanced = {(advanced) => this.changeStateAdvanced(advanced)}
                   getSearchString = {(str)=> this.getSearchString(str)}
-                  simple_searchString= {this.state.simple_searchString
-                }
                 />
                 <hr className="horizontal-divider"/>
                 <Table
