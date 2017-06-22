@@ -38,6 +38,7 @@ DB = MongoEngine(app)
 def init_global_elasticsearch():
     global ES
     ES = Elasticsearch([{'host': 'elasticsearch', 'port': 9200}])
+    ES.indices.create(index='knexdb', ignore=400)
 
 
 @app.before_request
