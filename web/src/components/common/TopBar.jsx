@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
-import logo from '../../style/img/knex_logo_white_header.png';
+import logo from '../../style/img/white_logo_title.svg';
 
 
 class TopBar extends Component {
@@ -23,13 +23,6 @@ class TopBar extends Component {
             <form className="form-inline my-2 my-lg-0">
 
             </form>
-          </div>
-          <div className="col-1">
-            <Link to="/bookmarks">
-              <p className="top-bar-text">
-                Bookmarks
-              </p>
-            </Link>
           </div>
           <div className="col-1">
             <Link to="/profile">

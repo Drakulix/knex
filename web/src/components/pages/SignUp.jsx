@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import logo from '../../style/img/knex_logo.png';
+import logo from '../../style/img/black_logo_title_below.svg';
 
 export default class SignUp extends Component {
 
@@ -11,7 +11,7 @@ export default class SignUp extends Component {
       <section className="sign-container">
 
         {/*Information*/}
-        <img className="service-name" src={logo} width="200px" height="133px" />
+        <img className="service-name" src={logo}/>
         <h2 className="team-name">{teamName}</h2>
         <div className="rectangle-sign">
           <h3 className="sign-type-desc">Sign Up
@@ -90,5 +90,5 @@ SignUp.propTypes = {
 
 SignUp.defaultProps = {
   serviceName: 'Knex',
-  teamName: 'Team Data Science'
+  teamName: 'brings light to the cloud'
 };
