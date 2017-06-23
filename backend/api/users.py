@@ -111,7 +111,7 @@ def get_user(mail):
 
 @app.route('/api/users/bookmarks/<uuid:id>', methods=['POST'])
 @login_required
-def get_bookmarks(id):
+def insert_bookmarks(id):
     user = request.get_json()
     res = g.user_datastore.get_user(user['email'])
     if res is None:
@@ -126,7 +126,7 @@ def get_bookmarks(id):
 
 @app.route('/api/users/bookmarks/<uuid:id>', methods=['DELETE'])
 @login_required
-def get_bookmarks(id):
+def delete_bookmarks(id):
     user = request.get_json()
     res = g.user_datastore.get_user(user['email'])
     if res is None:
