@@ -5,7 +5,7 @@ import {fetchJson, sendJson} from '../common/Backend'
 const defaultPageSize = 4;
 
 
-export default class Table extends Component {
+export default class Table extends React.Component {
   constructor(props) {
     super(props);
     this.state = {

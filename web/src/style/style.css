@@ -268,6 +268,15 @@ font-weight: 300;
   border-radius: 0px !important;
 }
 
+#dropdown_status{
+  height: auto;
+}
+
+.noResults{
+  text-align: center;
+}
+
+
 .input-group-addon.primary {
     color: #ffffff;
     background-color: #333333;
