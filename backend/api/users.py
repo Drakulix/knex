@@ -109,7 +109,7 @@ def get_user(mail):
     return jsonify(res)
 
 
-@users.route('/api/users/bookmarks/<uuid:id>', methods['POST'])
+@app.route('/api/users/bookmarks/<uuid:id>', methods=['POST'])
 @login_required
 def get_bookmarks(id):
     user = request.get_json()
@@ -124,7 +124,7 @@ def get_bookmarks(id):
     return res['bookmarks']
 
 
-@users.route('/api/users/bookmarks/<uuid:id>', methods['DELETE'])
+@app.route('/api/users/bookmarks/<uuid:id>', methods=['DELETE'])
 @login_required
 def get_bookmarks(id):
     user = request.get_json()
@@ -139,7 +139,7 @@ def get_bookmarks(id):
     return make_response("Project is not bookmarked: " + mail, 400)
 
 
-@users.route('/api/users/bookmarks', methods['GET'])
+@app.route('/api/users/bookmarks', methods=['GET'])
 @login_required
 def get_bookmarks(mail):
     res = g.user_datastore.get_user(mail)
