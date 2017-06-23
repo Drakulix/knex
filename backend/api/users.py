@@ -104,6 +104,45 @@ def get_user(mail):
     """
     res = g.user_datastore.get_user(mail)
     if res is None:
-        return make_response("Unknown User with Email-address: " + mail, 404)
+        return make_response("Unknown User with Email-address: " + mail, 400)
 
     return jsonify(res)
+
+
+@users.route('/api/users/bookmarks/<uuid:id>', methods['POST'])
+@login_required
+def get_bookmarks(id):
+    user = request.get_json()
+    res = g.user_datastore.get_user(user['email'])
+    if res is None:
+        return make_response("Unknown User with Email-address: " + mail, 400)
+
+    if id in res['bookmarks']:
+        return make_response("Project is already bookmarked " + mail, 400)
+    res['bookmarks'].append(id)
+    res.save
+    return res['bookmarks']
+
+
+@users.route('/api/users/bookmarks/<uuid:id>', methods['DELETE'])
+@login_required
+def get_bookmarks(id):
+    user = request.get_json()
+    res = g.user_datastore.get_user(user['email'])
+    if res is None:
+        return make_response("Unknown User with Email-address: " + mail, 400)
+
+    if id in res['bookmarks']:
+        res['bookmarks'].remove(id)
+        res.save
+        return res['bookmarks']
+    return make_response("Project is not bookmarked: " + mail, 400)
+
+
+@users.route('/api/users/bookmarks', methods['GET'])
+@login_required
+def get_bookmarks(mail):
+    res = g.user_datastore.get_user(mail)
+    if res is None:
+        return make_response("Unknown User with Email-address: " + mail, 400)
+    return res['bookmarks']
