@@ -15,7 +15,7 @@ import ProjectDetails from './components/pages/ProjectDetails';
 import CreateProject from './components/pages/CreateProject';
 import CreateProjectLink from './components/pages/CreateProjectLink';
 import ProjectDiscovery from './components/pages/ProjectDiscovery';
-import UserCollection from './components/pages/UserCollection';
+import UserBookmarks from './components/pages/UserBookmarks';
 import SignIn from './components/pages/SignIn.jsx';
 import SignUp from './components/pages/SignUp.jsx';
 import AdminArea from './components/pages/AdminArea';
@@ -32,7 +32,7 @@ ReactDOM.render(
     <Route path="/update" component={UpdateProject} />
     <Route path="/createbylink" component={CreateProjectLink} />
     <Route path="/projects/:uuid" component={ProjectDetails} />
-    <Route path="/collection" component={UserCollection} />
+    <Route path="/bookmarks" component={UserBookmarks} />
     <Route path="/profile" component={ProfileDetails} />
     <Route path="/register" component={SignUp} />
     <Route exact path="/" component={SignIn} />

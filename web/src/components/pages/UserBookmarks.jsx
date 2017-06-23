@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import CollectionTable from '../views/CollectionTable';
+import BookmarksTable from '../views/BookmarksTable';
 import TopBar from '../common/TopBar';
 import { Link } from 'react-router-dom';
 
-export default class UserCollection extends Component {
+export default class UserBookmarks extends Component {
   constructor(props) {
     super(props);
 
@@ -41,7 +41,7 @@ export default class UserCollection extends Component {
               </ul>
           </div>
           <div className="col-9 content">
-            <CollectionTable />
+            <BookmarksTable />
           </div>
         </div>
       </div>
