@@ -195,7 +195,7 @@ and gets the data from the backend. Data is stored in state.results
         this.setState({lastString: this.props.searchString})
 
     }
-    if(results.length > 0){
+    if(this.state.results.length > 0){
       return(
         <div>
           <div className="row">
@@ -232,7 +232,7 @@ and gets the data from the backend. Data is stored in state.results
                   </tr>
                 </thead>
                 <tbody>
-                  {this.renderLines(results)}
+                  {this.renderLines(this.state.results)}
                 </tbody>
               </table>
             </div>
@@ -251,8 +251,9 @@ and gets the data from the backend. Data is stored in state.results
       );
     } else {
       return(
-        <div>
-          <h1>No Results found!</h1>
+        <div
+          className="noResults">
+          <h2>No Results found!</h2>
         </div>
       );
     }

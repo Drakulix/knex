@@ -304,6 +304,10 @@ legend {
   text-align: center;
 }
 
+#headerSearch{
+  margin-bottom: 0em;
+}
+
 .text{
   width: 30px;
   height: 41px;
