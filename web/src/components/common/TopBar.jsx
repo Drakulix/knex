@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
-import logo from '../../style/img/knex_logo_white_header.png';
-
 
 class TopBar extends Component {
   constructor(props) {
@@ -17,7 +15,6 @@ class TopBar extends Component {
       <div className="container-fluid topbar">
         <div className="row">
           <div className="col-3">
-            <img className="logo-banner" src={logo}/>
           </div>
           <div className="col">
             <form className="form-inline my-2 my-lg-0">

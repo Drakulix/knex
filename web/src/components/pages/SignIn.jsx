@@ -14,7 +14,7 @@ export default class SignIn extends Component {
         <img className="service-name" src={logo} width="200px" height="133px" />
         <h2 className="team-name">{teamName}</h2>
         <div className="rectangle-sign">
-          <h3 className="sign-type-desc">Sign In</h3>
+          <h3 className="sign-type-desc">Login</h3>
 
           {/*Input Email*/}
           <div className="input-group input-login">
@@ -58,9 +58,9 @@ export default class SignIn extends Component {
           </Link>
           <div>
             <Link to="/register">
-              <a href="#" className="register-info">
-                Don't have an account yet?<br/>Register here.
-              </a>
+              <button type="submit" className="btn btn-lg btn-primary sign-button sign-button-text">
+                Register
+              </button>
             </Link>
           </div>
         </div>
