@@ -33,6 +33,9 @@ app.config['MAX_CONTENT_PATH'] = 1000000  # 100.000 byte = 100kb
 global DB
 DB = MongoEngine(app)
 
+LOGINMANAGER = LoginManager()
+LOGINMANAGER.init_app(app)
+
 
 @app.before_first_request
 def init_global_elasticsearch():
@@ -50,6 +53,11 @@ def set_global_elasticsearch():
 def init_global_mongoclient():
     global MONGOCLIENT
     MONGOCLIENT = MongoClient('mongodb:27017')
+
+
+@LOGINMANAGER.user_loader
+def load_user(user_id):
+    return User.get(user_id)
 
 
 @app.before_request
