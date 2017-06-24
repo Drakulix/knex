@@ -5,7 +5,7 @@ from flask import Flask, g, jsonify
 from flask_cors import CORS
 from flask_login import LoginManager
 from flask_mongoengine import MongoEngine
-from flask_security import Security, MongoEngineUserDatastore, UserMixin, RoleMixin
+from flask_security import Security, MongoEngineUserDatastore, UserMixin, RoleMixin, current_user
 from flask_security.utils import encrypt_password
 from jsonschema import FormatChecker, Draft4Validator
 from pymongo import MongoClient, ReturnDocument
@@ -33,6 +33,9 @@ app.config['MAX_CONTENT_PATH'] = 1000000  # 100.000 byte = 100kb
 global DB
 DB = MongoEngine(app)
 
+LOGINMANAGER = LoginManager()
+LOGINMANAGER.init_app(app)
+
 
 @app.before_first_request
 def init_global_elasticsearch():
@@ -58,11 +61,9 @@ def set_global_mongoclient():
     g.projects = g.knexdb.projects
 
 
-@app.before_first_request
-def init_global_login_manager():
-    global LOGINMANAGER
-    LOGINMANAGER = LoginManager()
-    LOGINMANAGER.init_app(app)
+@LOGINMANAGER.user_loader
+def load_user(user_id):
+    return User.get(user_id)
 
 
 @app.before_first_request

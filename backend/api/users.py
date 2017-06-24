@@ -1,6 +1,6 @@
 from flask import request, jsonify, make_response, current_app, g, Blueprint
 from flask_security import login_required, roles_required, login_user,\
-    logout_user
+    logout_user, current_user
 from flask_security.utils import verify_password, encrypt_password
 
 from api.helper.apiexception import ApiException
@@ -41,11 +41,11 @@ def create_user():
         role = g.user_datastore.find_or_create_role(user['role'])
         # if res is not None:
         # return make_response('User already exists',500)
-        pass = encrypt_password(user["password"])
+        passw = encrypt_password(user["password"])
         g.user_datastore.create_user(first_name=user["first name"],
                                      last_name=user["last name"],
                                      email=user["email"],
-                                     password=pass,
+                                     password=passw,
                                      bio=user["bio"],
                                      roles=[role])
 
@@ -109,40 +109,43 @@ def get_user(mail):
     return jsonify(res)
 
 
-@app.route('/api/users/bookmarks/<uuid:id>', methods=['POST'])
+@users.route('/api/users/bookmarks/<uuid:id>', methods=['POST'])
 @login_required
 def insert_bookmarks(id):
     user = request.get_json()
     res = g.user_datastore.get_user(user['email'])
     if res is None:
-        return make_response("Unknown User with Email-address: " + mail, 400)
+        return make_response("Unknown User with Email-address: ", 400)
 
-    if id in res['bookmarks']:
-        return make_response("Project is already bookmarked " + mail, 400)
-    res['bookmarks'].append(id)
-    res.save
-    return res['bookmarks']
+    if id in res.bookmarks:
+        return make_response("Project is already bookmarked " , 400)
+    res.bookmarks.append(id)
+    res.save()
+    return jsonify(res['bookmarks'])
 
 
-@app.route('/api/users/bookmarks/<uuid:id>', methods=['DELETE'])
+@users.route('/api/users/bookmarks/<uuid:id>', methods=['DELETE'])
 @login_required
 def delete_bookmarks(id):
     user = request.get_json()
     res = g.user_datastore.get_user(user['email'])
     if res is None:
-        return make_response("Unknown User with Email-address: " + mail, 400)
+        return make_response("Unknown User with Email-address: " , 400)
 
     if id in res['bookmarks']:
         res['bookmarks'].remove(id)
         res.save
         return res['bookmarks']
-    return make_response("Project is not bookmarked: " + mail, 400)
+    return make_response("Project is not bookmarked: ", 400)
 
 
-@app.route('/api/users/bookmarks', methods=['GET'])
+@users.route('/api/users/bookmarks', methods=['GET'])
 @login_required
-def get_bookmarks(mail):
-    res = g.user_datastore.get_user(mail)
+def get_bookmarks():
+    a = current_user
+    if a is None:
+        return "fuck"
+    res = g.user_datastore.get_user(a.email)
     if res is None:
         return make_response("Unknown User with Email-address: " + mail, 400)
-    return res['bookmarks']
+    return jsonify(res['bookmarks'])
