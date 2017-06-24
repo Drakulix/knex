@@ -405,7 +405,7 @@ class Table extends Component {
                     <th className="col-xs-1">Status</th>
                     <th className="col-xs-3">Description</th>
                     <th className="col-xs-2">Date</th>
-                    <th className="col-xs-1">Fav</th>
+                    <th className="col-xs-1">Bookmarks</th>
                   </tr>
                 </thead>
                 <tbody>
