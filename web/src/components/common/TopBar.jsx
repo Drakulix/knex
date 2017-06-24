@@ -22,18 +22,9 @@ class TopBar extends Component {
             </form>
           </div>
           <div className="col-1">
-            <Link to="/collection">
-              <p className="top-bar-text">
-                Collection
-              </p>
-            </Link>
-          </div>
-          <div className="col-1">
-            <Link to="/profile">
-              <p className="top-bar-text">
-                Profile
-              </p>
-            </Link>
+            <p className="top-bar-text">
+              <i className="fa fa-bell" aria-hidden="true"></i>
+            </p>
           </div>
           <div className="col-1">
             <p className="top-bar-text">

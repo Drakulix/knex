@@ -13,6 +13,7 @@ p {
 }
 
 a {
+  vertical-align: center;
   color: #FFF;
   font-family: 'Open Sans', sans-serif !important;
   font-weight: 300;
