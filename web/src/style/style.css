@@ -44,6 +44,18 @@ a:hover {
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
 }
 
+.bell {
+  display: inline-block !important;
+}
+
+.popover {
+  border-radius: 0px;
+}
+
+.popover-title {
+  
+}
+
 .top-bar-company {
   width: 162px;
   margin-top: 16px;
