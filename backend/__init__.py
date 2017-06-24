@@ -55,22 +55,15 @@ def init_global_mongoclient():
     MONGOCLIENT = MongoClient('mongodb:27017')
 
 
-@LOGINMANAGER.user_loader
-def load_user(user_id):
-    return User.get(user_id)
-
-
 @app.before_request
 def set_global_mongoclient():
     g.knexdb = MONGOCLIENT.knexdb
     g.projects = g.knexdb.projects
 
 
-@app.before_first_request
-def init_global_login_manager():
-    global LOGINMANAGER
-    LOGINMANAGER = LoginManager()
-    LOGINMANAGER.init_app(app)
+@LOGINMANAGER.user_loader
+def load_user(user_id):
+    return User.get(user_id)
 
 
 @app.before_first_request
