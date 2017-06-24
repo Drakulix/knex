@@ -29,7 +29,7 @@ class Searchbar extends Component {
     var searchString
     return(
       <div className="input-group">
-        <input className="form-control" onKeyPress={this.onKeyPress} type="text" name="search" ref='simplesearch' onChange={()=> this.props.getSearchString(this.refs.simplesearch.value)} />
+        <input className="form-control" onKeyPress={this.onKeyPress} type="text" name="search" placeholder="Enter your query here..." ref='simplesearch' onChange={()=> this.props.getSearchString(this.refs.simplesearch.value)} />
       </div>
     );
   }
