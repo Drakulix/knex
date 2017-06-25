@@ -276,7 +276,7 @@ class TestDELETE(object):
 class TestGET(object):
 
     def test_unknown_id(self, flask_api_url):
-        """ Test for 404 when a project with unknown ID is to be deleted.
+        """ Test for 404 when one tries to get a project with unknown ID.
         """
         unknown_id = str(uuid.uuid4())
         response = requests.get(flask_api_url + "/api/projects/" + unknown_id)
@@ -284,7 +284,7 @@ class TestGET(object):
         assert response.status_code == 404
 
     def test_invalid_id(self, flask_api_url):
-        """ Test for 404 when a project with ID in invalid format is to be deleted.
+        """ Test for 404 when one tries to get a project with ID in invalid format.
         """
         invalid_id = "invalid"
         response = requests.get(flask_api_url + "/api/projects/" + invalid_id)
@@ -323,7 +323,20 @@ class TestGET(object):
 class TestPUT(object):
 
     def test_unknown_id(self, flask_api_url):
-        assert True
+        """ Test for 404 when one tries to put a project with unknown ID.
+        """
+        unknown_id = str(uuid.uuid4())
+        response = requests.put(flask_api_url + "/api/projects/" + unknown_id)
+        print(response.text)
+        assert response.status_code == 404
+
+    def test_invalid_id(self, flask_api_url):
+        """ Test for 404 when one tries to put a project with ID in invalid format.
+        """
+        invalid_id = "invalid"
+        response = requests.put(flask_api_url + "/api/projects/" + invalid_id)
+        print(response.text)
+        assert response.status_code == 404
 
     def test_success(self, flask_api_url):
         assert True
