@@ -112,13 +112,13 @@ def get_user(mail):
 @users.route('/api/users/bookmarks/<uuid:id>', methods=['POST'])
 @login_required
 def insert_bookmarks(id):
-    user = request.get_json()
+    user = current_user
     res = g.user_datastore.get_user(user['email'])
     if res is None:
         return make_response("Unknown User with Email-address: ", 400)
 
     if id in res.bookmarks:
-        return make_response("Project is already bookmarked " , 400)
+        return make_response("Project is already bookmarked ", 400)
     res.bookmarks.append(id)
     res.save()
     return jsonify(res['bookmarks'])
@@ -127,14 +127,17 @@ def insert_bookmarks(id):
 @users.route('/api/users/bookmarks/<uuid:id>', methods=['DELETE'])
 @login_required
 def delete_bookmarks(id):
-    user = request.get_json()
-    res = g.user_datastore.get_user(user['email'])
+    user = current_user
+    if user is None:
+        return make_response("No current user detected ", 400)
+    res = g.user_datastore.get_user(user.email)
     if res is None:
-        return make_response("Unknown User with Email-address: " , 400)
+        return make_response("Unknown User with Email-address: " +
+                             user.email, 400)
 
-    if id in res['bookmarks']:
-        res['bookmarks'].remove(id)
-        res.save
+    if id in res.bookmarks:
+        res.bookmarks.remove(id)
+        res.save()
         return res['bookmarks']
     return make_response("Project is not bookmarked: ", 400)
 
@@ -142,10 +145,11 @@ def delete_bookmarks(id):
 @users.route('/api/users/bookmarks', methods=['GET'])
 @login_required
 def get_bookmarks():
-    a = current_user
-    if a is None:
-        return "fuck"
-    res = g.user_datastore.get_user(a.email)
+    user = current_user
+    if user is None:
+        return make_response("No current user detected ", 400)
+    res = g.user_datastore.get_user(user.email)
     if res is None:
-        return make_response("Unknown User with Email-address: " + mail, 400)
+        return make_response("Unknown User with Email-address: " +
+                             user.email, 400)
     return jsonify(res['bookmarks'])
