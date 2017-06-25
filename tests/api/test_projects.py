@@ -336,7 +336,7 @@ class TestPUT(object):
         invalid_id = "invalid"
         response = requests.put(flask_api_url + "/api/projects/" + invalid_id)
         print(response.text)
-        assert response.status_code == 404
+        assert response.status_code == 405
 
     def test_success(self, flask_api_url):
         assert True
