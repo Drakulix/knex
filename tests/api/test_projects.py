@@ -41,8 +41,7 @@ class TestPOST(object):
         )
         with open(test_manifest, 'r') as tf:
             test_manifest_json = json.load(tf)
-        response = requests.post(
-            flask_api_url + "/api/projects", json=test_manifest_json)
+        response = requests.post(flask_api_url + "/api/projects", json=test_manifest_json)
         print(response.text)
         for id in response.json():
             assert UUID(id, version=4)
@@ -131,8 +130,7 @@ class TestPOST(object):
         with open(unmatching_manifest, 'r', encoding='utf-8') as tf:
             unmatching_data = str(tf.read().replace('\n', ''))
         unmatching_response = requests.post(flask_api_url + "/api/projects",
-                                            data=unmatching_data.encode(
-                                                'utf-8'),
+                                            data=unmatching_data.encode('utf-8'),
                                             headers={'Content-Type': 'application/json5'})
         print(unmatching_response.text)
 
@@ -226,8 +224,7 @@ class TestDELETE(object):
         """ Test for 404 when a project with unknown ID is to be deleted.
         """
         unknown_id = str(uuid.uuid4())
-        response = requests.delete(
-            flask_api_url + "/api/projects/" + unknown_id)
+        response = requests.delete(flask_api_url + "/api/projects/" + unknown_id)
         print(response.text)
         assert response.status_code == 404
 
@@ -236,8 +233,7 @@ class TestDELETE(object):
             The method does expect a uuid, a string will return invalid method
         """
         invalid_id = "invalid"
-        response = requests.delete(
-            flask_api_url + "/api/projects/" + invalid_id)
+        response = requests.delete(flask_api_url + "/api/projects/" + invalid_id)
         print(response.text)
         assert response.status_code == 405
 
@@ -253,8 +249,7 @@ class TestDELETE(object):
         )
         with open(test_manifest, 'r') as tf:
             test_manifest_json = json.load(tf)
-        post_response = requests.post(
-            flask_api_url + "/api/projects", json=test_manifest_json)
+        post_response = requests.post(flask_api_url + "/api/projects", json=test_manifest_json)
         print(post_response.text)
         for id in post_response.json():
             assert UUID(id, version=4)
@@ -262,8 +257,7 @@ class TestDELETE(object):
 
         # Delete
         project_id = post_response.json()[0]
-        delete_response = requests.delete(
-            flask_api_url + "/api/projects/" + project_id)
+        delete_response = requests.delete(flask_api_url + "/api/projects/" + project_id)
         print(delete_response.text)
         assert delete_response.status_code == 200
 
@@ -276,14 +270,12 @@ class TestDELETE(object):
         )
         with open(test_manifest, 'r') as tf:
             test_manifest_json = json.load(tf)
-        post_response = requests.post(
-            flask_api_url + "/api/projects", json=test_manifest_json)
+        post_response = requests.post(flask_api_url + "/api/projects", json=test_manifest_json)
         print(post_response.text)
         for id in post_response.json():
             assert UUID(id, version=4)
         project_id = post_response.json()[0]
-        delete_response = requests.delete(
-            flask_api_url + "/api/projects/" + project_id)
+        delete_response = requests.delete(flask_api_url + "/api/projects/" + project_id)
         print(delete_response.text)
         assert delete_response.status_code == 200
 
@@ -321,21 +313,18 @@ class TestGET(object):
         )
         with open(test_manifest, 'r') as tf:
             test_manifest_json = json.load(tf)
-        post_response = requests.post(
-            flask_api_url + "/api/projects", json=test_manifest_json)
+        post_response = requests.post(flask_api_url + "/api/projects", json=test_manifest_json)
         print(post_response.text)
         for id in post_response.json():
             assert UUID(id, version=4)
 
         project_id = post_response.json()[0]
-        get_response = requests.get(
-            flask_api_url + "/api/projects/" + project_id)
+        get_response = requests.get(flask_api_url + "/api/projects/" + project_id)
         print(get_response.text)
 
         assert get_response.status_code == 200
         assert get_response.json()["title"] == test_manifest_json["title"]
-        assert get_response.json()["analysis"] == test_manifest_json[
-            "analysis"]
+        assert get_response.json()["analysis"] == test_manifest_json["analysis"]
 
 
 class TestPUT(object):
