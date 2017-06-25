@@ -1,7 +1,6 @@
 import time
 import uuid
 import requests
-import pytest
 
 
 def test_no_mongo(flask_api_url, docker_client):
