@@ -67,7 +67,7 @@ def test_consistent_delete(flask_api_url, mongo_client, elastic_client):
     delete_response = requests.delete(flask_api_url + "/api/projects/" + str(project_id))
     print(delete_response.text)
     assert delete_response.status_code == 200
-    
+
     # wait for the refreshed elastic database
     time.sleep(5)
     es_d_result = elastic_client.get(index="knexdb", id=project_id, ignore=404)
