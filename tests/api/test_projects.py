@@ -240,6 +240,7 @@ class TestDELETE(object):
     def test_success(self, flask_api_url, pytestconfig):
         """ Test successful delete (after successful upload).
         """
+        #Post
         test_manifest = os.path.join(
             str(pytestconfig.rootdir),
             'tests',
@@ -253,6 +254,13 @@ class TestDELETE(object):
         for id in post_response.json():
             assert UUID(id, version=4)
         assert post_response.status_code == 200
+        
+        # Delete
+        project_id = post_response.json()[0]
+        delete_response = requests.delete(flask_api_url + "/api/projects/" + project_id)
+        print(delete_response.text)
+        assert delete_response.status_code == 200
+
 
     def test_inconsistent_delete(self, flask_api_url, pytestconfig):
         test_manifest = os.path.join(
