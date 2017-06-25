@@ -42,6 +42,7 @@ def test_consistency(mongo_client, elastic_client):
     print("es:", es_result)
     assert es_result['found']
 
+
 def test_consistent_delete(flask_api_url, mongo_client, elastic_client):
     """ Test whether files deleted in mongodb also get deleted in elasticsearch.
     """
@@ -64,10 +65,10 @@ def test_consistent_delete(flask_api_url, mongo_client, elastic_client):
     assert es_result['found']
 
     # delete from mongo and check es
-    delete_response = requests.delete(flask_api_url + "/api/projects/" + str(project_id))
+    delete_response = requests.delete(
+        flask_api_url + "/api/projects/" + str(project_id))
     print(delete_response.text)
     assert delete_response.status_code == 200
 
     es_d_result = elastic_client.get(index="knexdb", id=project_id, ignore=404)
     assert not es_d_result['found']
-
