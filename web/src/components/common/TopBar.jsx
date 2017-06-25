@@ -17,7 +17,7 @@ class TopBar extends Component {
       <div className="container-fluid topbar">
         <div className="row">
           <div className="col-3">
-            <img className="logo-banner" src={logo}/>
+            <img className="logo-banner" alt="logo banner" src={logo}/>
           </div>
           <div className="col">
             <form className="form-inline my-2 my-lg-0">

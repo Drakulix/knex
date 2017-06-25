@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {fetchProjectDetails, fetchJson} from '../common/Backend'
+import {fetchProjectDetails} from '../common/Backend'
 import { Link } from 'react-router-dom';
 
 const update_url='/update/'
@@ -33,8 +33,8 @@ export default class ProjectContainer extends Component {
 //
 
   render(){
-    const { _id, authors, date_creation, date_update, description } = this.state.projectInf;
-    const { status, tags, title, url} = this.state.projectInf;
+    const {authors, date_update, description } = this.state.projectInf;
+    const {tags, url} = this.state.projectInf;
 
     var authors_string = null;
     if (authors != null){
@@ -50,7 +50,7 @@ export default class ProjectContainer extends Component {
     var tag_string = null;
     if (tags != null){
       var tag_container = []
-      for (var i = 0; i < tags.length; i++){
+      for (i = 0; i < tags.length; i++){
         tag_container.push(tags[i])
       }
       tag_string = tag_container.join(", ")

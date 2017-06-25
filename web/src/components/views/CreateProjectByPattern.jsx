@@ -1,9 +1,6 @@
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import CreateProjectLink from '../pages/CreateProjectLink.jsx';
 import Form from "../libraries/react-jsonschema-form";
-import { Redirect } from 'react-router-dom';
 //import exampleJSON from "../../data/test_project.json";
 
 const schema = {
@@ -114,8 +111,7 @@ export default class UploadByPattern extends React.Component {
       },
       body: JSON.stringify(formData)
       //body: JSON.stringify(exampleJSON)
-    }),
-    console.log(formData);
+    });
     alert("New Project added!");
   }
 
@@ -182,8 +178,7 @@ export default class UploadByPattern extends React.Component {
           that.setState({
             status : data.status,
             statusSet : true,
-            anySet: true,
-            anySet: true,
+            anySet: true
           })
         };
         if(data.tags!=null){
@@ -216,7 +211,7 @@ export default class UploadByPattern extends React.Component {
       }
     };
     if(this.state.url!=null){
-      for (var i = 0; i<this.state.url.length;i++){
+      for (i = 0; i<this.state.url.length;i++){
         urlArray.push(this.state.url[i]);
       }
     }

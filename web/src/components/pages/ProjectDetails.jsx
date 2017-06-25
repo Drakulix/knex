@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import ProjectContainer from '../views/ProjectContainer';
 import TopBar from '../common/TopBar';
-import data from '../../data/test_data.json';
 import { Link } from 'react-router-dom';
 
 export default class ProjectDetails extends Component {

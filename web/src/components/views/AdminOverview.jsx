@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
 
 export default class AdminOverview extends React.Component {
   constructor(props) {
@@ -79,16 +78,16 @@ export default class AdminOverview extends React.Component {
           <div className="text-xs-center">
             <ul className="pagination">
               <li className="page-item">
-                <a className="page-link" href="#" aria-label="Previous">
+                <a className="page-link" role="button" aria-label="Previous">
                   <span aria-hidden="true">&laquo;</span>
                   <span className="sr-only">Previous</span>
                 </a>
               </li>
-              <li className="page-item"><a className="page-link" href="#">1</a></li>
-              <li className="page-item"><a className="page-link" href="#">2</a></li>
-              <li className="page-item"><a className="page-link" href="#">3</a></li>
+              <li className="page-item"><a className="page-link" role="button">1</a></li>
+              <li className="page-item"><a className="page-link" role="button">2</a></li>
+              <li className="page-item"><a className="page-link" role="button">3</a></li>
               <li className="page-item">
-              <a className="page-link" href="#" aria-label="Next">
+              <a className="page-link" role="button" aria-label="Next">
                 <span aria-hidden="true">&raquo;</span>
                 <span className="sr-only">Next</span>
                 </a>

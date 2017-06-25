@@ -1,5 +1,3 @@
-"use strict";
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -162,7 +160,7 @@ var Form = function (_Component) {
           showErrorList = _props2.showErrorList;
 
 
-      if (status !== "editing" && errors.length && showErrorList != false) {
+      if (status !== "editing" && errors.length && showErrorList !== false) {
         return _react2.default.createElement(ErrorList, { errors: errors });
       }
       return null;

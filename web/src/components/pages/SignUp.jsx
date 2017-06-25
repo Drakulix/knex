@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../../style/img/knex_logo.png';
+import PropTypes from 'prop-types'
 
 export default class SignUp extends Component {
 
@@ -11,7 +12,7 @@ export default class SignUp extends Component {
       <section className="sign-container">
 
         {/*Information*/}
-        <img className="service-name" src={logo} width="200px" height="133px" />
+        <img className="service-name" src={logo} alt="knex logo" width="200px" height="133px" />
         <h2 className="team-name">{teamName}</h2>
         <div className="rectangle-sign">
           <h3 className="sign-type-desc">Sign Up
@@ -72,7 +73,7 @@ export default class SignUp extends Component {
 
         <div>
           <Link to="/">
-            <a href="#" className="register-info">
+            <a href="signin" className="register-info">
               You already have an account?<br/>Login here.
             </a>
           </Link>
@@ -84,8 +85,8 @@ export default class SignUp extends Component {
 }
 
 SignUp.propTypes = {
-  serviceName: React.PropTypes.string,
-  teamName: React.PropTypes.string,
+  serviceName: PropTypes.string,
+  teamName: PropTypes.string,
 }
 
 SignUp.defaultProps = {

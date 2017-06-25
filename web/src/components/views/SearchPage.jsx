@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import {fetchJson, sendJson} from '../common/Backend'
+import {fetchJson} from '../common/Backend'
 
 const defaultPageSize = 4;
 const defaultSearchString = "advanced/?q=*";
@@ -26,7 +26,6 @@ class Searchbar extends Component {
   }
 
   render() {
-    var searchString
     return(
       <div className="input-group">
         <input className="form-control" onKeyPress={this.onKeyPress} type="text" name="search" ref='simplesearch' onChange={()=> this.props.getSearchString(this.refs.simplesearch.value)} />
@@ -208,7 +207,6 @@ class Table extends Component {
     };
 
     // Get Data from Elasticsearch and put it in this.state.results
-    var that = this;
     this.getData(this.state.searchString);
   }
 
@@ -292,7 +290,7 @@ class Table extends Component {
 
   shuffleBookmarks() {
     var x = Math.floor((Math.random() * 2) + 1);
-    if (x == 1) {
+    if (x === 1) {
       return <i className="fa fa-bookmark" aria-hidden="true" />;
     }
     else {
@@ -370,7 +368,7 @@ class Table extends Component {
   }
 
   renderTable(results){
-    if(this.state.lastString != this.props.searchString){
+    if(this.state.lastString !== this.props.searchString){
         this.getData(this.props.searchString)
         this.setState({lastString: this.props.searchString})
 
@@ -509,7 +507,7 @@ export default class SearchPage extends Component {
       var searchstring="advanced/?q=";
       var filter_set = 0;
 
-      if(this.state.filter_project_name != ""){
+      if(this.state.filter_project_name !== ""){
         searchstring = searchstring.concat("(title: ", this.state.filter_project_name, "*)");
         filter_set++;
       }
@@ -525,7 +523,7 @@ export default class SearchPage extends Component {
       }
 
 
-      if(this.state.filter_author != ""){
+      if(this.state.filter_author !== ""){
         if(filter_set > 0){
           searchstring = searchstring.concat(" AND ");
           filter_set--;
@@ -534,7 +532,7 @@ export default class SearchPage extends Component {
         filter_set++;
 
       }
-      if(this.state.filter_tags != ""){
+      if(this.state.filter_tags !== ""){
         if(filter_set > 0){
           searchstring = searchstring.concat(" AND ");
           filter_set--;
@@ -542,7 +540,7 @@ export default class SearchPage extends Component {
         searchstring = searchstring.concat("(tags: ", this.state.filter_tags, "*)");
       }
 
-      if(this.state.filter_status!= ""){
+      if(this.state.filter_status !== ""){
         if(filter_set > 0){
           searchstring = searchstring.concat(" AND ");
           filter_set--;
@@ -564,7 +562,7 @@ export default class SearchPage extends Component {
   }
 
   changeStateFrom(from){
-    if(from == ""){
+    if(from === ""){
       this.setState({filter_date_from: "1900-01-01" });
     }else{
       this.setState({filter_date_from: from });
@@ -572,7 +570,7 @@ export default class SearchPage extends Component {
   }
 
   changeStateTo(to){
-    if(to == ""){
+    if(to === ""){
       this.setState({filter_date_to: "2050-06-06" });
     }else{
       this.setState({filter_date_to: to });
@@ -612,12 +610,12 @@ export default class SearchPage extends Component {
 
     if(this.state.advanced){
       searchString = this.filter();
-      if(searchString == "advanced/?q="){
+      if(searchString === "advanced/?q="){
         searchString = defaultSearchString;
       }
     }else{
       searchString = this.simplesearch();
-      if(searchString == "simple/?q=*"){
+      if(searchString === "simple/?q=*"){
         searchString = defaultSearchString;
       }
     }
