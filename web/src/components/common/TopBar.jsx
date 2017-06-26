@@ -1,18 +1,46 @@
 import React, { Component } from 'react';
-import { Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Redirect,
+  withRouter
+} from 'react-router-dom';
 import logo from '../../style/img/knex_logo_white_header.png';
-
+import {login, isLoggedIn, logout, getCookie, setCookie} from '../common/Authentication.jsx';
 
 class TopBar extends Component {
   constructor(props) {
     super(props);
 
+    // set the initial component state
     this.state = {
+      redirect: false,
       logo: 'Company Logo'
     };
+    this.handleLogout = this.handleLogout.bind(this);
   }
 
+  handleLogout(event){
+    event.preventDefault();
+    logout().then((success) => {
+
+      if(success){
+        this.setState({ redirect: true });
+      }else{
+        this.setState({ redirect: false});
+        alert("Logout failed");
+      }
+    });
+  }
+
+
   render() {
+
+    if (this.state.redirect) {
+      return <Redirect to='/'/>;
+    }
+
     return (
       <div className="container-fluid topbar">
         <div className="row">
@@ -40,9 +68,7 @@ class TopBar extends Component {
           </div>
           <div className="col-1">
             <p className="top-bar-text">
-              <Link to="/">
-                <i className="fa fa-power-off" aria-hidden="true"></i>
-              </Link>
+              <i className="fa fa-power-off" aria-hidden="true" onClick={this.handleLogout}></i>
             </p>
           </div>
         </div>
