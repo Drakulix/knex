@@ -28,7 +28,8 @@ class TopBar extends Component {
 
   toggle() {
     this.setState({
-      popoverOpen: !this.state.popoverOpen
+      popoverOpen: !this.state.popoverOpen,
+      count: 0
     });
   }
 
@@ -44,7 +45,6 @@ class TopBar extends Component {
       }
     });
   }
-
 
   render() {
 
