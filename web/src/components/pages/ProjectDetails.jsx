@@ -12,7 +12,8 @@ export default class ProjectDetails extends Component {
       menu: {
         discoverProjects: 'Discover Projects',
         createProject: 'Create New Project',
-        adminArea: 'Admin Area'
+        adminArea: 'Admin Area',
+        bookmarksArea: 'my Bookmarks'
       }
     };
   }
@@ -32,6 +33,11 @@ export default class ProjectDetails extends Component {
               <li className="list-group-item">
                 <Link to="/createbylink">
                   {this.state.menu.createProject}
+                </Link>
+              </li>
+              <li className="list-group-item">
+                <Link to="/bookmarks">
+                  {this.state.menu.bookmarksArea}
                 </Link>
               </li>
               <li className="list-group-item">

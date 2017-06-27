@@ -11,7 +11,8 @@ export default class AdminArea extends Component {
       menu: {
         discoverProjects: 'Discover Projects',
         createProject: 'Create New Project',
-        adminArea: 'Admin Area'
+        adminArea: 'Admin Area',
+        bookmarksArea: 'my Bookmarks'
       }
     };
   }
@@ -31,6 +32,11 @@ export default class AdminArea extends Component {
                 <li className="list-group-item">
                   <Link to="/create">
                     {this.state.menu.createProject}
+                  </Link>
+                </li>
+                <li className="list-group-item">
+                  <Link to="/bookmarks">
+                    {this.state.menu.bookmarksArea}
                   </Link>
                 </li>
                 <li className="list-group-item active">

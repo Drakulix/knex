@@ -31,7 +31,8 @@ a:hover {
 }
 
 .logo-banner {
-  margin-top: 12px;
+  height: 3em;
+  margin-top: 9px;
 }
 
 .container {
@@ -156,15 +157,23 @@ font-weight: 300;
   text-align: center !important;
 }
 
-.service-name{
+.slogan{
   margin-top:3em;
-  margin-bottom: 1em;
+  font-size: 32px;
+  color: #8d8d8d;
+}
+
+.service-name{
+  width: 5em;
+  height: 6em;
+  margin-top:2em;
+  margin-bottom: 0.1em;
   font-size: 42px;
   color: #333333;
 }
 
 .team-name{
-  font-size: 32px;
+  font-size: 30px;
   color: #8d8d8d;
 }
 

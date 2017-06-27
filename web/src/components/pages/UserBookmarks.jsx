@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import CollectionTable from '../views/CollectionTable';
+import BookmarksTable from '../views/BookmarksTable';
 import TopBar from '../common/TopBar';
 import { Link } from 'react-router-dom';
 
-export default class UserCollection extends Component {
+export default class UserBookmarks extends Component {
   constructor(props) {
     super(props);
 
@@ -11,7 +11,8 @@ export default class UserCollection extends Component {
       menu: {
         discoverProjects: 'Discover Projects',
         createProject: 'Create New Project',
-        adminArea: 'Admin Area'
+        adminArea: 'Admin Area',
+        bookmarksArea: 'my Bookmarks'
       }
     };
   }
@@ -33,6 +34,13 @@ export default class UserCollection extends Component {
                     {this.state.menu.createProject}
                   </Link>
                 </li>
+                <li className="list-group-item active">
+                  <div className="menu-indicator">
+                  </div>
+                  <Link to="/bookmarks">
+                    {this.state.menu.bookmarksArea}
+                  </Link>
+                </li>
                 <li className="list-group-item">
                   <Link to="/admin">
                     {this.state.menu.adminArea}
@@ -41,7 +49,7 @@ export default class UserCollection extends Component {
               </ul>
           </div>
           <div className="col-9 content">
-            <CollectionTable />
+            <BookmarksTable />
           </div>
         </div>
       </div>

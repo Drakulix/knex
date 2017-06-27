@@ -6,7 +6,7 @@ import {
   Redirect,
   withRouter
 } from 'react-router-dom';
-import logo from '../../style/img/knex_logo_white_header.png';
+import logo from '../../style/img/white_logo_title.svg';
 import {login, isLoggedIn, logout, getCookie, setCookie} from '../common/Authentication.jsx';
 
 class TopBar extends Component {
@@ -51,13 +51,6 @@ class TopBar extends Component {
             <form className="form-inline my-2 my-lg-0">
 
             </form>
-          </div>
-          <div className="col-1">
-            <Link to="/collection">
-              <p className="top-bar-text">
-                Collection
-              </p>
-            </Link>
           </div>
           <div className="col-1">
             <Link to="/profile">

@@ -6,7 +6,7 @@ import {
   Redirect,
   withRouter
 } from 'react-router-dom';
-import logo from '../../style/img/knex_logo.png';
+import logo from '../../style/img/black_logo_title_below.svg';
 import {login, isLoggedIn, logout,register} from '../common/Authentication.jsx';
 
 export default class SignUp extends Component {
@@ -77,8 +77,8 @@ export default class SignUp extends Component {
     return (
       <section className="sign-container">
 
-        {/*Input First Name*/}
-        <img className="service-name" src={logo} width="200px" height="133px" />
+        {/*Information*/}
+        <img className="service-name" src={logo}/>
         <h2 className="team-name">{teamName}</h2>
         <div className="rectangle-sign">
           <h3 className="sign-type-desc">Sign Up
@@ -198,5 +198,5 @@ SignUp.propTypes = {
 
 SignUp.defaultProps = {
   serviceName: 'Knex',
-  teamName: 'Team Data Science'
+  teamName: 'brings light to the cloud'
 };
