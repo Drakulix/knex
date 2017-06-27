@@ -6,7 +6,7 @@ import {
   Redirect,
   withRouter
 } from 'react-router-dom';
-import logo from '../../style/img/knex_logo.png';
+import logo from '../../style/img/black_logo_title_below.svg';
 import {login, isLoggedIn, logout, getCookie, setCookie} from '../common/Authentication.jsx';
 
 export default class SignIn extends Component {
@@ -64,12 +64,12 @@ export default class SignIn extends Component {
 
     return (
       <section className="sign-container">
-        
+
         {/*Information*/}
-        <img className="service-name" src={logo} width="200px" height="133px" />
+        <img className="service-name" src={logo}/>
         <h2 className="team-name">{teamName}</h2>
         <div className="rectangle-sign">
-          <h3 className="sign-type-desc">Sign In</h3>
+          <h3 className="sign-type-desc">Login</h3>
           <form onSubmit={this.handleSubmit}>
             {/*Input Email*/}
             <div className="input-group input-login">
@@ -79,12 +79,12 @@ export default class SignIn extends Component {
                   aria-hidden="true"
                 />
               </span>
-              <input 
+              <input
                 type="text"
-                value={this.state.email} 
-                onChange={this.handleChangeEmail} 
-                className="form-control" 
-                placeholder="Email" 
+                value={this.state.email}
+                onChange={this.handleChangeEmail}
+                className="form-control"
+                placeholder="Email"
                 required autofocus
               />
             </div>
@@ -100,7 +100,7 @@ export default class SignIn extends Component {
               <input
                 type="password"
                 value={this.state.password}
-                onChange={this.handleChangePassword} 
+                onChange={this.handleChangePassword}
                 className="form-control"
                 placeholder="Password"
                 required
@@ -108,17 +108,17 @@ export default class SignIn extends Component {
             </div>
 
               <input
-                type="submit" 
+                type="submit"
                 value="Login"
-                className="btn btn-lg btn-primary sign-button sign-button-text" 
+                className="btn btn-lg btn-primary sign-button sign-button-text"
               />
 
           </form>
           <div>
             <Link to="/register">
-              <a href="#" className="register-info">
-                Don't have an account yet?<br/>Register here.
-              </a>
+              <button type="submit" className="btn btn-lg btn-primary sign-button sign-button-text">
+                Register
+              </button>
             </Link>
           </div>
         </div>
@@ -135,5 +135,5 @@ SignIn.propTypes = {
 
 SignIn.defaultProps = {
   serviceName: 'Knex',
-  teamName: 'Team Data Science'
+  teamName: 'brings light to the cloud'
 };

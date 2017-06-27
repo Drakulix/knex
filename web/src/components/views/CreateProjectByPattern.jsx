@@ -69,14 +69,14 @@ const uiSchema = {
   url: {
     "ui:placeholder": "http://"
   },
-  url_two: {
-    "ui:placeholder": "http://"
-  },
   description: {
     "ui:widget": "textarea"
   },
   tags: {
     "ui:help": "Add tags!"
+  },
+  url: {
+    "ui:help": "Add URLs!"
   },
   authors: {
     "ui:help": "Add author!"
@@ -89,7 +89,9 @@ const uiSchema = {
 };
 
 const formData = {
-  //to be continued
+  authors: [""],
+  url: [""],
+  tags: [""]
 }
 
 const log = (type) => console.log.bind(console, type);
@@ -113,7 +115,6 @@ export default class UploadByPattern extends React.Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(formData)
-      //body: JSON.stringify(exampleJSON)
     }),
     console.log(formData);
     alert("New Project added!");

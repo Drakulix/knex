@@ -6,19 +6,31 @@ import {
   Redirect,
   withRouter
 } from 'react-router-dom';
-import logo from '../../style/img/knex_logo_white_header.png';
-import {login, isLoggedIn, logout, getCookie, setCookie} from '../common/Authentication.jsx';
+import { login, isLoggedIn, logout, getCookie, setCookie } from '../common/Authentication.jsx';
+import { Popover, PopoverTitle, PopoverContent } from 'reactstrap';
+import NotificationBadge from 'react-notification-badge';
+import { Effect } from 'react-notification-badge';
 
 class TopBar extends Component {
   constructor(props) {
     super(props);
 
-    // set the initial component state
     this.state = {
       redirect: false,
-      logo: 'Company Logo'
+      popoverOpen: false,
+      logo: 'Company Logo',
+      count: 3
     };
     this.handleLogout = this.handleLogout.bind(this);
+    this.toggle = this.toggle.bind(this);
+  }
+
+
+  toggle() {
+    this.setState({
+      popoverOpen: !this.state.popoverOpen,
+      count: 0
+    });
   }
 
   handleLogout(event){
@@ -34,7 +46,6 @@ class TopBar extends Component {
     });
   }
 
-
   render() {
 
     if (this.state.redirect) {
@@ -44,28 +55,31 @@ class TopBar extends Component {
     return (
       <div className="container-fluid topbar">
         <div className="row">
-          <div className="col-3">
-            <img className="logo-banner" src={logo}/>
+          <div className="col-10">
           </div>
-          <div className="col">
-            <form className="form-inline my-2 my-lg-0">
+          <div className="col-1">
+            <div className="top-bar-text">
+              <div className="notification-container">
+                <NotificationBadge count={this.state.count} effect={Effect.SCALE}/>
+                <i id="Popover1" onClick={this.toggle} className="bell fa fa-bell" aria-hidden="true"></i>
+              </div>
+              <Popover placement="bottom" isOpen={this.state.popoverOpen} target="Popover1" toggle={this.toggle}>
+                <PopoverTitle>Notifications</PopoverTitle>
+                <PopoverContent>
+                  <div>
+                    <a>A Project got updated</a>
+                  </div>
+                  <div>
+                    <a>A Project got updated</a>
+                  </div>
+                  <div>
+                    <a>Janette bookmarked a project</a>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
+        </div>
 
-            </form>
-          </div>
-          <div className="col-1">
-            <Link to="/collection">
-              <p className="top-bar-text">
-                Collection
-              </p>
-            </Link>
-          </div>
-          <div className="col-1">
-            <Link to="/profile">
-              <p className="top-bar-text">
-                Profile
-              </p>
-            </Link>
-          </div>
           <div className="col-1">
             <p className="top-bar-text">
               <i className="fa fa-power-off" aria-hidden="true" onClick={this.handleLogout}></i>
