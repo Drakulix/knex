@@ -40,7 +40,7 @@ export default class UpdateProject extends Component {
               </li>
               <li className="list-group-item active">
                 <div className="menu-indicator" />
-                <Link to="/collection">
+                <Link to="/bookmarks">
                   {this.state.menu.bookmarks}
                 </Link>
               </li>

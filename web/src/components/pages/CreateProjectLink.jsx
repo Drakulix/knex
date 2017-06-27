@@ -39,7 +39,7 @@ export default class CreateProjectLink extends Component {
                 </Link>
               </li>
               <li className="list-group-item">
-                <Link to="/collection">
+                <Link to="/bookmarks">
                   {this.state.menu.bookmarks}
                 </Link>
               </li>
