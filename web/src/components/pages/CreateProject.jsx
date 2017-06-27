@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import UploadByPattern from '../views/CreateProjectByPattern';
 import TopBar from '../common/TopBar';
 import { Link } from 'react-router-dom';
+import logo from '../../style/img/white_logo_title.svg';
 
 export default class CreateProject extends Component {
   constructor(props) {
@@ -11,8 +12,9 @@ export default class CreateProject extends Component {
       menu: {
         discoverProjects: 'Discover Projects',
         createProject: 'Create New Project',
-        adminArea: 'Admin Area',
-        bookmarksArea: 'my Bookmarks'
+        bookmarks: 'Bookmarks',
+        profile: 'Profile',
+        adminArea: 'Admin Area'
       }
     };
   }
@@ -23,30 +25,35 @@ export default class CreateProject extends Component {
         <TopBar />
         <div className="row">
           <div className="col-3 side-bar">
-              <ul className="list-group">
-                <li className="list-group-item">
-                  <Link to="/discovery">
-                    {this.state.menu.discoverProjects}
-                  </Link>
-                </li>
-                <li className="list-group-item active">
-                  <div className="menu-indicator">
-                  </div>
-                  <Link to="/create">
-                    {this.state.menu.createProject}
-                  </Link>
-                </li>
-                <li className="list-group-item">
-                  <Link to="/bookmarks">
-                    {this.state.menu.bookmarksArea}
-                  </Link>
-                </li>
-                <li className="list-group-item">
-                  <Link to="/admin">
-                    {this.state.menu.adminArea}
-                  </Link>
-                </li>
-              </ul>
+            <img className="logo-banner" src={logo} />
+            <ul className="list-group">
+              <li className="list-group-item">
+                <Link to="/discovery">
+                  {this.state.menu.discoverProjects}
+                </Link>
+              </li>
+              <li className="list-group-item active">
+                <Link to="/createbylink">
+                  <div className="menu-indicator" />
+                  {this.state.menu.createProject}
+                </Link>
+              </li>
+              <li className="list-group-item">
+                <Link to="/collection">
+                  {this.state.menu.bookmarks}
+                </Link>
+              </li>
+              <li className="list-group-item">
+                <Link to="/profile">
+                  {this.state.menu.profile}
+                </Link>
+              </li>
+              <li className="list-group-item">
+                <Link to="/admin">
+                  {this.state.menu.adminArea}
+                </Link>
+              </li>
+            </ul>
           </div>
           <div className="col-9 content">
             <UploadByPattern getURL={this.props.match.params.getURL}/>

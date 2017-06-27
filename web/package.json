@@ -11,7 +11,8 @@
     "react-jsonschema-form": "^0.48.2",
     "react-redux": "^4.0.0",
     "react-router": "^4.1.1",
-    "react-router-dom": "^4.1.1"
+    "react-router-dom": "^4.1.1",
+    "reactstrap": "^4.6.2"
   },
   "devDependencies": {
     "react-scripts": "1.0.7"
