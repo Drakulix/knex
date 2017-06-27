@@ -131,8 +131,8 @@ class AdvancedSearch extends Component {
           </div>
         </div>
 
-        <div className="row">
-          <div className="col-md-12">
+        <div className="row" >
+          <div className="col-md-12" >
             <div className="input-group form-inline panel">
               <label className ="input-group-addon primary">
                 Description:
