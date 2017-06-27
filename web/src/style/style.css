@@ -292,6 +292,10 @@ font-weight: 300;
   margin-left: 17px;
 }
 
+#advancedSearch{
+  margin-top: -30px;
+}
+
 /* createProjectByPattern.js and createProjectView.js */
 
 legend {

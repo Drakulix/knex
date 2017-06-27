@@ -38,7 +38,7 @@ class AdvancedSearch extends Component {
   //View for advanced search, the onChange in the <input> parses the state all the way to the parent
   render() {
     return(
-      <div className="panel panel-body">
+      <div className="panel panel-body" id="advancedSearch">
         <div className="row">
           <div className="col-md-6">
             <div className="input-group form-inline panel">
