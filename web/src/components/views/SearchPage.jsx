@@ -70,52 +70,6 @@ class AdvancedSearch extends Component {
           </div>
         </div>
         <div className="row">
-          <div className="form-inline panel">
-            <div className="col-md-4">
-              <div className="input-group form-inline panel">
-                <span className ="input-group-addon primary">
-                  Tags
-                </span>
-                <input
-                  className="form-control"
-                  type="text"
-                  id="tags"
-                  name="tags"
-                  onChange={(value) => this.props.changeStateTags(value.target.value)}
-                />
-              </div>
-            </div>
-            <div className="col-md-4">
-              <div className="input-group form-inline panel">
-                <span className ="input-group-addon primary">
-                  From
-                </span>
-                <input
-                  className="form-control"
-                  type="date"
-                  id="dateStart"
-                  name="dateStart"
-                  onChange={(value) => this.props.changeStateFrom(value.target.value)}
-                />
-              </div>
-            </div>
-            <div className="col-md-4">
-              <div className="input-group form-inline panel">
-                <span className ="input-group-addon primary">
-                  To
-                </span>
-                <input
-                  className="form-control"
-                  type="date"
-                  id="dateEnd"
-                  name="dateEnd"
-                  onChange={(value) => this.props.changeStateTo(value.target.value)}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="row">
           <div className="col-md-6">
             <div className="input-group form-inline panel">
               <span className ="input-group-addon primary">
@@ -150,6 +104,52 @@ class AdvancedSearch extends Component {
 
 
       </div>
+        <div className="row">
+          <div className="form-inline panel">
+            <div className="col-md-4">
+              <div className="input-group form-inline panel">
+                <span className ="input-group-addon primary">
+                  From Date:
+                </span>
+                <input
+                  className="form-control"
+                  type="date"
+                  id="dateStart"
+                  name="dateStart"
+                  onChange={(value) => this.props.changeStateFrom(value.target.value)}
+                />
+              </div>
+            </div>
+            <div className="col-md-4">
+              <div className="input-group form-inline panel">
+                <span className ="input-group-addon primary">
+                To Date
+                </span>
+                <input
+                  className="form-control"
+                  type="date"
+                  id="dateEnd"
+                  name="dateEnd"
+                  onChange={(value) => this.props.changeStateTo(value.target.value)}
+                />
+              </div>
+            </div>
+            <div className="col-md-4" id="tagInput">
+              <div className="input-group form-inline panel">
+                <span className ="input-group-addon primary">
+                  Tags
+                </span>
+                <input
+                  className="form-control"
+                  type="text"
+                  id="tags"
+                  name="tags"
+                  onChange={(value) => this.props.changeStateTags(value.target.value)}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
     </div>
     );
   }
@@ -211,6 +211,7 @@ class Search extends Component{
     }
   }
 }
+
 
 /*
 * Top level class which creates the searchquery and parses it to the table
@@ -278,7 +279,7 @@ export default class SearchPage extends Component {
           searchstring = searchstring.concat(" AND ");
           filter_set--;
         }
-        searchstring = searchstring.concat("(status: ", this.state.filter_status, "*)");
+        searchstring = searchstring.concat("(status: ", this.state.filter_status, ")");
         filter_set++;
       }
 

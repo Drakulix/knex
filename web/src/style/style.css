@@ -283,6 +283,12 @@ font-weight: 300;
     border-color: #333333;
 }
 
+#DateHeadline{
+  color:red;
+  margin-right: -160px;
+}
+
+
 /* createProjectByPattern.js and createProjectView.js */
 
 legend {
@@ -530,6 +536,17 @@ legend {
  .projectbox .creation-date-elem{
    float:right
  }
+
+ #dateStart{
+   width:170px;
+ }
+ #dateEnd{
+   width:170px;
+ }
+
+#tagInput{
+  margin-left:-6px;
+}
 
  .github-link{
    margin-top: 0.5em;
