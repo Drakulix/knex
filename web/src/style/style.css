@@ -48,6 +48,11 @@ a:hover {
   display: inline-block !important;
 }
 
+.notification-container {
+  width: 50px;
+  position: relative;
+}
+
 .popover {
   border-radius: 0px;
 }

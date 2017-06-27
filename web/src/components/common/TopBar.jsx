@@ -8,6 +8,8 @@ import {
 } from 'react-router-dom';
 import { login, isLoggedIn, logout, getCookie, setCookie } from '../common/Authentication.jsx';
 import { Popover, PopoverTitle, PopoverContent } from 'reactstrap';
+import NotificationBadge from 'react-notification-badge';
+import { Effect } from 'react-notification-badge';
 
 class TopBar extends Component {
   constructor(props) {
@@ -16,7 +18,8 @@ class TopBar extends Component {
     this.state = {
       redirect: false,
       popoverOpen: false,
-      logo: 'Company Logo'
+      logo: 'Company Logo',
+      count: 3
     };
     this.handleLogout = this.handleLogout.bind(this);
     this.toggle = this.toggle.bind(this);
@@ -56,7 +59,10 @@ class TopBar extends Component {
           </div>
           <div className="col-1">
             <div className="top-bar-text">
-            <i id="Popover1" onClick={this.toggle} className="bell fa fa-bell" aria-hidden="true"></i>
+              <div className="notification-container">
+                <NotificationBadge count={this.state.count} effect={Effect.SCALE}/>
+                <i id="Popover1" onClick={this.toggle} className="bell fa fa-bell" aria-hidden="true"></i>
+              </div>
               <Popover placement="bottom" isOpen={this.state.popoverOpen} target="Popover1" toggle={this.toggle}>
                 <PopoverTitle>Notifications</PopoverTitle>
                 <PopoverContent>
