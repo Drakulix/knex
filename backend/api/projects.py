@@ -444,3 +444,19 @@ def delete_comment(project_id, comment_id):
         raise error
     except Exception as err:
         raise ApiException(str(err), 500)
+
+@projects.route(' /api/projects/id:uuid/share/<user_mail>', methods=['POST'])
+@login_required
+def share_via_email(mail):
+    """Creates and saves notification object
+
+        Returns:
+            res: Notification object as json
+    """
+    notification = request.get_json()
+    res = g.user_datastore.get_user(mail)
+    if res is None:
+        return make_response("Unknown User with Email-address: " + mail, 404)
+    res.notifications =res.notification.append(notification['notifications'])
+    res.save()
+    return jsonify(res)

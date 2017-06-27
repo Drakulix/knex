@@ -11,6 +11,7 @@ from flask_principal import PermissionDenied
 from jsonschema import FormatChecker, Draft4Validator
 from pymongo import MongoClient, ReturnDocument
 from mongoengine.fields import UUIDField, ListField, StringField, BooleanField
+from mongoengine.fields import EmbeddedDocument, EmbeddedDocumentListField
 from werkzeug.routing import BaseConverter
 
 from api.projects import projects
@@ -98,6 +99,13 @@ class Role(DB.Document, RoleMixin):
     description = DB.StringField(max_length=255)
 
 
+class Notification(EmbeddedDocument):
+    id = DB.StringField(max_length=255)
+    title = DB.StringField(max_length=255)
+    description = DB.StringField(max_length=255)
+    link = DB.URLField()
+
+
 class User(DB.Document, UserMixin):
     email = DB.StringField(max_length=255, unique=True)
     first_name = DB.StringField(max_length=255)
@@ -107,6 +115,7 @@ class User(DB.Document, UserMixin):
     bio = DB.StringField(max_length=255)
     bookmarks = DB.ListField(DB.UUIDField(), default=[])
     roles = DB.ListField(DB.ReferenceField(Role), default=[])
+    notifications = DB.EmbeddedDocumentListField(Notification)
 
     # we must not override the method __iter__ because Document.save() stops working then
     def to_dict(self):
@@ -123,9 +132,9 @@ class User(DB.Document, UserMixin):
 
 
 class EmailConverter(BaseConverter):
-    regex = r"([a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\." +\
-            r"[a-z0-9!#$%&'*+\/=?^_`"r"{|}~-]+)" +\
-            r"*(@|\sat\s)(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" +\
+    regex = r"([a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\." + \
+            r"[a-z0-9!#$%&'*+\/=?^_`"r"{|}~-]+)" + \
+            r"*(@|\sat\s)(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" + \
             r"(\.|"r"\sdot\s))+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)"
 
 

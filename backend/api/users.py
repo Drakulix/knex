@@ -64,13 +64,12 @@ def create_user():
         # if res is not None:
         # return make_response('User already exists',500)
 
-        g.user_datastore.create_user(first_name=user['first name'],
-                                     last_name=user['last name'],
-                                     email=user['email'],
-                                     password=encrypt_password(
-                                         user['password']),
-                                     bio=user['bio'],
-                                     roles=[roles])
+        g.user_datastore.create_user(first_name=user["first_name"],
+                                     last_name=user["last_name"],
+                                     email=user["email"],
+                                     password=encrypt_password(user["password"]),
+                                     bio=user["bio"], roles=[role],
+                                     notifications=user["notifications"])
 
         return jsonify(g.user_datastore.get_user(user['email']))
 
