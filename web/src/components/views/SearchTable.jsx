@@ -252,8 +252,8 @@ and gets the data from the backend. Data is stored in state.results
     } else {
       return(
         <div
-          className="noResults">
-          <h2>No Results found!</h2>
+          className="header" id="noResults">
+          No Results found!
         </div>
       );
     }

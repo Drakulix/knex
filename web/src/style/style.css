@@ -272,10 +272,9 @@ font-weight: 300;
   height: auto;
 }
 
-.noResults{
-  text-align: center;
+#noResults{
+  margin-top: 50px;
 }
-
 
 .input-group-addon.primary {
     color: #ffffff;
@@ -288,6 +287,10 @@ font-weight: 300;
   margin-right: -160px;
 }
 
+#minimize{
+  margin-top: -50px;
+  margin-left: 17px;
+}
 
 /* createProjectByPattern.js and createProjectView.js */
 
@@ -379,6 +382,8 @@ legend {
   margin-top: 100px;
   margin-bottom: 50px;
 }
+
+
 
 .caption{
   width: 108px;
@@ -545,7 +550,7 @@ legend {
  }
 
 #tagInput{
-  margin-left:-6px;
+  margin-left:-8px;
 }
 
  .github-link{

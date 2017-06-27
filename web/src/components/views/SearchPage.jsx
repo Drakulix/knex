@@ -69,6 +69,7 @@ class AdvancedSearch extends Component {
             </div>
           </div>
         </div>
+
         <div className="row">
           <div className="col-md-6">
             <div className="input-group form-inline panel">
@@ -101,9 +102,8 @@ class AdvancedSearch extends Component {
               </select>
             </div>
           </div>
-
-
       </div>
+
         <div className="row">
           <div className="form-inline panel">
             <div className="col-md-4">
@@ -123,7 +123,7 @@ class AdvancedSearch extends Component {
             <div className="col-md-4">
               <div className="input-group form-inline panel">
                 <span className ="input-group-addon primary">
-                To Date
+                To Date:
                 </span>
                 <input
                   className="form-control"
@@ -187,7 +187,7 @@ class Search extends Component{
                 changeStateDescription={(desc) => this.props.changeStateDescription(desc)}
               />
             </form>
-            <a onClick={() => this.toggle()}  className="clickable-text col-md-2">
+            <a onClick={() => this.toggle()}  className="clickable-text col-md-2" id="minimize">
               <u>Minimize</u>
             </a>
           </div>
