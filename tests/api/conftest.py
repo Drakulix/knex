@@ -62,18 +62,17 @@ def manifest_validator():
 
 @pytest.yield_fixture(autouse=True)
 def run_around_tests(mongo_client):
-    # Code that will run before your test, for example:
-    # files_before = # ... do something to check the existing files
+    """
+    cleans up the projects collection in mongodb before and after each test
+    :param mongo_client:
+    :return:
+    """
     result = mongo_client.projects.delete_many({})
-    # A test function will be run at this point
     yield
-    # Code that will run after your test, for example:
     result = mongo_client.projects.delete_many({})
-    # files_after = # ... do something to check the existing files
-    # assert files_before == files_after
 
 
-@pytest.fixture(scope="session")
+@pytest.yield_fixture()
 def enter_data_using_post(pytestconfig, flask_api_url):
     test_manifest = os.path.join(
         str(pytestconfig.rootdir),
@@ -86,4 +85,4 @@ def enter_data_using_post(pytestconfig, flask_api_url):
     response = requests.post(flask_api_url + "/api/projects", data=data.encode('utf-8'),
                              headers={'Content-Type': 'application/json5'})
     print(response.text)
-    return response
+    yield response
