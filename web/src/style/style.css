@@ -270,6 +270,7 @@ font-weight: 300;
 
 #dropdown_status{
   height: auto;
+  width: 165px;
 }
 
 #noResults{
@@ -277,18 +278,31 @@ font-weight: 300;
 }
 
 .input-group-addon.primary {
-    color: #ffffff;
-    background-color: #333333;
-    border-color: #333333;
+    color: #333333;
+    border: 0px;
+    background-color: #ffffff;
+    display: inline-block;
+    margin-left: -11px;
 }
 
-#DateHeadline{
-  color:red;
-  margin-right: -160px;
+.row{
+  margin-top: -15px;
+}
+
+#dateStart{
+  margin-left: -18px;
+}
+
+#dateEnd{
+  margin-left: -10px;
+}
+
+#advancedSearchToggle{
+  margin-top: 20px;
 }
 
 #minimize{
-  margin-top: -50px;
+  margin-top: -20px;
   margin-left: 17px;
 }
 

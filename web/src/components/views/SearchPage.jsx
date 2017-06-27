@@ -40,11 +40,11 @@ class AdvancedSearch extends Component {
     return(
       <div className="panel panel-body" id="advancedSearch">
         <div className="row">
-          <div className="col-md-6">
+          <div className="col-md-8">
             <div className="input-group form-inline panel">
-              <span className ="input-group-addon primary">
-                Project Name
-              </span>
+              <label for="projectName" className ="input-group-addon primary" id="labelProjectName">
+                Project Name:
+              </label>
               <input
                 className="form-control full-width"
                 type="text"
@@ -54,11 +54,41 @@ class AdvancedSearch extends Component {
               />
             </div>
           </div>
-          <div className="col-md-6">
+          <div className="col-md-2">
+            <div className="input-group form-inline panel" id="dateStart">
+              <label for="dateStart" className ="input-group-addon primary">
+                Date from:
+              </label>
+              <input
+                className="form-control"
+                type="date"
+
+                name="dateStart"
+                onChange={(value) => this.props.changeStateFrom(value.target.value)}
+              />
+            </div>
+          </div>
+          <div className="col-md-2">
+            <div className="input-group form-inline panel " id="dateEnd">
+              <label for="DateEnd" className ="input-group-addon primary">
+              To:
+            </label>
+              <input
+                className="form-control"
+                type="date"
+                name="dateEnd"
+                onChange={(value) => this.props.changeStateTo(value.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-md-5">
             <div className="input-group form-inline panel">
-              <span className ="input-group-addon primary">
-                Author
-              </span>
+              <label className ="input-group-addon primary">
+                Author:
+              </label>
               <input
                 className="form-control"
                 type="search"
@@ -68,28 +98,25 @@ class AdvancedSearch extends Component {
               />
             </div>
           </div>
-        </div>
-
-        <div className="row">
-          <div className="col-md-6">
+          <div className="col-md-5" id="tagInput">
             <div className="input-group form-inline panel">
-              <span className ="input-group-addon primary">
-                Description
-              </span>
+              <label className ="input-group-addon primary">
+                Tags:
+              </label>
               <input
                 className="form-control"
                 type="text"
-                id="description"
-                name="description"
-                onChange={(value) => this.props.changeStateDescription(value.target.value)}
+                id="tags"
+                name="tags"
+                onChange={(value) => this.props.changeStateTags(value.target.value)}
               />
             </div>
           </div>
-          <div className="col-md-6">
+          <div className="col-md-2">
             <div className="input-group form-inline panel">
-              <span className ="input-group-addon primary">
-                Status
-              </span>
+              <label className ="input-group-addon primary">
+                Status:
+              </label>
               <select
                 className="form-control"
                 id="dropdown_status"
@@ -102,54 +129,24 @@ class AdvancedSearch extends Component {
               </select>
             </div>
           </div>
-      </div>
+        </div>
 
         <div className="row">
-          <div className="form-inline panel">
-            <div className="col-md-4">
-              <div className="input-group form-inline panel">
-                <span className ="input-group-addon primary">
-                  From Date:
-                </span>
-                <input
-                  className="form-control"
-                  type="date"
-                  id="dateStart"
-                  name="dateStart"
-                  onChange={(value) => this.props.changeStateFrom(value.target.value)}
-                />
-              </div>
-            </div>
-            <div className="col-md-4">
-              <div className="input-group form-inline panel">
-                <span className ="input-group-addon primary">
-                To Date:
-                </span>
-                <input
-                  className="form-control"
-                  type="date"
-                  id="dateEnd"
-                  name="dateEnd"
-                  onChange={(value) => this.props.changeStateTo(value.target.value)}
-                />
-              </div>
-            </div>
-            <div className="col-md-4" id="tagInput">
-              <div className="input-group form-inline panel">
-                <span className ="input-group-addon primary">
-                  Tags
-                </span>
-                <input
-                  className="form-control"
-                  type="text"
-                  id="tags"
-                  name="tags"
-                  onChange={(value) => this.props.changeStateTags(value.target.value)}
-                />
-              </div>
+          <div className="col-md-12">
+            <div className="input-group form-inline panel">
+              <label className ="input-group-addon primary">
+                Description:
+              </label>
+              <input
+                className="form-control"
+                type="text"
+                id="description"
+                name="description"
+                onChange={(value) => this.props.changeStateDescription(value.target.value)}
+              />
             </div>
           </div>
-        </div>
+      </div>
     </div>
     );
   }
@@ -201,7 +198,7 @@ class Search extends Component{
               <Searchbar getSearchString = {(str) => this.props.getSearchString(str)}  />
             </form>
           </div>
-          <div className="row padding">
+          <div className="row padding" id="advancedSearchToggle">
             <a onClick={() => this.toggle()} className="clickable-text text-right">
               <u>Advanced Search</u>
             </a>
