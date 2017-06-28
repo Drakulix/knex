@@ -301,10 +301,46 @@ a:hover {
   border-radius: 0px !important;
 }
 
+#dropdown_status{
+  height: auto;
+  width: 165px;
+}
+
+#noResults{
+  margin-top: 50px;
+}
+
 .input-group-addon.primary {
-  color: #ffffff;
-  background-color: #333333;
-  border-color: #333333;
+    color: #333333;
+    border: 0px;
+    background-color: #ffffff;
+    display: inline-block;
+    margin-left: -11px;
+}
+
+.row{
+  margin-top: -15px;
+}
+
+#dateStart{
+  margin-left: -18px;
+}
+
+#dateEnd{
+  margin-left: -10px;
+}
+
+#advancedSearchToggle{
+  margin-top: 20px;
+}
+
+#minimize{
+  margin-top: -45px;
+  margin-left: 17px;
+}
+
+#advancedSearch{
+  margin-top: -30px;
 }
 
 /* createProjectByPattern.js and createProjectView.js */
@@ -326,6 +362,10 @@ legend {
   margin-top: 4em;
   margin-bottom: 2em;
   text-align: center;
+}
+
+#headerSearch{
+  margin-bottom: 0em;
 }
 
 .text{
@@ -393,6 +433,8 @@ legend {
   margin-top: 100px;
   margin-bottom: 50px;
 }
+
+
 
 .caption{
   width: 108px;
@@ -508,55 +550,67 @@ legend {
   height: 674px;
   text-align: left;
   color: #000000;
+ }
+
+ .projectbox .sec-label{
+   font-weight: bold;
+ }
+
+ .projectbox .authors{
+   margin-bottom: 1em;
+ }
+
+ .projectbox .team{
+   margin-bottom: 1em;
+ }
+
+ .projectbox .tags-pb{
+   margin-bottom: 1em;
+ }
+
+ .projectbox .github{
+   margin-top: 2.5em;
+ }
+
+ .projectbox .description-elem{
+   text-align: justify;
+   margin-top: 3em;
+ }
+
+ .projectbox .desc-label{
+   margin-bottom: 1.5em;
+ }
+
+ .projectbox .desc-val{
+   margin-left: 1em;
+ }
+
+ .projectbox .date-group{
+   margin-top: 2em;
+ }
+
+ .projectbox .creation-date-elem{
+   float:right
+ }
+
+ #dateStart{
+   width:170px;
+ }
+ #dateEnd{
+   width:170px;
+ }
+
+#tagInput{
+  margin-left:-8px;
 }
 
-.projectbox .sec-label{
-  font-weight: bold;
-}
+ .github-link{
+   margin-top: 0.5em;
+   color: blue;
+   text-decoration: underline;
+ }
 
-.projectbox .authors{
-  margin-bottom: 1em;
-}
-
-.projectbox .team{
-  margin-bottom: 1em;
-}
-
-.projectbox .tags-pb{
-  margin-bottom: 1em;
-}
-
-.projectbox .github{
-  margin-top: 2.5em;
-}
-
-.projectbox .description-elem{
-  text-align: justify;
-  margin-top: 3em;
-}
-
-.projectbox .desc-label{
-  margin-bottom: 1.5em;
-}
-
-.projectbox .desc-val{
-  margin-left: 1em;
-}
-
-.projectbox .date-group{
-  margin-top: 2em;
-}
-
-.projectbox .creation-date-elem{
-  float:right
-}
-
-.github-link{
-  margin-top: 0.5em;
-  color: blue;
-  text-decoration: underline;
-}
-.overviewbar{
+ .overviewbar{
   background-color: #f8f8f8;
   position: relative;
   top: 20px;
