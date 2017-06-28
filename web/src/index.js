@@ -11,29 +11,49 @@ import {
 
 import history from './components/common/history'
 
-import ProjectDetails from './components/pages/ProjectDetails';
-import CreateProject from './components/pages/CreateProject';
-import CreateProjectLink from './components/pages/CreateProjectLink';
-import ProjectDiscovery from './components/pages/ProjectDiscovery';
-import UserBookmarks from './components/pages/UserBookmarks';
 import SignIn from './components/pages/SignIn.jsx';
 import SignUp from './components/pages/SignUp.jsx';
-import AdminArea from './components/pages/AdminArea';
-import ProfileDetails from './components/pages/ProfileDetails.jsx';
-import UpdateProject from './components/pages/UpdateProject';
+
+import AdminOverview from './components/views/AdminOverview';
+import CreateProjectByPattern from './components/views/CreateProjectByPattern';
+import CreateProject from './components/views/CreateProjectView.jsx';
+import ProfileContainer from './components/views/ProfileContainer.jsx';
+import ProjectContainer from './components/views/ProjectContainer';
+import SearchPage from './components/views/SearchPage';
+import UpdateProject from './components/views/UpdateProjectView';
+import BookmarksTable from './components/views/BookmarksTable';
+
+import TopBar from './components/common/TopBar';
+import SideBar from './components/common/SideBar';
+
+const PageRoute = ({ component: Component, path, ...rest }) => (
+  <Route {...rest} path={path} render={props => (
+    (
+      <div className="inner-content">
+        <TopBar />
+        <div className="row">
+          <SideBar location={path} />
+          <div className="col-9 content">
+            <Component {...props} />
+          </div>
+        </div>
+      </div>
+    )
+  )}/>
+)
 
 ReactDOM.render(
 <BrowserRouter history={history}>
   <div>
-    <Route path="/discovery" component={ProjectDiscovery} />
-    <Route path="/admin" component={AdminArea} />
-    <Route path="/create/:getURL" component={CreateProject} />
-    <Route exact path="/create" component={CreateProject} />
-    <Route path="/update" component={UpdateProject} />
-    <Route path="/createbylink" component={CreateProjectLink} />
-    <Route path="/projects/:uuid" component={ProjectDetails} />
-    <Route path="/bookmarks" component={UserBookmarks} />
-    <Route path="/profile" component={ProfileDetails} />
+    <PageRoute path="/discovery" component={SearchPage} />
+    <PageRoute path="/admin" component={AdminOverview} />
+    <PageRoute path="/create/:getURL" component={CreateProjectByPattern} />
+    <PageRoute exact path="/create" component={CreateProject} />
+    <PageRoute path="/update" component={UpdateProject} />
+    <PageRoute path="/createbylink" component={CreateProject} />
+    <PageRoute path="/projects/:uuid" component={ProjectContainer} />
+    <PageRoute path="/bookmarks" component={BookmarksTable} />
+    <PageRoute path="/profile" component={ProfileContainer} />
     <Route path="/register" component={SignUp} />
     <Route exact path="/" component={SignIn} />
  </div>
