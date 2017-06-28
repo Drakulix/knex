@@ -1,7 +1,7 @@
 import json
 
 from elasticsearch import Elasticsearch
-from flask import Flask, g, jsonify
+from flask import Flask, g, jsonify, request
 from flask_cors import CORS
 from flask_login import LoginManager
 from flask_mongoengine import MongoEngine
@@ -144,6 +144,16 @@ def handle_invalid_usage(error):
     return response
 
 
+@app.errorhandler(404)
+def index(e):
+    """Index of knex
+    """
+    if request.path.startswith("/api/"):
+        return e, 404
+    else:
+        return app.send_static_file('index.html')
+
+
 @app.route('/', methods=['GET'])
 def index():
     """Index of knex
@@ -154,14 +164,6 @@ def index():
 app.register_blueprint(projects)
 app.register_blueprint(users)
 app.register_blueprint(search)
-
-
-@app.route('/<path:dummy>', methods=['GET'])
-def index_dummy():
-    """Index of knex
-    """
-    return app.send_static_file('index.html')
-
 
 if __name__ == "__main__":
     # remove debug for production
