@@ -29,7 +29,7 @@ def logout():
     return make_response('Logged out', 200)
 
 
-@users.route('/api/users', methods=['PUT'])
+@users.route('/api/users', methods=['POST'])
 # @roles_required('admin')
 def create_user():
 
@@ -57,7 +57,7 @@ def create_user():
         raise ApiException(str(err), 500)
 
 
-@users.route('/api/users/updateProfile', methods=['PUT'])
+@users.route('/api/users', methods=['PUT'])
 # @roles_required('admin')
 def update_user():
     user = request.get_json()
@@ -76,7 +76,7 @@ def update_user():
     return make_response("User with email: " + user['email'] + " updated", 200)
 
 
-@users.route('/api/users/updatePassword', methods=['PUT'])
+@users.route('/api/users/password', methods=['PUT'])
 # @roles_required('admin')
 def update_password():
     user = request.get_json()
