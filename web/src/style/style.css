@@ -12,11 +12,8 @@ p {
   margin-bottom: 0px !important;
 }
 
-p:hover {
-color: #ff5500;
-}
-
 a {
+  vertical-align: center;
   color: #FFF;
   font-family: 'Open Sans', sans-serif !important;
   font-weight: 300;
@@ -24,14 +21,16 @@ a {
 }
 
 a:hover {
-  color: #ff5500;
+  color: inherit;
   text-decoration: none;
   font-family: 'Open Sans', sans-serif !important;
   font-weight: 300;
 }
 
 .logo-banner {
-  margin-top: 12px;
+  margin-top: 2em;
+  margin-left: 12px;
+  width: 80%;
 }
 
 .container {
@@ -39,18 +38,36 @@ a:hover {
 }
 
 .container-fluid {
+  z-index: 100;
   height: 52px;
   background-color: #333333;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
 }
 
+.bell {
+  display: inline-block !important;
+}
+
+.notification-container {
+  width: 50px;
+  position: relative;
+}
+
+.popover {
+  border-radius: 0px;
+}
+
+.popover-title {
+
+}
+
 .top-bar-company {
-	width: 162px;
+  width: 162px;
   margin-top: 16px;
   font-family: 'Open Sans', sans-serif;
   font-weight: 300;
-	font-size: 16px;
-	color: #ffffff;
+  font-size: 16px;
+  color: #ffffff;
 }
 
 .top-bar-text {
@@ -58,8 +75,8 @@ a:hover {
   text-align: center;
   font-family: 'Open Sans', sans-serif;
   font-weight: 300;
-	font-size: 16px;
-	color: #ffffff;
+  font-size: 16px;
+  color: #ffffff;
 }
 
 .top-bar-searchbar {
@@ -67,13 +84,13 @@ a:hover {
   margin-left: 41px;
   font-family: 'Open Sans', sans-serif;
   font-weight: 300;
-	font-size: 16px;
-	color: #ffffff;
+  font-size: 16px;
+  color: #ffffff;
 }
 
- .table-project-name {
-   color: black;
- }
+.table-project-name {
+  color: black;
+}
 
 .padding {
   padding-left: 15px;
@@ -84,7 +101,6 @@ a:hover {
 .topbar {
   position: fixed;
   width: 100%;
-  z-index: 100;
 }
 
 .search {
@@ -98,9 +114,10 @@ a:hover {
 /* Start Sidebar Styling */
 
 .side-bar {
+  z-index: 200;
   height: 100%;
-	background-color: #333333;
-	box-shadow: 2px 0 4px 0 rgba(0, 0, 0, 0.5);
+  background-color: #333333;
+  box-shadow: 2px 0 4px 0 rgba(0, 0, 0, 0.5);
   padding-right: 0px !important;
   position: fixed;
   width: 15em;
@@ -112,23 +129,27 @@ a:hover {
 }
 
 .list-group {
-  margin-top: 100px;
-  height: 140px;
+  margin-top: 2em;
+  height: 100%;
   padding: 0px !important;
 }
 
 .list-group-item {
-height: 52px;
-background-color: #333333 !important;
-border: 0px !important;
-color: white;
-font-family: 'Open Sans', sans-serif;
-font-weight: 300;
+  height: 48px;
+  background-color: #333333 !important;
+  border: 0px !important;
+  color: white;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+}
+
+.list-group-item-text {
+  vertical-align: -webkit-baseline-middle;
 }
 
 .list-group-item:hover {
-    text-decoration: none;
-    background-color: #242424 !important;
+  text-decoration: none;
+  background-color: #242424 !important;
 }
 
 .active {
@@ -156,15 +177,23 @@ font-weight: 300;
   text-align: center !important;
 }
 
-.service-name{
+.slogan{
   margin-top:3em;
-  margin-bottom: 1em;
+  font-size: 32px;
+  color: #8d8d8d;
+}
+
+.service-name{
+  width: 5em;
+  height: 6em;
+  margin-top:2em;
+  margin-bottom: 0.1em;
   font-size: 42px;
   color: #333333;
 }
 
 .team-name{
-  font-size: 32px;
+  font-size: 30px;
   color: #8d8d8d;
 }
 
@@ -174,7 +203,7 @@ font-weight: 300;
 }
 
 .input-group {
-  margin:9px auto;
+  margin: 10px auto;
 }
 
 .input-login {
@@ -185,12 +214,16 @@ font-weight: 300;
   border-radius: 0px;
 }
 
+.checkbox {
+  margin-bottom: 30px !important;
+}
+
 .sign-button {
   width: 250px;
   height: 43px;
   background-color: #ff5500 !important;
   border-color: #ff5500 !important;
-  margin: 25px !important;
+  margin: 5px !important;
   font-weight: 200;
 }
 
@@ -268,10 +301,46 @@ font-weight: 300;
   border-radius: 0px !important;
 }
 
+#dropdown_status{
+  height: auto;
+  width: 165px;
+}
+
+#noResults{
+  margin-top: 50px;
+}
+
 .input-group-addon.primary {
-    color: #ffffff;
-    background-color: #333333;
-    border-color: #333333;
+    color: #333333;
+    border: 0px;
+    background-color: #ffffff;
+    display: inline-block;
+    margin-left: -11px;
+}
+
+.row{
+  margin-top: -15px;
+}
+
+#dateStart{
+  margin-left: -18px;
+}
+
+#dateEnd{
+  margin-left: -10px;
+}
+
+#advancedSearchToggle{
+  margin-top: 20px;
+}
+
+#minimize{
+  margin-top: -45px;
+  margin-left: 17px;
+}
+
+#advancedSearch{
+  margin-top: -30px;
 }
 
 /* createProjectByPattern.js and createProjectView.js */
@@ -293,6 +362,10 @@ legend {
   margin-top: 4em;
   margin-bottom: 2em;
   text-align: center;
+}
+
+#headerSearch{
+  margin-bottom: 0em;
 }
 
 .text{
@@ -360,6 +433,8 @@ legend {
   margin-top: 100px;
   margin-bottom: 50px;
 }
+
+
 
 .caption{
   width: 108px;
@@ -443,8 +518,8 @@ legend {
   color: #000000;
 }
 
- /* Project Container */
- .projecttitle {
+/* Project Container */
+.projecttitle {
   margin-top: 78px;
   position: relative;
   width: 1001px;
@@ -454,8 +529,8 @@ legend {
   font-size: 18px;
   text-align: left;
   color: #000000;
- }
- .status {
+}
+.status {
   position: relative;
   margin-top: 14px;
   width: 300px;
@@ -465,8 +540,8 @@ legend {
   font-size: 16px;
   text-align: left;
   color: #000000;
- }
- .projectbox {
+}
+.projectbox {
   margin-top: 6em;
   margin-bottom: 30px;
   position: relative;
@@ -518,19 +593,31 @@ legend {
    float:right
  }
 
+ #dateStart{
+   width:170px;
+ }
+ #dateEnd{
+   width:170px;
+ }
+
+#tagInput{
+  margin-left:-8px;
+}
+
  .github-link{
    margin-top: 0.5em;
    color: blue;
    text-decoration: underline;
  }
+
  .overviewbar{
   background-color: #f8f8f8;
   position: relative;
   top: 20px;
   height: 32px;
- }
+}
 
- .overviewButton {
+.overviewButton {
   margin-left: 40px;
   width: 110px;
   height: 30px;
@@ -540,8 +627,8 @@ legend {
   font-weight: 300;
   text-align: center;
   color: #898989;
- }
- .overviewbar-text{
+}
+.overviewbar-text{
   top: 14px;
   left:17px;
   position:relative;
@@ -552,8 +639,8 @@ legend {
   font-weight: 300;
   text-align: center;
   color: #898989;
- }
- .list_project_info_title {
+}
+.list_project_info_title {
   position: relative;
   margin-top:10px;
   width: 835px;
@@ -563,8 +650,8 @@ legend {
   font-size: 16px;
   text-align: left;
   color: #000000;
- }
- .list_project_info_content {
+}
+.list_project_info_content {
   position: relative;
   width: 835px;
   height: 16px;
@@ -573,8 +660,8 @@ legend {
   font-size: 16px;
   text-align: left;
   color: #000000;
- }
- .star-edit-button {
+}
+.star-edit-button {
   width: 58px;
   height: 34px;
   background-color: #333333;
@@ -588,9 +675,9 @@ legend {
   margin-top: 30px;
   margin-bottom: 10px;
 
- }
+}
 
- .trash-button{
+.trash-button{
   width: 58px;
   height: 34px;
   background-color: #c0392b;
@@ -603,11 +690,11 @@ legend {
   margin-top: 30px;
   margin-bottom: 10px;
 
- }
- .white{
+}
+.white{
   color: white;
   position: relative;
- }
+}
 /* Admin Area Start */
 
 .adminarea-header {
@@ -642,14 +729,14 @@ legend {
 }
 
 .page-link {
-    position: relative;
-    display: block;
-    padding: 0.5rem 0.75rem;
-    margin-left: -1px;
-    line-height: 1.25;
-    color: #333333;
-    background-color: #fff;
-    border: 1px solid #ddd;
+  position: relative;
+  display: block;
+  padding: 0.5rem 0.75rem;
+  margin-left: -1px;
+  line-height: 1.25;
+  color: #333333;
+  background-color: #fff;
+  border: 1px solid #ddd;
 }
 
 .table-container {
@@ -674,8 +761,8 @@ legend {
 .btn-info {
   width: 92px;
   height: 39px;
-  background-color: #333333;
-  border: solid 1px #333333;
+  background-color: #ff5500;
+  border: solid 1px #ff5500;
   font-family: 'Open Sans', sans-serif;
   font-weight: 300;
   font-size: 18px;
@@ -688,16 +775,16 @@ legend {
 }
 
 .btn-info:hover {
-    color: #fff;
-    background-color: #ff5500;
-    border-color: #ff5500;
+  color: #fff;
+  background-color: #ff5500;
+  border-color: #ff5500;
 }
 
 .btn-cancel {
   width: 92px;
   height: 39px;
-  background-color: #ff5500;
-  border: solid 1px #ff5500;
+  background-color: #333333;
+  border: solid 1px #333333;
   color: white;
   font-family: 'Open Sans', sans-serif;
   font-weight: 300;
@@ -708,18 +795,18 @@ legend {
 }
 
 .btn-danger {
-    color: #fff;
-    height: 39px;
-    background-color: #d9534f;
-    border-color: #d9534f;
-    border: solid 1px #d9534f;
-    border-radius: 0px;
+  color: #fff;
+  height: 39px;
+  background-color: #d9534f;
+  border-color: #d9534f;
+  border: solid 1px #d9534f;
+  border-radius: 0px;
 }
 
 .nav-tabs .nav-link {
-    border: 1px solid transparent;
-    border-top-left-radius: 0rem;
-    border-top-right-radius: 0rem;
+  border: 1px solid transparent;
+  border-top-left-radius: 0rem;
+  border-top-right-radius: 0rem;
 }
 
 /* Profile Details */

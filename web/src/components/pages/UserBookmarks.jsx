@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import ProfileContainer from '../views/ProfileContainer.jsx';
+import BookmarksTable from '../views/BookmarksTable';
 import TopBar from '../common/TopBar';
 import { Link } from 'react-router-dom';
 import logo from '../../style/img/white_logo_title.svg';
 
-export default class ProfileDetails extends Component {
+export default class UserBookmarks extends Component {
   constructor(props) {
     super(props);
 
@@ -37,13 +37,13 @@ export default class ProfileDetails extends Component {
                   {this.state.menu.createProject}
                 </Link>
               </li>
-              <li className="list-group-item">
+              <li className="list-group-item active">
+                <div className="menu-indicator" />
                 <Link to="/bookmarks">
                   {this.state.menu.bookmarks}
                 </Link>
               </li>
-              <li className="list-group-item active">
-                <div className="menu-indicator" />
+              <li className="list-group-item">
                 <Link to="/profile">
                   {this.state.menu.profile}
                 </Link>
@@ -56,7 +56,7 @@ export default class ProfileDetails extends Component {
             </ul>
           </div>
           <div className="col-9 content">
-            <ProfileContainer />
+            <BookmarksTable />
           </div>
         </div>
       </div>

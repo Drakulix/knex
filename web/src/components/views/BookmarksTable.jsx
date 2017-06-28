@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-export default class CollectionTable extends React.Component {
+export default class BookmarksTable extends React.Component {
   render() {
     return (
       <div className="container">
-        <div className="header">Your Collection</div>
+        <div className="header">Your Bookmarks</div>
         <div className="table-container">
           <table className="table">
             <thead className="thead-default">
