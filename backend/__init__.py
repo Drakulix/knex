@@ -10,8 +10,9 @@ from flask_security.utils import encrypt_password
 from flask_principal import PermissionDenied
 from jsonschema import FormatChecker, Draft4Validator
 from pymongo import MongoClient, ReturnDocument
-from mongoengine.fields import UUIDField, ListField, StringField, BooleanField
-from mongoengine.fields import EmbeddedDocument, EmbeddedDocumentListField
+from mongoengine.fields import UUIDField, ListField, StringField, BooleanField, ObjectId
+from mongoengine.fields import EmbeddedDocumentField, EmbeddedDocument, ListField, \
+    ObjectIdField
 from werkzeug.routing import BaseConverter
 
 from api.projects import projects
@@ -100,7 +101,7 @@ class Role(DB.Document, RoleMixin):
 
 
 class Notification(EmbeddedDocument):
-    id = DB.StringField(max_length=255)
+    notification_id = ObjectIdField(default=ObjectId)
     title = DB.StringField(max_length=255)
     description = DB.StringField(max_length=255)
     link = DB.URLField()
@@ -115,7 +116,7 @@ class User(DB.Document, UserMixin):
     bio = DB.StringField(max_length=255)
     bookmarks = DB.ListField(DB.UUIDField(), default=[])
     roles = DB.ListField(DB.ReferenceField(Role), default=[])
-    notifications = DB.EmbeddedDocumentListField(Notification)
+    notifications = DB.ListField(EmbeddedDocumentField(Notification), default=[])
 
     # we must not override the method __iter__ because Document.save() stops working then
     def to_dict(self):
@@ -211,6 +212,56 @@ def index():
 app.register_blueprint(projects)
 app.register_blueprint(users)
 app.register_blueprint(search)
+
+#@projects.route('/api/projects/id:uuid/share/<user_mail>', methods=['POST'])
+@app.route('/api/projects/<uuid:project_id>/share/<user_mail>', methods=['POST'])
+# @login_required
+def share_via_email(user_mail):
+    """Creates and saves notification object
+
+        Returns:
+            res: Notification object as json
+    """
+    user = g.user_datastore.get_user(user_mail)
+    if not user:
+        return make_response("Unknown User with Email-address: " + user_mail, 404)
+    res = g.projects.find_one({'_id': project_id})
+    if not res:
+        raise ApiException("Project not found", 404)
+
+    description = res["title"] + "was shared with you"
+    link = "/projects/" + str(project_id)
+    title = "Project shared"
+    return notify_users([user_mail], description, title, link)
+
+
+@app.route('/api/projects/<uuid:project_id>/share', methods=['POST'])
+# @login_required
+def share_with_users(project_id):
+    """Creates and saves notification object
+
+        Returns:
+            res: Notification object as json
+    """
+    emails_list = request.get_json()
+    res = g.projects.find_one({'_id': project_id})
+    if res is None:
+        raise ApiException("Project not found", 404)
+
+    description = res["title"] + "was shared with you"
+    link = "/projects/" + str(project_id)
+    title = "Project shared"
+    return notify_users(emails_list, description, title, link)
+
+
+# internal function to append notifications to the given userlist
+def notify_users(useremail_list, n_description, n_title, n_link):
+    n = Notification(description=n_description, title=n_title, link=n_link)
+    for email in useremail_list:
+        res = g.user_datastore.get_user(email)
+        res.notifications.append(n)
+        res.save()
+
 
 if __name__ == "__main__":
     # remove debug for production

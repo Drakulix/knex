@@ -68,8 +68,7 @@ def create_user():
                                      last_name=user["last_name"],
                                      email=user["email"],
                                      password=encrypt_password(user["password"]),
-                                     bio=user["bio"], roles=[role],
-                                     notifications=user["notifications"])
+                                     bio=user["bio"], roles=[role])
 
         return jsonify(g.user_datastore.get_user(user['email']))
 
