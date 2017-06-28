@@ -24,7 +24,7 @@ def test_empty_database(flask_api_url, mongo_client):
     result = mongo_client.projects.delete_many({})
     print("Database cleaned: ", result)
     response = requests.get(flask_api_url + "/api/projects")
-    assert response.status_code == 500
+    assert response.status_code == 200
     print(response.text)
 
 
