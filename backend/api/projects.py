@@ -169,9 +169,9 @@ def update_project(project_id):
                 print("mongo replaced:", file=sys.stderr)
                 print(manifest, file=sys.stderr)
                 return make_response("Success")
-            elif on_json_loading_failed() is not None:
+            elif request.on_json_loading_failed() is not None:
                 raise ApiException("json could not be parsed",
-                                   400, on_json_loading_failed())
+                                   400, request.on_json_loading_failed())
             else:
                 validation_errs = [error for error in
                                    sorted(g.validator.iter_errors(manifest))]
