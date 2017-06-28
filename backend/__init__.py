@@ -5,7 +5,8 @@ from flask import Flask, g, jsonify
 from flask_cors import CORS
 from flask_login import LoginManager
 from flask_mongoengine import MongoEngine
-from flask_security import Security, MongoEngineUserDatastore, UserMixin, RoleMixin
+from flask_security import Security, MongoEngineUserDatastore,\
+    UserMixin, RoleMixin, current_user
 from flask_security.utils import encrypt_password
 from jsonschema import FormatChecker, Draft4Validator
 from pymongo import MongoClient, ReturnDocument
