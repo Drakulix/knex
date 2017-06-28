@@ -1,11 +1,10 @@
 import json
 import os
-from os.path import abspath, dirname
-
 import docker
 import pytest
 import requests
 
+from os.path import abspath, dirname
 from elasticsearch import Elasticsearch
 from jsonschema import Draft4Validator, FormatChecker
 from pymongo import MongoClient

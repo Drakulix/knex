@@ -2,17 +2,13 @@ import json
 import os
 import time
 import uuid
-from uuid import UUID
-
 import requests
 
+from uuid import UUID
 
-<<<<<<< HEAD
-    def test_empty_post(self, session, flask_api_url):
-=======
+
 class TestPOST(object):
-    def test_empty_post(self, flask_api_url):
->>>>>>> 3d306d1... added test get all projects
+    def test_empty_post(self, session, flask_api_url):
         """ Tests for 400 when the post body is empty.
         """
         response = session.post(flask_api_url + "/api/projects")
@@ -223,12 +219,8 @@ class TestPOST(object):
 
 
 class TestDELETE(object):
-<<<<<<< HEAD
 
     def test_unknown_id(self, session, flask_api_url):
-=======
-    def test_unknown_id(self, flask_api_url):
->>>>>>> 3d306d1... added test get all projects
         """ Test for 404 when a project with unknown ID is to be deleted.
         """
         unknown_id = str(uuid.uuid4())
