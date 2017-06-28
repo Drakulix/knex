@@ -318,10 +318,6 @@ a:hover {
     margin-left: -11px;
 }
 
-.row{
-  margin-top: -15px;
-}
-
 #dateStart{
   margin-left: -18px;
 }
@@ -835,4 +831,9 @@ legend {
 .change-password {
   margin-top: 100px;
   margin-bottom: 100px;
+}
+
+/* Start Bookmark Styling */
+.footer {
+  margin-bottom: 50px;
 }
