@@ -36,6 +36,7 @@ export default class BookmarksTable extends React.Component {
           <ReactTable
             data={data}
             columns={columns}
+            filterable={true}
             defaultPageSize={5}
           />
         <div className="footer" />
