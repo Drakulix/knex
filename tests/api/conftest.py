@@ -39,7 +39,7 @@ def elastic_client():
 def session():
     session = requests.Session()
     data = {"email": "admin@knex.com", "password": "admin"}
-    response = session.post(flask_api_url() + "/api/users/login",
+    response = session.post(flask_api_url() + '/api/users/login',
                             data=data)
     yield session
-    response = session.get(flask_api_url() + "/api/users/logout")
+    response = session.get(flask_api_url() + '/api/users/logout')
