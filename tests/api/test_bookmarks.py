@@ -1,12 +1,14 @@
 import requests
 import json
+from flask import jsonify
 import uuid
 
 
 def test_get_empty_bookmark(flask_api_url):
-    payload = {'email': 'admin@knex.com', 'password': "admin"}
-    response = requests.post(flask_api_url + "/api/users/login",
-                             data=payload)
+    response = requests.post(flask_api_url + '/api/users/login',
+                             data=dict(email='admin@knex.com', password='admin'))
+
+    print(response)
     response = requests.get(flask_api_url + "/api/users/bookmarks")
 
     assert json.dumps([]) == response.text
@@ -31,7 +33,7 @@ def test_delete_project_from_bookmark(flask_api_url):
     response = requests.remove(flask_api_url + "/api/users/bookmarks/" +
                                str(id1))
     local_list.remove(id1)
-    assert json.dumps(local_list) == response.text
+    assert jsonify(local_list) == response.text
 
 
 def test_insert_multiple_project_to_bookmark(flask_api_url):
@@ -50,7 +52,7 @@ def test_insert_multiple_project_to_bookmark(flask_api_url):
     requests.post(flask_api_url + "/api/users/bookmarks/" + str(id3))
     response = requests.post(flask_api_url + "/api/users/bookmarks/" +
                              str(id4))
-    assert json.dumps(local_list) == response.text
+    assert jsonify(local_list) == response.text
 
 
 def test_insert_multiple_project_to_bookmark(flask_api_url):
@@ -71,4 +73,4 @@ def test_insert_multiple_project_to_bookmark(flask_api_url):
     response = requests.delete(flask_api_url + "/api/users/bookmarks/" +
                                str(id3))
     local_list.remove(id3)
-    assert json.dumps(local_list) == response.text
+    assert jsonify(local_list) == response.text
