@@ -3,12 +3,12 @@ from flask import jsonify
 import uuid
 
 
-def test_get_Bookmarks_without_logging(self, flask_api_url):
+def test_get_Bookmarks_without_logging(flask_api_url):
     response = requests.get(flask_api_url + "/api/users/bookmarks")
     assert response.status_code == 400
 
 
-def test_get_empty_bookmark(self, flask_api_url):
+def test_get_empty_bookmark(flask_api_url):
     payload = {'email': 'admin@knex.com', 'password': "admin"}
     response = requests.post(flask_api_url + "/api/users/login",
                              data=payload)
@@ -17,7 +17,7 @@ def test_get_empty_bookmark(self, flask_api_url):
     assert jsonify([]) == response.text
 
 
-def test_insert_project_to_bookmark(self, flask_api_url):
+def test_insert_project_to_bookmark(flask_api_url):
     local_list = []
     id1 = uuid.uuid4()
     local_list.append(id1)
@@ -28,7 +28,7 @@ def test_insert_project_to_bookmark(self, flask_api_url):
     assert jsonify(local_list) == response.text
 
 
-def test_delete_project_from_bookmark(self, flask_api_url):
+def test_delete_project_from_bookmark(flask_api_url):
     local_list = []
     id1 = uuid.uuid4()
     local_list.append(id1)
@@ -39,7 +39,7 @@ def test_delete_project_from_bookmark(self, flask_api_url):
     assert jsonify(local_list) == response.text
 
 
-def test_insert_multiple_project_to_bookmark(self, flask_api_url):
+def test_insert_multiple_project_to_bookmark(flask_api_url):
     local_list = []
     id1 = uuid.uuid4()
     id2 = uuid.uuid4()
@@ -58,7 +58,7 @@ def test_insert_multiple_project_to_bookmark(self, flask_api_url):
     assert jsonify(local_list) == response.text
 
 
-def test_insert_multiple_project_to_bookmark(self, flask_api_url):
+def test_insert_multiple_project_to_bookmark(flask_api_url):
     local_list = []
     id1 = uuid.uuid4()
     id2 = uuid.uuid4()
