@@ -2,6 +2,7 @@
 Defines API points and starts the application
 """
 
+import sys
 import time
 import uuid
 import json
@@ -83,26 +84,40 @@ def add_projects():
 @projects.route('/api/projects', methods=['GET'])
 @login_required
 def get_projects():
-    """Return list of projects, args->limit, skip
+    """Return list of projects, args->limit, skip, archived
 
     Returns:
         res: A list of projects
     """
     limit = request.args.get('limit', type=int)
     skip = request.args.get('skip', type=int)
+    archived = request.args.get('archived', type=str, default='false')
+    print(request.query_string, file=sys.stderr)
+
+    print(archived, file=sys.stderr)
     argc = len(request.args)
 
     if g.projects.count() == 0:
         return make_response(jsonify([]), 200)
-
-    if argc == 0:
-        res = g.projects.find({})
-    elif limit and skip and argc < 3:
-        res = g.projects.find({}, limit=limit, skip=skip)
-    elif limit and argc < 2:
-        res = g.projects.find({}, limit=limit)
-    elif skip and argc < 2:
-        res = g.projects.find({}, skip=skip)
+    query = {}
+    if archived == 'true':
+        if current_user.has_role('admin'):
+            query = {'archived': True}
+        else:
+            query = {'archived': True, 'authors': current_user['email']}
+    elif archived == 'false':
+        query = {'archived': False}
+    elif archived == 'mixed':
+        # TODO how to handle this=?
+        query = {}
+    if limit and skip:
+        res = g.projects.find(query, limit=limit, skip=skip)
+    elif limit:
+        res = g.projects.find(query, limit=limit)
+    elif skip:
+        res = g.projects.find(query, skip=skip)
+    elif archived:
+        res = g.projects.find(query)
     else:
         return make_response('Invalid parameters', 400)
 
@@ -149,8 +164,20 @@ def get_project_by_id(project_id):
     Returns:
         res (json): Project corresponding to the ID
     """
-    res = g.projects.find_one({'_id': project_id})
-    if not res:
+    archived = request.args.get('archived', type=str, default="false")
+    if archived == 'true':
+        if current_user.has_role('admin'):
+            res = g.projects.find_one({'_id': project_id, 'archived': True})
+        else:
+            res = g.projects.find_one({'_id': project_id,
+                                       'archived': True, 'authors': current_user['email']})
+    elif archived == 'false':
+        res = g.projects.find_one({'_id': project_id, 'archived': False})
+    elif archived == 'mixed':
+        res = g.projects.find_one({'_id': project_id})
+    else:
+        res = None
+    if res is None:
         return make_response("Project not found", 404)
     try:
         res['is_bookmark'] = 'true' if project_id in current_user['bookmarks'] else 'false'
@@ -198,7 +225,7 @@ def update_project(project_id):
         if not res:
             raise ApiException("Project not found", 404)
         elif request.is_json or "application/json5" in request.content_type:
-            manifest = request.get_json() if request.is_json\
+            manifest = request.get_json() if request.is_json \
                 else json5.loads(request.data.decode("utf-8"))
             if manifest['_id'] != str(project_id):
                 return make_response("project_id and json['_id'] do not match.", 409)
@@ -218,9 +245,10 @@ def update_project(project_id):
                     '/projects/' + str(manifest['_id']))
                 g.rerun_saved_searches()
                 return make_response("Success")
-            elif not request.on_json_loading_failed():
-                raise ApiException("json could not be parsed",
-                                   400, request.on_json_loading_failed())
+            # remove this so a validation error is thrown
+            # elif not request.on_json_loading_failed:
+            #     raise ApiException("json could not be parsed",
+            #                        400, request.on_json_loading_failed())
             elif not is_permitted(current_user, manifest):
                 raise ApiException("You are not allowed to edit this project", 403)
             else:
@@ -315,7 +343,7 @@ def get_comment(project_id):
         if not project:
             raise ApiException("Project not found", 404)
 
-        res = sorted(project['comments'], key=lambda k: k['datetime'], reverse=True)\
+        res = sorted(project['comments'], key=lambda k: k['datetime'], reverse=True) \
             if 'comments' in project and isinstance(project['comments'], list) else []
         return jsonify(res)
     except ApiException as error:

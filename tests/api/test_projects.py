@@ -8,7 +8,6 @@ from uuid import UUID
 
 
 class TestPOST(object):
-
     def test_empty_post(self, session, flask_api_url):
         """ Tests for 400 when the post body is empty.
         """
@@ -218,7 +217,6 @@ class TestPOST(object):
 
 
 class TestDELETE(object):
-
     def test_unknown_id(self, session, flask_api_url):
         """ Test for 404 when a project with unknown ID is to be deleted.
         """
@@ -293,7 +291,6 @@ class TestDELETE(object):
 
 
 class TestGET(object):
-
     def test_unknown_id(self, session, flask_api_url):
         """ Test for 404 when one tries to get a project with unknown ID.
         """
@@ -331,6 +328,73 @@ class TestGET(object):
             is_in_mongo = mongo_client.projects.find_one(UUID(project["_id"]))
             assert is_in_mongo is not None
 
+    def test_get_archived_fail(self, session, flask_api_url, enter_archived_using_post):
+        project_id = enter_archived_using_post.json()
+        print(project_id)
+        time.sleep(1)
+        get_response = session.get(flask_api_url + "/api/projects/" + project_id.pop(0))
+        print(get_response.text)
+
+        assert get_response.status_code == 404
+
+    def test_get_archived_success(self, session, flask_api_url, enter_archived_using_post):
+        project_id_archived = enter_archived_using_post.json()
+
+        print(project_id_archived)
+        get_response = session.get(flask_api_url + "/api/projects/" +
+                                   project_id_archived[0] + "?archived=true")
+        print(get_response.text)
+        response_json = get_response.json()
+
+        assert get_response.status_code == 200
+        assert response_json["archived"]
+        assert response_json["_id"] == project_id_archived[0]
+
+    def test_get_archived_mixed_admin(self, session, flask_api_url,
+                                      enter_archived_using_post, enter_data_using_post):
+        project_id_not_archived = enter_data_using_post.json()
+        project_id_archived = enter_archived_using_post.json()
+        get_response = session.get(flask_api_url + "/api/projects", params={"archived": 'mixed'}, )
+        print(get_response.text)
+        response_json = get_response.json()
+        assert get_response.status_code == 200
+        assert response_json[0]['_id'] == project_id_archived[0] or project_id_not_archived[0]
+        assert len(response_json) == 2
+
+    def test_get_archived_true_admin(self, session, flask_api_url,
+                                     enter_archived_using_post, enter_data_using_post):
+        project_id_not_archived = enter_data_using_post.json()
+        project_id_archived = enter_archived_using_post.json()
+        get_response = session.get(flask_api_url + "/api/projects", params={"archived": 'true'}, )
+        print(get_response.text)
+        response_json = get_response.json()
+        assert get_response.status_code == 200
+        assert response_json[0]['_id'] == project_id_archived[0]
+        assert len(response_json) == 1
+
+    def test_get_archived_false_admin(self, session, flask_api_url,
+                                      enter_archived_using_post, enter_data_using_post):
+        project_id_not_archived = enter_data_using_post.json()
+        project_id_archived = enter_archived_using_post.json()
+        get_response = session.get(flask_api_url + "/api/projects", params={"archived": 'false'}, )
+        print(get_response.text)
+        response_json = get_response.json()
+        assert get_response.status_code == 200
+        assert response_json[0]['_id'] == project_id_not_archived[0]
+        assert len(response_json) == 1
+
+    def test_get_archived_mixed_user(self, session, flask_api_url,
+                                     enter_archived_using_post, enter_data_using_post):
+        assert True
+
+    def test_get_archived_true_user(self, session, flask_api_url,
+                                    enter_archived_using_post, enter_data_using_post):
+        assert True
+
+    def test_get_archived_false_user(self, session, flask_api_url,
+                                     enter_archived_using_post, enter_data_using_post):
+        assert True
+
     def test_success_getid(self, session, flask_api_url, pytestconfig):
         """ Test successful get (after successful upload).
         Checks for both 200 and also valid title and analysis.
@@ -358,7 +422,6 @@ class TestGET(object):
 
 
 class TestPUT(object):
-
     def test_unknown_id(self, session, flask_api_url):
         """ Test for 404 when one tries to put a project with unknown ID.
         """
@@ -366,6 +429,51 @@ class TestPUT(object):
         response = session.put(flask_api_url + "/api/projects/" + unknown_id)
         print(response.text)
         assert response.status_code == 404
+
+    def test_archive_admin(self, session, flask_api_url,
+                           enter_archived_using_post, enter_data_using_post):
+        project_id_not_archived = enter_data_using_post.json()
+        project_id_archived = enter_archived_using_post.json()
+        get_response = session.get(flask_api_url + "/api/projects/" +
+                                   project_id_not_archived[0])
+        manifest_json = get_response.json()
+        print(get_response.text)
+        # archive it
+        manifest_json['archived'] = True
+        del manifest_json['is_bookmark']
+        del manifest_json['is_owner']
+        get_put_response = session.put(flask_api_url + "/api/projects/" +
+                                       project_id_not_archived[0], json=manifest_json)
+        time.sleep(2)
+        get_again_response = session.get(flask_api_url + "/api/projects/" +
+                                         project_id_not_archived[0] + "?archived=true")
+        after_put_json = get_again_response.json()
+        assert get_put_response.status_code == 200
+        assert get_response.status_code == 200
+        assert after_put_json["archived"]
+
+    def test_unarchive_admin(self, session, flask_api_url,
+                             enter_archived_using_post, enter_data_using_post):
+        project_id_not_archived = enter_data_using_post.json()
+        project_id_archived = enter_archived_using_post.json()
+        get_response = session.get(flask_api_url + "/api/projects/" +
+                                   project_id_archived[0] + "?archived=true")
+        manifest_json = get_response.json()
+        print(get_response.text)
+        # archive it
+        manifest_json['archived'] = False
+        del manifest_json['is_bookmark']
+        del manifest_json['is_owner']
+        get_put_response = session.put(flask_api_url + "/api/projects/" + project_id_archived[0],
+                                       json=manifest_json)
+        print("put:", get_put_response.text)
+        time.sleep(2)
+        get_again_response = session.get(flask_api_url + "/api/projects/" + project_id_archived[0])
+        print(get_again_response.text)
+        after_put_json = get_again_response.json()
+        assert get_put_response.status_code == 200
+        assert get_response.status_code == 200
+        assert not after_put_json["archived"]
 
     def test_invalid_id(self, session, flask_api_url):
         """ Test for 405 when one tries to put a project with ID in invalid format.
