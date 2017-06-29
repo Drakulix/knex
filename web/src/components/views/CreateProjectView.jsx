@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import history from '../common/history'
+import CreateProject from '../pages/CreateProject';
 import 'isomorphic-fetch';
 
 

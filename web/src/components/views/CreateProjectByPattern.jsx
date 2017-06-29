@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
+import CreateProjectLink from '../pages/CreateProjectLink.jsx';
 import Form from "../libraries/react-jsonschema-form";
 import { Redirect } from 'react-router-dom';
 //import exampleJSON from "../../data/test_project.json";
@@ -135,7 +136,7 @@ export default class UploadByPattern extends React.Component {
   }
 
   componentWillMount(){
-    var URL = encodeURI(decodeURIComponent(this.props.match.params.getURL));
+    var URL = encodeURI(decodeURIComponent(this.props.getURL));
     var request = new Request(URL,{
       method:'GET',
       mode: 'cors',
