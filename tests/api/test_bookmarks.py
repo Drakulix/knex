@@ -1,11 +1,6 @@
 import requests
-from flask import jsonify
+import json
 import uuid
-
-
-def test_get_Bookmarks_without_logging(flask_api_url):
-    response = requests.get(flask_api_url + "/api/users/bookmarks")
-    assert response.status_code == 400
 
 
 def test_get_empty_bookmark(flask_api_url):
@@ -14,7 +9,7 @@ def test_get_empty_bookmark(flask_api_url):
                              data=payload)
     response = requests.get(flask_api_url + "/api/users/bookmarks")
 
-    assert jsonify([]) == response.text
+    assert json.dumps([]) == response.text
 
 
 def test_insert_project_to_bookmark(flask_api_url):
@@ -25,7 +20,7 @@ def test_insert_project_to_bookmark(flask_api_url):
     response = requests.post(flask_api_url + "/api/users/bookmarks/" +
                              str(id1))
 
-    assert jsonify(local_list) == response.text
+    assert json.dumps(local_list) == response.text
 
 
 def test_delete_project_from_bookmark(flask_api_url):
@@ -36,7 +31,7 @@ def test_delete_project_from_bookmark(flask_api_url):
     response = requests.remove(flask_api_url + "/api/users/bookmarks/" +
                                str(id1))
     local_list.remove(id1)
-    assert jsonify(local_list) == response.text
+    assert json.dumps(local_list) == response.text
 
 
 def test_insert_multiple_project_to_bookmark(flask_api_url):
@@ -55,7 +50,7 @@ def test_insert_multiple_project_to_bookmark(flask_api_url):
     requests.post(flask_api_url + "/api/users/bookmarks/" + str(id3))
     response = requests.post(flask_api_url + "/api/users/bookmarks/" +
                              str(id4))
-    assert jsonify(local_list) == response.text
+    assert json.dumps(local_list) == response.text
 
 
 def test_insert_multiple_project_to_bookmark(flask_api_url):
@@ -76,4 +71,4 @@ def test_insert_multiple_project_to_bookmark(flask_api_url):
     response = requests.delete(flask_api_url + "/api/users/bookmarks/" +
                                str(id3))
     local_list.remove(id3)
-    assert jsonify(local_list) == response.text
+    assert json.dumps(local_list) == response.text
