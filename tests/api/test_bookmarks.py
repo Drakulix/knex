@@ -1,6 +1,6 @@
 import requests
 from flask import jsonify
-from uuid import UUID
+import uuid
 
 class TestBookmarks(object):
 
