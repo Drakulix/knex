@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import {fetchJson, sendJson} from '../common/Backend';
 import  Table from './SearchTable';
+import Chips, { Chip } from 'react-chips';
 
 const defaultPageSize = 4;
 const defaultSearchString = "advanced/?q=*";
@@ -35,6 +36,16 @@ class Searchbar extends Component {
 
 class AdvancedSearch extends Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      chips: []
+    }
+  }
+
+  onChange = chips => {
+    this.setState({ chips });
+  }
   //View for advanced search, the onChange in the <input> parses the state all the way to the parent
   render() {
     return(
@@ -103,12 +114,19 @@ class AdvancedSearch extends Component {
               <label className ="input-group-addon primary">
                 Tags:
               </label>
-              <input
-                className="form-control"
-                type="text"
-                id="tags"
-                name="tags"
-                onChange={(value) => this.props.changeStateTags(value.target.value)}
+              <Chips
+                value={this.state.chips}
+                onChange={this.onChange}
+                suggestions={[
+                  "Annie Blas",
+                  "Gricelda Look",  
+                  "Roderick Crabb",  
+                  "Akilah Sweatman",  
+                  "Terri Vasbinder",
+                  "Jaimee Daggett", 
+                  "Meggan Truitt",
+                  "Ricarda Schrage"  
+                ]}
               />
             </div>
           </div>
@@ -157,13 +175,15 @@ class AdvancedSearch extends Component {
 class Search extends Component{
   constructor(props) {
     super(props);
-    this.state = {expanded : false};
+    this.state = {
+      expanded : false,
+    };
   }
 
   /*
     Function to toggle between advanced and simplesearch
   */
-  toggle(){
+  toggle() {
       this.setState({expanded: !this.state.expanded});
       this.props.changeStateAdvanced();
   }
