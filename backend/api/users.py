@@ -44,7 +44,8 @@ def create_user():
         g.user_datastore.create_user(first_name=user['first name'],
                                      last_name=user['last name'],
                                      email=user['email'],
-                                     password=encrypt_password(user['password']),
+                                     password=encrypt_password(
+                                         user['password']),
                                      bio=user['bio'],
                                      roles=[role])
 
@@ -57,41 +58,48 @@ def create_user():
 
 
 @users.route('/api/users', methods=['PUT'])
-@roles_required('admin')
+@login_required
 def update_user():
+    editor = current_user
     user = request.get_json()
+    if(editor["roles"][0] == "admin" or editor["email"] == user['email']):
+        res = g.user_datastore.get_user(user['email'])
+        if res is None:
+            return make_response("Unknown User with Email-address: " +
+                                 user['email'], 400)
+        res.first_name = user['first name']
+        res.last_name = user['last name']
+        res.bio = user['bio']
+        res.save()
+        res = make_response(dumps(res))
+        res.headers['Content-Type'] = 'application/json'
 
-    res = g.user_datastore.get_user(user['email'])
-    if res is None:
-        return make_response("Unknown User with Email-address: " +
-                             user['email'], 400)
-    res.first_name = user['first name']
-    res.last_name = user['last name']
-    res.bio = user['bio']
-    res.save()
-    res = make_response(dumps(res))
-    res.headers['Content-Type'] = 'application/json'
+        return make_response("User with email: " +
+                             user['email'] + " updated", 200)
 
-    return make_response("User with email: " + user['email'] + " updated", 200)
+    return make_response("You don't have the permissions " +
+                         "to edit this user", 400)
 
 
 @users.route('/api/users/password', methods=['PUT'])
-@roles_required('admin')
+@login_required
 def update_password():
+    editor = current_user
     user = request.get_json()
+    if (editor["roles"][0] == "admin" or editor["email"] == user['email']):
+        res = g.user_datastore.get_user(user['email'])
+        if res is None:
+            return make_response("Unknown User with Email-address: " +
+                                 user['email'], 404)
+        old_password = user["old password"]
+        if verify_password(old_password, res.password):
+            new_password = user["new password"]
+            res.password = encrypt_password(new_password)
+            res.save()
+            return make_response("Password updated!", 200)
 
-    res = g.user_datastore.get_user(user['email'])
-    if res is None:
-        return make_response("Unknown User with Email-address: " +
-                             user['email'], 404)
-    old_password = user["old password"]
-    if verify_password(old_password, res.password):
-        new_password = user["new password"]
-        res.password = encrypt_password(new_password)
-        res.save()
-        return make_response("Password updated!", 200)
-    return make_response("Password wrong", 400)
-
+    return make_response("You don't have the permissions " +
+                         "to edit this user", 400)
 
 @users.route('/api/users/<email:mail>', methods=['GET'])
 @login_required
