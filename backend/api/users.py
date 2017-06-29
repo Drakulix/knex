@@ -46,7 +46,7 @@ def create_user():
                                      email=user['email'],
                                      password=encrypt_password(user['password']),
                                      bio=user['bio'],
-									 roles=[role])
+                                     roles=[role])
 
         return jsonify(g.user_datastore.get_user(user['email']))
 
@@ -56,7 +56,7 @@ def create_user():
         raise ApiException(str(err), 500)
 
 
-@users.route('/api/users/', methods=['PUT'])
+@users.route('/api/users', methods=['PUT'])
 @roles_required('admin')
 def update_user():
     user = request.get_json()
