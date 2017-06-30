@@ -155,10 +155,11 @@ def handle_invalid_usage(error):
 
 @app.errorhandler(PermissionDenied)
 def handle_insufficient_permission(error):
-    """ Handler for method calls that are denied to the current user,
-        but a user should be able to know about
+    """ Handler for insufficient permission to access a method.
+        This is not the error handler for insufficient permission to update
+        a project or user.
     """
-    return make_response(error, 403)
+    return make_response("Not found", 404)
 
 
 @app.route('/', methods=['GET'])

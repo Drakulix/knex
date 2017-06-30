@@ -113,7 +113,8 @@ def get_project_by_id(project_id):
 
 @projects.route('/api/projects/<uuid:project_id>', methods=['DELETE'])
 @login_required
-@roles_required('admin')
+# @roles_required('admin') # doesn't work in blueprints at the moment...
+@ADMIN_PERMISSION.require()
 def delete_project(project_id):
     """Deletes a project by ID.
 
