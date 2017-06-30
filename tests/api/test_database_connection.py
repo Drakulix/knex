@@ -1,6 +1,5 @@
 import time
 import uuid
-
 import requests
 
 
@@ -16,7 +15,6 @@ def test_no_elastic(flask_api_url, docker_client):
 
 def test_empty_database(flask_api_url, mongo_client):
     """
-
     :param flask_api_url:
     :param mongo_client:
     :return:
