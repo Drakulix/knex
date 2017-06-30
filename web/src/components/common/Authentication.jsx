@@ -8,17 +8,28 @@ import { Redirect } from 'react-router-dom';
 
 var loggedin = false;
 var myemail = '';
+var myProfile;
 
 export function isLoggedIn(){
   return loggedin;
 }
 
 export function getMyEmail(){
-  return myemail;
+  return ( myemail || getCookie('email') );
 }
 
+// not working properly obv...
 export function isAdmin(){
-  return false;
+/*
+        getUserInfo(myemail).then((success) => {
+            myProfile = success;
+        });;
+        alert(JSON.stringify(myProfile));
+        return (myProfile && (myProfile.role == 'admin'));
+*/
+return (getMyEmail() == 'admin@knex.com')
+
+
 }
 
 
@@ -45,26 +56,57 @@ export function getCookie(cname) {
     return "";
 }
 
+export function changePassword(email, oldpw, newpw){
+
+  const requestBody = `email=${email}&old password=${oldpw}&new password=${newpw}`;
+
+    const formData = new FormData();
+    formData.append('email', email);
+    formData.append('old password', oldpw);
+    formData.append('new password', newpw);
+
+  var sbody = {'email': email, 'old password': oldpw, 'new password': newpw};
+  return fetch('/api/users/password' , {
+      method: 'PUT',
+      credentials: 'include',
+      headers: {
+//        'Accept': 'application/json',
+//        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: JSON.stringify(sbody)
+   }).then(response => response.json()).catch(ex => {
+      console.error('parsing failes', ex);
+    });
+}
+
+export function changeProfile(email, first_name, last_name, bio){
+
+  var sbody = {'email': email, 'first name': first_name, 'last name': last_name, 'bio': bio};
+
+  return fetch('/api/users' , {
+      method: 'PUT',
+      credentials: 'include',
+      headers: {
+//        'Accept': 'application/json',
+//        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: JSON.stringify(sbody)
+   }).then(response => response.json()).catch(ex => {
+      console.error('parsing failes', ex);
+    });
+}
+
 export function getUserInfo(e){
   var res;
-  fetch('/api/users/' + e, {
+  return fetch('/api/users/' + e, {
       method: 'GET',
       mode: 'no-cors',
       credentials: 'include',
       headers: {
         "Accept": "application/json",
       }
-   }).then(function(response){
-      if(response.status==200){
-        console.log("getUserInfo status: " + response.status);
-        return response.json();
-      }else{
-        console.log("getUserInfostatus: " + response.status);
-        return false;
-      }
-    }).then(function(data) {
-      console.log(data);
-      return data;
+   }).then(response => response.json()).catch(ex => {
+      console.error('parsing failes', ex);
     });
 }
 
@@ -72,7 +114,7 @@ export function login(login_email, login_password){
   const m = encodeURIComponent(login_email);
   const p = encodeURIComponent(login_password);
   const requestBody = `email=${m}&password=${p}`;
-  return fetch('/api/users/login', {
+  var res = fetch('/api/users/login', {
       mode: 'no-cors',
       credentials: 'include',
       method: 'POST',
@@ -84,7 +126,6 @@ export function login(login_email, login_password){
       setCookie('email', login_email);
       if(response.status==200){
         console.log("MYLOG status: " + response.status);
-        getUserInfo(login_email);
         myemail = login_email;
         loggedin = true;
         return true;
@@ -93,6 +134,10 @@ export function login(login_email, login_password){
         return false;
       }
     });
+    getUserInfo(myemail).then((success) => {
+        myProfile = success;
+    });;
+    return res;    
 }
 
 export function logout(){
@@ -132,7 +177,7 @@ export function register(reg_firstname, reg_lastname, reg_email, reg_password, r
   return fetch('/api/users', {
   //    mode: 'no-cors',
   //    credentials: 'include',
-      method: 'put',
+      method: 'post',
       headers: {
         'Content-Type': 'application/json'
       },

@@ -33,7 +33,7 @@ ReactDOM.render(
     <Route path="/createbylink" component={CreateProjectLink} />
     <Route path="/projects/:uuid" component={ProjectDetails} />
     <Route path="/bookmarks" component={UserBookmarks} />
-    <Route path="/profile" component={ProfileDetails} />
+    <Route path="/profile/:email" component={ProfileDetails} />
     <Route path="/register" component={SignUp} />
     <Route exact path="/" component={SignIn} />
  </div>

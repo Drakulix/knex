@@ -3,6 +3,7 @@ import UploadByPattern from '../views/CreateProjectByPattern';
 import TopBar from '../common/TopBar';
 import { Link } from 'react-router-dom';
 import logo from '../../style/img/white_logo_title.svg';
+import {login, isLoggedIn, logout, getCookie, setCookie, isAdmin, getMyEmail, getUserInfo} from '../common/Authentication.jsx';
 
 export default class CreateProject extends Component {
   constructor(props) {
@@ -15,8 +16,17 @@ export default class CreateProject extends Component {
         bookmarks: 'Bookmarks',
         profile: 'Profile',
         adminArea: 'Admin Area'
-      }
+      },
+      myProfile: getMyEmail()
     };
+  }
+
+  getAdminVisibility(){
+    if( !isAdmin() ){
+      return ({visibility: 'hidden'});
+    }else{
+      return ({});
+    }
   }
 
   render() {
@@ -44,11 +54,11 @@ export default class CreateProject extends Component {
                 </Link>
               </li>
               <li className="list-group-item">
-                <Link to="/profile">
+                <Link to={'/profile/' + this.state.myProfile }>
                   {this.state.menu.profile}
                 </Link>
               </li>
-              <li className="list-group-item">
+              <li className="list-group-item" style={this.getAdminVisibility()}>
                 <Link to="/admin">
                   {this.state.menu.adminArea}
                 </Link>

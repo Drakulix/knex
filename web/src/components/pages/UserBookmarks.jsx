@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import BookmarksTable from '../views/BookmarksTable';
 import TopBar from '../common/TopBar';
 import { Link } from 'react-router-dom';
+import {login, isLoggedIn, logout, getCookie, setCookie, isAdmin, getMyEmail} from '../common/Authentication.jsx';
 import logo from '../../style/img/white_logo_title.svg';
 
 export default class UserBookmarks extends Component {
@@ -15,8 +16,17 @@ export default class UserBookmarks extends Component {
         bookmarks: 'Bookmarks',
         profile: 'Profile',
         adminArea: 'Admin Area'
-      }
+      },
+      myProfile: getMyEmail()
     };
+  }
+
+  getAdminVisibility(){
+    if( !isAdmin() ){
+      return ({visibility: 'hidden'});
+    }else{
+      return ({});
+    }
   }
 
   render() {
@@ -44,11 +54,11 @@ export default class UserBookmarks extends Component {
                 </Link>
               </li>
               <li className="list-group-item">
-                <Link to="/profile">
+                <Link to={'/profile/' + this.state.myProfile }>
                   {this.state.menu.profile}
                 </Link>
               </li>
-              <li className="list-group-item">
+              <li className="list-group-item" style={this.getAdminVisibility()}>
                 <Link to="/admin">
                   {this.state.menu.adminArea}
                 </Link>

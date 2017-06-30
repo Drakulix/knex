@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ProfileContainer from '../views/ProfileContainer.jsx';
 import TopBar from '../common/TopBar';
 import { Link } from 'react-router-dom';
+import {login, isLoggedIn, logout, getCookie, setCookie, isAdmin, getMyEmail, getUserInfo} from '../common/Authentication.jsx';
 import logo from '../../style/img/white_logo_title.svg';
 
 export default class ProfileDetails extends Component {
@@ -15,8 +16,17 @@ export default class ProfileDetails extends Component {
         bookmarks: 'Bookmarks',
         profile: 'Profile',
         adminArea: 'Admin Area'
-      }
+      },
+      myProfile: getMyEmail()
     };
+  }
+
+  getAdminVisibility(){
+    if( !isAdmin() ){
+      return ({visibility: 'hidden'});
+    }else{
+      return ({});
+    }
   }
 
   render() {
@@ -44,11 +54,11 @@ export default class ProfileDetails extends Component {
               </li>
               <li className="list-group-item active">
                 <div className="menu-indicator" />
-                <Link to="/profile">
+                <Link to={'/profile/' + this.state.myProfile }>
                   {this.state.menu.profile}
                 </Link>
               </li>
-              <li className="list-group-item">
+              <li className="list-group-item" style={this.getAdminVisibility()}>
                 <Link to="/admin">
                   {this.state.menu.adminArea}
                 </Link>
@@ -56,7 +66,7 @@ export default class ProfileDetails extends Component {
             </ul>
           </div>
           <div className="col-9 content">
-            <ProfileContainer />
+            <ProfileContainer email={this.props.match.params.email}/>
           </div>
         </div>
       </div>

@@ -51,8 +51,6 @@ export default class SignIn extends Component {
         alert("Login failed");
       }
     });
-
-
   }
 
   render() {

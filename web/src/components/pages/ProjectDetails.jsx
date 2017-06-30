@@ -3,6 +3,7 @@ import ProjectContainer from '../views/ProjectContainer';
 import TopBar from '../common/TopBar';
 import data from '../../data/test_data.json';
 import { Link } from 'react-router-dom';
+import {login, isLoggedIn, logout, getCookie, setCookie, isAdmin, getMyEmail, getUserInfo} from '../common/Authentication.jsx';
 import logo from '../../style/img/white_logo_title.svg';
 
 export default class ProjectDetails extends Component {
@@ -18,6 +19,14 @@ export default class ProjectDetails extends Component {
         adminArea: 'Admin Area'
       }
     };
+  }
+
+  getAdminVisibility(){
+    if( !isAdmin() ){
+      return ({visibility: 'hidden'});
+    }else{
+      return ({});
+    }
   }
 
   render() {
@@ -45,11 +54,11 @@ export default class ProjectDetails extends Component {
                 </Link>
               </li>
               <li className="list-group-item">
-                <Link to="/profile">
+                <Link to={'/profile/' + this.state.myProfile }>
                   {this.state.menu.profile}
                 </Link>
               </li>
-              <li className="list-group-item">
+              <li className="list-group-item" style={this.getAdminVisibility()}>
                 <Link to="/admin">
                   {this.state.menu.adminArea}
                 </Link>
