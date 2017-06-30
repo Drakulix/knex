@@ -1,5 +1,7 @@
 import docker
 import pytest
+import requests
+
 from elasticsearch import Elasticsearch
 from pymongo import MongoClient
 
@@ -16,7 +18,6 @@ def docker_client():
 
 @pytest.fixture(scope='session')
 def flask_api_url():
-    # client = docker.from_env()
     flask_api_url = "http://localhost:5000"
     return flask_api_url
 
@@ -32,3 +33,13 @@ def mongo_client():
 def elastic_client():
     es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
     return es
+
+
+@pytest.yield_fixture(scope='session')
+def session():
+    session = requests.Session()
+    data = {"email": "admin@knex.com", "password": "admin"}
+    response = session.post(flask_api_url() + "/api/users/login",
+                            data=data)
+    yield session
+    response = session.get(flask_api_url() + "/api/users/logout")
