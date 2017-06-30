@@ -39,16 +39,6 @@ def elastic_client():
     return es
 
 
-@pytest.yield_fixture(scope='session')
-def session():
-    session = requests.Session()
-    data = {"email": "admin@knex.com", "password": "admin"}
-    response = session.post(flask_api_url() + '/api/users/login',
-                            data=data)
-    yield session
-    response = session.get(flask_api_url() + '/api/users/logout')
-
-
 @pytest.fixture(scope='session')
 def manifest_validator():
     path_to_schema = os.path.join(abspath(dirname(dirname(__file__))), os.path.pardir,
@@ -57,6 +47,16 @@ def manifest_validator():
         schema = json.load(schema_file)
     validator = Draft4Validator(schema, format_checker=FormatChecker())
     return validator
+
+
+@pytest.yield_fixture(scope='session')
+def session():
+    session = requests.Session()
+    data = {"email": "admin@knex.com", "password": "admin"}
+    response = session.post(flask_api_url() + '/api/users/login',
+                            data=data)
+    yield session
+    response = session.get(flask_api_url() + '/api/users/logout')
 
 
 @pytest.yield_fixture(autouse=True)
@@ -72,7 +72,7 @@ def run_around_tests(mongo_client):
 
 
 @pytest.yield_fixture()
-def enter_data_using_post(pytestconfig, flask_api_url):
+def enter_data_using_post(pytestconfig, flask_api_url, session):
     test_manifest = os.path.join(
         str(pytestconfig.rootdir),
         'tests',
@@ -81,7 +81,7 @@ def enter_data_using_post(pytestconfig, flask_api_url):
     )
     with open(test_manifest, 'r', encoding='utf-8') as tf:
         data = str(tf.read().replace('\n', ''))
-    response = requests.post(flask_api_url + "/api/projects", data=data.encode('utf-8'),
-                             headers={'Content-Type': 'application/json5'})
+    response = session.post(flask_api_url + "/api/projects", data=data.encode('utf-8'),
+                            headers={'Content-Type': 'application/json5'})
     print(response.text)
     yield response

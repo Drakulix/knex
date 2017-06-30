@@ -279,17 +279,6 @@ class TestDELETE(object):
         print(delete_response.text)
         assert delete_response.status_code == 200
 
-    def test_unauthorized_delete(self, flask_api_url):
-        """ Tests for 405 when attempting to delete a project when
-            logged in as a user, not admin (method not allowed)
-        """
-        data = {"email": "user@knex.com", "password": "user"}
-        session = requests.Session()
-        response = session.post(flask_api_url + '/api/users/login', data=data)
-        assert response.status_code == 200
-        response = session.delete(flask_api_url + '/api/projects/' + str(uuid.uuid4()))
-        assert response.status_code == 405
-
 
 class TestGET(object):
 
@@ -309,7 +298,6 @@ class TestGET(object):
         print(response.text)
         assert response.status_code == 404
 
-
     def test_success_getall(self, session, flask_api_url, manifest_validator,
                             mongo_client, enter_data_using_post):
         response = session.get(flask_api_url + "/api/projects")
@@ -326,7 +314,6 @@ class TestGET(object):
 
             is_in_mongo = mongo_client.projects.find_one(UUID(project["_id"]))
             assert is_in_mongo is not None
-
 
     def test_success_getid(self, session, flask_api_url, pytestconfig):
         """ Test successful get (after successful upload).
