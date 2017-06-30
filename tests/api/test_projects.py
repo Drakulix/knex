@@ -279,7 +279,20 @@ class TestDELETE(object):
         print(delete_response.text)
         assert delete_response.status_code == 200
 
+    def test_unauthorized_delete(self, flask_api_url):
+        """ Tests for 404 when attempting to delete a project when
+            logged in as a user.
+            Not found because the user should not know about the
+            /api/delete endpoint.
+        """
+        data = {"email": "user@knex.com", "password": "user"}
+        session = requests.Session()
+        response = session.post(flask_api_url + '/api/users/login', data=data)
+        assert response.status_code == 200
+        response = session.delete(flask_api_url + '/api/projects/' + str(uuid.uuid4()))
+        assert response.status_code == 404
 
+   
 class TestGET(object):
 
     def test_unknown_id(self, session, flask_api_url):

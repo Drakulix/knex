@@ -31,3 +31,15 @@ def test_logout(flask_api_url):
     response = session.get(flask_api_url + '/api/users/logout')
     assert response.status_code == 200
     assert "Logged out" in response.text
+
+def test_unauthorized_update(self, flask_api_url):
+        """ Tests for 403 when attempting to update a different users project            
+        """
+        data = {"email": "user@knex.com", "password": "user"}
+        session = requests.Session()
+        response = session.post(flask_api_url + '/api/users/login', data=data)
+        assert response.status_code == 200
+        # this should be the id of a project from a different user
+        projectid = str(uuid.uuid4())
+        response = session.delete(flask_api_url + '/api/projects/' + projectid)
+        # assert response.status_code == 403

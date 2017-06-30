@@ -14,6 +14,7 @@ from werkzeug.utils import secure_filename
 
 from api.helper import uploader
 from api.helper.apiexception import ApiException
+from globals import ADMIN_PERMISSION
 
 
 projects = Blueprint('api_projects', __name__)
