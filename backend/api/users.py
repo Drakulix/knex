@@ -2,8 +2,9 @@ from flask import request, jsonify, make_response, current_app, g, Blueprint
 from flask_security import login_required, roles_required, login_user,\
     logout_user, current_user
 from flask_security.utils import verify_password, encrypt_password
-
+from bson.json_util import dumps
 from api.helper.apiexception import ApiException
+from api.helper.userpermission import is_permitted
 
 users = Blueprint('api_users', __name__)
 
@@ -62,7 +63,8 @@ def create_user():
 def update_user():
     editor = current_user
     user = request.get_json()
-    if(editor["roles"][0] == "admin" or editor["email"] == user['email']):
+    is_same_user = editor['email'] == user['email']
+    if(is_permitted(editor["roles"]) is True or is_same_user is True):
         res = g.user_datastore.get_user(user['email'])
         if res is None:
             return make_response("Unknown User with Email-address: " +
@@ -86,7 +88,17 @@ def update_user():
 def update_password():
     editor = current_user
     user = request.get_json()
-    if (editor["roles"][0] == "admin" or editor["email"] == user['email']):
+    if(is_permitted(editor["roles"]) is True):
+        res = g.user_datastore.get_user(user['email'])
+        if res is None:
+            return make_response("Unknown User with Email-address: " +
+                                 user['email'], 404)
+        new_password = user["new password"]
+        res.password = encrypt_password(new_password)
+        res.save()
+        return make_response("Password restored!", 200)
+
+    elif (editor["email"] == user['email']):
         res = g.user_datastore.get_user(user['email'])
         if res is None:
             return make_response("Unknown User with Email-address: " +
@@ -94,9 +106,13 @@ def update_password():
         old_password = user["old password"]
         if verify_password(old_password, res.password):
             new_password = user["new password"]
+            if new_password == old_password:
+                return make_response("The old and new passwords" +
+                                     "can not be the same", 200)
             res.password = encrypt_password(new_password)
             res.save()
             return make_response("Password updated!", 200)
+        return make_response("Old and new password does not match", 400)
 
     return make_response("You don't have the permissions " +
                          "to edit this user", 400)
