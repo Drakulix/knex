@@ -288,7 +288,7 @@ class TestDELETE(object):
         session = requests.Session()
         response = session.post(flask_api_url + '/api/users/login', data=data)
         assert response.status_code == 200
-        response = session.delete(flask_api_url + '/api/projects/' + '1')
+        response = session.delete(flask_api_url + '/api/projects/' + str(uuid.uuid4()))
         assert response.status_code == 405
 
 
