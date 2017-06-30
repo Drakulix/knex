@@ -6,6 +6,9 @@
     "babel-polyfill": "^6.23.0",
     "isomorphic-fetch": "^2.2.1",
     "lodash": "^3.10.1",
+    "material-ui": "^0.18.5",
+    "material-ui-chip-input": "^0.15.0",
+    "moment": "^2.18.1",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-jsonschema-form": "^0.48.2",
@@ -13,6 +16,7 @@
     "react-redux": "^4.0.0",
     "react-router": "^4.1.1",
     "react-router-dom": "^4.1.1",
+    "react-tap-event-plugin": "^2.0.1",
     "reactstrap": "^4.6.2"
   },
   "devDependencies": {
@@ -23,5 +27,6 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
-  }
+  },
+  "proxy": "http://localhost:5000"
 }
