@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import UploadByLink from '../views/CreateProjectView';
-import UploadByPattern from '../views/CreateProjectByPattern';;
-import ProjectContainer from '../views/ProjectContainer';
+import { Link } from 'react-router-dom';
+import logo from '../../style/img/white_logo_title.svg';
 
-class SearchBar extends Component {
+export default class SideBar extends Component {
   constructor(props) {
     super(props);
 
@@ -11,51 +10,37 @@ class SearchBar extends Component {
       menu: {
         discoverProjects: 'Discover Projects',
         createProject: 'Create New Project',
+        bookmarks: 'Bookmarks',
+        profile: 'Profile',
         adminArea: 'Admin Area'
       }
     };
   }
 
   render() {
+    let isActive = (url) => { url === this.props.location };
     return (
-      <div className="inner-content">
-        <div className="row">
-          <div className="col-3 side-bar">
-              <ul className="list-group">
-                <li className="list-group-item">
-                  <p>
-                    {this.state.menu.discoverProjects}
-                  </p>
-                </li>
-                <li className="list-group-item">
-                  <p className="menu-text">
-                    {this.state.menu.createProject}
-                  </p>
-                </li>
-                <li className="list-group-item">
-                  <p className="menu-text">
-                    {this.state.menu.adminArea}
-                  </p>
-                </li>
-              </ul>
-          </div>
-          <div className="col-9">
-            <ProjectContainer title= {"This wonderful title"}
-              authors={"John Do"}
-              status={"In progress"}
-              date_created={"2017-01-16"}
-              date_last_updated={"2017-03-27"}
-              team= {"The best team ever"}
-              tags={"tag1,tag2,tag3"}
-              git_url={ "https://github.com/Drakulix/knex"}
-              description={"Let's write an wonderful descriptiom. There was one time Derp, he wanted to eat a lot. He was hungry all the time, he ate all the time but he didn't get fat. Derpina, on the other hand, drank a lot but never got drunk."}
-              future_work={"This is future work. I don't know what to write here, but it would be cool to see how Derp\'s and Derpina\'s kids would be like... can you imagine?"}
-              related_projects={"If you want to see more related_projects, go check 9gag... I am pretty sure that you will find what you are looking for. Good luck!!!"} />
-          </div>
+        <div className="col-3 side-bar">
+            <img className="logo-banner" src={logo} />
+            <ul className="list-group">
+                <SideBarEntry name={this.state.menu.discoverProjects} to="/discovery" active={isActive("/discovery")} />
+                <SideBarEntry name={this.state.menu.createProject} to="/createbylink" active={isActive("/createbylink")} />
+                <SideBarEntry name={this.state.menu.bookmarks} to="/bookmarks" active={isActive("/bookmarks")} />
+                <SideBarEntry name={this.state.menu.profile} to="/profile" active={isActive("/profile")} />
+                <SideBarEntry name={this.state.menu.adminArea} to="/admin" active={isActive("/admin")} />
+            </ul>
         </div>
-      </div>
     );
   }
 }
 
-export default SearchBar;
+const SideBarEntry = ({to, name, active}) => {
+    return (
+        <li className={"list-group-item " + (active ? "active" : "")}>
+            {active && (<div className="menu-indicator" />)}
+            <Link to={to}>
+                {name}
+            </Link>
+        </li>
+    )
+};
