@@ -10,7 +10,6 @@ import json5
 from flask import request, jsonify, make_response, g, Blueprint
 from flask_security import login_required, roles_required
 from pymongo.collection import ReturnDocument
-from werkzeug.utils import secure_filename
 
 from api.helper import uploader
 from api.helper.apiexception import ApiException
@@ -25,20 +24,19 @@ projects = Blueprint('api_projects', __name__)
 def add_projects():
     """Receive manifest as a jsonstring and return new ID
     """
-    successful_ids = []
-    unsuccessful_files = []
     uploaded_files = request.files.getlist('file[]')
     if len(uploaded_files) is not 0:
-        for file in uploaded_files:
-            securefilename = secure_filename(file.filename)
-            if file and uploader.allowed_file(securefilename):
-                try:
-                    newid = uploader.save_file_to_db(file, securefilename)
-                    ids.append(newid)
-                except ApiException as e:
-                    unsuccessful_files.append(file.filename + str(e))
-
-        return jsonify(successful_ids)
+        try:
+            manifestlist = []
+            for file in uploaded_files:
+                if file.filename.endswith('.json'):
+                    manifestlist.append(json.loads(file.read().decode('utf-8')))
+                elif file.filename.endswith('.json5'):
+                    manifestlist.append(json5.loads(file.read().decode('utf-8')))
+            return_ids = uploader.save_manifest_to_db(manifestlist)
+            return jsonify(return_ids)
+        except Exception as err:
+            raise ApiException(str(err), 400)
 
     else:
         try:

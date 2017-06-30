@@ -52,11 +52,11 @@ class TestPOST(object):
             'testmanifests',
             'validexample0.json5'
         )
-        with open(test_manifest, 'rb') as tf:
-            response = session.post(flask_api_url + "/api/projects",
-                                    files={'file[]': (test_manifest, tf)})
-            print(response.text)
-            assert response.json()[0]
+        response = session.post(
+            flask_api_url + "/api/projects",
+            files={'file[]': ('validexample0.json5', open(test_manifest, 'rb'))})
+        print(response.text)
+        assert UUID(response.json()[0], version=4)
 
     def test_success_json_upload(self, session, flask_api_url, pytestconfig):
         test_manifest = os.path.join(
@@ -65,11 +65,11 @@ class TestPOST(object):
             'testmanifests',
             'validexample0.json'
         )
-        with open(test_manifest, 'rb') as tf:
-            response = session.post(flask_api_url + "/api/projects",
-                                    files={'file[]': (test_manifest, tf)})
-            print(response.text)
-            assert response.json()[0]
+        response = session.post(
+            flask_api_url + "/api/projects",
+            files={'file[]': ('validexample0.json', open(test_manifest, 'rb'))})
+        print(response.text)
+        assert UUID(response.json()[0], version=4)
 
     def test_encoding_error(self, session, flask_api_url, pytestconfig):
         test_manifest = os.path.join(
@@ -374,7 +374,7 @@ class TestPUT(object):
         assert True
 
     def test_unauthorized_update(self, flask_api_url):
-        """ Tests for 403 when attempting to update a different users project            
+        """ Tests for 403 when attempting to update a different users project
         """
         data = {"email": "user@knex.com", "password": "user"}
         session = requests.Session()
