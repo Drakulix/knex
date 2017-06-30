@@ -88,7 +88,8 @@ def update_user():
 def update_password():
     editor = current_user
     user = request.get_json()
-    if(is_permitted(editor["roles"]) is True):
+    is_same_user = editor['email'] == user['email']
+    if(is_permitted(editor["roles"]) is True and is_same_user is False):
         res = g.user_datastore.get_user(user['email'])
         if res is None:
             return make_response("Unknown User with Email-address: " +
@@ -112,7 +113,7 @@ def update_password():
             res.password = encrypt_password(new_password)
             res.save()
             return make_response("Password updated!", 200)
-        return make_response("Old and new password does not match", 400)
+        return make_response("Old password is wrong", 400)
 
     return make_response("You don't have the permissions " +
                          "to edit this user", 400)
