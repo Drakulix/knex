@@ -1,112 +1,67 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
-import Form from "../libraries/react-jsonschema-form";
 import { Redirect } from 'react-router-dom';
-//import exampleJSON from "../../data/test_project.json";
+import AutoComplete from 'material-ui/AutoComplete'
+import PropTypes from 'prop-types'
 
-const schema = {
-  type: "object",
-  required: ["title", "authors", "date_creation", "description", "status"],
-  properties: {
-    title: {
-      type: "string",
-      title: "Title",
-      default: "A new task"
-    },
-    authors: {
-      type: "array",
-      title: "Author",
-      items: {
-        type: "object",
-        properties: {
-          name: {
-            "title": "Name",
-            "type": "string"
-          },
-          email: {
-            "title": "E-Mail",
-            "type": "string",
-            "format": "email"
-          }
-        }
-      }
-    },
-    date_creation: {
-      type: "string",
-      title: "Creation Date",
-      //format: "date-time",
-      default: "2011-12-12"
-    },
-    description: {
-      type: "string",
-      title: "Description",
-      default: "A Description"
-    },
-    status: {
-      type: "string",
-        title: "Status"
-    },
-    url: {
-      type: "array",
-      title: "URL",
-      items: {
-        type: "string"
-      }
-    },
-    tags: {
-      title: "Tags",
-      type: "array",
-      items: {
-        type: "string"
-      }
-    }
-  }
+import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
+import FlatButton from 'material-ui/RaisedButton';
+import ChipInput from 'material-ui-chip-input'
+import DatePicker from 'material-ui/DatePicker';
+import moment from 'moment';
+import TextField from 'material-ui/TextField';
+
+const styles = {
+  chip: {
+    margin: 6,
+  },
+  wrapper: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
 };
-
-const uiSchema = {
-  url: {
-    "ui:placeholder": "http://"
-  },
-  description: {
-    "ui:widget": "textarea"
-  },
-  tags: {
-    "ui:help": "Add tags!"
-  },
-  url: {
-    "ui:help": "Add URLs!"
-  },
-  authors: {
-    "ui:help": "Add author!"
-  },
-  foo: {
-    "ui:options":  {
-      addable: true
-    }
-  }
-};
-
-const formData = {
-  authors: [""],
-  url: [""],
-  tags: [""]
-}
 
 const log = (type) => console.log.bind(console, type);
 
 export default class UploadByPattern extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
-      title : "",
-      titleSet : false,
-      anySet : false,
+      date: moment(),
+      suggestedTags : ["your", "data", "here"],
+      suggestedAuthors : ["your", "author", "here"],
+      status: 'inprogress',
+      title: '',
+      description: '',
+      tags: ["Add more Tags"],
+      authors: [],
+      urls: [],
+      disabled : false,
     };
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleRequestAdd (chip, name) {
+     this.setState({
+       [name]: [...this.state[name], chip]
+     })
+   }
+
+  handleRequestDelete (deletedChip, name) {
+     this.setState({
+         [name]: this.state[name].filter((c) => c !== deletedChip)
+       })
+  }
+
+  handleChange(event, value) {
+    const name = event.target.name;
+    this.setState({
+      [name]: value});
   }
 
   onSubmit = ({formData}) => {
+
     fetch('/api/projects', {
       method: 'POST',
       headers: {
@@ -130,197 +85,101 @@ export default class UploadByPattern extends React.Component {
       that.setState({
         gotoCreateByPattern : true,
       });
+
     });
     return null
   }
 
-  componentWillMount(){
-    var URL = encodeURI(decodeURIComponent(this.props.match.params.getURL));
-    var request = new Request(URL,{
-      method:'GET',
-      mode: 'cors',
-      header:{
-      'Access-Control-Allow-Origin':'*'
-      },
-    });
-    var that = this;
-    fetch(request)
-    .then(response => response.json()).catch(ex => {
-      console.error('parsing fails', ex);
-    })
-    .then(function(data) {
-      if(data!=null){
-        if(data.title!=null){
-          that.setState({
-            title : data.title,
-            titleSet : true,
-            anySet: true,
-          })
-        };
-        if(data.authors!=null){
-          that.setState({
-            authors : data.authors,
-            authorsSet : true,
-            anySet: true,
-          })
-        };
-        if(data.date_creation!=null){
-          that.setState({
-            creationDate : data.date_creation,
-            creationDateSet : true,
-            anySet: true,
-          })
-        };
-        if(data.description!=null){
-          that.setState({
-            description : data.description,
-            descriptionSet : true,
-            anySet: true,
-          })
-        };
-        if(data.status!=null){
-          that.setState({
-            status : data.status,
-            statusSet : true,
-            anySet: true,
-            anySet: true,
-          })
-        };
-        if(data.tags!=null){
-          that.setState({
-            tags : data.tags,
-            tagsSet : true,
-            anySet: true,
-          })
-        };
-        if(data.url!=null){
-          that.setState({
-            url : data.url,
-            urlSet : true,
-            anySet: true,
-          })
-        };
-      }
-    });
-  }
-
-  dlschema(){
-    var authorArray = [];
-    var urlArray = [];
-    if(this.state.authors!=null){
-      for (var i = 0; i<this.state.authors.length;i++){
-        authorArray.push({
-          name : this.state.authors[i].name,
-          email : this.state.authors[i].email,
-        });
-      }
-    };
-    if(this.state.url!=null){
-      for (var i = 0; i<this.state.url.length;i++){
-        urlArray.push(this.state.url[i]);
-      }
-    }
-
-
-    return {
-      type: "object",
-      required: ["title", "authors", "date_creation", "description", "status"],
-      properties: {
-        title: {
-          type: "string",
-          title: "Title",
-          default: this.state.title
-        },
-        authors: {
-          type: "array",
-          title: "Author",
-          items: {
-            type: "object",
-            properties: {
-              name: {
-                "title": "Name",
-                "type": "string"
-              },
-              email: {
-                "title": "E-Mail",
-                "type": "string",
-                "format": "email"
-              }
-            }
-          },
-          default: authorArray,
-        },
-        date_creation: {
-          type: "string",
-          title: "Creation Date",
-          //format: "date-time",
-          default: this.state.creationDate
-        },
-        description: {
-          type: "string",
-          title: "Description",
-          default: this.state.description
-        },
-        status: {
-          type: "string",
-          title: "Status",
-          default: this.state.status
-        },
-        url: {
-          type: "array",
-          title: "URL",
-          items: {
-            type: "string"
-          },
-          default : urlArray,
-        },
-        tags: {
-          title: "Tags",
-          type: "array",
-          items: {
-            type: "string"
-          },
-          default: this.state.tags
-        }
-      }
-    };
-  }
-
   render() {
-    if(this.state.anySet){
-      return(
-        <div className="container">
-          <div className="innerContainer">
-            <div className="headerCreation">Create New Project</div>
-              <Form schema={this.dlschema()}
-                uiSchema={uiSchema}
-                formData={formData}
-                onChange={log("changed")}
-                onSubmit={this.onSubmit}
-                onError={log("errors")} />
-              <Link to="/createbylink">
-                <button className="btn-cancel">Cancel</button>
-              </Link>
-          </div>
+    return(
+      <div className="container">
+        <div className="innerContainer">
+          <div className="headerCreation">Create New Project</div>
+          <form>
+            <div className="column"></div>
+            <div>
+              <div className="profile-info">Title</div>
+              <TextField
+                value={this.state.title}
+                onChange={this.handleChange}
+                name="title"
+                hintText="Add title..."
+                style={{width:'100%'}}/>
+            </div>
+            <br></br>
+            <div className="row">
+              <div className="col-4">
+                <div className="profile-info">Status</div>
+                <RadioButtonGroup
+                  name="status"
+                  defaultSelected="not_light"
+                  valueSelected={this.state.status}
+                  onChange={this.handleChange}>
+                  <RadioButton
+                    value="done"
+                    label="Done"
+                    style={styles.radioButton}/>
+                  <RadioButton
+                    value="inprogress"
+                    label="In Progress"
+                    style={styles.radioButton}/>
+                    <RadioButton
+                      value="pending"
+                      label="Pending"
+                      style={styles.radioButton}/>
+                </RadioButtonGroup>
+                <div className="profile-info">Date</div>
+                <DatePicker
+                  hintText="Pick a creation Date..."
+                  mode="landscape"
+                  style={{width:'100%'}}/>
+                <div className="profile-info">Authors</div>
+                <ChipInput
+                  dataSource={this.state.suggestedAuthors}
+                  value={this.state.authors}
+                  filter={AutoComplete.fuzzyFilter}
+                  onChange={this.onChangeAuthors}
+                  hintText='Add authors...'
+                  onRequestAdd={(chip) => this.handleRequestAdd(chip, "authors")}
+                  onRequestDelete={(deletedChip) => this.handleRequestDelete(deletedChip, "authors")}
+                  fullWidth/>
+                <div className="profile-info">URL</div>
+                <ChipInput
+                  value={this.state.urls}
+                  onChange={this.onChangeUrls}
+                  hintText='Add Urls...'
+                  onRequestAdd={(chip) => this.handleRequestAdd(chip, "urls")}
+                  onRequestDelete={(deletedChip) => this.handleRequestDelete(deletedChip, "urls")}
+                  fullWidth/>
+              </div>
+              <div className="col-1"></div>
+              <div className="col-7">
+                <div className="profile-info"> Tags</div>
+                <ChipInput
+                  dataSource={this.state.suggestedTags}
+                  value={this.state.tags}
+                  filter={AutoComplete.fuzzyFilter}
+                  onRequestAdd={(chip) => this.handleRequestAdd(chip, "tags")}
+                  onRequestDelete={(deletedChip) => this.handleRequestDelete(deletedChip, "tags")}
+                  hintText='Add tags...'
+                  fullWidth/>
+                <div className="profile-info">Description</div>
+                <TextField
+                  value={this.state.description}
+                  onChange={this.handleChange}
+                  name="description"
+                  hintText="Add description..."
+                  style={{width:'100%'}}
+                  multiLine={true}/>
+              </div>
+              <div className="col-5"></div>
+              <div className="col-1">
+                <FlatButton label="Submit" />
+              </div>
+            </div>
+          </form>
         </div>
-      )
-    } else {
-      return(
-        <div className="container">
-          <div className="innerContainer">
-            <div className="headerCreation">Create New Project</div>
-              <Form schema={schema}
-                uiSchema={uiSchema}
-                formData={formData}
-                onChange={log("changed")}
-                onSubmit={this.onSubmit}
-                onError={log("errors")} />
-              <Link to="/createbylink">
-                <button className="btn-cancel">Cancel</button>
-              </Link>
-          </div>
-        </div>
-      )
-    }
+      </div>
+    )
   }
 }

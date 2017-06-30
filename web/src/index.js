@@ -4,6 +4,8 @@ import registerServiceWorker from './registerServiceWorker';
 import './style/style.css';
 import './style/fonts/font-awesome/css/font-awesome.css';
 
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+
 import {
   BrowserRouter,
   Route,
@@ -44,21 +46,22 @@ const PageRoute = ({ component: Component, ...rest }) => (
 )
 
 ReactDOM.render(
-<BrowserRouter history={history}>
-  <div>
-    <PageRoute path="/discovery" component={SearchPage} />
-    <PageRoute path="/admin" component={AdminOverview} />
-    <PageRoute path="/create/:getURL" component={CreateProjectByPattern} />
-    <PageRoute exact path="/create" component={CreateProjectByPattern} />
-    <PageRoute path="/update" component={UpdateProject} />
-    <PageRoute path="/createbylink" component={CreateProject} />
-    <PageRoute path="/projects/:uuid" component={ProjectContainer} />
-    <PageRoute path="/bookmarks" component={BookmarksTable} />
-    <PageRoute path="/profile" component={ProfileContainer} />
-    <PageRoute path="/yourprojects" component={UserProjects} />
-    <Route path="/register" component={SignUp} />
-    <Route exact path="/" component={SignIn} />
- </div>
-</BrowserRouter>
+  <MuiThemeProvider>
+    <BrowserRouter history={history}>
+      <div>
+        <PageRoute path="/discovery" component={SearchPage} />
+        <PageRoute path="/admin" component={AdminOverview} />
+        <PageRoute path="/create/:getURL" component={CreateProjectByPattern} />
+        <PageRoute exact path="/create" component={CreateProjectByPattern} />
+        <PageRoute path="/update" component={UpdateProject} />
+        <PageRoute path="/createbylink" component={CreateProject} />
+        <PageRoute path="/projects/:uuid" component={ProjectContainer} />
+        <PageRoute path="/bookmarks" component={BookmarksTable} />
+        <PageRoute path="/profile" component={ProfileContainer} />
+        <Route path="/register" component={SignUp} />
+        <Route exact path="/" component={SignIn} />
+     </div>
+    </BrowserRouter>
+  </MuiThemeProvider>
 , document.getElementById('root'));
 registerServiceWorker();
