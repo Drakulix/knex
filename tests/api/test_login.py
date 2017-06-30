@@ -32,7 +32,8 @@ def test_logout(flask_api_url):
     assert response.status_code == 200
     assert "Logged out" in response.text
 
-def test_unauthorized_update(self, flask_api_url):
+
+def test_unauthorized_update(flask_api_url):
         """ Tests for 403 when attempting to update a different users project            
         """
         data = {"email": "user@knex.com", "password": "user"}

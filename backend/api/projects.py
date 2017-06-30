@@ -22,7 +22,7 @@ projects = Blueprint('api_projects', __name__)
 
 @projects.route('/api/projects', methods=['POST'])
 @login_required
-def add_project():
+def add_projects():
     """Receive manifest as a jsonstring and return new ID
     """
     successful_ids = []
@@ -112,6 +112,7 @@ def get_project_by_id(project_id):
 
 
 @projects.route('/api/projects/<uuid:project_id>', methods=['DELETE'])
+@login_required
 @roles_required('admin')
 def delete_project(project_id):
     """Deletes a project by ID.

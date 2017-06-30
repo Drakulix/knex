@@ -56,8 +56,7 @@ class TestPOST(object):
             response = session.post(flask_api_url + "/api/projects",
                                     files={'file[]': (test_manifest, tf)})
             print(response.text)
-            for id in response.json():
-                assert UUID(id, version=4)
+            assert response.json()[0]
 
     def test_success_json_upload(self, session, flask_api_url, pytestconfig):
         test_manifest = os.path.join(
@@ -70,8 +69,7 @@ class TestPOST(object):
             response = session.post(flask_api_url + "/api/projects",
                                     files={'file[]': (test_manifest, tf)})
             print(response.text)
-            for id in response.json():
-                assert UUID(id, version=4)
+            assert response.json()[0]
 
     def test_encoding_error(self, session, flask_api_url, pytestconfig):
         test_manifest = os.path.join(
@@ -292,7 +290,7 @@ class TestDELETE(object):
         response = session.delete(flask_api_url + '/api/projects/' + str(uuid.uuid4()))
         assert response.status_code == 404
 
-   
+
 class TestGET(object):
 
     def test_unknown_id(self, session, flask_api_url):
