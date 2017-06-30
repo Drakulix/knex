@@ -30,7 +30,6 @@ def logout():
 
 
 @users.route('/api/users', methods=['POST'])
-@roles_required('admin')
 def create_user():
     try:
         user = request.get_json()
@@ -57,7 +56,7 @@ def create_user():
 
 
 @users.route('/api/users', methods=['PUT'])
-@roles_required('admin')
+@login_required
 def update_user():
     user = request.get_json()
 
@@ -76,7 +75,7 @@ def update_user():
 
 
 @users.route('/api/users/password', methods=['PUT'])
-@roles_required('admin')
+@login_required
 def update_password():
     user = request.get_json()
 

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Overview from '../views/AdminOverview';
 import TopBar from '../common/TopBar';
 import { Link } from 'react-router-dom';
+import {login, isLoggedIn, logout, getCookie, setCookie, isAdmin, getMyEmail, getUserInfo} from '../common/Authentication.jsx';
 import logo from '../../style/img/white_logo_title.svg';
 
 export default class AdminArea extends Component {
@@ -15,7 +16,8 @@ export default class AdminArea extends Component {
         bookmarks: 'Bookmarks',
         profile: 'Profile',
         adminArea: 'Admin Area'
-      }
+      },
+      myProfile: getMyEmail()
     };
   }
 
@@ -43,11 +45,11 @@ export default class AdminArea extends Component {
                 </Link>
               </li>
               <li className="list-group-item">
-                <Link to="/profile">
+                <Link to={'/profile/' + this.state.myProfile }>
                   {this.state.menu.profile}
                 </Link>
               </li>
-              <li className="list-group-item active">
+               <li className="list-group-item" >
                 <div className="menu-indicator" />
                 <Link to="/admin">
                   {this.state.menu.adminArea}
