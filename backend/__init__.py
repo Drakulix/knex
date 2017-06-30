@@ -22,6 +22,7 @@ app = Flask(__name__, static_url_path='')
 CORS(app)
 
 app.config['DEBUG'] = True
+app.config['TESTING'] = False
 app.config['SECRET_KEY'] = 'super-secret'
 app.config['MONGODB_DB'] = 'knexdb'
 app.config['MONGODB_HOST'] = 'mongodb'
@@ -65,6 +66,11 @@ def set_global_mongoclient():
 @LOGINMANAGER.user_loader
 def load_user(user_id):
     return User.get(user_id)
+
+
+@LOGINMANAGER.unauthorized_handler
+def handle_unauthorized_access():
+    return make_response("Forbidden", 403)
 
 
 @app.before_first_request
