@@ -2,7 +2,6 @@
 Defines API points and starts the application
 """
 
-import os
 import sys
 import time
 import json
@@ -10,8 +9,8 @@ import json5
 
 from flask import request, jsonify, make_response, g, Blueprint
 from flask_security import login_required, roles_required
+from pymongo.collection import ReturnDocument
 from werkzeug.utils import secure_filename
-from bson.json_util import dumps
 
 from api.helper import uploader
 from api.helper.apiexception import ApiException
@@ -21,7 +20,7 @@ projects = Blueprint('api_projects', __name__)
 
 
 @projects.route('/api/projects', methods=['POST'])
-# @login_required
+@login_required
 def add_project():
     """Receive manifest as a jsonstring and return new ID
     """
@@ -77,7 +76,7 @@ def get_projects():
     argc = len(request.args)
 
     if g.projects.count() == 0:
-        return make_response("There are no projects", 500)
+        return make_response(jsonify([]), 200)
 
     if argc == 0:
         res = g.projects.find({})
@@ -112,7 +111,7 @@ def get_project_by_id(project_id):
 
 
 @projects.route('/api/projects/<uuid:project_id>', methods=['DELETE'])
-# @roles_required('admin')
+@roles_required('admin')
 def delete_project(project_id):
     """Deletes a project by ID.
 
@@ -129,7 +128,7 @@ def delete_project(project_id):
 
 
 @projects.route('/api/projects/<uuid:project_id>', methods=['PUT'])
-# @login_required
+@login_required
 def update_project(project_id):
     """Updates Project by ID
 
@@ -168,9 +167,9 @@ def update_project(project_id):
                 print("mongo replaced:", file=sys.stderr)
                 print(manifest, file=sys.stderr)
                 return make_response("Success")
-            elif on_json_loading_failed() is not None:
+            elif request.on_json_loading_failed() is not None:
                 raise ApiException("json could not be parsed",
-                                   400, on_json_loading_failed())
+                                   400, request.on_json_loading_failed())
             else:
                 validation_errs = [error for error in
                                    sorted(g.validator.iter_errors(manifest))]

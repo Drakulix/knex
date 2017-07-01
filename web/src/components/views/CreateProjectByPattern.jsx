@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 import Form from "../libraries/react-jsonschema-form";
+import { Redirect } from 'react-router-dom';
 //import exampleJSON from "../../data/test_project.json";
 
 const schema = {
@@ -66,16 +68,16 @@ const uiSchema = {
   url: {
     "ui:placeholder": "http://"
   },
-  url_two: {
-    "ui:placeholder": "http://"
-  },
   description: {
     "ui:widget": "textarea"
   },
   tags: {
     "ui:help": "Add tags!"
   },
-  authors: {
+  url: {
+    "ui:help": "Add URLs!"
+  },
+  authors: {
     "ui:help": "Add author!"
   },
   foo: {
@@ -86,7 +88,9 @@ const uiSchema = {
 };
 
 const formData = {
-  //to be continued
+  authors: [""],
+  url: [""],
+  tags: [""]
 }
 
 const log = (type) => console.log.bind(console, type);
@@ -110,8 +114,8 @@ export default class UploadByPattern extends React.Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(formData)
-      //body: JSON.stringify(exampleJSON)
-    });
+    }),
+    console.log(formData);
     alert("New Project added!");
   }
 
@@ -131,7 +135,7 @@ export default class UploadByPattern extends React.Component {
   }
 
   componentWillMount(){
-    var URL = encodeURI(decodeURIComponent(this.props.getURL));
+    var URL = encodeURI(decodeURIComponent(this.props.match.params.getURL));
     var request = new Request(URL,{
       method:'GET',
       mode: 'cors',
@@ -178,7 +182,8 @@ export default class UploadByPattern extends React.Component {
           that.setState({
             status : data.status,
             statusSet : true,
-            anySet: true
+            anySet: true,
+            anySet: true,
           })
         };
         if(data.tags!=null){
@@ -211,7 +216,7 @@ export default class UploadByPattern extends React.Component {
       }
     };
     if(this.state.url!=null){
-      for (i = 0; i<this.state.url.length;i++){
+      for (var i = 0; i<this.state.url.length;i++){
         urlArray.push(this.state.url[i]);
       }
     }

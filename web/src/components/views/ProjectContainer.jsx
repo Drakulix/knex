@@ -12,19 +12,15 @@ export default class ProjectContainer extends Component {
   }
 
   componentWillMount(){
-    this.loadProjectInf(this.props);
+    this.loadProjectInf(this.props.match.params.uuid);
   }
 
   componentWillReceiveProps(nextProps){
     this.loadProjectInf(nextProps)
   }
 
-  componentDidMount(){
-    this.loadProjectInf(this.props);
-  }
-
-  loadProjectInf(props) {
-    fetchProjectDetails(props.uuid).then(data => {
+  loadProjectInf(uuid) {
+    fetchProjectDetails(uuid).then(data => {
       this.setState({projectInf: data})
     });
   }
@@ -85,7 +81,7 @@ export default class ProjectContainer extends Component {
           <span className="glyphicon glyphicon-star white"></span>
         </button>
 
-        <Link to={`${update_url}${this.props.uuid}`}>
+        <Link to={`${update_url}${this.props.match.params.uuid}`}>
 
 
           <button className="btn btn-default star-edit-button">
