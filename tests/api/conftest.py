@@ -22,7 +22,7 @@ def docker_client():
 
 @pytest.fixture(scope='session')
 def flask_api_url():
-    flask_api_url = "http://localhost:3000"
+    flask_api_url = "http://localhost:5000"
     return flask_api_url
 
 
