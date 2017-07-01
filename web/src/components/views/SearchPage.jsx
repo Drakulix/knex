@@ -7,6 +7,67 @@ import Chips, { Chip } from 'react-chips';
 const defaultPageSize = 4;
 const defaultSearchString = "advanced/?q=*";
 
+
+const theme = {
+  chipsContainer: {
+    display: "flex",
+    position: "relative",
+    border: "1px solid #ccc",
+    backgroundColor: '#fff',
+    font: "13.33333px 'Open Sans', sans-serif",
+    minHeight: 39,
+    fontWeight: "normal",
+    alignItems: "center",
+    flexWrap: "wrap",
+    padding: "2.5px",
+    ':focus': {
+    	border: "1px solid #aaa",
+    }
+  },
+  container:{
+    flex: 1,
+  },
+  containerOpen: {
+
+  },
+  input: {
+    border: 'none',
+    outline: 'none',
+    boxSizing: 'border-box',
+    width: '100%',
+    padding: 5,
+    margin: 2.5
+  },
+  suggestionsContainer: {
+
+  },
+  suggestionsList: {
+    position: 'absolute',
+    border: '1px solid #ccc',
+    zIndex: 10,
+    left: 0,
+    top: '100%',
+    width: '100%',
+    backgroundColor: '#fff',
+    listStyle: 'none',
+    padding: 0,
+    margin: 0,
+  },
+  suggestion: {
+    padding: '5px 15px'
+  },
+  suggestionHighlighted: {
+    background: '#ddd'
+  },
+  sectionContainer: {
+
+  },
+  sectionTitle: {
+
+  },
+}
+
+
 class Headline extends Component {
   render() {
     return(
@@ -45,15 +106,16 @@ class AdvancedSearch extends Component {
 
   onChange = chips => {
     this.setState({ chips });
+    this.props.changeStateAuthor({chips});
   }
   //View for advanced search, the onChange in the <input> parses the state all the way to the parent
   render() {
     return(
       <div className="" id="advancedSearch">
         <div className="row">
-          <div className="col-md-8">
-            <div className="form-group">
-              <label for="projectName" id="labelProjectName">
+          <div className="col-md-6">
+            <div className="input-group form-inline panel">
+              <label for="projectName" className ="input-group-addon primary" id="labelProjectName">
                 Project Name:
               </label>
               <input
@@ -65,9 +127,9 @@ class AdvancedSearch extends Component {
               />
             </div>
           </div>
-          <div className="col-md-2">
-            <div className="form-group" id="dateStart">
-              <label for="dateStart">
+          <div className="col-md-3">
+            <div className="input-group form-inline panel" id="dateStart">
+              <label for="dateStart" className ="input-group-addon primary">
                 Date from:
               </label>
               <input
@@ -79,9 +141,9 @@ class AdvancedSearch extends Component {
               />
             </div>
           </div>
-          <div className="col-md-2">
-            <div className="form-group" id="dateEnd">
-              <label for="DateEnd">
+          <div className="col-md-3">
+            <div className="input-group form-inline panel " id="dateEnd">
+              <label for="DateEnd" className ="input-group-addon primary">
               To:
             </label>
               <input
@@ -95,9 +157,9 @@ class AdvancedSearch extends Component {
         </div>
 
         <div className="row">
-          <div className="col-md-5">
-            <div className="form-group">
-              <label>
+          <div className="col-md-6">
+            <div className="input-group form-inline panel">
+              <label className ="input-group-addon primary">
                 Author:
               </label>
               <input
@@ -109,14 +171,16 @@ class AdvancedSearch extends Component {
               />
             </div>
           </div>
-          <div className="col-md-5" id="tagInput">
-            <div className="form-group">
-              <label>
+          <div className="col-md-6" id="tagInput">
+            <div className="input-group form-inline panel">
+              <label className ="input-group-addon primary">
                 Tags:
               </label>
               <Chips
+                placeholder={"Enter your tags"}
                 value={this.state.chips}
                 onChange={this.onChange}
+                theme={theme}
                 suggestions={[
                   "Annie Blas",
                   "Gricelda Look",  
@@ -128,23 +192,6 @@ class AdvancedSearch extends Component {
                   "Ricarda Schrage"  
                 ]}
               />
-            </div>
-          </div>
-          <div className="col-md-2">
-            <div className="form-group">
-              <label >
-                Status:
-              </label>
-              <select
-                className="form-control"
-                id="dropdown_status"
-                name="status"
-                onChange={(value) => this.props.ChangeStateStatus(value.target.value)}
-              >
-                <option>DONE</option>
-                <option>pending</option>
-                <option>in progress</option>
-              </select>
             </div>
           </div>
         </div>
@@ -164,6 +211,25 @@ class AdvancedSearch extends Component {
               />
             </div>
           </div>
+      </div>
+      <div className="row" >
+        <div className="col-md-2">
+          <div className="input-group form-inline panel">
+            <label className ="input-group-addon primary">
+              Status:
+            </label>
+            <select
+              className="form-control"
+              id="dropdown_status"
+              name="status"
+              onChange={(value) => this.props.ChangeStateStatus(value.target.value)}
+            >
+              <option>DONE</option>
+              <option>pending</option>
+              <option>in progress</option>
+            </select>
+          </div>
+        </div>
       </div>
     </div>
     );
@@ -193,7 +259,7 @@ class Search extends Component{
       return(
         <div>
           <div className="row">
-            <form className="form-horizontal col-md-12">
+            <form className="form-horizontal col-12">
               <AdvancedSearch
                 changeStateName={(name) => this.props.changeStateName(name)}
                 changeStateAuthor={(author) => this.props.changeStateAuthor(author)}
@@ -213,13 +279,13 @@ class Search extends Component{
     } else {
       return(
         <div>
-          <div className="row">
-            <form className="form-horizontal col-md-12">
+          <div className="row padding">
+            <form className="form-horizontal col-12">
               <Searchbar getSearchString = {(str) => this.props.getSearchString(str)}  />
             </form>
           </div>
           <div className="row padding" id="advancedSearchToggle">
-            <a onClick={() => this.toggle()} className="clickable-text text-right">
+            <a onClick={() => this.toggle()} className="clickable-text padding text-right">
               <u>Advanced Search</u>
             </a>
           </div>
@@ -398,7 +464,6 @@ export default class SearchPage extends Component {
           <div className="row">
             <div className="col">
                 <Headline />
-                <hr className="hidden-divider"/>
                 <Search
                   changeStateName={(name) => this.changeStateName(name)}
                   changeStateAuthor={(author) => this.changeStateAuthor(author)}
