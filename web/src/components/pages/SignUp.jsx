@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import {
-  BrowserRouter as Router,
-  Route,
   Link,
-  Redirect,
-  withRouter
+  Redirect
 } from 'react-router-dom';
 import logo from '../../style/img/black_logo_title_below.svg';
-import {login, isLoggedIn, logout,register} from '../common/Authentication.jsx';
+import {register} from '../common/Authentication.jsx';
+import PropTypes from 'prop-types';
 
 export default class SignUp extends Component {
 
@@ -78,7 +76,7 @@ export default class SignUp extends Component {
       <section className="sign-container">
 
         {/*Information*/}
-        <img className="service-name" src={logo}/>
+        <img className="service-name" src={logo} alt="knex logo"/>
         <h2 className="team-name">{teamName}</h2>
         <div className="rectangle-sign">
           <h3 className="sign-type-desc">Sign Up
@@ -180,7 +178,7 @@ export default class SignUp extends Component {
 
         <div>
           <Link to="/">
-            <a href="#" className="register-info">
+            <a role="button" className="register-info">
               You already have an account?<br/>Login here.
             </a>
           </Link>
@@ -192,8 +190,8 @@ export default class SignUp extends Component {
 }
 
 SignUp.propTypes = {
-  serviceName: React.PropTypes.string,
-  teamName: React.PropTypes.string,
+  serviceName: PropTypes.string,
+  teamName: PropTypes.string,
 }
 
 SignUp.defaultProps = {

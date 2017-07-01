@@ -1,12 +1,6 @@
 import React, { Component } from 'react';
-import {
-  BrowserRouter as Router,
-  Route,
-  Link,
-  Redirect,
-  withRouter
-} from 'react-router-dom';
-import { login, isLoggedIn, logout, getCookie, setCookie } from '../common/Authentication.jsx';
+import { Redirect } from 'react-router-dom';
+import { logout } from '../common/Authentication.jsx';
 import { Popover, PopoverTitle, PopoverContent } from 'reactstrap';
 import NotificationBadge from 'react-notification-badge';
 import { Effect } from 'react-notification-badge';
