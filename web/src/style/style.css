@@ -837,3 +837,11 @@ legend {
 .footer {
   margin-bottom: 50px;
 }
+
+.rt-td {
+  font-weight: 100;
+}
+
+.rt-td > a {
+    color: black !important;
+}
