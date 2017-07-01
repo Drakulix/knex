@@ -2,7 +2,6 @@
 Defines API points and starts the application
 """
 
-import os
 import sys
 import time
 import json
@@ -12,7 +11,6 @@ from flask import request, jsonify, make_response, g, Blueprint
 from flask_security import login_required, roles_required
 from pymongo.collection import ReturnDocument
 from werkzeug.utils import secure_filename
-from bson.json_util import dumps
 
 from api.helper import uploader
 from api.helper.apiexception import ApiException
@@ -78,7 +76,7 @@ def get_projects():
     argc = len(request.args)
 
     if g.projects.count() == 0:
-        return make_response("There are no projects", 500)
+        return make_response(jsonify([]), 200)
 
     if argc == 0:
         res = g.projects.find({})
