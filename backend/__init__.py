@@ -2,12 +2,13 @@ import json
 
 from elasticsearch import Elasticsearch
 from flask import Flask, g, jsonify, request
+from flask.helpers import make_response
 from flask_cors import CORS
 from flask_login import LoginManager
 from flask_mongoengine import MongoEngine
-from flask_security import Security, MongoEngineUserDatastore,\
-    UserMixin, RoleMixin, current_user
+from flask_security import Security, MongoEngineUserDatastore, UserMixin, RoleMixin
 from flask_security.utils import encrypt_password
+from flask_principal import PermissionDenied
 from jsonschema import FormatChecker, Draft4Validator
 from pymongo import MongoClient, ReturnDocument
 from mongoengine.fields import UUIDField, ListField, StringField, BooleanField
@@ -17,6 +18,7 @@ from api.projects import projects
 from api.users import users
 from api.search import search
 from api.helper.apiexception import ApiException
+from globals import ADMIN_PERMISSION
 
 app = Flask(__name__, static_url_path='')
 CORS(app)
@@ -148,6 +150,15 @@ def handle_invalid_usage(error):
     response = jsonify(error.to_dict())
     response.status_code = error.status_code
     return response
+
+
+@app.errorhandler(PermissionDenied)
+def handle_insufficient_permission(error):
+    """ Handler for insufficient permission to access a method.
+        This is not the error handler for insufficient permission to update
+        a project or user.
+    """
+    return make_response("Not found", 404)
 
 
 @app.errorhandler(404)
