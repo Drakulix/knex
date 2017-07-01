@@ -53,8 +53,9 @@ export default class BookmarksTable extends React.Component {
 
     const columns = [{
       Header: 'Project Name',
-      id: 'deine-mutter',
+      id: 'name',
       accessor: d => d,
+      filterMethod: (filter, row) => (row[filter.id].name.includes(filter.value)),
       Cell: props => <Link to={`projects/${props.value._id}`}>{props.value.name}</Link>
     }, {
       Header: 'Status',
