@@ -4,7 +4,7 @@ import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import { fetchJson } from '../common/Backend'
 
-const FILTER_ATTRIBUTES = ['title', 'status', 'description'];
+const FILTER_ATTRIBUTES = ['title', 'status', 'description', '_id'];
 
 export default class BookmarksTable extends React.Component {
   constructor(props) {
@@ -53,7 +53,9 @@ export default class BookmarksTable extends React.Component {
 
     const columns = [{
       Header: 'Project Name',
-      accessor: 'name'
+      id: 'deine-mutter',
+      accessor: d => d,
+      Cell: props => <Link to={`projects/${props.value._id}`}>{props.value.name}</Link>
     }, {
       Header: 'Status',
       accessor: 'status',
@@ -68,6 +70,16 @@ export default class BookmarksTable extends React.Component {
       <div className="container">
         <div className="header">Your Bookmarks</div>
           <ReactTable
+            getTdProps={(state, rowInfo, column, instance) => {
+            return {
+              onClick: e => {
+                console.log('it produced this event:', e)
+                console.log('It was in this column:', column)
+                console.log('It was in this row:', rowInfo)
+                console.log('It was in this table instance:', instance)
+                }
+              }
+            }}
             data={this.state.data}
             columns={columns}
             filterable={true}
