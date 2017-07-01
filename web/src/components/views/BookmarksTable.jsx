@@ -2,16 +2,54 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
+import { fetchJson } from '../common/Backend'
+
+const FILTER_ATTRIBUTES = ['title', 'status', 'description'];
 
 export default class BookmarksTable extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: [{
+      }],
+    };
+  }
+
+  componentWillMount() {
+
+  }
+
+  transformObj(dataObject)  {
+    var filteredDataObject = {};
+    for(let attr of FILTER_ATTRIBUTES ) {
+      if(attr == 'title') {
+        filteredDataObject['name'] = dataObject[attr];
+      } else {
+        filteredDataObject[attr] = dataObject[attr];
+      }
+    }
+    return filteredDataObject;
+  }
+
+  transformArray(dataArray) {
+    var filteredDataArray = [];
+    for(let dataObject of dataArray) {
+      filteredDataArray.push(this.transformObj(dataObject));
+    }
+    return filteredDataArray;
+  };
+
+  componentDidMount() {
+    var self = this;
+    fetchJson('/api/projects').then(function(datas) {
+      var filteredData = this.transformArray(datas);
+      this.setState({
+        data: filteredData
+      });
+    }.bind(this));
+  }
 
   render() {
-    const data = [{
-      name: 'Contextual music information retrieval and recommendation',
-      status: 'done',
-      description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
-      bookmark: 'yes'
-    }]
 
     const columns = [{
       Header: 'Project Name',
@@ -24,17 +62,13 @@ export default class BookmarksTable extends React.Component {
       Header: 'Description',
       accessor: 'description',
       pivot: true
-    }, {
-      Header: 'Bookmark',
-      accessor: 'bookmark',
-      width: 100
     }]
 
     return (
       <div className="container">
         <div className="header">Your Bookmarks</div>
           <ReactTable
-            data={data}
+            data={this.state.data}
             columns={columns}
             filterable={true}
             defaultPageSize={5}
