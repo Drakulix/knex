@@ -152,6 +152,21 @@
             "type": "string"
           }
         }
+      },
+      "comments": {
+        "type": "array",
+        "items": {
+          "author": {
+            "$ref": "#/project/definitions/user"
+          },
+          "commentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "commentMsg": {
+            "type": "string"
+          }
+        }
       }
     }
   }
