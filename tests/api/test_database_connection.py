@@ -43,7 +43,7 @@ def test_consistent_delete_no_elastic(session, flask_api_url, pytestconfig, elas
     for x in client.containers.list():
         if "elastic" in x.attrs['Config']['Image']:
             container = x
-    if container == None:
+    if container is None:
         print("Couldn't find elasticsearch container!")
         assert False
 
@@ -77,6 +77,8 @@ def test_empty_database(flask_api_url, mongo_client):
 
 
 def test_consistency(mongo_client, elastic_client):
+    """Test if mongo-connector makes sure mongo and elasticsearch are consistent.
+    """
     project_id = uuid.uuid4()
     dummy_project = {"_id": project_id, "name": "dummy_file"}
     mongo_client.projects.insert_one(dummy_project)
