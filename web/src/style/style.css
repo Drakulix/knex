@@ -800,7 +800,12 @@ legend {
   border-radius: 0px;
 }
 
+.nav-tabs{
+  height: 2.5em;
+}
+
 .nav-tabs .nav-link {
+  height: 2.5em;
   border: 1px solid transparent;
   border-top-left-radius: 0rem;
   border-top-right-radius: 0rem;
