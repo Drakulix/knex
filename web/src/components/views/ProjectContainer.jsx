@@ -31,6 +31,16 @@ export default class ProjectContainer extends Component {
   render(){
     const { _id, authors, date_creation, date_update, description } = this.state.projectInf;
     const { status, tags, title, url} = this.state.projectInf;
+    var status_badge = null;
+    if (status == 'DONE'){
+      status_badge = <span className="badge badge-success">DONE</span>
+    } else if (status == 'IN_PROGRESS') {
+      status_badge = <span className="badge badge-warning">IN_PROGRESS</span>
+    } else if (status == 'IN_REVIEW') {
+      status_badge = <span className="badge badge-info">IN_REVIEW</span>
+    } else {
+      status_badge = status
+    }
 
     var authors_string = null;
     if (authors != null){
@@ -59,7 +69,7 @@ export default class ProjectContainer extends Component {
         </div>
         <div className="status">
           <p>
-          Status: {this.state.projectInf.status}
+          Status: {status_badge}
           </p>
         </div>
         <ul className="nav nav-tabs overviewbar">
