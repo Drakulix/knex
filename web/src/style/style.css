@@ -96,6 +96,14 @@ a:hover {
   color: black;
 }
 
+.table-status {
+  text-align: center;
+}
+
+.table .th-center {
+  text-align: center;
+}
+
 .padding {
   padding-left: 15px;
   padding-right: 15px;
