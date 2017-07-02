@@ -16,6 +16,7 @@ const theme = {
     backgroundColor: '#fff',
     font: "13.33333px 'Open Sans', sans-serif",
     minHeight: 39,
+    width: "100%",
     fontWeight: "normal",
     alignItems: "center",
     flexWrap: "wrap",
@@ -114,10 +115,11 @@ class AdvancedSearch extends Component {
       <div className="" id="advancedSearch">
         <div className="row">
           <div className="col-md-6">
+            <label for="projectName" className ="input-group-addon search-bar-title primary" id="labelProjectName">
+              Project Name:
+            </label>
             <div className="input-group form-inline panel">
-              <label for="projectName" className ="input-group-addon primary" id="labelProjectName">
-                Project Name:
-              </label>
+
               <input
                 className="form-control full-width"
                 type="text"
@@ -128,10 +130,11 @@ class AdvancedSearch extends Component {
             </div>
           </div>
           <div className="col-md-3">
+            <label for="dateStart" className ="input-group-addon search-bar-title primary">
+              Date from:
+            </label>
             <div className="input-group form-inline panel" id="dateStart">
-              <label for="dateStart" className ="input-group-addon primary">
-                Date from:
-              </label>
+
               <input
                 className="form-control"
                 type="date"
@@ -142,10 +145,11 @@ class AdvancedSearch extends Component {
             </div>
           </div>
           <div className="col-md-3">
+            <label for="DateEnd" className ="input-group-addon search-bar-title primary">
+            To:
+          </label>
             <div className="input-group form-inline panel " id="dateEnd">
-              <label for="DateEnd" className ="input-group-addon primary">
-              To:
-            </label>
+
               <input
                 className="form-control"
                 type="date"
@@ -158,10 +162,11 @@ class AdvancedSearch extends Component {
 
         <div className="row">
           <div className="col-md-6">
+            <label className ="input-group-addon search-bar-title primary">
+              Author:
+            </label>
             <div className="input-group form-inline panel">
-              <label className ="input-group-addon primary">
-                Author:
-              </label>
+
               <input
                 className="form-control"
                 type="search"
@@ -172,10 +177,11 @@ class AdvancedSearch extends Component {
             </div>
           </div>
           <div className="col-md-6" id="tagInput">
+            <label className ="input-group-addon search-bar-title primary">
+              Tags:
+            </label>
             <div className="input-group form-inline panel">
-              <label className ="input-group-addon primary">
-                Tags:
-              </label>
+
               <Chips
                 placeholder={"Enter your tags"}
                 value={this.state.chips}
@@ -198,10 +204,11 @@ class AdvancedSearch extends Component {
 
         <div className="row" >
           <div className="col-md-12" >
+            <label className ="input-group-addon search-bar-title primary">
+              Description:
+            </label>
             <div className="input-group form-inline">
-              <label className ="input-group-addon primary">
-                Description:
-              </label>
+
               <input
                 className="form-control"
                 type="text"

@@ -88,6 +88,10 @@ a:hover {
   color: #ffffff;
 }
 
+.search-bar-title {
+  margin-bottom: -12px;
+}
+
 .table-project-name {
   color: black;
 }
