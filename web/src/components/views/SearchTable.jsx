@@ -107,10 +107,10 @@ and gets the data from the backend. Data is stored in state.results
             </Link>
           </td>
           <td> {authors}</td>
-          <td className="table-status">{status_badge}</td>
+          <td className="td-center">{status_badge}</td>
           <td data-toggle="tooltip" title={description}> {shortenedDescription} </td>
           <td> {date_creation} </td>
-          <td> {this.shuffleBookmarks()} </td>
+          <td className="td-center"> {this.shuffleBookmarks()} </td>
         </tr>
     );
   }
@@ -238,7 +238,7 @@ and gets the data from the backend. Data is stored in state.results
                     <th className="col-xs-1 th-center">Status</th>
                     <th className="col-xs-3">Description</th>
                     <th className="col-xs-2">Date</th>
-                    <th className="col-xs-1">Fav</th>
+                    <th className="col-xs-1 th-center">Fav</th>
                   </tr>
                 </thead>
                 <tbody>
