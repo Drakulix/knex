@@ -1,42 +1,41 @@
 {
-  "title": "Stream - 0-Follower Analysis",
-  "url": [
+  title: "Stream - 0-Follower Analysis",
+  url: [
     "https://github.com/soundcloud/datascience/stream-ana2/"
   ],
-  "analysis": [
+  analysis: [
     {
-      "url": "https://github.com/soundcloud/datascience/stream-ana2/",
-      "description": "R code of the analysis"
+      url: "https://github.com/soundcloud/datascience/stream-ana2/",
+      description: "R code of the analysis"
     },
     {
-      "url": "https://drive.google.com/drive/folders/ddeeeff",
-      "description": "Document with final plots and results"
+      url: "https://drive.google.com/drive/folders/ddeeeff",
+      description: "Document with final plots and results"
     }
   ],
-  "authors": [
+  authors: [
     {
-      "name": "Janette Lehmann",
-      "email": "janette.lehmann@soundcloud.com"
+      name: "Janette Lehmann",
+      email: "janette.lehmann@soundcloud.com"
     }
   ],
-  "team": {
-    "team_name": "data-science-listener"
+  team: {
+    team_name: "data-science-listener"
   },
-  "status": "DONE",
-  "description": "Some new and repeat mobile users have no followings, likely because following is not easily accessible on our mobile apps. Since following is well integrated on Desktop, the same problem cannot be observed there. Many of these users do not use the stream as desired. This is an issue that should be addressed because our results show that users with “good quality” followings are more engaged and churn less likely. At x follows, we see a good ROI with those users about y% less likely to churn over the course of z year. 
-",
-  "date_creation": "2016-04-10",
-  "date_last_updated": "2016-05-11",
-  "tags": [
+  status: "DONE",
+  description: "Some new and repeat mobile users have no followings, likely because following is not easily accessible on our mobile apps. Since following is well integrated on Desktop, the same problem cannot be observed there. Many of these users do not use the stream as desired. This is an issue that should be addressed because our results show that users with “good quality” followings are more engaged and churn less likely. At x follows, we see a good ROI with those users about y% less likely to churn over the course of z year.",
+  date_creation: "2016-04-10",
+  date_last_updated: "2016-05-11",
+  tags: [
     "Stream",
     "Mobile",
     "0 Follower"
   ],
-  "related_projects": [
+  related_projects: [
     {
-      "name": "Android Stream - 0-Follower Analysis",
-      "author": "Janette Lehmann",
-      "url": "https://github.com/soundcloud/datascience/stream-ana1/"
+      name: "Android Stream - 0-Follower Analysis",
+      author: "Janette Lehmann",
+      url: "https://github.com/soundcloud/datascience/stream-ana1/"
     }
   ]
 }

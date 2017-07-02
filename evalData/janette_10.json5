@@ -1,50 +1,48 @@
 {
-  "title": "Playback - 5% Gizeh Web Release",
-  "url": [
+  title: "Playback - 5% Gizeh Web Release",
+  url: [
     "https://github.com/soundcloud/datascience/playback-ana3/"
   ],
-  "analysis": [
+  analysis: [
     {
-      "url": "https://drive.google.com/drive/folders/rrffgghhss4",
-      "description": "Document with final plots and results"
+      url: "https://drive.google.com/drive/folders/rrffgghhss4",
+      description: "Document with final plots and results"
     },
     {
-      "url": "https://int.sc.com/playback-rel25",
-      "description": "Description of the release and corresponding changes"
+      url: "https://int.sc.com/playback-rel25",
+      description: "Description of the release and corresponding changes"
     }
   ],
-  "authors": [
+  authors: [
     {
-      "name": "Janette Lehmann",
-      "email": "janette.lehmann@soundcloud.com"
+      name: "Janette Lehmann",
+      email: "janette.lehmann@soundcloud.com"
     },
     {
-      "name": "David Rush",
-      "email": "d.rush@soundcloud.com"
+      name: "David Rush",
+      email: "d.rush@soundcloud.com"
     },
   ],
-  "team": {
-    "team_name": "data-science-listener"
+  team: {
+    team_name: "data-science-listener"
   },
-  "status": "DONE",
-  "description": "
-After fixing the problems with the fallback logic, we re-run the experiment. 
-We observe that Gizeh is outperforming the Spirit when looking at the time to play (latency). The decrease is xxx. 
-  ",
-  "date_creation": "2016-07-05",
-  "date_last_updated": "2016-07-15",
-  "tags": [
+  status: "DONE",
+  description: "After fixing the problems with the fallback logic, we re-run the experiment. 
+We observe that Gizeh is outperforming the Spirit when looking at the time to play (latency). The decrease  is xxx.",
+  date_creation: "2016-07-05",
+  date_last_updated: "2016-07-15",
+  tags: [
     "Playback",
     "Web",
     "Gizeh Release",
     "A/B test"
   ],
-  "future_work": "Releasing Gizeh on Mobile and perform further experiments",
-  "related_projects": [
+  future_work: "Releasing Gizeh on Mobile and perform further experiments",
+  related_projects: [
     {
-      "name": "Playback - 5% Gizeh Release",
-      "author": "Janette Lehmann",
-      "url": "https://github.com/soundcloud/datascience/playback-ana2/"
+      name: "Playback - 5% Gizeh Release",
+      author: "Janette Lehmann",
+      url: "https://github.com/soundcloud/datascience/playback-ana2/"
     }
   ]
 }

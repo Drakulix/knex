@@ -1,30 +1,29 @@
 {
-  "title": "Impact of SoundCloud Go Release",
-  "url": [
+  title: "Impact of SoundCloud Go Release",
+  url: [
     "https://drive.google.com/drive/folders/llppww552"
   ],
-  "analysis": [
+  analysis: [
     {
-      "url": "https://github.com/soundcloud/datascience/okok.txt",
-      "description": "File with SQL queries"
+      url: "https://github.com/soundcloud/datascience/okok.txt",
+      description: "File with SQL queries"
     }
   ],
-  "authors": [
+  authors: [
     {
-      "name": "Brian Csizsek",
-      "email": "bc@soundcloud.com"
+      name: "Brian Csizsek",
+      email: "bc@soundcloud.com"
     },
     {
-      "name": "Peter Deely",
-      "email": "pd@soundcloud.com"
+      name: "Peter Deely",
+      email: "pd@soundcloud.com"
     }
   ],
-  "team": {
-    "team_name": "data-science-listener"
+  team: {
+    team_name: "data-science-listener"
   },
-  "status": "DONE",
-  "description": "
-We analyse how the release of SoundCloud Go in the US impacted user activity, more precisely: listening, retention, engagement.
+  status: "DONE",
+  description: "We analyse how the release of SoundCloud Go in the US impacted user activity, more precisely: listening, retention, engagement.
 1. We characterise users that converted
 - highligy engaged?
 - LT per user
@@ -48,14 +47,12 @@ We analyse how the release of SoundCloud Go in the US impacted user activity, mo
 - time of day listening
 4. Are these users more engaged or less engaged than before?
 - If engagement is increasing, does it increase faster as the engagement of users that do not subscribe (e.g. maybe compare with users from different that have same level of engagement)
-- Auto vs. manual listening
-  ",
-  "date_creation": "2016-07-02",
-  "date_last_updated": "2016-07-15",
-  "tags": [
+- Auto vs. manual listening",
+  date_creation: "2016-07-02",
+  date_last_updated: "2016-07-15",
+  tags: [
     "SoundCloud Go",
     "US",
     "Listening"
   ]
 }
-
