@@ -13,12 +13,16 @@ def test_no_elastic(flask_api_url, docker_client):
     assert True
 
 
-def test_empty_database(flask_api_url):
-    """Sample test."""
+def test_empty_database(flask_api_url, mongo_client):
+    """
+    :param flask_api_url:
+    :param mongo_client:
+    :return:
+    """
+    result = mongo_client.projects.delete_many({})
+    print("Database cleaned: ", result)
     response = requests.get(flask_api_url + "/api/projects")
-    assert response.text == "There are no projects"
-    # response.raise_for_status()
-
+    assert response.status_code == 200
     print(response.text)
 
 
@@ -42,7 +46,7 @@ def test_consistency(mongo_client, elastic_client):
     assert es_result['found']
 
 
-def test_consistent_delete(flask_api_url, mongo_client, elastic_client):
+def test_consistent_delete(flask_api_url, mongo_client, elastic_client, session):
     """ Test whether files deleted in mongodb also get deleted in elasticsearch.
     """
     project_id = uuid.uuid4()
@@ -64,7 +68,7 @@ def test_consistent_delete(flask_api_url, mongo_client, elastic_client):
     assert es_result['found']
 
     # delete from mongo and check es
-    delete_response = requests.delete(flask_api_url + "/api/projects/" + str(project_id))
+    delete_response = session.delete(flask_api_url + "/api/projects/" + str(project_id))
     print(delete_response.text)
     assert delete_response.status_code == 200
 

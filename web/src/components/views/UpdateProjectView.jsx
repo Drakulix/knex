@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 import {fetchProjectDetails, fetchJson,updateProjectDetails} from '../common/Backend'
-import UpdateProject from '../pages/UpdateProject.jsx';
 import Form from "../libraries/react-jsonschema-form";
 import { Redirect } from 'react-router-dom';
 import 'isomorphic-fetch';
