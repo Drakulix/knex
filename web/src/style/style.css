@@ -27,6 +27,10 @@ a:hover {
   font-weight: 300;
 }
 
+.badge {
+  margin-right: 0.5em;
+}
+
 .logo-banner {
   margin-top: 2em;
   margin-left: 12px;
@@ -90,6 +94,14 @@ a:hover {
 
 .table-project-name {
   color: black;
+}
+
+.table .td-center {
+  text-align: center;
+}
+
+.table .th-center {
+  text-align: center;
 }
 
 .padding {
@@ -542,7 +554,7 @@ legend {
   color: #000000;
 }
 .projectbox {
-  margin-top: 6em;
+  margin-top: 3em;
   margin-bottom: 30px;
   position: relative;
   top:19px;
@@ -569,7 +581,7 @@ legend {
  }
 
  .projectbox .github{
-   margin-top: 2.5em;
+   margin-top: 1.5em;
  }
 
  .projectbox .description-elem{
@@ -796,7 +808,12 @@ legend {
   border-radius: 0px;
 }
 
+.nav-tabs{
+  height: 2.5em;
+}
+
 .nav-tabs .nav-link {
+  height: 2.5em;
   border: 1px solid transparent;
   border-top-left-radius: 0rem;
   border-top-right-radius: 0rem;
