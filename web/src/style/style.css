@@ -661,36 +661,24 @@ legend {
   text-align: left;
   color: #000000;
 }
-.star-edit-button {
-  width: 58px;
-  height: 34px;
+
+.project-btn-group{
+  float:right;
+  margin-top: 2em;
+  margin-bottom: 1em;
+}
+
+.project-btn-group .btn {
   background-color: #333333;
-  margin-left: 1em;
-  font-family: 'Open Sans', sans-serif;
-  font-weight: 300;
-  font-size: 18px;
-  text-align: center;
+  border: solid 1px #333333;
   color: #ffffff;
-  float: right;
-  margin-top: 30px;
-  margin-bottom: 10px;
-
 }
 
-.trash-button{
-  width: 58px;
-  height: 34px;
-  background-color: #c0392b;
-  font-family: 'Open Sans', sans-serif;
-  font-weight: 300;
-  font-size: 18px;
-  text-align: center;
-  color: #ffffff;
-  float: right;
-  margin-top: 30px;
-  margin-bottom: 10px;
-
+.project-btn-group .btn:hover {
+  background-color: #444444;
+  color: #ff5500;
 }
+
 .white{
   color: white;
   position: relative;
@@ -711,7 +699,7 @@ legend {
 }
 
 .pagination {
-  display: table;
+  text-align: center;
   margin: 0 auto;
   margin-top: 3em;
   margin-bottom: 3em;
@@ -748,14 +736,19 @@ legend {
   height: 42px;
   background-color: #333333;
   border: solid 1px #333333;
+  color: #ffffff;
   font-family: 'Open Sans', sans-serif;
   font-weight: 300;
   font-size: 18px;
   text-align: center;
-  color: #ffffff;
   float: right;
   margin-top: 30px;
   margin-bottom: 10px;
+}
+
+.delete-button:hover {
+  background-color: #444444;
+  color: #ff5500;
 }
 
 .btn-info {

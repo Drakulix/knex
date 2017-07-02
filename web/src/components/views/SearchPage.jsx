@@ -34,11 +34,11 @@ class AdvancedSearch extends Component {
   //View for advanced search, the onChange in the <input> parses the state all the way to the parent
   render() {
     return(
-      <div className="panel panel-body" id="advancedSearch">
+      <div className="" id="advancedSearch">
         <div className="row">
           <div className="col-md-8">
-            <div className="input-group form-inline panel">
-              <label for="projectName" className ="input-group-addon primary" id="labelProjectName">
+            <div className="form-group">
+              <label for="projectName" id="labelProjectName">
                 Project Name:
               </label>
               <input
@@ -51,8 +51,8 @@ class AdvancedSearch extends Component {
             </div>
           </div>
           <div className="col-md-2">
-            <div className="input-group form-inline panel" id="dateStart">
-              <label for="dateStart" className ="input-group-addon primary">
+            <div className="form-group" id="dateStart">
+              <label for="dateStart">
                 Date from:
               </label>
               <input
@@ -65,8 +65,8 @@ class AdvancedSearch extends Component {
             </div>
           </div>
           <div className="col-md-2">
-            <div className="input-group form-inline panel " id="dateEnd">
-              <label for="DateEnd" className ="input-group-addon primary">
+            <div className="form-group" id="dateEnd">
+              <label for="DateEnd">
               To:
             </label>
               <input
@@ -81,8 +81,8 @@ class AdvancedSearch extends Component {
 
         <div className="row">
           <div className="col-md-5">
-            <div className="input-group form-inline panel">
-              <label className ="input-group-addon primary">
+            <div className="form-group">
+              <label>
                 Author:
               </label>
               <input
@@ -95,8 +95,8 @@ class AdvancedSearch extends Component {
             </div>
           </div>
           <div className="col-md-5" id="tagInput">
-            <div className="input-group form-inline panel">
-              <label className ="input-group-addon primary">
+            <div className="form-group">
+              <label>
                 Tags:
               </label>
               <input
@@ -109,8 +109,8 @@ class AdvancedSearch extends Component {
             </div>
           </div>
           <div className="col-md-2">
-            <div className="input-group form-inline panel">
-              <label className ="input-group-addon primary">
+            <div className="form-group">
+              <label >
                 Status:
               </label>
               <select
@@ -129,7 +129,7 @@ class AdvancedSearch extends Component {
 
         <div className="row" >
           <div className="col-md-12" >
-            <div className="input-group form-inline panel">
+            <div className="input-group form-inline">
               <label className ="input-group-addon primary">
                 Description:
               </label>
