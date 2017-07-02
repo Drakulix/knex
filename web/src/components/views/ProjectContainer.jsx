@@ -76,21 +76,21 @@ export default class ProjectContainer extends Component {
             <p className="nav-link" href="#">GitHub</p>
           </li>
         </ul>
-
-        <button className="btn btn-default star-edit-button">
-          <span className="glyphicon glyphicon-star white"></span>
+        <div className="btn-group project-btn-group" role="group" aria-label="Basic example">
+        <button className="btn btn-secondary">
+        <span className="fa fa-star" aria-hidden="true"></span>
         </button>
 
         <Link to={`${update_url}${this.props.match.params.uuid}`}>
-
-
-          <button className="btn btn-default star-edit-button">
-            <span className="glyphicon glyphicon-pencil white"></span>
+          <button className="btn btn-secondary">
+          <i className="fa fa-pencil" aria-hidden="true"/>
           </button>
         </Link>
-        <button className="btn btn-default trash-button">
-          <span className="glyphicon glyphicon-trash white"></span>
+        <button className="btn btn-secondary trash-button">
+          <i className="fa fa-trash-o" aria-hidden="true"/>
+
         </button>
+        </div>
 
         <div className="projectbox">
 

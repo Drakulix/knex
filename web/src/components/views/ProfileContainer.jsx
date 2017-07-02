@@ -97,7 +97,7 @@ export default class ProfileContainer extends React.Component {
         <div className="pagination-container">
           <div className="text-xs-center">
             <div>
-              <ul className="pagination">
+              <ul className="pagination justify-content-center">
                 <li className="page-item">
                   <a className="page-link" href="#" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
