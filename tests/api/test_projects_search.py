@@ -183,8 +183,8 @@ class TestGET(object):
 
         time.sleep(5)
 
-        response = session.get(
-            flask_api_url + "/api/projects/search/advanced/?q=authors.name:superawesomeauthor&sort=desc")
+        response = session.get(flask_api_url +
+                               "/api/projects/search/advanced/?q=authors.name:superawesomeauthor&sort=desc")
         resultauthors = json.loads(response.text)['hits'][0]['_source']['authors'][0]['name']
         print("authors of result:", resultauthors)
         assert "superawesomeauthor" in resultauthors
