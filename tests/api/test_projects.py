@@ -3,11 +3,13 @@ import os
 import time
 import uuid
 import requests
+import docker
 
 from uuid import UUID
 
 
 class TestPOST(object):
+
     def test_empty_post(self, session, flask_api_url):
         """ Tests for 400 when the post body is empty.
         """

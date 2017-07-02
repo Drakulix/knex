@@ -1,0 +1,39 @@
+{
+  "title": "superawesometitle",
+  "url": [
+    "www.github.com/knex/"
+  ],
+  "analysis": [
+    {
+    "url": "here-you-find-the-analysis.com",
+    "description": "thats what this analysis is about"
+    }
+  ],
+  "authors": [
+    {
+      "name": "superawesomeauthor",
+      "email": "email@address.com"
+    }
+  ],
+  "team": {
+    "team_name": "teamname"
+  },
+  "status": "DONE",
+  "description": "Eine Beschreibung",
+  "date_creation": "1970-01-01",
+  "date_last_updated": "2017-05-11",
+  "tags": [
+    "tag",
+    "bio",
+    "superawesometag"
+  ],
+  "future_work": "this is something related to this work",
+  "related_projects": [
+    {
+      "id": 0,
+      "name": "name of the listed project",
+      "author": "author",
+      "url": "www.my.url"
+    }
+  ]
+}
