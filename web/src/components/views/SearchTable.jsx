@@ -198,24 +198,9 @@ and gets the data from the backend. Data is stored in state.results
     if(this.state.results.length > 0){
       return(
         <div>
-          <div className="row">
+          <div className="row padding">
             <div className="col-2">
-              <label htmlFor="n-results"> Show Results:&nbsp;</label>
-              <select className="selectpicker"
-                      id="n-results"
-                      onChange={event => this.setState({
-                         pageSize : parseInt(event.target.value, 10),
-                         pageNumber : 0,
-                         dirty : true,
-                       })}
-                      value={this.state.pageSize}>
-                <option value="4">4</option>
-                <option value="10">10</option>
-                <option value="20">20</option>
-              </select>
-            </div>
-            <div>
-              Number of Results: {this.state.numberOfResults}
+            Found Projects: {this.state.numberOfResults}
             </div>
           </div>
           <div className="row">
@@ -246,6 +231,20 @@ and gets the data from the backend. Data is stored in state.results
                 </div>
               </div>
             </div>
+          </div>
+          <div className="col-2">
+            <select className="selectpicker"
+                    id="n-results"
+                    onChange={event => this.setState({
+                       pageSize : parseInt(event.target.value, 10),
+                       pageNumber : 0,
+                       dirty : true,
+                     })}
+                    value={this.state.pageSize}>
+              <option value="4">4</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+            </select>
           </div>
         </div>
       );

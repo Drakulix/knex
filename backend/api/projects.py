@@ -2,7 +2,6 @@
 Defines API points and starts the application
 """
 
-import os
 import sys
 import time
 import json
@@ -11,11 +10,10 @@ import json5
 from flask import request, jsonify, make_response, g, Blueprint
 from flask_security import login_required, roles_required
 from pymongo.collection import ReturnDocument
-from werkzeug.utils import secure_filename
-from bson.json_util import dumps
 
 from api.helper import uploader
 from api.helper.apiexception import ApiException
+from globals import ADMIN_PERMISSION
 
 
 projects = Blueprint('api_projects', __name__)
@@ -23,23 +21,22 @@ projects = Blueprint('api_projects', __name__)
 
 @projects.route('/api/projects', methods=['POST'])
 @login_required
-def add_project():
+def add_projects():
     """Receive manifest as a jsonstring and return new ID
     """
-    successful_ids = []
-    unsuccessful_files = []
     uploaded_files = request.files.getlist('file[]')
     if len(uploaded_files) is not 0:
-        for file in uploaded_files:
-            securefilename = secure_filename(file.filename)
-            if file and uploader.allowed_file(securefilename):
-                try:
-                    newid = uploader.save_file_to_db(file, securefilename)
-                    ids.append(newid)
-                except ApiException as e:
-                    unsuccessful_files.append(file.filename + str(e))
-
-        return jsonify(successful_ids)
+        try:
+            manifestlist = []
+            for file in uploaded_files:
+                if file.filename.endswith('.json'):
+                    manifestlist.append(json.loads(file.read().decode('utf-8')))
+                elif file.filename.endswith('.json5'):
+                    manifestlist.append(json5.loads(file.read().decode('utf-8')))
+            return_ids = uploader.save_manifest_to_db(manifestlist)
+            return jsonify(return_ids)
+        except Exception as err:
+            raise ApiException(str(err), 400)
 
     else:
         try:
@@ -78,7 +75,7 @@ def get_projects():
     argc = len(request.args)
 
     if g.projects.count() == 0:
-        return make_response("There are no projects", 500)
+        return make_response(jsonify([]), 200)
 
     if argc == 0:
         res = g.projects.find({})
@@ -113,7 +110,9 @@ def get_project_by_id(project_id):
 
 
 @projects.route('/api/projects/<uuid:project_id>', methods=['DELETE'])
-@roles_required('admin')
+@login_required
+# @roles_required('admin') # doesn't work in blueprints at the moment...
+@ADMIN_PERMISSION.require()
 def delete_project(project_id):
     """Deletes a project by ID.
 

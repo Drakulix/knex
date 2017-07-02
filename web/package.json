@@ -26,5 +26,9 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
+<<<<<<< HEAD
   "proxy": "http://localhost:5000"
+=======
+  "proxy": "http://flask:5000"
+>>>>>>> master
 }
