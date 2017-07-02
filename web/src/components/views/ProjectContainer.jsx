@@ -42,16 +42,13 @@ export default class ProjectContainer extends Component {
     } else {
       authors_string = ''
     }
-
-    var tag_string = null;
     if (tags != null){
       var tag_container = []
       for (var i = 0; i < tags.length; i++){
-        tag_container.push(tags[i])
+        tag_container.push(<span className="badge badge-default">{tags[i]}</span>)
       }
-      tag_string = tag_container.join(", ")
     } else {
-      tag_string = ''
+      tag_container = ''
     }
     return(
       <div className="container">
@@ -76,6 +73,7 @@ export default class ProjectContainer extends Component {
             <p className="nav-link" href="#">GitHub</p>
           </li>
         </ul>
+        <div className="projectbox">
         <div className="btn-group project-btn-group" role="group" aria-label="Basic example">
         <button className="btn btn-secondary">
         <span className="fa fa-star" aria-hidden="true"></span>
@@ -91,9 +89,6 @@ export default class ProjectContainer extends Component {
 
         </button>
         </div>
-
-        <div className="projectbox">
-
           <div className="list_project_info_title">
             <div className="authors">
               <span className="sec-label">Authors:</span><br />
@@ -105,7 +100,7 @@ export default class ProjectContainer extends Component {
             </div>
             <div className="tags-pb">
               <span className="sec-label">Tags: </span><br />
-              <a> {tag_string}</a>
+              <a> {tag_container}</a>
             </div>
             <div className="github">
                 <div className="sec-label">Github: </div>
