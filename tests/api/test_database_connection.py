@@ -55,7 +55,7 @@ def test_consistent_delete_no_elastic(session, flask_api_url, pytestconfig, elas
 
     container.start()
 
-    time.sleep(50)
+    time.sleep(30)
     # to give elasticsearch and mongo-connector some time to get back to normal
 
     es_d_result = elastic_client.get(index="knexdb", id=project_id, ignore=404)
