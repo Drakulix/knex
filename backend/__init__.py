@@ -25,6 +25,7 @@ CORS(app)
 
 app.config['DEBUG'] = True
 app.config['TESTING'] = False
+app.config['LOGIN_DISABLED'] = False
 app.config['SECRET_KEY'] = 'super-secret'
 app.config['MONGODB_DB'] = 'knexdb'
 app.config['MONGODB_HOST'] = 'mongodb'

@@ -9,13 +9,11 @@ class TestGET(object):
         assert response.status_code == 200
 
     def test_unknown_user(self, session, flask_api_url):
-        response = session.get(flask_api_url + '/api/users',
-                               data=dict(email='unknownuser@knex.com'))
+        response = session.get(flask_api_url + '/api/users' + 'unknownuser@knex.com')
         assert response.status_code == 400
 
     def test_user(self, session, flask_api_url):
-        response = session.get(flask_api_url + '/api/users',
-                               data=dict(email='user@knex.com'))
+        response = session.get(flask_api_url + '/api/users' + 'user@knex.com')
         assert response.status_code == 200
 
 
@@ -43,7 +41,8 @@ class TestPOST(object):
         assert response.status_code == 403
 
     def test_project_not_logged_in(self, pytestconfig, flask_api_url):
-        response = requests.get(flask_api_url + '/api/users/logout')
+        session = requests.Session()
+        response = session.get(flask_api_url + '/api/users/logout')
         assert response.status_code == 200
         test_manifest = os.path.join(
             str(pytestconfig.rootdir),
@@ -53,6 +52,6 @@ class TestPOST(object):
         )
         with open(test_manifest, 'r', encoding='utf-8') as tf:
             data = str(tf.read().replace('\n', ''))
-        response = requests.post(flask_api_url + "/api/projects", data=data.encode('utf-8'),
-                                 headers={'Content-Type': 'application/json5'})
+        response = session.post(flask_api_url + "/api/projects", data=data.encode('utf-8'),
+                                headers={'Content-Type': 'application/json5'})
         assert response.status_code == 404

@@ -114,7 +114,7 @@ def insert_bookmark(id):
     res = g.user_datastore.get_user(current_user.email.to_python())
     if not res:
         return make_response("Unknown User with Email-address: ",
-                            current_user.email.to_python(), 400)
+                             current_user.email.to_python(), 400)
 
     if id in res.bookmarks:
         return make_response("Project is already bookmarked ", 400)
