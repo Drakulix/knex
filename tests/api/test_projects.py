@@ -52,12 +52,11 @@ class TestPOST(object):
             'testmanifests',
             'validexample0.json5'
         )
-        with open(test_manifest, 'rb') as tf:
-            response = session.post(flask_api_url + "/api/projects",
-                                    files={'file[]': (test_manifest, tf)})
-            print(response.text)
-            for id in response.json():
-                assert UUID(id, version=4)
+        response = session.post(
+            flask_api_url + "/api/projects",
+            files={'file[]': ('validexample0.json5', open(test_manifest, 'rb'))})
+        print(response.text)
+        assert UUID(response.json()[0], version=4)
 
     def test_success_json_upload(self, session, flask_api_url, pytestconfig):
         test_manifest = os.path.join(
@@ -66,12 +65,11 @@ class TestPOST(object):
             'testmanifests',
             'validexample0.json'
         )
-        with open(test_manifest, 'rb') as tf:
-            response = session.post(flask_api_url + "/api/projects",
-                                    files={'file[]': (test_manifest, tf)})
-            print(response.text)
-            for id in response.json():
-                assert UUID(id, version=4)
+        response = session.post(
+            flask_api_url + "/api/projects",
+            files={'file[]': ('validexample0.json', open(test_manifest, 'rb'))})
+        print(response.text)
+        assert UUID(response.json()[0], version=4)
 
     def test_encoding_error(self, session, flask_api_url, pytestconfig):
         test_manifest = os.path.join(
@@ -279,6 +277,19 @@ class TestDELETE(object):
         print(delete_response.text)
         assert delete_response.status_code == 200
 
+    def test_unauthorized_delete(self, flask_api_url):
+        """ Tests for 404 when attempting to delete a project when
+            logged in as a user.
+            Not found because the user should not know about the
+            /api/delete endpoint.
+        """
+        data = {"email": "user@knex.com", "password": "user"}
+        session = requests.Session()
+        response = session.post(flask_api_url + '/api/users/login', data=data)
+        assert response.status_code == 200
+        response = session.delete(flask_api_url + '/api/projects/' + str(uuid.uuid4()))
+        assert response.status_code == 404
+
 
 class TestGET(object):
 
@@ -361,3 +372,15 @@ class TestPUT(object):
 
     def test_success(self, session, flask_api_url):
         assert True
+
+    def test_unauthorized_update(self, flask_api_url):
+        """ Tests for 403 when attempting to update a different users project
+        """
+        data = {"email": "user@knex.com", "password": "user"}
+        session = requests.Session()
+        response = session.post(flask_api_url + '/api/users/login', data=data)
+        assert response.status_code == 200
+        # this should be the id of a project from a different user
+        projectid = str(uuid.uuid4())
+        response = session.delete(flask_api_url + '/api/projects/' + projectid)
+        # assert response.status_code == 403
