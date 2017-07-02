@@ -1,4 +1,4 @@
-class POST(object):
+class TestPOST(object):
     def test_success_search(self, flask_api_url):
         assert True
 

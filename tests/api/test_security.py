@@ -1,45 +1,50 @@
-import requests
-import unittest
 import os
+import requests
 
 
-class Testsecurity(object):
-    def setup(self):
-        # app['TESTING'] = True
-        # self.app = app.test_client()
-        pass
+class TestGET(object):
 
     def test_main_page(self, flask_api_url):
         response = requests.get(flask_api_url + '/')
         assert response.status_code == 200
 
+    def test_unknown_user(self, session, flask_api_url):
+        response = session.get(flask_api_url + '/api/users',
+                               data=dict(email='unknownuser@knex.com'))
+        assert response.status_code == 400
+
+    def test_user(self, session, flask_api_url):
+        response = session.get(flask_api_url + '/api/users',
+                               data=dict(email='user@knex.com'))
+        assert response.status_code == 200
+
+
+class TestPOST(object):
+
+    def test_login_logout(self, flask_api_url):
+        """ Tests for 200 when the login data is correct
+        and 200 for logout afterwards.
+        """
+        session = requests.Session()
+        response = session.post(flask_api_url + '/api/users/login',
+                                data=dict(email='user@knex.com', password='user'))
+        assert response.status_code == 200
+        response = session.get(flask_api_url + '/api/users/logout')
+        assert response.status_code == 200
+
     def test_login_fake_user(self, flask_api_url):
         response = requests.post(flask_api_url + '/api/users/login',
                                  data=dict(email='user1', password='password'))
+        assert response.status_code == 403
 
-        assert response.reason == 'Bad Request'
-        assert response.status_code == 400
-
-    def test_login_real_user(self, flask_api_url):
-        response = requests.post(flask_api_url + '/api/users/login',
-                                 data=dict(email='admin@knex.com', password="admin"))
-        assert response.reason == 'OK'
-        assert response.status_code == 200
-
-    def test_login_real_user_wrong_psswd(self, flask_api_url):
+    def test_login_wrong_password(self, flask_api_url):
         response = requests.post(flask_api_url + '/api/users/login',
                                  data=dict(email='admin', password='a'))
-        assert response.reason == 'Bad Request'
-        assert response.status_code == 400
+        assert response.status_code == 403
 
-    def test_logout(self, flask_api_url):
-        response = requests.get(flask_api_url + '/api/users/login',
-                                data=dict(email='user@knex.com', password="user"))
+    def test_project_not_logged_in(self, pytestconfig, flask_api_url):
         response = requests.get(flask_api_url + '/api/users/logout')
-        assert response.reason == 'OK'
         assert response.status_code == 200
-
-    def test_access_login_required_logged(self, pytestconfig, flask_api_url):
         test_manifest = os.path.join(
             str(pytestconfig.rootdir),
             'tests',
@@ -48,53 +53,6 @@ class Testsecurity(object):
         )
         with open(test_manifest, 'r', encoding='utf-8') as tf:
             data = str(tf.read().replace('\n', ''))
-        response = requests.post(flask_api_url + "/api/projects",
-                                 data=data.encode('utf-8'),
+        response = requests.post(flask_api_url + "/api/projects", data=data.encode('utf-8'),
                                  headers={'Content-Type': 'application/json5'})
-
-        assert response.status_code == 200
-
-    def test_access_login_requiered_not_logged(self, pytestconfig, flask_api_url):
-        response = requests.get(flask_api_url + '/api/users/logout')
-        test_manifest = os.path.join(
-            str(pytestconfig.rootdir),
-            'tests',
-            'testmanifests',
-            'validexample0.json5'
-        )
-        with open(test_manifest, 'r', encoding='utf-8') as tf:
-            data = str(tf.read().replace('\n', ''))
-        response = requests.post(flask_api_url + "/api/projects",
-                                 data=data.encode('utf-8'),
-                                 headers={'Content-Type': 'application/json5'})
-
-        assert response.status_code == 200  # or 500?
-
-    def test_update_user(self, flask_api_url):
-        response = requests.get(flask_api_url + '/api/users/',
-                                data=dict(email='user@knex.com'))
-        assert response.status_code == 404  # 200?
-
-    def test_update_user_not_exists(self, flask_api_url):
-        response = requests.get(flask_api_url + '/api/users/',
-                                data=dict(email='unknownuser@knex.com'))
         assert response.status_code == 404
-
-
-"""
-if __name__ == "__main__":
-    unittest.main()
-
-def test_unique_nickname(self):
-    u = User(nickname='user1', email='user@knex.com')
-    db.session.add(u)
-    db.session.commit()
-    nickname = User.make_unique_nickname('user1')
-    assert nickname != 'john'
-    u = User(nickname=user1, email='user@knex.com')
-    db.session.add(u)
-    db.session.commit()
-    nickname2 = User.make_unique_nickname('user1')
-    assert nickname2 != user1
-    assert nickname2 != user1
-"""
