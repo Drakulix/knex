@@ -4,7 +4,10 @@ import { Link } from 'react-router-dom';
 
 import ChipInput from 'material-ui-chip-input'
 import Chip from 'material-ui/Chip'
-import FlatButton from 'material-ui/RaisedButton';
+import IconButton from 'material-ui/IconButton';
+
+
+import Comment from 'material-ui/svg-icons/communication/comment';
 
 
 const styles = {
@@ -18,10 +21,14 @@ const styles = {
     flexWrap: 'wrap',
   },
   chipText:{
-  }
+  },
+  largeIcon: {
+    width: 60,
+    height: 60,
+    marginLeft: 10,
+    padding: 6
+   }
 };
-
-
 
 
 const update_url='/update/'
@@ -30,6 +37,8 @@ export default class ProjectContainer extends Component {
     super(props);
     this.state = {
       projectInf:{},
+      bookmarked:false,
+      owner : false
     };
   }
 
@@ -53,6 +62,8 @@ date_creation : "12", date_update:"11", description : "lirum larum", authors:["a
 tags:["av","dasda", "adsadas"], url:["fds","dasda", "adsadas"], authors :[{id:"33", name :"dda"}, {id:"32", name :"ddaa"}]
 }});
 
+this.setState({bookmarked : false});
+
 /*    fetchProjectDetails(uuid).then(data => {
       this.setState({projectInf: data})
     });*/
@@ -60,22 +71,70 @@ tags:["av","dasda", "adsadas"], url:["fds","dasda", "adsadas"], authors :[{id:"3
   }
 
 
+
+
+
   render(){
+
+
+
     return(
 
 <div className="container">
   <div className="innerContainer">
-  <div className = "row headerCreation" style={{width:"100%"}}>
 
+
+  <div className = "row headerCreation" style={{width:"100%"}}>
       <div className="col-8 ">
            Project
       </div>
-    <div className="col-4">
+      <div className="col-4">
         <div className="row">
-        <Link to="comment" >comment</Link>
-        <Link to="comment" >comment</Link>
-
-      </div>
+          <IconButton
+              onClick={this.logout}
+              touch={true}
+              style = {styles.largeIcon}
+              tooltipPosition="bottom-center"
+              tooltip="Comment project"
+             iconStyle={{fontSize: '48px'}}
+              >
+              <i className="material-icons" style={{color: 'black', width:'100px'}}>comment</i>
+        </IconButton>
+        <IconButton
+            onClick={this.logout}
+            touch={true}
+            style = {styles.largeIcon}
+            tooltipPosition="bottom-center"
+            tooltip="Bookmark project"
+             iconStyle={{fontSize: '48px'}}
+            >
+            <i className="material-icons" style={{color: 'black', fontSize: '48px' }}>
+                  {(this.state.bookmarked) ? "star_rate" : "star_border"}
+            </i>
+        </IconButton>
+        <IconButton
+            onClick={this.logout}
+            touch={true}
+            style = {styles.largeIcon}
+            disabled={!this.state.owner}
+            tooltipPosition="bottom-center"
+            tooltip="Edit project"
+            iconStyle={{fontSize: '48px'}}
+            >
+            <i className="material-icons" style={{color: 'black'}}>mode_edit</i>
+        </IconButton>
+        <IconButton
+            onClick={this.logout}
+            touch={true}
+            style = {styles.largeIcon}
+            disabled={!this.state.owner}
+            tooltipPosition="bottom-center"
+            tooltip="Delete project"
+             iconStyle={{fontSize: '48px'}}
+            >
+            <i className="material-icons" style={{color: 'black'}}>delete</i>
+        </IconButton>
+        </div>
     </div>
 
   </div>
