@@ -113,25 +113,34 @@ export default class UploadByPattern extends React.Component {
 
     //TODO LOAD
 
-    this.setState(
-      {_id :"dsa", title:"TestProject", status:"done",
-        date: new Date(2012,11,11,0,0,0,0), description : "lirum larum",
-        tags:["recommender","tags", "music"], urls:["http://test","http://git", "http://ggole"]
-      });
+
+
+    var loadedStatus = "inprogress";
+    var stateValue=  statusString.filter(
+          function(data){return data.value == loadedStatus }
+      );
     var authors = [{id:"33", name :"dda"},{id:"32", name :"ddaa"},{id:"323", name :"kk"}];
     var authorArray = []
     for (var i in authors) {
       authorArray = authorArray.concat([authors[i].name + " ("+authors[i].id+ ")"]);
     }
 
-    this.setState({authors: authorArray});
-    this.setState({suggestedAuthors: suggestedAuthorsArray});
-    this.setState({suggestedTags : suggestedTags});
+    this.setState({   _id :"dsa",
+                      title:"TestProject",
+                      status:"done",
+                      date: new Date(2012,11,11,0,0,0,0),
+                      description : "lirum larum",
+                      tags:["recommender","tags", "music"],
+                      urls:["http://test","http://git", "http://ggole"],
+                      authors: authorArray,
+                      suggestedAuthors: suggestedAuthorsArray,
+                      suggestedTags : suggestedTags,
+                      value : stateValue[0].id
+      });
   }
 
 
   submit(){
-
     var project = { "title"         : this.state["title"],
                     "date_creation" : this.state["date"].getYear() + 1900 + "-"
                                     + (this.state["date"].getMonth() + 1) + "-"
