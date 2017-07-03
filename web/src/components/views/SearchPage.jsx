@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import {fetchJson, sendJson} from '../common/Backend';
 import  Table from './SearchTable';
 import Chips, { Chip } from 'react-chips';
+import PropTypes from 'prop-types';
 
 const defaultPageSize = 4;
 const defaultSearchString = "advanced/?q=*";
@@ -101,25 +102,44 @@ class AdvancedSearch extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      chips: []
+      chips: [],
+      counter: ""
     }
   }
 
   onChange = chips => {
-    this.setState({ chips });
-    this.props.changeStateAuthor({chips});
+    this.setState({ chips: chips });
+    var stringArray = [];
+    var counter = 0;
+    for (var i = 0; i< chips.length; i++){
+      stringArray.push(chips[i].toString());
+      counter ++;
+    }
+
+    var searchstring = "";
+    searchstring = searchstring.concat("(tags: ");
+    for(var i = 0;i<stringArray.length;i++){
+      searchstring = searchstring.concat(stringArray[i].toString(), "*");
+      if(i < stringArray.length - 1){
+        searchstring = searchstring.concat(" AND ");
+      }
+    }
+    searchstring = searchstring.concat(")");
+
+
+    this.setState({counter: searchstring})
+    this.props.changeStateTags(searchstring);
   }
   //View for advanced search, the onChange in the <input> parses the state all the way to the parent
   render() {
     return(
-      <div className="" id="advancedSearch">
+      <div className="panel panel-body" id="advancedSearch">
         <div className="row">
           <div className="col-md-6">
             <label for="projectName" className ="input-group-addon search-bar-title primary" id="labelProjectName">
               Project Name:
             </label>
             <div className="input-group form-inline panel">
-
               <input
                 className="form-control full-width"
                 type="text"
@@ -134,11 +154,9 @@ class AdvancedSearch extends Component {
               Date from:
             </label>
             <div className="input-group form-inline panel" id="dateStart">
-
               <input
                 className="form-control"
                 type="date"
-
                 name="dateStart"
                 onChange={(value) => this.props.changeStateFrom(value.target.value)}
               />
@@ -149,7 +167,6 @@ class AdvancedSearch extends Component {
             To:
           </label>
             <div className="input-group form-inline panel " id="dateEnd">
-
               <input
                 className="form-control"
                 type="date"
@@ -166,7 +183,6 @@ class AdvancedSearch extends Component {
               Author:
             </label>
             <div className="input-group form-inline panel">
-
               <input
                 className="form-control"
                 type="search"
@@ -181,7 +197,6 @@ class AdvancedSearch extends Component {
               Tags:
             </label>
             <div className="input-group form-inline panel">
-
               <Chips
                 placeholder={"Enter your tags"}
                 value={this.state.chips}
@@ -208,7 +223,6 @@ class AdvancedSearch extends Component {
               Description:
             </label>
             <div className="input-group form-inline">
-
               <input
                 className="form-control"
                 type="text"
@@ -223,7 +237,7 @@ class AdvancedSearch extends Component {
         <div className="col-md-2">
           <div className="input-group form-inline panel">
             <label className ="input-group-addon primary">
-              Status:
+              {this.state.counter}
             </label>
             <select
               className="form-control"
@@ -317,6 +331,7 @@ export default class SearchPage extends Component {
       searchString: "",
       advanced: false,
       simple_searchstring: "",
+      counter: 0,
     };
   }
 
@@ -351,13 +366,8 @@ export default class SearchPage extends Component {
         searchstring = searchstring.concat("(authors.name: ", this.state.filter_author, "*)");
         filter_set++;
       }
-      if(this.state.filter_tags != ""){
-        if(filter_set > 0){
-          searchstring = searchstring.concat(" AND ");
-          filter_set--;
-        }
-        searchstring = searchstring.concat("(tags: ", this.state.filter_tags, "*)");
-      }
+
+
 
       if(this.state.filter_status!= ""){
         if(filter_set > 0){
@@ -374,6 +384,15 @@ export default class SearchPage extends Component {
           filter_set--;
         }
         searchstring = searchstring.concat("(description: ", this.state.filter_description, "*)");
+        filter_set++;
+      }
+
+      if(this.state.filter_tags != ""){
+        if(filter_set > 0){
+          searchstring = searchstring.concat(" AND ");
+          filter_set--;
+        }
+        searchstring = searchstring.concat(this.state.filter_tags);
         filter_set++;
       }
 
@@ -418,7 +437,7 @@ export default class SearchPage extends Component {
   }
 
   changeStateTags(tags){
-    this.setState({filter_tags: tags });
+    this.setState({filter_tags: tags});
   }
 
   changeStateAdvanced(){
