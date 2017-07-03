@@ -203,14 +203,17 @@ class AdvancedSearch extends Component {
                 onChange={this.onChange}
                 theme={theme}
                 suggestions={[
-                  "Annie Blas",
-                  "Gricelda Look",  
-                  "Roderick Crabb",  
-                  "Akilah Sweatman",  
-                  "Terri Vasbinder",
-                  "Jaimee Daggett", 
-                  "Meggan Truitt",
-                  "Ricarda Schrage"  
+                  "multimedia indexing",
+                  "rich media",  
+                  "music information retrieval",  
+                  "Algorithms",  
+                  "Design",
+                  "Experimentation", 
+                  "Music information retrieval",
+                  "Web content mining",
+                  "Information systems",
+                  "Stream",
+                  "Mobile"  
                 ]}
               />
             </div>
