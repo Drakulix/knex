@@ -18,8 +18,9 @@ export default class SideBar extends Component {
     };
   }
 
+  //has to be updated if history is working
   render() {
-    let isActive = (url) => { url === this.props.location };
+    let isActive = (url) => false;//{ url === location };
     return (
         <div className="col-3 side-bar">
             <img className="logo-banner" src={logo} />
@@ -38,7 +39,7 @@ export default class SideBar extends Component {
 
 const SideBarEntry = ({to, name, active}) => {
     return (
-        <li className={"list-group-item " + (active ? "active" : "")}>
+        <li className={"list-group-item" + (active ? "active" : "")}>
             {active && (<div className="menu-indicator" />)}
             <Link to={to}>
                 {name}
