@@ -118,6 +118,7 @@ handleRequestClose(){
                       <i className="material-icons">notifications</i>
                     </IconButton>
                     <Popover
+                        height={200}
                               open={this.state.popover}
                               anchorEl={this.state.anchorEl}
                               anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
