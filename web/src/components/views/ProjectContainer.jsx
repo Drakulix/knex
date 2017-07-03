@@ -9,13 +9,16 @@ import FlatButton from 'material-ui/RaisedButton';
 
 const styles = {
   chip: {
-    margin: 6,
-
+    margin: '8px 8px 0 0',
+      float: 'left',
+      background: '#ff5000'
   },
   wrapper: {
     display: 'flex',
     flexWrap: 'wrap',
   },
+  chipText:{
+  }
 };
 
 
@@ -91,24 +94,66 @@ export default class ProjectContainer extends Component {
     }
     return(
 
-      <div className="container">
-        <div className="innerContainer">
-          <div className = "row headerCreation">
+<div className="container">
+  <div className="innerContainer">
+  <div className = "row headerCreation" style={{width:"100%"}}>
 
-            <div className="col-8 ">
-              <div> Project</div>
-            </div>
-            <div className="col-4">
-              <button label="Comment" />
-              <button label="Bookmark" />
-              <button label="Edit" />
-              <button label="Delete" />
+      <div className="col-8 ">
+           Project
+      </div>
+    <div className="col-4">
+        <div className="row">
+        <Link to="comment" >comment</Link>
+        <Link to="comment" >comment</Link>
+
+      </div>
+    </div>
+
+  </div>
+    <div>
+        <div className="profile-info">
+          <div>Title</div>
+        </div>
+        <div>{this.state.projectInf.title}</div>
+    </div>
+        <br></br>
+    <div className="row">
+      <div className="col-4">
+        <div>
+          <div className="profile-info">Status</div>
+          <div>{this.state.projectInf.status}</div>
+        </div>
+        <div>
+          <div className="creation-date-elem">
+            <div className="profile-info">Date of creation </div>
+            <div>{this.state.projectInf.date_creation}</div>
+          </div>
+          <div>
+            <div className="profile-info">Last time updated </div>
+            <div> {this.state.projectInf.date_update}</div>
+          </div>
+        </div>
+          <div>
+            <div className="profile-info">Authors</div>
+              <div style = {styles["wrapper"]}>
+                {this.state.projectInf.authors.map(item => <Chip style= {styles["chip"]}>
+                              <Link to={item.id} style= {styles["chipText"]}>{item.name}</Link></Chip>)}
+              </div>
+          </div>
+          <div>
+            <div className="profile-info">Links</div>
+            <div style = {styles["wrapper"]}>
+                      {this.state.projectInf.url.map(item => <Chip style= {styles["chip"]}>
+                                <Link to={item} style= {styles["chipText"]}>{item}</Link></Chip>)}
             </div>
 
           </div>
           <div>
-            <div className="profile-info">
-              <div>Title</div>
+            <div className="profile-info">Tags </div>
+            <div style = {styles["wrapper"]}>
+                  {this.state.projectInf.tags.map(item =>
+                      <Chip style= {styles["chip"]}>
+                        <Link to={item} style= {styles["chipText"]} >{item}</Link></Chip>)}
             </div>
             <div>{this.state.projectInf.title}</div>
           </div>
