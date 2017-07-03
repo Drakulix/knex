@@ -48,10 +48,7 @@ a:hover {
   display: inline-block !important;
 }
 
-.notification-container {
-  width: 50px;
-  position: relative;
-}
+
 
 .popover {
   border-radius: 0px;
@@ -318,9 +315,6 @@ a:hover {
     margin-left: -11px;
 }
 
-.row{
-  margin-top: -15px;
-}
 
 #dateStart{
   margin-left: -18px;

@@ -7,7 +7,6 @@ import Chip from 'material-ui/Chip'
 import IconButton from 'material-ui/IconButton';
 
 
-import Comment from 'material-ui/svg-icons/communication/comment';
 
 
 const styles = {
@@ -88,7 +87,7 @@ this.setState({owner : false});
            Project
       </div>
       <div className="col-4">
-        <div className="row">
+        <div >
           <IconButton
               onClick={this.logout}
               touch={true}
