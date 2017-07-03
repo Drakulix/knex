@@ -82,6 +82,16 @@ and gets the data from the backend. Data is stored in state.results
     var title = result.title;
     var authors = result.authors;
     var description = result.description;
+    var status_badge = null;
+    if (result.status == 'DONE'){
+      status_badge = <span className="badge badge-success">DONE</span>
+    } else if (result.status == 'IN_PROGRESS') {
+      status_badge = <span className="badge badge-warning">IN_PROGRESS</span>
+    } else if (result.status == 'IN_REVIEW') {
+      status_badge = <span className="badge badge-info">IN_REVIEW</span>
+    } else {
+      status_badge = status
+    }
     var status = result.status;
     var date_creation = result.date_creation;
 
@@ -97,10 +107,10 @@ and gets the data from the backend. Data is stored in state.results
             </Link>
           </td>
           <td> {authors}</td>
-          <td> {status} </td>
+          <td className="td-center">{status_badge}</td>
           <td data-toggle="tooltip" title={description}> {shortenedDescription} </td>
           <td> {date_creation} </td>
-          <td> {this.shuffleBookmarks()} </td>
+          <td className="td-center"> {this.shuffleBookmarks()} </td>
         </tr>
     );
   }
@@ -210,10 +220,10 @@ and gets the data from the backend. Data is stored in state.results
                   <tr>
                     <th className="col-xs-3">Project Name</th>
                     <th className="col-xs-2">Authors</th>
-                    <th className="col-xs-1">Status</th>
+                    <th className="col-xs-1 th-center">Status</th>
                     <th className="col-xs-3">Description</th>
                     <th className="col-xs-2">Date</th>
-                    <th className="col-xs-1">Fav</th>
+                    <th className="col-xs-1 th-center">Fav</th>
                   </tr>
                 </thead>
                 <tbody>
