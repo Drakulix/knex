@@ -11,13 +11,15 @@ import ChipInput from 'material-ui-chip-input'
 import DatePicker from 'material-ui/DatePicker';
 import TextField from 'material-ui/TextField';
 import Chip from 'material-ui/Chip';
+import Snackbar from 'material-ui/Snackbar';
 
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 const styles = {
   chip: {
     margin: '8px 8px 0 0',
       float: 'left',
-  background: '#ff5000',
+
   },
   wrapper: {
     display: 'flex',
@@ -27,6 +29,13 @@ const styles = {
     color : '#ffffff'
   }
 };
+
+
+const muiTheme = getMuiTheme({
+  datePicker: {
+    selectColor: '#ff5000',
+  },
+});
 
 
 const log = (type) => console.log.bind(console, type);
@@ -45,6 +54,7 @@ export default class UploadByPattern extends React.Component {
       authors: [],
       urls: [],
       invalid : true,
+      snackbar : false
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -71,6 +81,8 @@ export default class UploadByPattern extends React.Component {
 
   handleChange(event) {
     if(typeof event.target.name  === "undefined"){
+
+      console.log(event);
       this.submit();
     }
     const name = event.target.name;
@@ -134,11 +146,28 @@ export default class UploadByPattern extends React.Component {
       project.authors = project.authors.concat([{"name" : name, "email" :id}]);
     }
     //TODO SEND
+
+    console.log(project);
+
+    fetch('/api/projects', {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: project
+        });
+
+
+
+    this.setState({snackbar:true});
+
   }
 
   isInValid(){
-    return this.state["title"] === ''
+    return      this.state["title"] === ''
             ||  this.state["date"] === ''
+            ||  this.state["description"] == ''
             ||  this.state.authors.length == 0;
   }
 
@@ -146,7 +175,17 @@ export default class UploadByPattern extends React.Component {
       return(
         <div className="container">
           <div className="innerContainer">
-            <div className="headerCreation">Create New Project</div>
+
+
+            <div className = "row headerCreation" style={{width:"100%"}}>
+                <div className="col-11 ">
+                     Create New Project
+                </div>
+              <div className="col-1">
+                <FlatButton label="Submit" disabled={this.isInValid()} onClick={this.handleChange} />
+              </div>
+
+            </div>
             <form>
               <div>
                 <div className="profile-info">Title</div>
@@ -183,6 +222,7 @@ export default class UploadByPattern extends React.Component {
                     <DatePicker hintText="Pick a creation Date..."
                                 value={this.state.date}
                                 mode="landscape"
+
                                 onChange={this.handleChangeDate}
                                 style={{width:'100%'}}
                                 errorText={(this.state.date=="") ? this.props.dateErrorText : ""}
@@ -242,7 +282,7 @@ export default class UploadByPattern extends React.Component {
                            <Chip
                                    key={key}
                                    style= {styles["chip"]}
-                                   backgroundColor={ "#ff5000"}
+                                   backgroundColor={"#ff5000"}
                                    onTouchTap={handleClick}
                                    onRequestDelete={handleRequestDelete}>
                                   <span style={styles["chipText"]}> {value} </span>
@@ -254,16 +294,21 @@ export default class UploadByPattern extends React.Component {
                               name="description"
                               hintText="Add description..."
                               style={{width:'100%'}}
-                              multiLine={true}/>
+                              multiLine={true}
+                              errorText={(this.state.description=="") ? this.props.descriptionErrorText : ""}
+                  />
                 </div>
-                <div className="col-5"></div>
-                <div className="col-1">
-                  <FlatButton label="Submit" disabled={this.isInValid()} onClick={this.handleChange} />
-                </div>
+
               </div>
               </form>
             </div>
+            <Snackbar
+              open={this.state.snackbar}
+              message="New project added!"
+              autoHideDuration={10000}
+          />
           </div>
+
       )
   }
 }
@@ -271,5 +316,6 @@ export default class UploadByPattern extends React.Component {
 UploadByPattern.defaultProps = {
   authorsErrorText: 'Please provide an author',
   titleErrorText: 'Please provide a title',
-  dateErrorText: 'Please provide a creation date'
+  dateErrorText: 'Please provide a creation date',
+  descriptionErrorText: 'Please provide a description'
 }
