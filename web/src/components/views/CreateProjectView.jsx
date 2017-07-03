@@ -59,7 +59,7 @@ export default class UploadByLink extends React.Component {
                           onSubmit={() => {history.push("/create/"+encodeURIComponent(this.state.sourceURL))}}/>
             </div>
           </form>
-        <div className="text" style={{marginBottom:15}}>or</div>
+        <div className="text" >or</div>
         <div>
           <FlatButton
                     label="from local json"
@@ -71,7 +71,7 @@ export default class UploadByLink extends React.Component {
                   <input type="file" style={styles.uploadInput} />
           </FlatButton>
         </div>
-        <div className="text" style={{marginBottom:15}}>or</div>
+        <div className="text" >or</div>
         <div>
           <FlatButton label="with online formular"
                       href="/create/l"

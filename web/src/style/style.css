@@ -372,9 +372,10 @@ legend {
   height: 41px;
   font-family: 'Open Sans', sans-serif;
   font-weight: 300;
-  font-size: 30px;
+  font-size: 18px;
   color: #000000;
   margin-top:46px;
+
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -715,6 +716,11 @@ legend {
   border: 1px solid #ddd;
 }
 
+.sign-container{
+   text-align: center !important;
+ }
+
+
 .table-container {
   margin-top: 2em;
 }
@@ -806,6 +812,8 @@ legend {
   margin-top: 10px;
   margin-bottom: 10px;
   font-weight: 300;
+  font-size: 18px;
+  font-weight: bold;
 }
 
 .profile-icon-text {

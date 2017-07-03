@@ -40,7 +40,9 @@ const muiTheme = getMuiTheme({
   datePicker: {
     selectColor: '#ff5000',
   },
-  palette : {primary1Color : '#ff5000'}
+  palette : {primary1Color : '#ff5000',
+accent1Color : '#ff5000'
+  }
   });
 
 

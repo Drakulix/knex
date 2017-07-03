@@ -11,6 +11,9 @@ import DatePicker from 'material-ui/DatePicker';
 import TextField from 'material-ui/TextField';
 import Chip from 'material-ui/Chip';
 import Snackbar from 'material-ui/Snackbar';
+import DropDownMenu from 'material-ui/DropDownMenu'
+import MenuItem from 'material-ui/MenuItem';
+
 
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
@@ -29,7 +32,10 @@ const styles = {
   }
 };
 
-
+const statusString = [
+{id: "0" , text :"Done", value : "done"},
+{id: "1" , text :"In review", value : "inreview"},
+{id: "2" , text :"In progress", value : "inprogress"}];
 
 const log = (type) => console.log.bind(console, type);
 
@@ -48,6 +54,7 @@ export default class UploadByPattern extends React.Component {
       urls: [],
       invalid : true,
       snackbar : false,
+      value : "0"
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -83,6 +90,9 @@ export default class UploadByPattern extends React.Component {
     this.setState({
       [name]: value});
   }
+
+
+  handleStatusChange = (event, index, value) => this.setState({value});
 
 
   handleChangeDate = (event, date) => {
@@ -121,6 +131,7 @@ export default class UploadByPattern extends React.Component {
 
 
   submit(){
+
     var project = { "title"         : this.state["title"],
                     "date_creation" : this.state["date"].getYear() + 1900 + "-"
                                     + (this.state["date"].getMonth() + 1) + "-"
@@ -128,7 +139,7 @@ export default class UploadByPattern extends React.Component {
                     "tags"          : this.state["tags"],
                     "description"   : this.state["description"],
                     "url"           : this.state["urls"],
-                    "status"        : this.state["status"],
+                    "status"        : statusString[this.state["value"]].value,
                     "authors"        : []
                     };
     var authorArray = this.state["authors"];
@@ -168,14 +179,10 @@ export default class UploadByPattern extends React.Component {
       return(
         <div className="container">
           <div className="innerContainer">
-
-
             <div className = "row headerCreation" style={{width:"100%"}}>
               <div className="col-11">
-
                      Create New Project
                    </div>
-
               <div className="col-1">
                 <FlatButton label="Submit" style={{height:'41px'}}disabled={this.isInValid()} onClick={this.handleChange}  primary={true}/>
               </div>
@@ -194,33 +201,35 @@ export default class UploadByPattern extends React.Component {
               <br></br>
               <div className="row">
                 <div className="col-4">
-                  <div className="profile-info">Status</div>
-                    <RadioButtonGroup name="status"
-                                      defaultSelected="Done"
-                                      valueSelected={this.state.status}
-                                      onChange={this.handleChange}>
-                    <RadioButton
-                      value="done"
-                      label="Done"
-                      style={styles.radioButton}/>
-                    <RadioButton
-                      value="inprogress"
-                      label="In progress"
-                      style={styles.radioButton}/>
-                      <RadioButton
-                        value="inpreview"
-                        label="In review"
-                        style={styles.radioButton}/>
-                  </RadioButtonGroup>
-                  <div className="profile-info">Date</div>
+                    <div className="row">
+
+                   <div className="col-6">
+               <div className="profile-info">Creation date</div><div>
                     <DatePicker hintText="Pick a creation Date..."
                                 value={this.state.date}
                                 mode="landscape"
-
                                 onChange={this.handleChangeDate}
-                                style={{width:'100%'}}
+                                style={{display: "inline"}}
+                                textFieldStyle={{width: '100%', marginTop:8}}
                                 errorText={(this.state.date=="") ? this.props.dateErrorText : ""}
-                                />
+                                /></div>
+                            </div>
+
+                            <div className="col-6">
+                            <div className="profile-info">Status</div>
+                            <div><DropDownMenu value={this.state.value}
+                                          onChange={this.handleStatusChange}
+                                          labelStyle={{width: '100%', paddingLeft:0}}
+                                          underlineStyle={{width: '100%', marginLeft:0}}
+                                          autoWidth={false}
+                                           style={{width: '100%'}}
+                                          >
+                                          {statusString.map(item =><MenuItem value={item.id} primaryText={item.text} />)}
+                           </DropDownMenu></div>
+                          </div>
+
+
+                    </div>
                   <div className="profile-info">Authors</div>
                     <ChipInput
                          dataSource={this.state.suggestedAuthors}

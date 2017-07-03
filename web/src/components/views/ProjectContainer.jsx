@@ -20,11 +20,11 @@ const styles = {
     flexWrap: 'wrap',
   },
   largeIcon: {
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
     marginLeft: 10,
-    padding: 6
-  }
+    padding: 4
+   }
 };
 
 
@@ -82,10 +82,11 @@ export default class ProjectContainer extends Component {
 
 
   <div className = "row headerCreation" style={{width:"100%"}}>
-      <div className="col-8 ">
-           Project
+      <div className="col-9">
+           <div style={{marginLeft:-3}}> Project</div>
+           <div style={{fontSize: '20px'}}> {this.state.projectInf.title}</div>
       </div>
-      <div className="col-4">
+      <div className="col-3">
         <div >
           <IconButton
               onClick={this.logout}
@@ -93,7 +94,7 @@ export default class ProjectContainer extends Component {
               style = {styles.largeIcon}
               tooltipPosition="bottom-center"
               tooltip="Comment project"
-             iconStyle={{fontSize: '48px'}}
+             iconStyle={{fontSize: '36px'}}
               >
               <i className="material-icons" style={{color: 'black', width:'100px'}}>comment</i>
         </IconButton>
@@ -103,7 +104,7 @@ export default class ProjectContainer extends Component {
             style = {styles.largeIcon}
             tooltipPosition="bottom-center"
             tooltip="Bookmark project"
-             iconStyle={{fontSize: '48px'}}
+             iconStyle={{fontSize: '36px'}}
             >
             <i className="material-icons" style={{color: 'black', fontSize: '48px' }}>
                   {(this.state.bookmarked) ? "star_rate" : "star_border"}
@@ -116,7 +117,7 @@ export default class ProjectContainer extends Component {
             disabled={!this.state.owner}
             tooltipPosition="bottom-center"
             tooltip="Edit project"
-            iconStyle={{fontSize: '48px'}}
+            iconStyle={{fontSize: '36px'}}
             >
             <i className="material-icons" style={{color: 'black'}}>mode_edit</i>
         </IconButton>
@@ -127,7 +128,7 @@ export default class ProjectContainer extends Component {
             disabled={!this.state.owner}
             tooltipPosition="bottom-center"
             tooltip="Delete project"
-             iconStyle={{fontSize: '48px'}}
+             iconStyle={{fontSize: '36px'}}
             >
             <i className="material-icons" style={{color: 'black'}}>delete</i>
         </IconButton>
@@ -135,135 +136,57 @@ export default class ProjectContainer extends Component {
     </div>
 
   </div>
-    <div>
-        <div className="profile-info">
-          <div>Title</div>
-        </div>
-        <div>{this.state.projectInf.title}</div>
-    </div>
-        <br></br>
     <div className="row">
-      <div className="col-4">
+      <div className="col-5">
         <div>
           <div className="profile-info">Status</div>
           <div>{this.state.projectInf.status}</div>
         </div>
-        <div>
-          <div className="creation-date-elem">
-            <div className="profile-info">Date of creation </div>
+        <div className="row">
+          <div className="creation-date-elem col-6">
+            <div className="profile-info">Creation date</div>
             <div>{this.state.projectInf.date_creation}</div>
           </div>
-          <div>
-            <div className="profile-info">Last time updated </div>
+          <div className="col-6">
+            <div className="profile-info">Last update </div>
             <div> {this.state.projectInf.date_update}</div>
           </div>
         </div>
-          <div>
+          <div style={{marginTop:30}}>
             <div className="profile-info">Authors</div>
               <div style = {styles["wrapper"]}>
                 {this.state.projectInf.authors.map(item => <Chip style= {styles["chip"]}>
                               <Link to={item.id} style= {styles["chipText"]}>{item.name}</Link></Chip>)}
               </div>
+          </div>
+          <div style={{marginTop:30}}>
+            <div className="profile-info">Links</div>
+            <div style = {styles["wrapper"]}>
+                      {this.state.projectInf.url.map(item => <Chip style= {styles["chip"]}>
+                                <Link to={item} style= {styles["chipText"]}>{item}</Link></Chip>)}
             </div>
 
           </div>
-          <div>
-            <div className="profile-info">
-              <div>Title</div>
+        </div>
+        <div className="col-1"></div>
+        <div className="col-6">
+          <div style={{marginTop:10}}>
+            <div className="profile-info">Tags </div>
+            <div style = {styles["wrapper"]}>
+                  {this.state.projectInf.tags.map(item =>
+                      <Chip style= {styles["chip"]}>
+                        <Link to={item} style= {styles["chipText"]} >{item}</Link></Chip>)}
             </div>
             <div>{this.state.projectInf.title}</div>
           </div>
-          <br></br>
-          <div className="row">
-            <div className="col-4">
-              <div>
-                <div className="profile-info">Status</div>
-                <div>{this.state.projectInf.status}</div>
-              </div>
-              <div>
-                <div className="creation-date-elem">
-                  <div className="profile-info">Date of creation </div>
-                  <div>{this.state.projectInf.date_creation}</div>
-                </div>
-                <div>
-                  <div className="profile-info">Last time updated </div>
-                  <div> {this.state.projectInf.date_update}</div>
-                </div>
-              </div>
-              <div>
-                <div className="profile-info">Authors</div>
-                <div style = {styles["wrapper"]}>
-                  {this.state.projectInf.authors.map(item => <Chip style= {styles["chip"]}>
-                  <Link to={item.id} style= {styles["chipText"]}>{item.name}</Link></Chip>)}
-                  </div>
-                </div>
-                <div>
-                  <div className="profile-info">Links</div>
-                  <div style = {styles["wrapper"]}>
-                    {this.state.projectInf.url.map(item => <Chip style= {styles["chip"]}>
-                    <Link to={item} style= {styles["chipText"]}>{item}</Link></Chip>)}
-                    </div>
-
-                  </div>
-                  <div>
-                    <div className="profile-info">Tags </div>
-                    <div style = {styles["wrapper"]}>
-                      {this.state.projectInf.tags.map(item =>
-                        <Chip style= {styles["chip"]}>
-                          <Link to={item} style= {styles["chipText"]} >{item}</Link></Chip>)}
-                          </div>
-                          <div>{this.state.projectInf.title}</div>
-                        </div>
-                        <br></br>
-                        <div className="row">
-                          <div className="col-4">
-                            <div>
-                              <div className="profile-info">Status</div>
-                              <div>{this.state.projectInf.status}</div>
-                            </div>
-                            <div>
-                              <div className="creation-date-elem">
-                                <div className="profile-info">Date of creation </div>
-                                <div>{this.state.projectInf.date_creation}</div>
-                              </div>
-                              <div>
-                                <div className="profile-info">Last time updated </div>
-                                <div> {this.state.projectInf.date_update}</div>
-                              </div>
-                            </div>
-                            <div>
-                              <div className="profile-info">Authors</div>
-                              <div style = {styles["wrapper"]}>
-                                {this.state.projectInf.authors.map(item => <Chip style= {styles["chip"]}>
-                                <Link to={item.id} >{item.name}  </Link></Chip>)}
-                                </div>
-                              </div>
-                              <div>
-                                <div className="profile-info">URLS</div>
-                                <div style = {styles["wrapper"]}>
-                                  {this.state.projectInf.url.map(item => <Chip style= {styles["chip"]}>
-                                  <Link to={item} >{item}  </Link></Chip>)}
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="col-1"></div>
-                              <div className="col-7">
-                                <div>
-                                  <div className="profile-info">Tags </div>
-                                  <div style = {styles["wrapper"]}>
-                                    {this.state.projectInf.tags.map(item =>
-                                      <Chip style= {styles["chip"]}>
-                                        <Link to={item}>{item}</Link></Chip>)}
-                                        </div>
-                                      </div>
-                                      <div>
-                                        <div className="profile-info">Description</div>
-                                        <div><a>{this.state.projectInf.description}</a></div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            );
-                          }
-                        }
+        <div style={{marginTop:30}}>
+          <div className="profile-info">Description</div>
+          <div><a>{this.state.projectInf.description}</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    );
+  }
+}
