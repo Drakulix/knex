@@ -28,10 +28,24 @@ import UserProjects from './components/views/UserProjects.jsx';
 
 import TopBar from './components/common/TopBar';
 import SideBar from './components/common/SideBar';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 
 var injectTapEventPlugin = require("react-tap-event-plugin");
 injectTapEventPlugin();
+
+
+
+const muiTheme = getMuiTheme({
+  datePicker: {
+    selectColor: '#ff5000',
+  },
+  flatButton: { primaryTextColor: '#ff5000' },
+
+  palette : {primary1Color : '#ff5000'}
+});
+
+
 
 
 const PageRoute = ({ component: Component, path, ...rest }) => (
@@ -51,7 +65,7 @@ const PageRoute = ({ component: Component, path, ...rest }) => (
 )
 
 ReactDOM.render(
-  <MuiThemeProvider>
+  <MuiThemeProvider  muiTheme={muiTheme}>
 <BrowserRouter history={history}>
   <div>
     <PageRoute path="/discovery" component={SearchPage} />

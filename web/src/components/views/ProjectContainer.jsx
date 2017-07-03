@@ -58,16 +58,17 @@ export default class ProjectContainer extends Component {
   loadProjectInf(uuid) {
 
     this.setState({projectInf : {_id :"dsa", title:"test", status:"done",
-      date_creation : "12", date_update:"11", description : "lirum larum", authors:["aa,dd"],
+      date_creation : "12", date_update:"11", description : "lirum larum",
       tags:["av","dasda", "adsadas"], url:["fds","dasda", "adsadas"], authors :[{id:"33", name :"dda"}, {id:"32", name :"ddaa"}]
     }});
 
     this.setState({bookmarked : false});
+    this.setState({owner : false});
 
     /*    fetchProjectDetails(uuid).then(data => {
     this.setState({projectInf: data})
     });*/
-
+    
   }
 
 
