@@ -490,7 +490,6 @@ export default class SearchPage extends Component {
           <div className="row">
             <div className="col">
                 <Headline />
-                <h1>{searchString}</h1>
                 <Search
                   changeStateName={(name) => this.changeStateName(name)}
                   changeStateAuthor={(author) => this.changeStateAuthor(author)}
