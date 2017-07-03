@@ -2,12 +2,31 @@ import React, { Component } from 'react';
 import {fetchProjectDetails, fetchJson} from '../common/Backend'
 import { Link } from 'react-router-dom';
 
+import ChipInput from 'material-ui-chip-input'
+import Chip from 'material-ui/Chip'
+import FlatButton from 'material-ui/RaisedButton';
+
+
+const styles = {
+  chip: {
+    margin: 6,
+
+  },
+  wrapper: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+};
+
+
+
+
 const update_url='/update/'
 export default class ProjectContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      projectInf: [],
+      projectInf:{},
     };
   }
 
@@ -19,115 +38,99 @@ export default class ProjectContainer extends Component {
     this.loadProjectInf(nextProps)
   }
 
-  loadProjectInf(uuid) {
-    fetchProjectDetails(uuid).then(data => {
-      this.setState({projectInf: data})
-    });
+  componentDidMount(){
+    this.loadProjectInf(this.props);
   }
 
 
-//
+  loadProjectInf(uuid) {
+
+    this.setState({projectInf : {_id :"dsa", title:"test", status:"done",
+date_creation : "12", date_update:"11", description : "lirum larum", authors:["aa,dd"],
+tags:["av","dasda", "adsadas"], url:["fds","dasda", "adsadas"], authors :[{id:"33", name :"dda"}, {id:"32", name :"ddaa"}]
+}});
+
+/*    fetchProjectDetails(uuid).then(data => {
+      this.setState({projectInf: data})
+    });*/
+
+  }
+
 
   render(){
-    const { _id, authors, date_creation, date_update, description } = this.state.projectInf;
-    const { status, tags, title, url} = this.state.projectInf;
-
-    var authors_string = null;
-    if (authors != null){
-      var author_container = []
-      for (var i = 0; i < authors.length; i++){
-        author_container.push(authors[i].name);
-      }
-      authors_string = author_container.join(", ")
-    } else {
-      authors_string = ''
-    }
-
-    var tag_string = null;
-    if (tags != null){
-      var tag_container = []
-      for (var i = 0; i < tags.length; i++){
-        tag_container.push(tags[i])
-      }
-      tag_string = tag_container.join(", ")
-    } else {
-      tag_string = ''
-    }
     return(
-      <div className="container">
-        <div className="projecttitle">
-          <p>
-            Title: {this.state.projectInf.title}
-          </p>
+
+<div className="container">
+  <div className="innerContainer">
+  <div className = "row headerCreation">
+
+      <div className="col-8 ">
+          <div> Project</div>
+      </div>
+    <div className="col-4">
+      <button label="Comment" />
+      <button label="Bookmark" />
+      <button label="Edit" />
+      <button label="Delete" />
+    </div>
+
+  </div>
+    <div>
+        <div className="profile-info">
+          <div>Title</div>
         </div>
-        <div className="status">
-          <p>
-          Status: {this.state.projectInf.status}
-          </p>
+        <div>{this.state.projectInf.title}</div>
+    </div>
+        <br></br>
+    <div className="row">
+      <div className="col-4">
+        <div>
+          <div className="profile-info">Status</div>
+          <div>{this.state.projectInf.status}</div>
         </div>
-        <ul className="nav nav-tabs overviewbar">
-          <li className="nav-item ">
-            <p className="nav-link active" href="#">Overview</p>
-          </li>
-          <li className="nav-item ">
-            <p className="nav-link" href="#">Comments</p>
-          </li>
-          <li className="nav-item ">
-            <p className="nav-link" href="#">GitHub</p>
-          </li>
-        </ul>
-
-        <button className="btn btn-default star-edit-button">
-          <span className="glyphicon glyphicon-star white"></span>
-        </button>
-
-        <Link to={`${update_url}${this.props.match.params.uuid}`}>
-
-
-          <button className="btn btn-default star-edit-button">
-            <span className="glyphicon glyphicon-pencil white"></span>
-          </button>
-        </Link>
-        <button className="btn btn-default trash-button">
-          <span className="glyphicon glyphicon-trash white"></span>
-        </button>
-
-        <div className="projectbox">
-
-          <div className="list_project_info_title">
-            <div className="authors">
-              <span className="sec-label">Authors:</span><br />
-                <a>{authors_string}</a>
-            </div>
-            <div className="team">
-              <span className="sec-label">Team: </span><br />
-               <a>{"Knex"}</a>
-            </div>
-            <div className="tags-pb">
-              <span className="sec-label">Tags: </span><br />
-              <a> {tag_string}</a>
-            </div>
-            <div className="github">
-                <div className="sec-label">Github: </div>
-                <div className="github-link">
-                <a className="github-link" href={url}>{url}</a>
-                </div>
-            </div>
-            <div className="description-elem">
-              <div className="sec-label desc-label">Description:</div>
-              <a>{description}</a>
-            </div>
-            <div className="date-group">
-              <div className="creation-date-elem">
-                <span className="sec-label">Date of creation: </span> {"2017-01-16"}
+        <div>
+          <div className="creation-date-elem">
+            <div className="profile-info">Date of creation </div>
+            <div>{this.state.projectInf.date_creation}</div>
+          </div>
+          <div>
+            <div className="profile-info">Last time updated </div>
+            <div> {this.state.projectInf.date_update}</div>
+          </div>
+        </div>
+          <div>
+            <div className="profile-info">Authors</div>
+              <div style = {styles["wrapper"]}>
+                {this.state.projectInf.authors.map(item => <Chip style= {styles["chip"]}>
+                              <Link to={item.id} >{item.name}  </Link></Chip>)}
               </div>
-              <div className="update-date-elem">
-                <span className="sec-label">Last time updated: </span> {date_update}
-              </div>
+          </div>
+          <div>
+            <div className="profile-info">URLS</div>
+            <div style = {styles["wrapper"]}>
+                      {this.state.projectInf.url.map(item => <Chip style= {styles["chip"]}>
+                                <Link to={item} >{item}  </Link></Chip>)}
             </div>
           </div>
         </div>
+        <div className="col-1"></div>
+        <div className="col-7">
+          <div>
+            <div className="profile-info">Tags </div>
+            <div style = {styles["wrapper"]}>
+                  {this.state.projectInf.tags.map(item =>
+                      <Chip style= {styles["chip"]}>
+                        <Link to={item}>{item}</Link></Chip>)}
+            </div>
+          </div>
+        <div>
+          <div className="profile-info">Description</div>
+          <div><a>{this.state.projectInf.description}</a></div>
+        </div>
       </div>
+    </div>
+  </div>
+</div>
     );
   }
 }
