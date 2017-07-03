@@ -20,8 +20,6 @@ const styles = {
     display: 'flex',
     flexWrap: 'wrap',
   },
-  chipText:{
-  },
   largeIcon: {
     width: 60,
     height: 60,
