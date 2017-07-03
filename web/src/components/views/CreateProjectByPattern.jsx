@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 import { Redirect } from 'react-router-dom';
 import AutoComplete from 'material-ui/AutoComplete'
-import PropTypes from 'prop-types'
 
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import FlatButton from 'material-ui/RaisedButton';
@@ -18,7 +17,8 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 const styles = {
   chip: {
     margin: '8px 8px 0 0',
-      float: 'left',
+    float: 'left',
+    background : '#ff5000'
   },
   wrapper: {
     display: 'flex',
@@ -29,12 +29,6 @@ const styles = {
   }
 };
 
-
-const muiTheme = getMuiTheme({
-  datePicker: {
-    selectColor: '#ff5000',
-  },
-});
 
 
 const log = (type) => console.log.bind(console, type);
@@ -53,7 +47,7 @@ export default class UploadByPattern extends React.Component {
       authors: [],
       urls: [],
       invalid : true,
-      snackbar : false
+      snackbar : false,
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -181,9 +175,8 @@ export default class UploadByPattern extends React.Component {
                      Create New Project
                 </div>
               <div className="col-1">
-                <FlatButton label="Submit" disabled={this.isInValid()} onClick={this.handleChange} />
+                <FlatButton label="Submit" style={{height:40}}disabled={this.isInValid()} onClick={this.handleChange}  primary={true}/>
               </div>
-
             </div>
             <form>
               <div>
@@ -241,7 +234,7 @@ export default class UploadByPattern extends React.Component {
                            <Chip
                                    key={key}
                                    style= {styles["chip"]}
-                                   backgroundColor={ "#ff5000"}
+                                   backgroundColor={styles.chip.background}
                                    onTouchTap={handleClick}
                                    onRequestDelete={handleRequestDelete}>
                                   <span style={styles["chipText"]}> {value} </span>
@@ -259,7 +252,7 @@ export default class UploadByPattern extends React.Component {
                            <Chip
                                    key={key}
                                    style= {styles["chip"]}
-                                   backgroundColor={ "#ff5000"}
+                                   backgroundColor={styles.chip.background}
                                    onTouchTap={handleClick}
                                    onRequestDelete={handleRequestDelete}>
                                   <span style={styles["chipText"]}> {value} </span>
@@ -281,7 +274,7 @@ export default class UploadByPattern extends React.Component {
                            <Chip
                                    key={key}
                                    style= {styles["chip"]}
-                                   backgroundColor={"#ff5000"}
+                                   backgroundColor={styles.chip.background}
                                    onTouchTap={handleClick}
                                    onRequestDelete={handleRequestDelete}>
                                   <span style={styles["chipText"]}> {value} </span>

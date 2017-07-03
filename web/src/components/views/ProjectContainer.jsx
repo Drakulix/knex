@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+  import React, { Component } from 'react';
 import {fetchProjectDetails, fetchJson} from '../common/Backend'
 import { Link } from 'react-router-dom';
 
@@ -66,7 +66,7 @@ export default class ProjectContainer extends Component {
     /*    fetchProjectDetails(uuid).then(data => {
     this.setState({projectInf: data})
     });*/
-    
+
   }
 
 
