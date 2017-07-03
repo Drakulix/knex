@@ -9,13 +9,16 @@ import FlatButton from 'material-ui/RaisedButton';
 
 const styles = {
   chip: {
-    margin: 6,
-
+    margin: '8px 8px 0 0',
+      float: 'left',
+      background: '#ff5000'
   },
   wrapper: {
     display: 'flex',
     flexWrap: 'wrap',
   },
+  chipText:{
+  }
 };
 
 
@@ -62,16 +65,17 @@ tags:["av","dasda", "adsadas"], url:["fds","dasda", "adsadas"], authors :[{id:"3
 
 <div className="container">
   <div className="innerContainer">
-  <div className = "row headerCreation">
+  <div className = "row headerCreation" style={{width:"100%"}}>
 
       <div className="col-8 ">
-          <div> Project</div>
+           Project
       </div>
     <div className="col-4">
-      <button label="Comment" />
-      <button label="Bookmark" />
-      <button label="Edit" />
-      <button label="Delete" />
+        <div className="row">
+        <Link to="comment" >comment</Link>
+        <Link to="comment" >comment</Link>
+
+      </div>
     </div>
 
   </div>
@@ -102,14 +106,14 @@ tags:["av","dasda", "adsadas"], url:["fds","dasda", "adsadas"], authors :[{id:"3
             <div className="profile-info">Authors</div>
               <div style = {styles["wrapper"]}>
                 {this.state.projectInf.authors.map(item => <Chip style= {styles["chip"]}>
-                              <Link to={item.id} >{item.name}  </Link></Chip>)}
+                              <Link to={item.id} style= {styles["chipText"]}>{item.name}</Link></Chip>)}
               </div>
           </div>
           <div>
-            <div className="profile-info">URLS</div>
+            <div className="profile-info">Links</div>
             <div style = {styles["wrapper"]}>
                       {this.state.projectInf.url.map(item => <Chip style= {styles["chip"]}>
-                                <Link to={item} >{item}  </Link></Chip>)}
+                                <Link to={item} style= {styles["chipText"]}>{item}</Link></Chip>)}
             </div>
           </div>
         </div>
@@ -120,7 +124,7 @@ tags:["av","dasda", "adsadas"], url:["fds","dasda", "adsadas"], authors :[{id:"3
             <div style = {styles["wrapper"]}>
                   {this.state.projectInf.tags.map(item =>
                       <Chip style= {styles["chip"]}>
-                        <Link to={item}>{item}</Link></Chip>)}
+                        <Link to={item} style= {styles["chipText"]} >{item}</Link></Chip>)}
             </div>
           </div>
         <div>

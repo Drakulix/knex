@@ -10,15 +10,22 @@ import FlatButton from 'material-ui/RaisedButton';
 import ChipInput from 'material-ui-chip-input'
 import DatePicker from 'material-ui/DatePicker';
 import TextField from 'material-ui/TextField';
+import Chip from 'material-ui/Chip';
+
 
 const styles = {
   chip: {
-    margin: 6,
+    margin: '8px 8px 0 0',
+      float: 'left',
+  background: '#ff5000',
   },
   wrapper: {
     display: 'flex',
     flexWrap: 'wrap',
   },
+  chipText:{
+    color : '#ffffff'
+  }
 };
 
 
@@ -167,6 +174,10 @@ export default class UploadByPattern extends React.Component {
                       value="inprogress"
                       label="In progress"
                       style={styles.radioButton}/>
+                      <RadioButton
+                        value="inpreview"
+                        label="In review"
+                        style={styles.radioButton}/>
                   </RadioButtonGroup>
                   <div className="profile-info">Date</div>
                     <DatePicker hintText="Pick a creation Date..."
@@ -186,7 +197,17 @@ export default class UploadByPattern extends React.Component {
                          errorText={(this.state.authors=="") ? this.props.authorsErrorText : ""}
                          onRequestAdd={(chip) => this.handleRequestAdd(chip, "authors")}
                          onRequestDelete={(deletedChip) => this.handleRequestDelete(deletedChip, "authors")}
-                         fullWidth/>
+                         fullWidth
+                         chipRenderer={({ value, isFocused, isDisabled, handleClick, handleRequestDelete }, key) => (
+                           <Chip
+                                   key={key}
+                                   style= {styles["chip"]}
+                                   backgroundColor={ "#ff5000"}
+                                   onTouchTap={handleClick}
+                                   onRequestDelete={handleRequestDelete}>
+                                  <span style={styles["chipText"]}> {value} </span>
+                                 </Chip>
+                        )}/>
                        <div className="profile-info">Links</div>
                     <ChipInput
                          value={this.state.urls}
@@ -194,7 +215,17 @@ export default class UploadByPattern extends React.Component {
                          hintText='Add Links...'
                          onRequestAdd={(chip) => this.handleRequestAdd(chip, "urls")}
                          onRequestDelete={(deletedChip) => this.handleRequestDelete(deletedChip, "urls")}
-                         fullWidth/>
+                         fullWidth
+                         chipRenderer={({ value, isFocused, isDisabled, handleClick, handleRequestDelete }, key) => (
+                           <Chip
+                                   key={key}
+                                   style= {styles["chip"]}
+                                   backgroundColor={ "#ff5000"}
+                                   onTouchTap={handleClick}
+                                   onRequestDelete={handleRequestDelete}>
+                                  <span style={styles["chipText"]}> {value} </span>
+                                 </Chip>
+                        )}/>
                 </div>
                 <div className="col-1"></div>
                 <div className="col-7">
@@ -206,7 +237,17 @@ export default class UploadByPattern extends React.Component {
                          onRequestAdd={(chip) => this.handleRequestAdd(chip, "tags")}
                          onRequestDelete={(deletedChip) => this.handleRequestDelete(deletedChip, "tags")}
                          hintText='Add tags...'
-                         fullWidth/>
+                         fullWidth
+                         chipRenderer={({ value, isFocused, isDisabled, handleClick, handleRequestDelete }, key) => (
+                           <Chip
+                                   key={key}
+                                   style= {styles["chip"]}
+                                   backgroundColor={ "#ff5000"}
+                                   onTouchTap={handleClick}
+                                   onRequestDelete={handleRequestDelete}>
+                                  <span style={styles["chipText"]}> {value} </span>
+                                 </Chip>
+                        )}/>
                 <div className="profile-info">Description</div>
                   <TextField  value={this.state.description}
                               onChange={this.handleChange}
