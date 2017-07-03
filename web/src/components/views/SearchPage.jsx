@@ -106,7 +106,7 @@ class AdvancedSearch extends Component {
 
   onChange = chips => {
     this.setState({ chips });
-    this.props.changeStateAuthor({chips});
+    this.props.changeStateTags({chips});
   }
   //View for advanced search, the onChange in the <input> parses the state all the way to the parent
   render() {
@@ -302,7 +302,7 @@ export default class SearchPage extends Component {
       currentPage: 0,
       filter_project_name: "",
       filter_author: "",
-      filter_tags: "",
+      filter_tags: ["Gricelda", "Munchkin"],
       filter_date_from: "1900-01-01",
       filter_date_to: "2050-06-06",
       filter_status: "",
@@ -344,13 +344,8 @@ export default class SearchPage extends Component {
         searchstring = searchstring.concat("(authors.name: ", this.state.filter_author, "*)");
         filter_set++;
       }
-      if(this.state.filter_tags != ""){
-        if(filter_set > 0){
-          searchstring = searchstring.concat(" AND ");
-          filter_set--;
-        }
-        searchstring = searchstring.concat("(tags: ", this.state.filter_tags, "*)");
-      }
+
+
 
       if(this.state.filter_status!= ""){
         if(filter_set > 0){
@@ -367,6 +362,22 @@ export default class SearchPage extends Component {
           filter_set--;
         }
         searchstring = searchstring.concat("(description: ", this.state.filter_description, "*)");
+        filter_set++;
+      }
+
+      if(this.state.filter_tags.length != 0){
+        if(filter_set > 0){
+          searchstring = searchstring.concat(" AND ");
+          filter_set--;
+        }
+        searchstring = searchstring.concat("(tags: ");
+        for(var i = 0;i<this.state.filter_tags.length;i++){
+          searchstring = searchstring.concat(this.state.filter_tags[i], "*");
+          if(i < this.state.filter_tags.length - 1){
+            searchstring = searchstring.concat(" AND ");
+          }
+        }
+        searchstring = searchstring.concat(")");
         filter_set++;
       }
 
@@ -464,6 +475,7 @@ export default class SearchPage extends Component {
           <div className="row">
             <div className="col">
                 <Headline />
+                <h1>{searchString}</h1>
                 <Search
                   changeStateName={(name) => this.changeStateName(name)}
                   changeStateAuthor={(author) => this.changeStateAuthor(author)}
