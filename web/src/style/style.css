@@ -92,6 +92,10 @@ a:hover {
   color: #ffffff;
 }
 
+.search-bar-title {
+  margin-bottom: -12px;
+}
+
 .table-project-name {
   color: black;
 }
@@ -136,7 +140,9 @@ a:hover {
 }
 
 .content{
-  left: 20em;
+  left: 7em;
+  margin-left: auto;
+  margin-right: auto;
   position: relative;
 }
 
@@ -311,6 +317,7 @@ a:hover {
 
 .form-control {
   border-radius: 0px !important;
+  min-height: 39px;
 }
 
 #dropdown_status{
@@ -330,20 +337,11 @@ a:hover {
     margin-left: -11px;
 }
 
-#dateStart{
-  margin-left: -18px;
-}
-
-#dateEnd{
-  margin-left: -10px;
-}
-
 #advancedSearchToggle{
   margin-top: 20px;
 }
 
 #minimize{
-  margin-top: -45px;
   margin-left: 17px;
 }
 
@@ -370,10 +368,6 @@ legend {
   margin-top: 4em;
   margin-bottom: 2em;
   text-align: center;
-}
-
-#headerSearch{
-  margin-bottom: 0em;
 }
 
 .text{
@@ -600,17 +594,6 @@ legend {
  .projectbox .creation-date-elem{
    float:right
  }
-
- #dateStart{
-   width:170px;
- }
- #dateEnd{
-   width:170px;
- }
-
-#tagInput{
-  margin-left:-8px;
-}
 
  .github-link{
    margin-top: 0.5em;
