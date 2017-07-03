@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import {fetchJson, sendJson} from '../common/Backend';
 import  Table from './SearchTable';
 import Chips, { Chip } from 'react-chips';
+import PropTypes from 'prop-types';
 
 const defaultPageSize = 4;
 const defaultSearchString = "advanced/?q=*";
@@ -100,13 +101,33 @@ class AdvancedSearch extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      chips: []
+      chips: [],
+      counter: ""
     }
   }
 
   onChange = chips => {
-    this.setState({ chips });
-    this.props.changeStateTags({chips});
+    this.setState({ chips: chips });
+    var stringArray = [];
+    var counter = 0;
+    for (var i = 0; i< chips.length; i++){
+      stringArray.push(chips[i].toString());
+      counter ++;
+    }
+
+    var searchstring = "";
+    searchstring = searchstring.concat("(tags: ");
+    for(var i = 0;i<stringArray.length;i++){
+      searchstring = searchstring.concat(stringArray[i].toString(), "*");
+      if(i < stringArray.length - 1){
+        searchstring = searchstring.concat(" AND ");
+      }
+    }
+    searchstring = searchstring.concat(")");
+
+
+    this.setState({counter: searchstring})
+    this.props.changeStateTags(searchstring);
   }
   //View for advanced search, the onChange in the <input> parses the state all the way to the parent
   render() {
@@ -216,7 +237,7 @@ class AdvancedSearch extends Component {
         <div className="col-md-2">
           <div className="input-group form-inline panel">
             <label className ="input-group-addon primary">
-              Status:
+              {this.state.counter}
             </label>
             <select
               className="form-control"
@@ -302,7 +323,7 @@ export default class SearchPage extends Component {
       currentPage: 0,
       filter_project_name: "",
       filter_author: "",
-      filter_tags: ["Gricelda", "Munchkin"],
+      filter_tags: "",
       filter_date_from: "1900-01-01",
       filter_date_to: "2050-06-06",
       filter_status: "",
@@ -310,6 +331,7 @@ export default class SearchPage extends Component {
       searchString: "",
       advanced: false,
       simple_searchstring: "",
+      counter: 0,
     };
   }
 
@@ -365,19 +387,12 @@ export default class SearchPage extends Component {
         filter_set++;
       }
 
-      if(this.state.filter_tags.length != 0){
+      if(this.state.filter_tags != ""){
         if(filter_set > 0){
           searchstring = searchstring.concat(" AND ");
           filter_set--;
         }
-        searchstring = searchstring.concat("(tags: ");
-        for(var i = 0;i<this.state.filter_tags.length;i++){
-          searchstring = searchstring.concat(this.state.filter_tags[i], "*");
-          if(i < this.state.filter_tags.length - 1){
-            searchstring = searchstring.concat(" AND ");
-          }
-        }
-        searchstring = searchstring.concat(")");
+        searchstring = searchstring.concat(this.state.filter_tags);
         filter_set++;
       }
 
@@ -422,7 +437,7 @@ export default class SearchPage extends Component {
   }
 
   changeStateTags(tags){
-    this.setState({filter_tags: tags });
+    this.setState({filter_tags: tags});
   }
 
   changeStateAdvanced(){
