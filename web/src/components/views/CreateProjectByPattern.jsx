@@ -19,7 +19,6 @@ const styles = {
   chip: {
     margin: '8px 8px 0 0',
       float: 'left',
-
   },
   wrapper: {
     display: 'flex',

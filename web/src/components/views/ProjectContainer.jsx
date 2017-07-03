@@ -13,14 +13,12 @@ import Comment from 'material-ui/svg-icons/communication/comment';
 const styles = {
   chip: {
     margin: '8px 8px 0 0',
-      float: 'left',
-      background: '#ff5000'
+    float: 'left',
+    background: '#ff5000'
   },
   wrapper: {
     display: 'flex',
     flexWrap: 'wrap',
-  },
-  chipText:{
   },
   largeIcon: {
     width: 60,
