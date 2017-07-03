@@ -7,7 +7,6 @@ import Chip from 'material-ui/Chip'
 import IconButton from 'material-ui/IconButton';
 
 
-import Comment from 'material-ui/svg-icons/communication/comment';
 
 
 const styles = {
@@ -78,60 +77,92 @@ export default class ProjectContainer extends Component {
 
     return(
 
-      <div className="container">
-        <div className="innerContainer">
+<div className="container">
+  <div className="innerContainer">
 
 
-          <div className = "row headerCreation" style={{width:"100%"}}>
-            <div className="col-8 ">
-              Project
-            </div>
-            <div className="col-4">
-              <div className="row">
-                <IconButton
-                  onClick={this.logout}
-                  touch={true}
-                  style = {styles.largeIcon}
-                  tooltipPosition="bottom-center"
-                  tooltip="Comment project"
-                  iconStyle={{fontSize: '48px'}}
-                  >
-                  <i className="material-icons" style={{color: 'black', width:'100px'}}>comment</i>
-                </IconButton>
-                <IconButton
-                  onClick={this.logout}
-                  touch={true}
-                  style = {styles.largeIcon}
-                  tooltipPosition="bottom-center"
-                  tooltip="Bookmark project"
-                  iconStyle={{fontSize: '48px'}}
-                  >
-                  <i className="material-icons" style={{color: 'black', fontSize: '48px' }}>
-                    {(this.state.bookmarked) ? "star_rate" : "star_border"}
-                  </i>
-                </IconButton>
-                <IconButton
-                  onClick={this.logout}
-                  touch={true}
-                  style = {styles.largeIcon}
-                  disabled={!this.state.owner}
-                  tooltipPosition="bottom-center"
-                  tooltip="Edit project"
-                  iconStyle={{fontSize: '48px'}}
-                  >
-                  <i className="material-icons" style={{color: 'black'}}>mode_edit</i>
-                </IconButton>
-                <IconButton
-                  onClick={this.logout}
-                  touch={true}
-                  style = {styles.largeIcon}
-                  disabled={!this.state.owner}
-                  tooltipPosition="bottom-center"
-                  tooltip="Delete project"
-                  iconStyle={{fontSize: '48px'}}
-                  >
-                  <i className="material-icons" style={{color: 'black'}}>delete</i>
-                </IconButton>
+  <div className = "row headerCreation" style={{width:"100%"}}>
+      <div className="col-8 ">
+           Project
+      </div>
+      <div className="col-4">
+        <div >
+          <IconButton
+              onClick={this.logout}
+              touch={true}
+              style = {styles.largeIcon}
+              tooltipPosition="bottom-center"
+              tooltip="Comment project"
+             iconStyle={{fontSize: '48px'}}
+              >
+              <i className="material-icons" style={{color: 'black', width:'100px'}}>comment</i>
+        </IconButton>
+        <IconButton
+            onClick={this.logout}
+            touch={true}
+            style = {styles.largeIcon}
+            tooltipPosition="bottom-center"
+            tooltip="Bookmark project"
+             iconStyle={{fontSize: '48px'}}
+            >
+            <i className="material-icons" style={{color: 'black', fontSize: '48px' }}>
+                  {(this.state.bookmarked) ? "star_rate" : "star_border"}
+            </i>
+        </IconButton>
+        <IconButton
+            onClick={this.logout}
+            touch={true}
+            style = {styles.largeIcon}
+            disabled={!this.state.owner}
+            tooltipPosition="bottom-center"
+            tooltip="Edit project"
+            iconStyle={{fontSize: '48px'}}
+            >
+            <i className="material-icons" style={{color: 'black'}}>mode_edit</i>
+        </IconButton>
+        <IconButton
+            onClick={this.logout}
+            touch={true}
+            style = {styles.largeIcon}
+            disabled={!this.state.owner}
+            tooltipPosition="bottom-center"
+            tooltip="Delete project"
+             iconStyle={{fontSize: '48px'}}
+            >
+            <i className="material-icons" style={{color: 'black'}}>delete</i>
+        </IconButton>
+        </div>
+    </div>
+
+  </div>
+    <div>
+        <div className="profile-info">
+          <div>Title</div>
+        </div>
+        <div>{this.state.projectInf.title}</div>
+    </div>
+        <br></br>
+    <div className="row">
+      <div className="col-4">
+        <div>
+          <div className="profile-info">Status</div>
+          <div>{this.state.projectInf.status}</div>
+        </div>
+        <div>
+          <div className="creation-date-elem">
+            <div className="profile-info">Date of creation </div>
+            <div>{this.state.projectInf.date_creation}</div>
+          </div>
+          <div>
+            <div className="profile-info">Last time updated </div>
+            <div> {this.state.projectInf.date_update}</div>
+          </div>
+        </div>
+          <div>
+            <div className="profile-info">Authors</div>
+              <div style = {styles["wrapper"]}>
+                {this.state.projectInf.authors.map(item => <Chip style= {styles["chip"]}>
+                              <Link to={item.id} style= {styles["chipText"]}>{item.name}</Link></Chip>)}
               </div>
             </div>
 

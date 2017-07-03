@@ -74,7 +74,7 @@ export default class UploadByPattern extends React.Component {
 
   handleChange(event) {
     if(typeof event.target.name  === "undefined"){
-
+      event.preventDefault();
       console.log(event);
       this.submit();
     }
