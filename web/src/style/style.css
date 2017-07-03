@@ -183,6 +183,10 @@ a:hover {
   color: white;
 }
 
+.abcd{
+  text-align: center !important;
+}
+
 .header-title {
   margin-top: 100px;
   width : 100%;
@@ -190,10 +194,6 @@ a:hover {
   color: #333333;
 }
 
-/* Start SignIn SignUp Styling */
-.sign-container{
-  text-align: center !important;
-}
 
 .slogan{
   margin-top:3em;

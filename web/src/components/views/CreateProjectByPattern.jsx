@@ -171,11 +171,13 @@ export default class UploadByPattern extends React.Component {
 
 
             <div className = "row headerCreation" style={{width:"100%"}}>
-                <div className="col-11 ">
+              <div className="col-11">
+
                      Create New Project
-                </div>
+                   </div>
+
               <div className="col-1">
-                <FlatButton label="Submit" style={{height:40}}disabled={this.isInValid()} onClick={this.handleChange}  primary={true}/>
+                <FlatButton label="Submit" style={{height:'41px'}}disabled={this.isInValid()} onClick={this.handleChange}  primary={true}/>
               </div>
             </div>
             <form>

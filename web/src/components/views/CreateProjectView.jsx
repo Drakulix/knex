@@ -36,52 +36,48 @@ export default class UploadByLink extends React.Component {
 
   render() {
     return (
-      <div className="container">
+      <div className="container"style={{textAlign : 'center'}} >
         <div className="header">Create Project</div>
-        <div>
-          <form >
-            <div >
-              <FlatButton style={{marginLeft: 'auto !important',
-                position: 'relative !important',
-                width:'300px',
-                display  :'block !important'}}
-                label="from online json"
-                primary={true}
-                onSubmit={() => {history.push("/create/"+encodeURIComponent(this.state.sourceURL))}}/>
-            </div>
+          <form>
+
             <div>
               <TextField value={this.state.title}
-                ID="url"
-                name="title"
-                hintText="enter url here (e.g. “http://soundloud.com/stuff/manifest.json”)"
-                style={{width:'500px',}}
-                onChange={event => this.setState({
-                  sourceURL : event.target.value,
-                })}
-                value={this.state.sourceURL}
-                />
+                  ID="url"
+                  name="title"
+                  hintText="enter url here (e.g. “http://soundloud.com/stuff/manifest.json”)"
+                  style={{width:'430px',}}
+                  onChange={event => this.setState({
+                            sourceURL : event.target.value,
+                           })}
+                            value={this.state.sourceURL}
+                           />
+            </div>
+            <div >
+              <FlatButton style={{width:'300px'}}
+                          label="from online json"
+                          primary={true}
+                          onSubmit={() => {history.push("/create/"+encodeURIComponent(this.state.sourceURL))}}/>
             </div>
           </form>
-        </div>
-        <div className="text">or</div>
+        <div className="text" style={{marginBottom:15}}>or</div>
         <div>
           <FlatButton
-            label="from local json"
-            labelPosition="before"
-            style={styles.uploadButton}
-            containerElement="label"
-            primary={true}
-            style={{marginLeft: 'auto !important', position: 'relative !important', width:'300px', display  :'block !important'}}>
-            <input type="file" style={styles.uploadInput} />
+                    label="from local json"
+                    labelPosition="before"
+                    style={styles.uploadButton}
+                    containerElement="label"
+                    primary={true}
+                    style={{width:'300px'}}>
+                  <input type="file" style={styles.uploadInput} />
           </FlatButton>
         </div>
-        <div className="text">or</div>
+        <div className="text" style={{marginBottom:15}}>or</div>
         <div>
           <FlatButton label="with online formular"
-            href="/create/l"
-            primary={true}
-            style={{marginLeft: 'auto !important', position: 'relative !important', width:'300px', display  :'block !important'}}
-            />
+                      href="/create/l"
+                      primary={true}
+                      style={{ width:'300px'}}
+                        />
         </div>
       </div>
     );
