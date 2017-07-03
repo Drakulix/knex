@@ -28,7 +28,7 @@ export default class UploadByLink extends React.Component {
         </form>
         <div className="text">or</div>
         <Link to="/create">
-          <button className="submit">Create New Project Page</button>
+          <button className="submit">Create New Project</button>
         </Link>
       </div>
     );
