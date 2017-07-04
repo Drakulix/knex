@@ -9,62 +9,6 @@ import json5
 from flask import g
 from api.helper.apiexception import ApiException
 
-ALLOWED_EXTENSIONS = {'txt', 'json', 'json5'}
-
-
-def allowed_file(filename):
-    """Check if the file is an allowed file.
-
-    Args:
-        filename: Name of the Upload-File
-
-    Returns:
-        bool: True if the file is allowed, False otherwise.
-    """
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-def save_file_to_db(file, filename):
-    """Save file to the Database.
-
-    Args:
-        filename: Name of the Upload-File
-
-    Returns:
-        id: The Manifest ID
-
-    Raises:
-        ApiException: Error while trying to open/save the file or ElasticSearch Index Error.
-    """
-    try:
-        jsonstr = file.read()
-        file.close()
-        if not jsonstr:
-            raise ApiException('File ' + str(filename) + ' is empty.', 400)
-        manifest = json5.loads(jsonstr)
-
-        if not manifest['date_creation']:
-            manifest['date_creation'] = time.strftime("%Y-%m-%d")
-        is_valid = g.validator.is_valid(manifest)
-
-        if is_valid:
-            manifest['date_last_updated'] = time.strftime("%Y-%m-%d")
-            manifest['_id'] = uuid.uuid4()
-            g.projects.insert_one(manifest)
-
-            return manifest['_id']
-        else:
-            print(is_valid, file=sys.stderr)
-            errors = g.validator.iter_errors(manifest)
-            if errors is not None:
-                validation_error = [error for error in sorted(errors, key=str)]
-                raise ApiException("Validation Error: \n" + str(is_valid), 400)
-    except ApiException as e:
-        raise e
-    except Exception as err:
-        raise ApiException(str(err), 500)
-
 
 def save_manifest_to_db(manifest):
     """Save manifest to the Database.

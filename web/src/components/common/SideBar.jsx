@@ -11,6 +11,7 @@ export default class SideBar extends Component {
         discoverProjects: 'Discover Projects',
         createProject: 'Create New Project',
         bookmarks: 'Bookmarks',
+        userprojects: 'Projects',
         profile: 'Profile',
         adminArea: 'Admin Area'
       }
@@ -27,6 +28,7 @@ export default class SideBar extends Component {
                 <SideBarEntry name={this.state.menu.discoverProjects} to="/discovery" active={isActive("/discovery")} />
                 <SideBarEntry name={this.state.menu.createProject} to="/createbylink" active={isActive("/createbylink")} />
                 <SideBarEntry name={this.state.menu.bookmarks} to="/bookmarks" active={isActive("/bookmarks")} />
+                <SideBarEntry name={this.state.menu.userprojects} to="/yourprojects" active={isActive("/yourprojects")} />
                 <SideBarEntry name={this.state.menu.profile} to="/profile" active={isActive("/profile")} />
                 <SideBarEntry name={this.state.menu.adminArea} to="/admin" active={isActive("/admin")} />
             </ul>

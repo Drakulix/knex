@@ -24,6 +24,7 @@ import ProjectContainer from './components/views/ProjectContainer';
 import SearchPage from './components/views/SearchPage';
 import UpdateProject from './components/views/UpdateProjectView';
 import BookmarksTable from './components/views/BookmarksTable';
+import UserProjects from './components/views/UserProjects.jsx';
 
 import TopBar from './components/common/TopBar';
 import SideBar from './components/common/SideBar';
@@ -61,20 +62,22 @@ const PageRoute = ({ component: Component, path, ...rest }) => (
 
 ReactDOM.render(
   <MuiThemeProvider  muiTheme={muiTheme}>
-<BrowserRouter history={history}>
-  <div>
-    <PageRoute path="/discovery" component={SearchPage} />
-    <PageRoute path="/admin" component={AdminOverview} />
-    <PageRoute path="/create/:uuid" component={CreateProjectByPattern} />
-    <PageRoute exact path="/create" component={CreateProject} />
-    <PageRoute path="/update/:uuid" component={CreateProjectByPattern} />
-    <PageRoute path="/createbylink" component={CreateProject} />
-    <PageRoute path="/project/:uuid" component={ProjectContainer} />
-    <PageRoute path="/bookmarks" component={BookmarksTable} />
-    <PageRoute path="/profile" component={ProfileContainer} />
-    <Route path="/register" component={SignUp} />
-    <Route exact path="/" component={SignIn} />
- </div>
-</BrowserRouter></MuiThemeProvider>
+    <BrowserRouter history={history}>
+      <div>
+        <PageRoute path="/discovery" component={SearchPage} />
+        <PageRoute path="/admin" component={AdminOverview} />
+        <PageRoute path="/create/:getURL" component={CreateProjectByPattern} />
+        <PageRoute exact path="/create" component={CreateProject} />
+        <PageRoute path="/update" component={UpdateProject} />
+        <PageRoute path="/createbylink" component={CreateProject} />
+        <PageRoute path="/projects" component={ProjectContainer} />
+        <PageRoute path="/bookmarks" component={BookmarksTable} />
+        <PageRoute path="/profile" component={ProfileContainer} />
+        <PageRoute path="/yourprojects" component={UserProjects} />
+        <Route path="/register" component={SignUp} />
+        <Route exact path="/" component={SignIn} />
+     </div>
+    </BrowserRouter>
+  </MuiThemeProvider>
 , document.getElementById('root'));
 registerServiceWorker();
