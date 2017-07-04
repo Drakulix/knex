@@ -240,7 +240,7 @@ class AdvancedSearch extends Component {
         <div className="col-md-2">
           <div className="input-group form-inline panel">
             <label className ="input-group-addon primary">
-              {this.state.counter}
+              Status
             </label>
             <select
               className="form-control"
