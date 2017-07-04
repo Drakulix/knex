@@ -223,6 +223,8 @@ def add_comment(project_id):
             raise ApiException("Comment had not format string", 400)
         comment = {}
         comment['author'] = current_user.email
+        author = g.user_datastore.get_user(current_user.email)
+        comment['authors_name'] = author['first name']+" "+author['last name']
         comment['datetime'] = time.strftime("%Y-%m-%d %H:%M")
         comment['id'] = uuid.uuid4()
         comment['message'] = request.data.decode("utf-8")
@@ -261,15 +263,10 @@ def add_comment(project_id):
                   or 404 if project is not found
     """
     try:
-        manifest = g.projects.find_one({'_id': project_id})
+        manifest = g.projects.find({'_id': project_id}, projection='comments').sort(
+                   key=lambda x: x['datetime'], reverse=True)
         if manifest is None:
             raise ApiException("Project not found", 404)
-        for comment in manifest['comments']:
-            author = g.user_datastore.get_user(comment['author'])
-            if not author:
-                comment['name'] = "Deleted User"
-            else:
-                comment['name'] = author['first name']+" "+author['last name']
         return jsonify(manifest['comments'])
     except ApiException as error:
         raise error

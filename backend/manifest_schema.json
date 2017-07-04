@@ -159,7 +159,10 @@
           "author": {
             "$ref": "#/project/definitions/user"
           },
-          "commentId": {
+          "authors_name": {
+            "type": "string"
+          },
+          "id": {
             "type": "string",
             "format": "uuid"
           },
@@ -174,5 +177,3 @@
     }
   }
 }
-
-
