@@ -33,9 +33,9 @@ export default class ProjectContainer extends Component {
   }
 
   componentWillMount(){
-    this.setState({projectInf : this.props.match.params.uuid});
-    this.loadProjectInf(this.props.match.params.uuid);
-    this.setState({projectID :this.props.match.params.uuid});
+    this.setState({projectInf : this.props.match.params.getURL});
+    this.loadProjectInf(this.props.match.params.getURL);
+    this.setState({projectID :this.props.match.params.getURL});
   }
 
   componentWillReceiveProps(nextProps){
@@ -112,72 +112,14 @@ handleDelete(event){
 <div className="container">
   <div className="innerContainer">
   <SharePane value={this.state.sharePane}></SharePane>
-
   <div className = "row headerCreation" style={{width:"100%"}}>
-      <div className="col-9">
-           <div style={{marginLeft:-3}}> Project</div>
-           <div style={{fontSize: '20px'}}> {this.state.projectInf.title}</div>
-      </div>
-      <div className="col-3" style={{align:"right"}}>
-        <div >
-          <IconButton
-              onClick={this.handleComment}
-              touch={true}
-              style = {styles.largeIcon}
-              tooltipPosition="bottom-center"
-              tooltip="Comment project"
-             iconStyle={{fontSize: '36px'}}
-              >
-              <i className="material-icons" style={{color: 'black', width:'100px'}}>comment</i>
-        </IconButton>
-        <IconButton
-            onClick={this.handleBookmark}
-            touch={true}
-            style = {styles.largeIcon}
-            tooltipPosition="bottom-center"
-            tooltip="Bookmark project"
-             iconStyle={{fontSize: '36px'}}
-            >
-            <i className="material-icons" style={{color: 'black', fontSize: '48px' }}>
-                  {(this.state.bookmarked) ? "star_rate" : "star_border"}
-            </i>
-        </IconButton>
-        <IconButton
-            onClick={this.handleShare}
-            touch={true}
-            style = {styles.largeIcon}
-            tooltipPosition="bottom-center"
-            tooltip="Share project"
-             iconStyle={{fontSize: '36px'}}
-            >
-            <i className="material-icons" style={{color: 'black'}}>share</i>
-        </IconButton>
-        <IconButton
-            onClick={this.handleEdit}
-            touch={true}
-            style = {styles.largeIcon}
-            disabled={!this.state.owner}
-            tooltipPosition="bottom-center"
-            tooltip="Edit project"
-            iconStyle={{fontSize: '36px'}}
-            >
-            <i className="material-icons" style={{color: 'black'}}>mode_edit</i>
-        </IconButton>
-        <IconButton
-            onClick={this.handleDelete}
-            touch={true}
-            style = {styles.largeIcon}
-            disabled={!this.state.owner}
-            tooltipPosition="bottom-center"
-            tooltip="Delete project"
-             iconStyle={{fontSize: '36px'}}
-            >
-            <i className="material-icons" style={{color: 'black'}}>delete</i>
-        </IconButton>
-
-        </div>
+    <div className="col-1">
+      
     </div>
-
+    <div className="col-10">
+      <div>Project</div>
+      <div style={{fontSize: '20px'}}> {this.state.projectInf.title}</div>
+    </div>
   </div>
     <div className="row">
       <div className="col-5">
@@ -225,6 +167,62 @@ handleDelete(event){
           <div><a>{this.state.projectInf.description}</a></div>
         </div>
       </div>
+    </div>
+  <div style={{textAlign:"center", marginTop:75}} >
+        <IconButton
+            onClick={this.handleComment}
+            touch={true}
+            style = {styles.largeIcon}
+            tooltipPosition="bottom-center"
+            tooltip="Comment project"
+           iconStyle={{fontSize: '30px'}}
+            >
+            <i className="material-icons">comment</i>
+      </IconButton>
+      <IconButton
+          onClick={this.handleBookmark}
+          touch={true}
+          style = {styles.largeIcon}
+          tooltipPosition="bottom-center"
+          tooltip="Bookmark project"
+           iconStyle={{fontSize: '30px'}}
+          >
+          <i className="material-icons">
+                {(this.state.bookmarked) ? "star_rate" : "star_border"}
+          </i>
+      </IconButton>
+      <IconButton
+          onClick={this.handleShare}
+          touch={true}
+          style = {styles.largeIcon}
+          tooltipPosition="bottom-center"
+          tooltip="Share project"
+           iconStyle={{fontSize: '30px'}}
+          >
+          <i className="material-icons">share</i>
+      </IconButton>
+      <IconButton
+          onClick={this.handleEdit}
+          touch={true}
+          style = {styles.largeIcon}
+          disabled={!this.state.owner}
+          tooltipPosition="bottom-center"
+          tooltip="Edit project"
+          iconStyle={{fontSize: '30px'}}
+          >
+          <i className="material-icons">mode_edit</i>
+      </IconButton>
+      <IconButton
+          onClick={this.handleDelete}
+          touch={true}
+          style = {styles.largeIcon}
+          disabled={!this.state.owner}
+          tooltipPosition="bottom-center"
+          tooltip="Delete project"
+          iconStyle={{fontSize: '30px'}}
+          >
+          <i className="material-icons">delete</i>
+      </IconButton>
     </div>
   </div>
 </div>

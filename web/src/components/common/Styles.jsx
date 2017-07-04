@@ -25,10 +25,12 @@ export default {
     flexWrap: 'wrap',
   },
   largeIcon: {
-    width: 44,
-    height: 44,
-    marginLeft: 5,
-    padding: 3
+    width: 32,
+    height: 32,
+    marginLeft: 10,
+    marginRight: 10,
+    padding: 1,
+    color: '#292b2c',
   },
   chipText:{
     color : '#ffffff'

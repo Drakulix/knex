@@ -66,11 +66,11 @@ ReactDOM.render(
       <div>
         <PageRoute path="/discovery" component={SearchPage} />
         <PageRoute path="/admin" component={AdminOverview} />
-        <PageRoute path="/create/:getURL" component={CreateProjectByPattern} />
+        <PageRoute path="/createNew" component={CreateProjectByPattern} />
         <PageRoute exact path="/create" component={CreateProject} />
         <PageRoute path="/update/:getURL" component={CreateProjectByPattern} />
         <PageRoute path="/createbylink" component={CreateProject} />
-        <PageRoute path="/projects" component={ProjectContainer} />
+        <PageRoute path="/project/:getURL" component={ProjectContainer} />
         <PageRoute path="/bookmarks" component={BookmarksTable} />
         <PageRoute path="/profile" component={ProfileContainer} />
         <PageRoute path="/yourprojects" component={UserProjects} />

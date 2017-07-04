@@ -105,7 +105,7 @@ class TopBar extends Component {
           </div>
           <div className="col-1">
             <div className="top-bar-text">
-              <div style={{marginTop : "-32px"}}>
+              <div style={{marginTop : -32, marginLeft:60}}>
                 <Badge  badgeContent={this.state.notifications.length} primary={true}
                         badgeStyle={{top: 22, right: 22}}>
                   <IconButton tooltip="Log out" style={{color: 'white'}} onClick={this.handleNotificationClick}>

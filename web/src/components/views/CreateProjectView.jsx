@@ -57,7 +57,7 @@ export default class UploadByLink extends React.Component {
         <div className="text" >or</div>
         <div>
           <RaisedButton label="with online formular"
-                      href="/create/l"
+                      href="/createNew/"
                       primary={true}
                       style={{ width:'300px'}}
                         />

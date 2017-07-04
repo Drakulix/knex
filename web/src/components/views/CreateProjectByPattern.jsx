@@ -45,9 +45,10 @@ export default class UploadByPattern extends React.Component {
   }
 
   componentDidMount(){
-    if(this.props.match.params.uuid != "")
-      this.loadProjectInf(this.props.match.params.uuid);
-      this.setState({uuid :this.props.match.params.uuid });
+    if(this.props.match.params.getURL != "")
+      this.loadProjectInf(this.props.match.params.getURL);
+      this.setState({getURL :this.props.match.params.getURL });
+
   }
 
   handleRequestAdd (chip, name) {
@@ -177,17 +178,8 @@ export default class UploadByPattern extends React.Component {
       return(
         <div className="container">
           <div className="innerContainer">
-            <div className = "row headerCreation" style={{width:"100%"}}>
-              <div className="col-11">
-                     {(this.state.uuid != "") ? "Edit project" : "Create new project"}
-                   </div>
-              <div className="col-1">
-                <RaisedButton label="Submit"
-                              style={{height:'41px'}}
-                              disabled={this.isInValid()}
-                              onClick={this.handleChange}
-                              primary={true}/>
-              </div>
+            <div className = "headerCreation" style={{width:"100%"}}>
+              {(this.state.getURL != undefined) ? "Edit project" : "Add new project"}
             </div>
             <form>
               <div>
@@ -200,7 +192,6 @@ export default class UploadByPattern extends React.Component {
                             errorText={(this.state.title=="") ? this.props.titleErrorText : ""}
                             />
               </div>
-              <br></br>
               <div className="row">
                 <div className="col-4">
                     <div className="row">
@@ -298,8 +289,23 @@ export default class UploadByPattern extends React.Component {
                               multiLine={true}
                               errorText={(this.state.description=="") ? this.props.descriptionErrorText : ""}
                   />
+
+
+
+                <div className="row" style={{marginTop:100}}>
+                                  <div className="col-10"></div>
+                                  <div className="col-1" >
+                                                <RaisedButton label="Submit"
+                                                              disabled={this.isInValid()}
+                                                              onClick={this.handleChange}
+                                                              primary={true}/>
+                                </div>
+                                </div>
                 </div>
+
+
               </div>
+
               </form>
             </div>
             <Snackbar
