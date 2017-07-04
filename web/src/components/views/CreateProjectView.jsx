@@ -22,13 +22,13 @@ export default class UploadByLink extends React.Component {
                  type="text"
                  placeholder="enter url here (e.g. “http://soundloud.com/stuff/manifest.json”)"
                  onChange={event => this.setState({
-                    sourceURL : event.target.value,
+                   sourceURL : event.target.value,
                  })}
                  value={this.state.sourceURL}></input>
         </form>
         <div className="text">or</div>
         <Link to="/create">
-          <button className="submit">Create New Project Page</button>
+          <button className="submit">Create New Project</button>
         </Link>
       </div>
     );
