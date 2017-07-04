@@ -80,7 +80,6 @@ export default class SharePane extends React.Component {
     ];
 
     return (
-      <div>
         <Dialog
           title="Share project with"
           actions={actions}
@@ -107,7 +106,6 @@ export default class SharePane extends React.Component {
                    </Chip>
                 )}/>
         </Dialog>
-      </div>
     );
   }
 }

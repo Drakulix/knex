@@ -7,7 +7,7 @@ import Chip from 'material-ui/Chip'
 import IconButton from 'material-ui/IconButton';
 import SharePane from '../common/SharePane';
 import styles from '../common/Styles.jsx';
-
+import CommentSideBar from '../common/CommentSideBar.jsx'
 
 
 const update_url='/update/'
@@ -19,7 +19,8 @@ export default class ProjectContainer extends Component {
       projectInf:{},
       bookmarked:false,
       owner : false,
-      sharePane: false
+      sharePane: false,
+      commentBar: false
     };
 
 
@@ -66,15 +67,16 @@ this.setState({owner : true});
 
 handleComment(event){
   event.preventDefault();
-  alert("comment");
-  window.location = '/comment/'+  this.state.projectID;
+//  window.location = '/comment/'+  this.state.projectID;
+  this.setState({commentBar:true});
+
+
 }
 
 handleShare(event){
   event.preventDefault();
   //window.location = '/share/'+  this.state.projectID;
-
-this.setState({sharePane:true});
+  this.setState({sharePane:true});
 
 }
 
@@ -112,15 +114,17 @@ handleDelete(event){
 <div className="container">
   <div className="innerContainer">
   <SharePane value={this.state.sharePane}></SharePane>
+
   <div className = "row headerCreation" style={{width:"100%"}}>
     <div className="col-1">
-      
+
     </div>
     <div className="col-10">
       <div>Project</div>
       <div style={{fontSize: '20px'}}> {this.state.projectInf.title}</div>
     </div>
   </div>
+  <CommentSideBar value={this.state.commentBar}></CommentSideBar>
     <div className="row">
       <div className="col-5">
         <div className="row">
