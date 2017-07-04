@@ -165,6 +165,9 @@
           },
           "commentMsg": {
             "type": "string"
+          },
+          "datetime": {
+            "type": "string"
           }
         }
       }
