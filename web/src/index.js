@@ -68,7 +68,7 @@ ReactDOM.render(
         <PageRoute path="/admin" component={AdminOverview} />
         <PageRoute path="/create/:getURL" component={CreateProjectByPattern} />
         <PageRoute exact path="/create" component={CreateProject} />
-        <PageRoute path="/update" component={UpdateProject} />
+        <PageRoute path="/update/:getURL" component={CreateProjectByPattern} />
         <PageRoute path="/createbylink" component={CreateProject} />
         <PageRoute path="/projects" component={ProjectContainer} />
         <PageRoute path="/bookmarks" component={BookmarksTable} />

@@ -4,34 +4,10 @@ import history from '../common/history'
 import 'isomorphic-fetch';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-<<<<<<< HEAD
 import styles from '../common/Styles.jsx';
 
 
 
-=======
-
-
-
-
-const styles = {
-  uploadButton: {
-    verticalAlign: 'middle',
-  },
-  uploadInput: {
-    cursor: 'pointer',
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    right: 0,
-    left: 0,
-    width: '100%',
-    opacity: 0,
-  },
-};
-
-
->>>>>>> 24b5208d9f7f4756c89cab2ead67f9189a63fb1b
 export default class UploadByLink extends React.Component {
   constructor(props) {
     super(props);

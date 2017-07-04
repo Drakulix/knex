@@ -107,38 +107,6 @@ handleDelete(event){
 
 
   render(){
-
-    const { _id, authors, date_creation, date_update, description } = this.state.projectInf;
-    const { status, tags, title, url} = this.state.projectInf;
-    var status_badge = null;
-    if (status == 'DONE'){
-      status_badge = <span className="badge badge-success">DONE</span>
-    } else if (status == 'IN_PROGRESS') {
-      status_badge = <span className="badge badge-warning">IN_PROGRESS</span>
-    } else if (status == 'IN_REVIEW') {
-      status_badge = <span className="badge badge-info">IN_REVIEW</span>
-    } else {
-      status_badge = status
-    }
-
-    var authors_string = null;
-    if (authors != null){
-      var author_container = []
-      for (var i = 0; i < authors.length; i++){
-        author_container.push(authors[i].name);
-      }
-      authors_string = author_container.join(", ")
-    } else {
-      authors_string = ''
-    }
-    if (tags != null){
-      var tag_container = []
-      for (var i = 0; i < tags.length; i++){
-        tag_container.push(<span className="badge badge-default">{tags[i]}</span>)
-      }
-    } else {
-      tag_container = ''
-    }
     return(
 
 <div className="container">
@@ -251,7 +219,6 @@ handleDelete(event){
                       <Chip style= {styles["chip"]}>
                         <Link to={item} style= {styles["chipText"]} >{item}</Link></Chip>)}
             </div>
-            <div>{this.state.projectInf.title}</div>
           </div>
         <div style={{marginTop:30}}>
           <div className="profile-info">Description</div>
