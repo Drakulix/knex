@@ -220,11 +220,11 @@ def add_comment(project_id):
         if manifest is None:
             raise ApiException("Project not found", 404)
         if "text/plain" not in request.content_type:
-            raise ApiException("Comment had not format string", 400)
+            raise ApiException("'text/plain' must be in Content-Type", 400)
         comment = {}
-        comment['author'] = current_user.email
-        author = g.user_datastore.get_user(current_user.email)
-        comment['authors_name'] = author['first name']+" "+author['last name']
+        comment['author'] = current_user['email']
+        author = g.user_datastore.get_user(current_user['email'])
+        comment['author_name'] = author['first_name']+" "+author['last_name']
         comment['datetime'] = time.strftime("%Y-%m-%d %H:%M")
         comment['id'] = uuid.uuid4()
         comment['message'] = request.data.decode("utf-8")
@@ -234,7 +234,7 @@ def add_comment(project_id):
         if is_valid:
             g.projects.find_one_and_replace({'_id': project_id}, manifest,
                                             return_document=ReturnDocument.AFTER)
-            make_response("Success")
+            make_response("Success", 200)
         else:
             validation_errs = [error for error in
                                sorted(g.validator.iter_errors(manifest))]
@@ -252,7 +252,7 @@ def add_comment(project_id):
 
 @projects.route('/api/projects/<uuid:project_id>/comment', methods=['GET'])
 @login_required
-def add_comment(project_id):
+def get_comment(project_id):
     """Adds new comment to project by project_id
 
     Args:
@@ -263,11 +263,11 @@ def add_comment(project_id):
                   or 404 if project is not found
     """
     try:
-        manifest = g.projects.find({'_id': project_id}, {'comments': 1, '_id': 0}).sort(
+        comments = g.projects.find({'_id': project_id}, {'comments': 1, '_id': 0}).sort(
                    key=lambda x: x['datetime'], reverse=True)
-        if manifest is None:
+        if not comments:
             raise ApiException("Project not found", 404)
-        return jsonify(manifest['comments'])
+        return jsonify(comments)
     except ApiException as error:
         raise error
     except Exception as err:
