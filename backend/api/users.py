@@ -137,7 +137,7 @@ def delete_bookmarks(id):
     if id in res.bookmarks:
         res.bookmarks.remove(id)
         res.save()
-        return res['bookmarks']
+        return jsonify(res['bookmarks'])
     return make_response("Project is not bookmarked: ", 400)
 
 

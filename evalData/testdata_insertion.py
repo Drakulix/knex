@@ -1,23 +1,25 @@
-import http.client
 import io
 import os
 import json
+import requests
 
 if __name__ == "__main__":
-    conn = http.client.HTTPConnection("localhost", 5000)
+    session = requests.Session()
+    data = {"email": "admin@knex.com", "password": "admin"}
+    session.post("http://localhost:5000/api/users/login", data=data)
 
     for file in os.listdir("."):
 
         if file.endswith(".json"):
             str = open(file, "r").read()
-            conn.request("POST", "/api/projects", str.encode('utf-8'),
-                         headers={'Content-Type': 'application/json'})
-            res = conn.getresponse()
-            print(res.status, res.reason)
+            res = session.post("http://localhost:5000/api/projects", data=str.encode('utf-8'),
+                               headers={'Content-Type': 'application/json'})
+            print(res)
 
         elif file.endswith(".json5"):
             str = open(file, "r").read()
-            conn.request("POST", "/api/projects", str.encode('utf-8'),
-                         headers={'Content-Type': 'application/json5'})
-            res = conn.getresponse()
-            print(res.status, res.reason)
+            res = session.post("http://localhost:5000/api/projects", data=str.encode('utf-8'),
+                               headers={'Content-Type': 'application/json5'})
+            print(res)
+
+    session.get("http://localhost:5000/api/users/logout")

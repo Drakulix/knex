@@ -24,6 +24,7 @@ import ProjectContainer from './components/views/ProjectContainer';
 import SearchPage from './components/views/SearchPage';
 import UpdateProject from './components/views/UpdateProjectView';
 import BookmarksTable from './components/views/BookmarksTable';
+import UserProjects from './components/views/UserProjects.jsx';
 
 import TopBar from './components/common/TopBar';
 import SideBar from './components/common/SideBar';
@@ -76,6 +77,7 @@ ReactDOM.render(
     <PageRoute path="/projects" component={ProjectContainer} />
     <PageRoute path="/bookmarks" component={BookmarksTable} />
     <PageRoute path="/profile" component={ProfileContainer} />
+    <PageRoute path="/yourprojects" component={UserProjects} />
     <Route path="/register" component={SignUp} />
     <Route exact path="/" component={SignIn} />
  </div>
