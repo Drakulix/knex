@@ -3,8 +3,6 @@ import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 import { Redirect } from 'react-router-dom';
 import AutoComplete from 'material-ui/AutoComplete'
-
-import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import ChipInput from 'material-ui-chip-input';
 import DatePicker from 'material-ui/DatePicker';
@@ -150,6 +148,9 @@ export default class UploadByPattern extends React.Component {
     }
     //TODO SEND
 
+
+alert(this.state.authors)
+
     console.log(project);
 
     fetch('/api/projects', {
@@ -194,39 +195,43 @@ export default class UploadByPattern extends React.Component {
               </div>
               <div className="row">
                 <div className="col-4">
-                    <div className="row">
-                   <div className="col-6">
-               <div className="profile-info">Creation date</div><div>
-                    <DatePicker hintText="Pick a creation Date..."
+                  <div className="row">
+                    <div className="col-6">
+                      <div className="profile-info">Creation date</div>
+                      <div>
+                        <DatePicker hintText="Pick a creation Date..."
                                 value={this.state.date}
                                 mode="landscape"
                                 onChange={this.handleChangeDate}
                                 style={{display: "inline"}}
                                 textFieldStyle={{width: '100%', marginTop:8}}
                                 errorText={(this.state.date=="") ? this.props.dateErrorText : ""}
-                                /></div>
-                            </div>
-                            <div className="col-6">
-                            <div className="profile-info">Status</div>
-                            <div><DropDownMenu value={this.state.value}
+                                />
+                      </div>
+                    </div>
+                    <div className="col-6">
+                      <div className="profile-info">Status</div>
+                      <div>
+                        <DropDownMenu  value={this.state.value}
                                           onChange={this.handleStatusChange}
                                           labelStyle={{width: '100%', paddingLeft:0}}
                                           underlineStyle={{width: '100%', marginLeft:0}}
                                           autoWidth={false}
                                           style={{width: '100%'}}
-                                          >
-                                          {statusString.map(item =><MenuItem value={item.id} primaryText={item.text} />)}
-                           </DropDownMenu></div>
-                          </div>
+                                            >
+                          {statusString.map(item =><MenuItem value={item.id} primaryText={item.text} />)}
+                        </DropDownMenu>
+                      </div>
                     </div>
+                  </div>
                   <div className="profile-info">Authors</div>
-                    <ChipInput
-                         dataSource={this.state.suggestedAuthors}
+                  <ChipInput
+                        dataSource={this.state.suggestedAuthors}
                          value={this.state.authors}
                          filter={AutoComplete.fuzzyFilter}
                          onChange={this.onChangeAuthors}
                          hintText='Add authors...'
-                         errorText={(this.state.authors==="") ? this.props.authorsErrorText : ""}
+                         errorText={(this.state.authors.length === 0) ? this.props.authorsErrorText : ""}
                          onRequestAdd={(chip) => this.handleRequestAdd(chip, "authors")}
                          onRequestDelete={(deletedChip) => this.handleRequestDelete(deletedChip, "authors")}
                          fullWidth
@@ -240,8 +245,8 @@ export default class UploadByPattern extends React.Component {
                                   <span style={styles["chipText"]}> {value} </span>
                                  </Chip>
                         )}/>
-                    <div className="profile-info">Links</div>
-                    <ChipInput
+                  <div className="profile-info">Links</div>
+                  <ChipInput
                          value={this.state.urls}
                          onChange={this.onChangeUrls}
                          hintText='Add Links...'
@@ -289,35 +294,28 @@ export default class UploadByPattern extends React.Component {
                               multiLine={true}
                               errorText={(this.state.description=="") ? this.props.descriptionErrorText : ""}
                   />
-
-
-
-                <div className="row" style={{marginTop:100}}>
-                                  <div className="col-10"></div>
-                                  <div className="col-1" >
-                                                <RaisedButton label="Submit"
-                                                              disabled={this.isInValid()}
-                                                              onClick={this.handleChange}
-                                                              primary={true}/>
-                                </div>
-                                </div>
+                  <div className="row" style={{marginTop:100}}>
+                    <div className="col-10"></div>
+                    <div className="col-1" >
+                      <RaisedButton label="Submit"
+                                    disabled={this.isInValid()}
+                                    onClick={this.handleChange}
+                                    primary={true}/>
+                    </div>
+                  </div>
                 </div>
-
-
               </div>
-
-              </form>
-            </div>
+            </form>
+          </div>
             <Snackbar
               open={this.state.snackbar}
               message="New project added!"
               autoHideDuration={10000}
           />
           </div>
-
-      )
-  }
-}
+        )
+      }
+    }
 
 UploadByPattern.defaultProps = {
   authorsErrorText: 'Please provide an author',
