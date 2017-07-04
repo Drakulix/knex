@@ -100,7 +100,7 @@ and gets the data from the backend. Data is stored in state.results
     return(
         <tr key ={"result"+index}>
           <td>
-            <Link to={"/projects/" + id} className="table-project-name">
+            <Link to={"/project/" + id} className="table-project-name">
               <a className="table-project-name" >
                 <u>{title}</u>
               </a>
