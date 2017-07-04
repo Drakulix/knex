@@ -81,10 +81,12 @@ handleShare(event){
 
 handleBookmark(event){
   event.preventDefault();
-
+  this.setState({commentBar:false});
+  this.setState({sharePane:false});
 if(this.state.bookmarked){
   //deleteBookmark
   this.setState({bookmarked : false});
+
 }
 else {
   //addBookmark
@@ -115,8 +117,10 @@ handleDelete(event){
   <SharePane value={this.state.sharePane} uuid={this.state.projectID}></SharePane>
   <CommentSideBar value={this.state.commentBar} uuid={this.state.projectID}></CommentSideBar>
   <div className = "row headerCreation" style={{width:"100%"}}>
+    <div className="col-12">
       <div>Project</div>
       <div style={{fontSize: '20px'}}> {this.state.projectInf.title}</div>
+    </div>
   </div>
     <div className="row">
       <div className="col-5">

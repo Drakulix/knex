@@ -65,39 +65,32 @@ this.setState({comments: comments});
           docked={false}
           width={400}
           open={this.state.showCommentBar}
-          onRequestChange={(showCommentBar) => this.setState({showCommentBar})}
-        >
-
-
-
-<List>
-<div style={{padding:20}}>
-    <TextField  value={this.state.comment}
-                onChange={this.handleChange}
-                hintText="Add a comment"
-                style={{width:'100%'}}
-multiLine={2}
-                />
-              <div style={{textAlign:"center", marginBottom:25}}>
-                <RaisedButton label="Comment"
-                              disabled={this.state.comment === ""}
-                              onClick={this.handleSubmit}
-                              primary={true}/>
-</div>
-</div>
-              {this.state.comments.map(item =>
-                <div>
-                <Divider/>
-                <ListItem primaryText={item.comment}
-
-
-                          secondaryText={item.name + " " + item.date}
-                  />
-              </div>)
-}
-
-      </List>
-        </Drawer>
+          onRequestChange={(showCommentBar) => this.setState({showCommentBar})}>
+          <List>
+            <div style={{padding:20}}>
+            <TextField  value={this.state.comment}
+                        onChange={this.handleChange}
+                        hintText="Add a comment"
+                        style={{width:'100%'}}
+                        multiLine={2}
+            />
+            <div style={{textAlign:"center", marginBottom:25}}>
+              <RaisedButton label="Comment"
+                            disabled={this.state.comment === ""}
+                            onClick={this.handleSubmit}
+                            primary={true}/>
+            </div>
+          </div>
+          {this.state.comments.map(item =>
+            <div>
+              <Divider/>
+              <ListItem primaryText={item.comment}
+                        secondaryText={item.name + " " + item.date}
+              />
+            </div>)
+          }
+        </List>
+      </Drawer>
     );
   }
 }
