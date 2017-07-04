@@ -6,14 +6,6 @@ export default class ProfileContainer extends React.Component {
     return (
       <div className="container">
         <div className="header">Profile Details</div>
-        <ul className="nav nav-tabs">
-          <li className="nav-item">
-            <p className="nav-link active" href="#">Profile</p>
-          </li>
-          <li className="nav-item">
-            <p className="nav-link" href="#">Comments</p>
-          </li>
-        </ul>
         <div className="row">
           <div className="col-9">
             <p className="profile-header">Information:</p>
