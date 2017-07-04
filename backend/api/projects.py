@@ -263,7 +263,7 @@ def add_comment(project_id):
                   or 404 if project is not found
     """
     try:
-        manifest = g.projects.find({'_id': project_id}, projection='comments').sort(
+        manifest = g.projects.find({'_id': project_id}, {'comments': 1, '_id': 0}).sort(
                    key=lambda x: x['datetime'], reverse=True)
         if manifest is None:
             raise ApiException("Project not found", 404)
