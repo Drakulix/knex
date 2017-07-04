@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import history from '../common/history'
 import 'isomorphic-fetch';
-import FlatButton from 'material-ui/RaisedButton';
+import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
 
@@ -58,7 +58,7 @@ export default class UploadByLink extends React.Component {
                            />
             </div>
             <div >
-              <FlatButton style={{width:'300px'}}
+              <RaisedButton style={{width:'300px'}}
                           label="from online json"
                           primary={true}
                           onSubmit={() => {history.push("/create/"+encodeURIComponent(this.state.sourceURL))}}/>
@@ -66,7 +66,7 @@ export default class UploadByLink extends React.Component {
           </form>
         <div className="text" >or</div>
         <div>
-          <FlatButton
+          <RaisedButton
                     label="from local json"
                     labelPosition="before"
                     style={styles.uploadButton}
@@ -74,11 +74,11 @@ export default class UploadByLink extends React.Component {
                     primary={true}
                     style={{width:'300px'}}>
                   <input type="file" style={styles.uploadInput} />
-          </FlatButton>
+          </RaisedButton>
         </div>
         <div className="text" >or</div>
         <div>
-          <FlatButton label="with online formular"
+          <RaisedButton label="with online formular"
                       href="/create/l"
                       primary={true}
                       style={{ width:'300px'}}

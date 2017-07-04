@@ -20,10 +20,10 @@ const styles = {
     flexWrap: 'wrap',
   },
   largeIcon: {
-    width: 50,
-    height: 50,
-    marginLeft: 10,
-    padding: 4
+    width: 44,
+    height: 44,
+    marginLeft: 5,
+    padding: 3
    }
 };
 
@@ -55,11 +55,11 @@ export default class ProjectContainer extends Component {
   loadProjectInf(uuid) {
 
     this.setState({projectInf : {_id :"dsa", title:"test", status:"done",
-date_creation : "12", date_update:"11", description : "lirum larum",
+date_creation : "12", date_update:"11", description : "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
 tags:["av","dasda", "adsadas"], url:["fds","dasda", "adsadas"], authors :[{id:"33", name :"dda"}, {id:"32", name :"ddaa"}]
 }});
 
-this.setState({bookmarked : false});
+this.setState({bookmarked : true});
 this.setState({owner : false});
 
 /*    fetchProjectDetails(uuid).then(data => {
@@ -87,7 +87,7 @@ this.setState({owner : false});
            <div style={{marginLeft:-3}}> Project</div>
            <div style={{fontSize: '20px'}}> {this.state.projectInf.title}</div>
       </div>
-      <div className="col-3">
+      <div className="col-3" style={{align:"right"}}>
         <div >
           <IconButton
               onClick={this.logout}
@@ -115,6 +115,16 @@ this.setState({owner : false});
             onClick={this.logout}
             touch={true}
             style = {styles.largeIcon}
+            tooltipPosition="bottom-center"
+            tooltip="Share project"
+             iconStyle={{fontSize: '36px'}}
+            >
+            <i className="material-icons" style={{color: 'black'}}>share</i>
+        </IconButton>
+        <IconButton
+            onClick={this.logout}
+            touch={true}
+            style = {styles.largeIcon}
             disabled={!this.state.owner}
             tooltipPosition="bottom-center"
             tooltip="Edit project"
@@ -133,22 +143,24 @@ this.setState({owner : false});
             >
             <i className="material-icons" style={{color: 'black'}}>delete</i>
         </IconButton>
+
         </div>
     </div>
 
   </div>
     <div className="row">
       <div className="col-5">
-        <div>
-          <div className="profile-info">Status</div>
-          <div>{this.state.projectInf.status}</div>
-        </div>
+
         <div className="row">
-          <div className="creation-date-elem col-6">
+          <div className="col-4">
+            <div className="profile-info">Status</div>
+            <div>{this.state.projectInf.status}</div>
+          </div>
+          <div className="col-4">
             <div className="profile-info">Creation date</div>
             <div>{this.state.projectInf.date_creation}</div>
           </div>
-          <div className="col-6">
+          <div className="col-4">
             <div className="profile-info">Last update </div>
             <div> {this.state.projectInf.date_update}</div>
           </div>
@@ -157,14 +169,14 @@ this.setState({owner : false});
             <div className="profile-info">Authors</div>
               <div style = {styles["wrapper"]}>
                 {this.state.projectInf.authors.map(item => <Chip style= {styles["chip"]}>
-                              <Link to={item.id} style= {styles["chipText"]}>{item.name}</Link></Chip>)}
+                              <Link to={"/profile/"+item.id} style= {styles["chipText"]}>{item.name}</Link></Chip>)}
               </div>
           </div>
           <div style={{marginTop:30}}>
             <div className="profile-info">Links</div>
             <div style = {styles["wrapper"]}>
                       {this.state.projectInf.url.map(item => <Chip style= {styles["chip"]}>
-                                <Link to={item} style= {styles["chipText"]}>{item}</Link></Chip>)}
+                                <Link to={"http://"+item} style= {styles["chipText"]}>{item}</Link></Chip>)}
             </div>
           </div>
         </div>

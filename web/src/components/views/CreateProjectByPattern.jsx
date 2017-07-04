@@ -5,7 +5,7 @@ import { Redirect } from 'react-router-dom';
 import AutoComplete from 'material-ui/AutoComplete'
 
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
-import FlatButton from 'material-ui/RaisedButton';
+import RaisedButton from 'material-ui/RaisedButton';
 import ChipInput from 'material-ui-chip-input'
 import DatePicker from 'material-ui/DatePicker';
 import TextField from 'material-ui/TextField';
@@ -193,7 +193,7 @@ export default class UploadByPattern extends React.Component {
                      Create New Project
                    </div>
               <div className="col-1">
-                <FlatButton label="Submit" style={{height:'41px'}}disabled={this.isInValid()} onClick={this.handleChange}  primary={true}/>
+                <RaisedButton label="Submit" style={{height:'41px'}}disabled={this.isInValid()} onClick={this.handleChange}  primary={true}/>
               </div>
             </div>
             <form>
