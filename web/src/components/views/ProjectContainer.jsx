@@ -68,16 +68,15 @@ this.setState({owner : true});
 handleComment(event){
   event.preventDefault();
 //  window.location = '/comment/'+  this.state.projectID;
+  this.setState({sharePane:false});
   this.setState({commentBar:true});
-
-
 }
 
 handleShare(event){
   event.preventDefault();
   //window.location = '/share/'+  this.state.projectID;
+  this.setState({commentBar:false});
   this.setState({sharePane:true});
-
 }
 
 handleBookmark(event){
@@ -113,18 +112,12 @@ handleDelete(event){
 
 <div className="container">
   <div className="innerContainer">
-  <SharePane value={this.state.sharePane}></SharePane>
-
+  <SharePane value={this.state.sharePane} uuid={this.state.projectID}></SharePane>
+  <CommentSideBar value={this.state.commentBar} uuid={this.state.projectID}></CommentSideBar>
   <div className = "row headerCreation" style={{width:"100%"}}>
-    <div className="col-1">
-
-    </div>
-    <div className="col-10">
       <div>Project</div>
       <div style={{fontSize: '20px'}}> {this.state.projectInf.title}</div>
-    </div>
   </div>
-  <CommentSideBar value={this.state.commentBar}></CommentSideBar>
     <div className="row">
       <div className="col-5">
         <div className="row">

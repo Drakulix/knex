@@ -49,7 +49,7 @@ export default class SharePane extends React.Component {
   }
 
   handleRequestAdd (chip, name) {
-    if(this.state["suggestedAuthors"].indexOf(chip) == -1)
+    if(this.state["suggestedAuthors"].indexOf(chip) === -1)
         return;
      this.setState({
        [name]: [...this.state[name], chip]

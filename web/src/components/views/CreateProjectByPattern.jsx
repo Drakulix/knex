@@ -52,9 +52,9 @@ export default class UploadByPattern extends React.Component {
   }
 
   handleRequestAdd (chip, name) {
-    if(name == "authors" && this.state["suggestedAuthors"].indexOf(chip) == -1)
+    if(name === "authors" && this.state["suggestedAuthors"].indexOf(chip) == -1)
         return;
-    if(name == "urls" && chip.indexOf("http://") != 0)
+    if(name === "urls" && chip.indexOf("http://") != 0)
         return;
      this.setState({
        [name]: [...this.state[name], chip]
@@ -226,7 +226,7 @@ export default class UploadByPattern extends React.Component {
                          filter={AutoComplete.fuzzyFilter}
                          onChange={this.onChangeAuthors}
                          hintText='Add authors...'
-                         errorText={(this.state.authors=="") ? this.props.authorsErrorText : ""}
+                         errorText={(this.state.authors==="") ? this.props.authorsErrorText : ""}
                          onRequestAdd={(chip) => this.handleRequestAdd(chip, "authors")}
                          onRequestDelete={(deletedChip) => this.handleRequestDelete(deletedChip, "authors")}
                          fullWidth
