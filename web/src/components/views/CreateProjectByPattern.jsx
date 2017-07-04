@@ -146,7 +146,7 @@ export default class UploadByPattern extends React.Component {
     var that = this;
     fetch(request)
     .then(response => response.json()).catch(ex => {
-      console.error('parsing fails', ex);
+      alert("Errors reading file:\n"+ex);
     })
     .then(function(data) {
       if(data!=null){
@@ -294,7 +294,6 @@ export default class UploadByPattern extends React.Component {
             <div className="headerCreation">Create New Project</div>
               <Form schema={this.dlschema()}
                 uiSchema={uiSchema}
-                formData={formData}
                 onChange={log("changed")}
                 onSubmit={this.onSubmit}
                 onError={log("errors")} />
