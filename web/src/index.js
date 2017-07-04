@@ -28,6 +28,7 @@ import BookmarksTable from './components/views/BookmarksTable';
 import TopBar from './components/common/TopBar';
 import SideBar from './components/common/SideBar';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import styles from './components/common/Styles.jsx';
 
 
 var injectTapEventPlugin = require("react-tap-event-plugin");
@@ -35,14 +36,9 @@ injectTapEventPlugin();
 
 
 
-const muiTheme = getMuiTheme({
-  datePicker: {
-    selectColor: '#ff5000',
-  },
-  palette : {primary1Color : '#ff5000',
-accent1Color : '#ff5000'
-  }
-  });
+const muiTheme = getMuiTheme(
+styles
+  );
 
 
 
@@ -69,11 +65,11 @@ ReactDOM.render(
   <div>
     <PageRoute path="/discovery" component={SearchPage} />
     <PageRoute path="/admin" component={AdminOverview} />
-    <PageRoute path="/create/:getURL" component={CreateProjectByPattern} />
+    <PageRoute path="/create/:uuid" component={CreateProjectByPattern} />
     <PageRoute exact path="/create" component={CreateProject} />
-    <PageRoute path="/update" component={UpdateProject} />
+    <PageRoute path="/update/:uuid" component={CreateProjectByPattern} />
     <PageRoute path="/createbylink" component={CreateProject} />
-    <PageRoute path="/projects" component={ProjectContainer} />
+    <PageRoute path="/project/:uuid" component={ProjectContainer} />
     <PageRoute path="/bookmarks" component={BookmarksTable} />
     <PageRoute path="/profile" component={ProfileContainer} />
     <Route path="/register" component={SignUp} />

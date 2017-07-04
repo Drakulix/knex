@@ -4,29 +4,7 @@ import history from '../common/history'
 import 'isomorphic-fetch';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-
-
-
-
-const styles = {
-  uploadButton: {
-    verticalAlign: 'middle',
-  },
-  uploadInput: {
-    cursor: 'pointer',
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    right: 0,
-    left: 0,
-    width: '100%',
-    opacity: 0,
-  },
-};
-
-
-
-
+import styles from '../common/Styles.jsx';
 
 
 

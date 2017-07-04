@@ -14,16 +14,15 @@ import Badge from 'material-ui/Badge';
 import IconButton from 'material-ui/IconButton';
 import Snackbar from 'material-ui/Snackbar';
 import Popover from 'material-ui/Popover';
+import Menu from 'material-ui/Menu';
+import MenuItem from 'material-ui/MenuItem';
 
+import Divider from 'material-ui/Divider';
 
 const styles = {
-  wrapper: {
-    verticalAlign: 'middle',
-    padding: '10px'
-  },
+
   linkStyle:{
-    marginTop: '3',
-    color :'#000000'
+        color :'#000000'
   }
 };
 
@@ -67,28 +66,25 @@ class TopBar extends Component {
     {text : "New Comment on " , projectID: "ID", title:"Title"}];
 
     this.setState({notifications: notifications});
-
   }
 
 
 
-handleNotificationClick(event){
-  event.preventDefault();
-  this.setState({
-    popover: true,
-    anchorEl: event.currentTarget,
-  });
-}
+  handleNotificationClick(event){
+    event.preventDefault();
+    this.setState({
+      popover: true,
+      anchorEl: event.currentTarget,
+    });
+  }
 
-handleRequestClose(){
-  this.setState({popover:false});
-}
-
+  handleRequestClose(){
+    this.setState({popover:false});
+  }
 
   handleLogout(event){
     event.preventDefault();
     logout().then((success) => {
-
       if(success){
         this.setState({ redirect: true });
       }else{
@@ -99,11 +95,9 @@ handleRequestClose(){
   }
 
   render() {
-
     if (this.state.redirect) {
       return <Redirect to='/'/>;
     }
-
     return (
       <div className="container-fluid topbar">
         <div className="row">
@@ -112,38 +106,32 @@ handleRequestClose(){
           <div className="col-1">
             <div className="top-bar-text">
               <div style={{marginTop : "-32px"}}>
-                  <Badge  badgeContent={this.state.notifications.length} primary={true}
-                          badgeStyle={{top: 22, right: 22}}>
-                    <IconButton tooltip="Log out" style={{color: 'white'}} onClick={this.handleNotificationClick}>
-                      <i className="material-icons">notifications</i>
-                    </IconButton>
-                    <Popover
-                        height={200}
-                              open={this.state.popover}
-                              anchorEl={this.state.anchorEl}
-                              anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-                              targetOrigin={{horizontal: 'left', vertical: 'top'}}
-                              onRequestClose={this.handleRequestClose}>
-                              <div style = {styles["wrapper"]}>
-                                Notifications
-                                    {this.state.notifications.map(notification =>
-                                          <div>
-                                            <hr></hr>
-                                            <Link style={styles["linkStyle"]}
-                                                  to={"/projects/"+notification.projectID}>
-                                                  {notification.text} {notification.title}
-                                            </Link>
-                                      </div>)}
-                              </div>
-
-                    </Popover>
-                  </Badge>
-
-
-
-          </div>
+                <Badge  badgeContent={this.state.notifications.length} primary={true}
+                        badgeStyle={{top: 22, right: 22}}>
+                  <IconButton tooltip="Log out" style={{color: 'white'}} onClick={this.handleNotificationClick}>
+                    <i className="material-icons">notifications</i>
+                  </IconButton>
+                  <Popover
+                      height={200}
+                      open={this.state.popover}
+                      anchorEl={this.state.anchorEl}
+                      anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+                      targetOrigin={{horizontal: 'left', vertical: 'top'}}
+                      onRequestClose={this.handleRequestClose}>
+                      <Menu>
+                          {this.state.notifications.map(notification =>
+                              <MenuItem>
+                                <Link style={styles["linkStyle"]}
+                                      to={"/projects/"+notification.projectID}>
+                                      {notification.text} {notification.title}
+                                </Link>
+                              </MenuItem>)}
+                      </Menu>
+                  </Popover>
+                </Badge>
+              </div>
             </div>
-        </div>
+          </div>
           <div className="col-1" style={{marginTop:7}}>
               <IconButton tooltip="Log out" style={{color: 'white'}} onClick={this.handleLogout}>
                 <i className="material-icons">exit_to_app</i>

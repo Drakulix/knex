@@ -6,36 +6,21 @@ import AutoComplete from 'material-ui/AutoComplete'
 
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import RaisedButton from 'material-ui/RaisedButton';
-import ChipInput from 'material-ui-chip-input'
+import ChipInput from 'material-ui-chip-input';
 import DatePicker from 'material-ui/DatePicker';
 import TextField from 'material-ui/TextField';
 import Chip from 'material-ui/Chip';
 import Snackbar from 'material-ui/Snackbar';
 import DropDownMenu from 'material-ui/DropDownMenu'
 import MenuItem from 'material-ui/MenuItem';
+import styles from '../common/Styles.jsx';
 
 
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-
-const styles = {
-  chip: {
-    margin: '8px 8px 0 0',
-    float: 'left',
-    background : '#ff5000'
-  },
-  wrapper: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  chipText:{
-    color : '#ffffff'
-  }
-};
 
 const statusString = [
-{id: "0" , text :"Done", value : "done"},
-{id: "1" , text :"In review", value : "inreview"},
-{id: "2" , text :"In progress", value : "inprogress"}];
+  {id: "0" , text :"Done", value : "done"},
+  {id: "1" , text :"In review", value : "inreview"},
+  {id: "2" , text :"In progress", value : "inprogress"}];
 
 const log = (type) => console.log.bind(console, type);
 
@@ -60,7 +45,9 @@ export default class UploadByPattern extends React.Component {
   }
 
   componentDidMount(){
-    this.loadProjectInf(this.props.match.params.uuid);
+    if(this.props.match.params.uuid != "")
+      this.loadProjectInf(this.props.match.params.uuid);
+      this.setState({uuid :this.props.match.params.uuid });
   }
 
   handleRequestAdd (chip, name) {
@@ -103,6 +90,8 @@ export default class UploadByPattern extends React.Component {
 
 
   loadProjectInf(uuid) {
+
+
     var suggestedAuthors = [{id:"marko@knex.", name :"Marko"},
     {id:"victor@knex", name :"Victor"},{id:"cedric@knex", name :"Cedric"}];
     var suggestedAuthorsArray = []
@@ -190,10 +179,14 @@ export default class UploadByPattern extends React.Component {
           <div className="innerContainer">
             <div className = "row headerCreation" style={{width:"100%"}}>
               <div className="col-11">
-                     Create New Project
+                     {(this.state.uuid != "") ? "Edit project" : "Create new project"}
                    </div>
               <div className="col-1">
-                <RaisedButton label="Submit" style={{height:'41px'}}disabled={this.isInValid()} onClick={this.handleChange}  primary={true}/>
+                <RaisedButton label="Submit"
+                              style={{height:'41px'}}
+                              disabled={this.isInValid()}
+                              onClick={this.handleChange}
+                              primary={true}/>
               </div>
             </div>
             <form>
@@ -211,7 +204,6 @@ export default class UploadByPattern extends React.Component {
               <div className="row">
                 <div className="col-4">
                     <div className="row">
-
                    <div className="col-6">
                <div className="profile-info">Creation date</div><div>
                     <DatePicker hintText="Pick a creation Date..."
@@ -223,7 +215,6 @@ export default class UploadByPattern extends React.Component {
                                 errorText={(this.state.date=="") ? this.props.dateErrorText : ""}
                                 /></div>
                             </div>
-
                             <div className="col-6">
                             <div className="profile-info">Status</div>
                             <div><DropDownMenu value={this.state.value}
@@ -231,13 +222,11 @@ export default class UploadByPattern extends React.Component {
                                           labelStyle={{width: '100%', paddingLeft:0}}
                                           underlineStyle={{width: '100%', marginLeft:0}}
                                           autoWidth={false}
-                                           style={{width: '100%'}}
+                                          style={{width: '100%'}}
                                           >
                                           {statusString.map(item =><MenuItem value={item.id} primaryText={item.text} />)}
                            </DropDownMenu></div>
                           </div>
-
-
                     </div>
                   <div className="profile-info">Authors</div>
                     <ChipInput
@@ -260,7 +249,7 @@ export default class UploadByPattern extends React.Component {
                                   <span style={styles["chipText"]}> {value} </span>
                                  </Chip>
                         )}/>
-                       <div className="profile-info">Links</div>
+                    <div className="profile-info">Links</div>
                     <ChipInput
                          value={this.state.urls}
                          onChange={this.onChangeUrls}
@@ -310,7 +299,6 @@ export default class UploadByPattern extends React.Component {
                               errorText={(this.state.description=="") ? this.props.descriptionErrorText : ""}
                   />
                 </div>
-
               </div>
               </form>
             </div>

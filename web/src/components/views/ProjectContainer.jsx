@@ -5,27 +5,9 @@ import { Link } from 'react-router-dom';
 import ChipInput from 'material-ui-chip-input'
 import Chip from 'material-ui/Chip'
 import IconButton from 'material-ui/IconButton';
+import SharePane from '../common/SharePane';
+import styles from '../common/Styles.jsx';
 
-
-
-
-const styles = {
-  chip: {
-    margin: '8px 8px 0 0',
-    float: 'left',
-    background: '#ff5000'
-  },
-  wrapper: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  largeIcon: {
-    width: 44,
-    height: 44,
-    marginLeft: 5,
-    padding: 3
-   }
-};
 
 
 const update_url='/update/'
@@ -33,14 +15,27 @@ export default class ProjectContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      projectID : "",
       projectInf:{},
       bookmarked:false,
-      owner : false
+      owner : false,
+      sharePane: false
     };
+
+
+    this.handleEdit = this.handleEdit.bind(this);
+    this.handleComment = this.handleComment.bind(this);
+    this.handleBookmark = this.handleBookmark.bind(this);
+    this.handleShare = this.handleShare.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+
+
   }
 
   componentWillMount(){
+    this.setState({projectInf : this.props.match.params.uuid});
     this.loadProjectInf(this.props.match.params.uuid);
+    this.setState({projectID :this.props.match.params.uuid});
   }
 
   componentWillReceiveProps(nextProps){
@@ -56,11 +51,11 @@ export default class ProjectContainer extends Component {
 
     this.setState({projectInf : {_id :"dsa", title:"test", status:"done",
 date_creation : "12", date_update:"11", description : "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
-tags:["av","dasda", "adsadas"], url:["fds","dasda", "adsadas"], authors :[{id:"33", name :"dda"}, {id:"32", name :"ddaa"}]
+tags:["av","dasda", "adsadas"], url:["http://google.com","http://github.org", "http://soundloud.com"], authors :[{id:"33", name :"dda"}, {id:"32", name :"ddaa"}]
 }});
 
 this.setState({bookmarked : true});
-this.setState({owner : false});
+this.setState({owner : true});
 
 /*    fetchProjectDetails(uuid).then(data => {
       this.setState({projectInf: data})
@@ -68,6 +63,45 @@ this.setState({owner : false});
 
   }
 
+
+handleComment(event){
+  event.preventDefault();
+  alert("comment");
+  window.location = '/comment/'+  this.state.projectID;
+}
+
+handleShare(event){
+  event.preventDefault();
+  //window.location = '/share/'+  this.state.projectID;
+
+this.setState({sharePane:true});
+
+}
+
+handleBookmark(event){
+  event.preventDefault();
+
+if(this.state.bookmarked){
+  //deleteBookmark
+  this.setState({bookmarked : false});
+}
+else {
+  //addBookmark
+  this.setState({bookmarked : true});
+}
+
+}
+
+handleEdit(event){
+  event.preventDefault();
+  window.location = '/update/'+  this.state.projectID;
+}
+
+
+handleDelete(event){
+  event.preventDefault();
+  window.location = '/delete/'+  this.state.projectID;
+}
 
 
 
@@ -80,7 +114,7 @@ this.setState({owner : false});
 
 <div className="container">
   <div className="innerContainer">
-
+  <SharePane value={this.state.sharePane}></SharePane>
 
   <div className = "row headerCreation" style={{width:"100%"}}>
       <div className="col-9">
@@ -90,7 +124,7 @@ this.setState({owner : false});
       <div className="col-3" style={{align:"right"}}>
         <div >
           <IconButton
-              onClick={this.logout}
+              onClick={this.handleComment}
               touch={true}
               style = {styles.largeIcon}
               tooltipPosition="bottom-center"
@@ -100,7 +134,7 @@ this.setState({owner : false});
               <i className="material-icons" style={{color: 'black', width:'100px'}}>comment</i>
         </IconButton>
         <IconButton
-            onClick={this.logout}
+            onClick={this.handleBookmark}
             touch={true}
             style = {styles.largeIcon}
             tooltipPosition="bottom-center"
@@ -112,7 +146,7 @@ this.setState({owner : false});
             </i>
         </IconButton>
         <IconButton
-            onClick={this.logout}
+            onClick={this.handleShare}
             touch={true}
             style = {styles.largeIcon}
             tooltipPosition="bottom-center"
@@ -122,7 +156,7 @@ this.setState({owner : false});
             <i className="material-icons" style={{color: 'black'}}>share</i>
         </IconButton>
         <IconButton
-            onClick={this.logout}
+            onClick={this.handleEdit}
             touch={true}
             style = {styles.largeIcon}
             disabled={!this.state.owner}
@@ -133,7 +167,7 @@ this.setState({owner : false});
             <i className="material-icons" style={{color: 'black'}}>mode_edit</i>
         </IconButton>
         <IconButton
-            onClick={this.logout}
+            onClick={this.handleDelete}
             touch={true}
             style = {styles.largeIcon}
             disabled={!this.state.owner}
@@ -150,7 +184,6 @@ this.setState({owner : false});
   </div>
     <div className="row">
       <div className="col-5">
-
         <div className="row">
           <div className="col-4">
             <div className="profile-info">Status</div>
@@ -176,7 +209,7 @@ this.setState({owner : false});
             <div className="profile-info">Links</div>
             <div style = {styles["wrapper"]}>
                       {this.state.projectInf.url.map(item => <Chip style= {styles["chip"]}>
-                                <Link to={"http://"+item} style= {styles["chipText"]}>{item}</Link></Chip>)}
+                                <a href={item} style= {styles["chipText"]}>{item}</a></Chip>)}
             </div>
           </div>
         </div>
