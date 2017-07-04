@@ -102,7 +102,7 @@ def get_user(mail):
             res: A user with given mail as json
     """
     res = g.user_datastore.get_user(mail)
-    if res is None:
+    if not res:
         return make_response("Unknown User with Email-address: " + mail, 400)
 
     return jsonify(res)
@@ -110,11 +110,11 @@ def get_user(mail):
 
 @users.route('/api/users/bookmarks/<uuid:id>', methods=['POST'])
 @login_required
-def insert_bookmarks(id):
-    user = current_user
-    res = g.user_datastore.get_user(user['email'])
-    if res is None:
-        return make_response("Unknown User with Email-address: ", 400)
+def insert_bookmark(id):
+    res = g.user_datastore.get_user(current_user.email.to_python())
+    if not res:
+        return make_response("Unknown User with Email-address: ",
+                             current_user.email.to_python(), 400)
 
     if id in res.bookmarks:
         return make_response("Project is already bookmarked ", 400)
@@ -126,13 +126,10 @@ def insert_bookmarks(id):
 @users.route('/api/users/bookmarks/<uuid:id>', methods=['DELETE'])
 @login_required
 def delete_bookmarks(id):
-    user = current_user
-    if user is None:
-        return make_response("No current user detected ", 400)
-    res = g.user_datastore.get_user(user.email)
-    if res is None:
+    res = g.user_datastore.get_user(current_user.email.to_python())
+    if not res:
         return make_response("Unknown User with Email-address: " +
-                             user.email, 400)
+                             current_user.email.to_python(), 400)
 
     if id in res.bookmarks:
         res.bookmarks.remove(id)
@@ -144,11 +141,8 @@ def delete_bookmarks(id):
 @users.route('/api/users/bookmarks', methods=['GET'])
 @login_required
 def get_bookmarks():
-    user = current_user
-    if user is None:
-        return make_response("No current user detected ", 400)
-    res = g.user_datastore.get_user(user.email)
-    if res is None:
+    res = g.user_datastore.get_user(current_user.email.to_python())
+    if not res:
         return make_response("Unknown User with Email-address: " +
-                             user.email, 400)
+                             current_user.email.to_python(), 400)
     return jsonify(res['bookmarks'])
