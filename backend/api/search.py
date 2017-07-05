@@ -1,24 +1,12 @@
 from flask import request, jsonify, make_response, g, Blueprint
 from elasticsearch.exceptions import RequestError
+from flask_security import login_required
 
 search = Blueprint('api_projects_search', __name__)
 
 
-@search.route('/api/projects/search', methods=['POST'])
-def search_direct():
-    """Receive body of elasticsearch query
-
-    Returns:
-        res (json): Body of the Query
-    """
-    try:
-        res = g.es.search(index="knexdb", body=request.get_json())
-        return jsonify(res)
-    except RequestError as e:
-        return (str(e), 400)
-
-
 @search.route('/api/projects/search/simple/', methods=['GET'])
+@login_required
 def search_simple():
     """Search projects
 
@@ -65,6 +53,7 @@ def search_simple():
 
 
 @search.route('/api/projects/search/advanced/', methods=['GET'])
+@login_required
 def search_avanced():
     """Advanced search with filters
 
@@ -104,6 +93,7 @@ def search_avanced():
 
 
 @search.route('/api/projects/search/tag/', methods=['GET'])
+@login_required
 def search_tag():
     """Search projects
 
@@ -148,6 +138,7 @@ def search_tag():
 
 
 @search.route('/api/projects/search/suggest/', methods=['GET'])
+@login_required
 def search_suggest():
     """Suggests search improvements
 
