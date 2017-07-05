@@ -1,3 +1,4 @@
+
 import React, { Component } from 'react';
 import {
   BrowserRouter as Router,
@@ -6,8 +7,16 @@ import {
   Redirect,
   withRouter
 } from 'react-router-dom';
+import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
+import TextField from 'material-ui/TextField';
+import SelectField from 'material-ui/SelectField';
+import injectTapEventPlugin from "react-tap-event-plugin";
+import MenuItem from 'material-ui/MenuItem';
 import logo from '../../style/img/black_logo_title_below.svg';
-import {login, isLoggedIn, logout,register} from '../common/Authentication.jsx';
+import {login, isLoggedIn, logout,register, isAdmin, getUserInfo, getMyEmail} from '../common/Authentication.jsx';
+
+injectTapEventPlugin();
 
 export default class SignUp extends Component {
 
@@ -18,18 +27,21 @@ export default class SignUp extends Component {
     this.state = {
       redirect: false,
       error: '',
+      profileInf: {},
       firstname: '',
       lastname: '',
       email: '',
       password: '',
       password_confirm: '',
-      role: 'user'
+      role: 'user',
+      myProfile: getMyEmail()
     };
     this.handleChangeFirstName = this.handleChangeFirstName.bind(this);
     this.handleChangeLastName = this.handleChangeLastName.bind(this);
     this.handleChangeEmail = this.handleChangeEmail.bind(this);
     this.handleChangePassword = this.handleChangePassword.bind(this);
     this.handleChangePasswordConfirm = this.handleChangePasswordConfirm.bind(this);
+    this.handleRoleChange = this.handleRoleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -49,13 +61,22 @@ export default class SignUp extends Component {
     this.setState({password: event.target.value});
   }
 
+
+  handleRoleChange(event, index, value) {
+    this.setState({'role': value});
+  }
+
   handleChangePasswordConfirm(event) {
     this.setState({password_confirm: event.target.value});
   }
 
   handleSubmit(event){
     event.preventDefault();
-    register(this.state.firstname,this.state.lastname,this.state.email, this.state.password, this.state.password_confirm, this.state.role).then((success) => {
+    if(this.state.password != this.state.password_confirm){
+      alert("Passwords do not match");
+      return;
+    }
+    register(this.state.firstname, this.state.lastname, this.state.email, this.state.password, this.state.password_confirm, this.state.role).then((success) => {
 
       if(success){
         alert("Registration successfull!");
@@ -65,6 +86,40 @@ export default class SignUp extends Component {
         alert("Registration failed!");
       }
     });
+  }
+
+  isValidEmailAddress(address) {
+    return !! address.match(/\S+@\S+\.\S+/);
+  }
+
+  loadProfileInf(e) {
+    getUserInfo(e).then(data => {
+      this.setState({profileInf: data});
+      if(!data){
+        this.setState({profile_exists: false});
+      }else{
+        this.setState({first_name: data.first_name, last_name: data.last_name, bio: data.bio});
+      }
+    }).catch(ex => {
+      this.setState({profile_exists: false});
+    });
+
+  }
+
+  componentDidMount(){
+    this.loadProfileInf(this.state.myProfile);
+  }
+
+  isUserAdmin(){
+    return this.state.profileInf && (this.state.profileInf.roles == 'admin');
+  }
+
+  getRoleStyle(){
+    if(!this.isUserAdmin()){
+      return {visibility: 'hidden', display: 'none'};
+    }else{
+      return {};
+    }
   }
 
   render() {
@@ -86,93 +141,79 @@ export default class SignUp extends Component {
           <form onSubmit={this.handleSubmit}>
           {/*Input First Name*/}
           <div className="input-group input-login" id="email-signup">
-            <span className="input-group-addon">
-              <span
-                className="fa fa-envelope-o"
-                aria-hidden="true"
-              />
-            </span>
-            <input
+
+            <TextField
               type="text"
               value={this.state.firstname}
               onChange={this.handleChangeFirstName} 
-              className="form-control"
-              placeholder="First Name"
+              hintText="First Name"
+              errorText={(this.state.firstname == "") ? "Field is requiered" : ""}
               required autofocus
             />
           </div> 
           {/*Input Last Name*/}
           <div className="input-group input-login" id="email-signup">
-            <span className="input-group-addon">
-              <span
-                className="fa fa-envelope-o"
-                aria-hidden="true"
-              />
-            </span>
-            <input
+            <TextField
               type="text"
               value={this.state.lastname}
               onChange={this.handleChangeLastName} 
-              className="form-control"
-              placeholder="Last Name"
+              hintText="Last Name"
+              errorText={(this.state.lastname == "") ? "Field is requiered" : ""}
               required autofocus
             />
           </div>
           {/*Input Email*/}
           <div className="input-group input-login" id="email-signup">
-            <span className="input-group-addon">
-              <span
-                className="fa fa-envelope-o"
-                aria-hidden="true"
-              />
-            </span>
-            <input
+            <TextField
               type="email"
               value={this.state.email}
               onChange={this.handleChangeEmail} 
-              className="form-control"
-              placeholder="Email"
+              hintText="Email"
+              errorText={(!this.isValidEmailAddress(this.state.email)) ? "Needs to be a valid email" : ""}
               required autofocus
             />
           </div>
 
           {/*Input password*/}
           <div className="input-group input-login">
-            <span className="input-group-addon">
-              <span
-                className="fa fa-asterisk"
-                aria-hidden="true" />
-            </span>
-            <input
+            <TextField
               type="password"
               value={this.state.password}
               onChange={this.handleChangePassword} 
-              className="form-control"
-              placeholder="Password"
+              hintText="Password"
+              errorText={(this.state.password == "") ? "Field is requiered" : ""}
               required
             />
           </div>
 
           {/*Input confirm password*/}
           <div className="input-group input-login">
-            <span className="input-group-addon">
-              <span
-                className="fa fa-asterisk"
-                aria-hidden="true" />
-            </span>
-            <input
+
+            <TextField
               type="password"
               value={this.state.password_confirm}
               onChange={this.handleChangePasswordConfirm} 
-              className="form-control"
-              placeholder="Confirm Password"
+              hintText="Confirm Password"
+              errorText={( this.state.password != this.state.password_confirm ) ? "Passwords do not match" : "" }
               required
             />
           </div>
-            <input
-              type="submit" 
-              value="Register"
-              className="btn btn-lg btn-primary sign-button"
+          <div >
+            <SelectField
+              style={this.getRoleStyle()}
+              floatingLabelText="Role"
+              value={this.state.role}
+              onChange={this.handleRoleChange}
+            >
+              <MenuItem value={'user'} primaryText="User" />
+              <MenuItem value={'admin'} primaryText="Admin" />
+            </SelectField>
+          </div>
+            <RaisedButton
+              type="Submit"
+              label="Register"
+              primary={true}
+              style={{width: 250}}
               required
             />
         </form>
