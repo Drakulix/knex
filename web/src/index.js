@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import registerServiceWorker from './registerServiceWorker';
 import './style/style.css';
 import './style/fonts/font-awesome/css/font-awesome.css';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 

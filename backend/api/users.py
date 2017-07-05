@@ -5,6 +5,8 @@ from flask_security.utils import verify_password, encrypt_password
 
 from api.helper.apiexception import ApiException
 
+from api.helper.userpermission import is_permitted
+
 users = Blueprint('api_users', __name__)
 
 
@@ -57,7 +59,7 @@ def create_user():
 
 
 @users.route('/api/users', methods=['PUT'])
-@roles_required('admin')
+#@roles_required('admin')
 def update_user():
     user = request.get_json()
 
@@ -76,35 +78,56 @@ def update_user():
 
 
 @users.route('/api/users/password', methods=['PUT'])
-@roles_required('admin')
+@login_required
+#@roles_required("admin")
 def update_password():
+    editor = current_user
     user = request.get_json()
-
-    res = g.user_datastore.get_user(user['email'])
-    if res is None:
-        return make_response("Unknown User with Email-address: " +
-                             user['email'], 404)
-    old_password = user["old password"]
-    if verify_password(old_password, res.password):
+    is_same_user = editor['email'] == user['email']
+    if(is_permitted(editor["roles"]) is True):
+        res = g.user_datastore.get_user(user['email'])
+        if res is None:
+            return make_response("Unknown User with Email-address: " +
+                                 user['email'], 404)
         new_password = user["new password"]
         res.password = encrypt_password(new_password)
         res.save()
-        return make_response("Password updated!", 200)
-    return make_response("Password wrong", 400)
+        return make_response("Password restored!", 200)
+
+    elif (editor["email"] == user['email']):
+        res = g.user_datastore.get_user(user['email'])
+        if res is None:
+            return make_response("Unknown User with Email-address: " +
+                                 user['email'], 404)
+        old_password = user["old password"]
+        if verify_password(old_password, res.password):
+            new_password = user["new password"]
+            if new_password == old_password:
+                return make_response("The old and new passwords" +
+                                     "can not be the same", 200)
+            res.password = encrypt_password(new_password)
+            res.save()
+            return make_response("Password updated!", 200)
+        return make_response("Old password is wrong", 400)
+
+    return make_response("You don't have the permissions " +
+                         "to edit this user", 405)
 
 
 @users.route('/api/users/<email:mail>', methods=['GET'])
 @login_required
 def get_user(mail):
     """Return user with given mail as json
-
         Returns:
             res: A user with given mail as json
     """
     res = g.user_datastore.get_user(mail)
     if res is None:
         return make_response("Unknown User with Email-address: " + mail, 400)
-
+    if(is_permitted(res.roles) is True):
+        res.roles = "admin"
+    else:
+        res.roles = "user"
     return jsonify(res)
 
 
