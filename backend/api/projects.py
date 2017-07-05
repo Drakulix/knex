@@ -19,6 +19,18 @@ from globals import ADMIN_PERMISSION
 projects = Blueprint('api_projects', __name__)
 
 
+def is_permitted(user, entry):
+    """Return boolean value if user has admin permission, arg->list with roles
+
+        Returns:
+            res: true if user has admin role
+        """
+
+    if user.has_role('admin'):
+        return True
+    return user['email'] in entry['authors']
+
+
 @projects.route('/api/projects', methods=['POST'])
 @login_required
 def add_projects():
@@ -64,6 +76,7 @@ def add_projects():
 
 
 @projects.route('/api/projects', methods=['GET'])
+@login_required
 def get_projects():
     """Return list of projects, args->limit, skip
 
@@ -111,7 +124,6 @@ def get_project_by_id(project_id):
 
 @projects.route('/api/projects/<uuid:project_id>', methods=['DELETE'])
 @login_required
-# @roles_required('admin') # doesn't work in blueprints at the moment...
 @ADMIN_PERMISSION.require()
 def delete_project(project_id):
     """Deletes a project by ID.
@@ -159,7 +171,7 @@ def update_project(project_id):
                         raise ApiException("Updated project owns different id",
                                            409)
             is_valid = g.validator.is_valid(manifest)
-            if is_valid:
+            if is_valid and is_permitted(current_user, manifest):
                 print("manifest validated", file=sys.stderr)
                 manifest['_id'] = project_id
                 manifest['date_last_updated'] = time.strftime("%Y-%m-%d")
@@ -171,6 +183,8 @@ def update_project(project_id):
             elif request.on_json_loading_failed() is not None:
                 raise ApiException("json could not be parsed",
                                    400, request.on_json_loading_failed())
+            elif not is_permitted(current_user, manifest):
+                raise ApiException("You are not allowed to edit this project", 403)
             else:
                 validation_errs = [error for error in
                                    sorted(g.validator.iter_errors(manifest))]

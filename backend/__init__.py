@@ -7,7 +7,7 @@ from flask_cors import CORS
 from flask_login import LoginManager
 from flask_mongoengine import MongoEngine
 from flask_security import Security, MongoEngineUserDatastore,\
-    UserMixin, RoleMixin, current_user
+    UserMixin, RoleMixin
 from flask_security.utils import encrypt_password
 from flask_principal import PermissionDenied
 from jsonschema import FormatChecker, Draft4Validator
@@ -135,7 +135,7 @@ def initialize_users():
     admin_role = USER_DATASTORE.find_or_create_role('admin')
     pw = encrypt_password("admin")
     USER_DATASTORE.create_user(
-        email='admin@knex.com', password=pw, roles=[admin_role])
+        email='admin@knex.com', password=pw, roles=[user_role, admin_role])
 
 
 @app.errorhandler(ApiException)
