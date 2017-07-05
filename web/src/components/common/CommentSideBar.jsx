@@ -63,7 +63,7 @@ this.setState({comments: comments});
     return (
         <Drawer
           docked={false}
-          width={400}
+          width={600}
           open={this.state.showCommentBar}
           onRequestChange={(showCommentBar) => this.setState({showCommentBar})}>
           <List>
