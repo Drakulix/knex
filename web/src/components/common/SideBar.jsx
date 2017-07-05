@@ -20,6 +20,8 @@ export default class SideBar extends Component {
     };
   }
 
+  isActive = (url) => { return url === this.props.location };
+
   isUserAdmin(){
     return this.state.profileInf && (this.state.profileInf.roles == 'admin');
   }
@@ -51,20 +53,21 @@ export default class SideBar extends Component {
 
   }
 
-  render() {
+  isActive = (url) => { return url === this.props.location };
 
+  render() {
     return (
         <div className="col-3 side-bar">
             <img className="logo-banner" src={logo} />
             <ul className="list-group">
-                <SideBarEntry name={this.state.menu.discoverProjects} to="/discovery" active={isActive("/discovery")} />
-                <SideBarEntry name={this.state.menu.createProject} to="/createbylink" active={isActive("/createbylink")} />
-                <SideBarEntry name={this.state.menu.bookmarks} to="/bookmarks" active={isActive("/bookmarks")} />
-                <SideBarEntry name={this.state.menu.userprojects} to="/yourprojects" active={isActive("/yourprojects")} />
-                <SideBarEntry name={this.state.menu.profile} to={'/profile/' + this.state.myProfile } active={isActive("/profile")} />
+                <SideBarEntry name={this.state.menu.discoverProjects} to="/discovery" active={this.isActive("/discovery")} />
+                <SideBarEntry name={this.state.menu.createProject} to="/createbylink" active={this.isActive("/createbylink")} />
+                <SideBarEntry name={this.state.menu.bookmarks} to="/bookmarks" active={this.isActive("/bookmarks")} />
+                <SideBarEntry name={this.state.menu.userprojects} to="/yourprojects" active={this.isActive("/yourprojects")} />
+                <SideBarEntry name={this.state.menu.profile} to={'/profile/' + this.state.myProfile } active={this.isActive("/profile")} />
                 <SideBarEntry
                   name={this.state.menu.adminArea}
-                  to="/admin" active={isActive("/admin")}
+                  to="/admin" active={this.isActive("/admin")}
                   style={this.getAdminVisibility()}
                 />
             </ul>

@@ -181,6 +181,17 @@ export default class ProfileContainer extends React.Component {
     return (
       <div className="container">
         <div className="header">Profile Details</div>
+        <ul className="nav nav-tabs">
+          <li className="nav-item" onClick={() => this.handleSiteChange('info')}>
+            <p className="nav-link active" href="#">Profile</p>
+          </li>
+          <li className="nav-item" onClick={() => this.handleSiteChange('comment')}>
+            <p className="nav-link" href="#" >Comments</p>
+          </li>
+          <li className="nav-item" onClick={() => this.handleSiteChange('edit')} style={this.getMenuEditStyle()}>
+            <p className="nav-link" href="#">Edit</p>
+          </li>
+        </ul>
         <div className="row">
           <div className="col-9">
             <p className="profile-header">Information:</p>
@@ -460,6 +471,4 @@ export default class ProfileContainer extends React.Component {
         </div>
       </div>
 );
-  }
-  }
-}
+}}}
