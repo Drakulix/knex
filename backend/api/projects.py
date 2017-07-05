@@ -200,3 +200,209 @@ def update_project(project_id):
                            "the request body does not appear to be utf-8", 400)
     except Exception as err:
         raise ApiException(str(err), 500)
+
+
+@projects.route('/api/projects/<uuid:project_id>/comment', methods=['PUT'])
+@login_required
+def add_comment(project_id):
+    """Adds new comment to project by project_id
+
+    Args:
+        project_id, comment in string format
+
+    Returns:
+        response: Success response
+                  or 404 if project is not found
+                  or 400 if validation error occurs
+    """
+    try:
+        manifest = g.projects.find_one({'_id': project_id})
+        if manifest is None:
+            raise ApiException("Project not found", 404)
+        if "text/plain" not in request.content_type:
+            raise ApiException("'text/plain' must be in Content-Type", 400)
+        comment = {}
+        comment['author'] = current_user['email']
+        author = g.user_datastore.get_user(current_user['email'])
+        comment['author_name'] = author['first_name']+" "+author['last_name']
+        comment['datetime'] = time.strftime("%Y-%m-%d %H:%M")
+        comment['id'] = uuid.uuid4()
+        comment['message'] = request.data.decode("utf-8")
+        manifest['comments'] = manifest['comments'].append(comment)\
+            if manifest['comments'] else [comment]
+        is_valid = g.validator.is_valid(manifest)
+        if is_valid:
+            g.projects.find_one_and_replace({'_id': project_id}, manifest,
+                                            return_document=ReturnDocument.AFTER)
+            make_response("Success", 200)
+        else:
+            validation_errs = [error for error in
+                               sorted(g.validator.iter_errors(manifest))]
+            if validation_errs is not None:
+                raise ApiException("Validation Error: \n" +
+                                   str(is_valid), 400, validation_errs)
+    except ApiException as error:
+        raise error
+    except UnicodeDecodeError as unicodeerr:
+        raise ApiException("Only utf-8 compatible charsets are supported, " +
+                           "the request body does not appear to be utf-8", 400)
+    except Exception as err:
+        raise ApiException(str(err), 500)
+
+
+@projects.route('/api/projects/<uuid:project_id>/comment', methods=['GET'])
+@login_required
+def get_comment(project_id):
+    """Adds new comment to project by project_id
+
+    Args:
+        project_id, comment in string format
+
+    Returns:
+        response: Success response
+                  or 404 if project is not found
+    """
+    try:
+        comments = g.projects.find({'_id': project_id}, {'comments': 1, '_id': 0}).sort(
+                   key=lambda x: x['datetime'], reverse=True)
+        if not comments:
+            raise ApiException("Project not found", 404)
+        return jsonify(comments)
+    except ApiException as error:
+        raise error
+    except Exception as err:
+        raise ApiException(str(err), 500)
+
+
+@projects.route('/api/projects/<uuid:project_id>/comment', methods=['DELETE'])
+@login_required
+def delete_comments(project_id):
+    """Adds new comment to project
+
+    Args:
+        project_id, comment in string format
+
+    Returns:
+        response: Success response
+                  or 404 if project is not found
+                  or 400 if validation error occurs
+    """
+    try:
+        manifest = g.projects.find_one({'_id': project_id})
+        if manifest is None:
+            raise ApiException("Project not found", 404)
+        del manifest[comments]
+        is_valid = g.validator.is_valid(manifest)
+        if is_valid:
+            g.projects.find_one_and_replace({'_id': project_id}, manifest,
+                                            return_document=ReturnDocument.AFTER)
+            make_response("Success")
+        else:
+            validation_errs = [error for error in
+                               sorted(g.validator.iter_errors(manifest))]
+            if validation_errs is not None:
+                raise ApiException("Validation Error: \n" +
+                                   str(is_valid), 400, validation_errs)
+    except ApiException as error:
+        raise error
+    except Exception as err:
+        raise ApiException(str(err), 500)
+
+
+@projects.route('/api/projects/<uuid:project_id>/comment/<uuid:comment_id>', methods=['PUT'])
+@login_required
+def update_comment(project_id, comment_id):
+    """Updates edited comment
+
+    Args:
+        project_id, comment_id, comment in string format
+
+    Returns:
+        response: Success response
+                  or 404 if project or comment is not found
+                  or 400 if validation error occurs
+    """
+    try:
+        manifest = g.projects.find_one({'_id': project_id})
+        if manifest is None:
+            raise ApiException("Project not found", 404)
+        if 'text/plain' not in request.content_type:
+            raise ApiException("Content-Type header must include 'text/plain'", 400)
+
+        if not manifest['comments']:
+            raise ApiException("Project has no comments", 404)
+        # TODO Usermanagement
+        comment_msg = request.data.decode('utf-8')
+        for comment in manifest['comments']:
+            if str(comment_id) == str(comment['id']):
+                comment['message'] = comment_msg
+                is_valid = g.validator.is_valid(manifest)
+                if is_valid:
+                    g.projects.find_one_and_replace({'_id': project_id}, manifest,
+                                                    return_document=ReturnDocument.AFTER)
+                    make_response("Success", 200)
+                else:
+                    raise ApiException(
+                        "Validation Error: \n" + str(is_valid), 400,
+                        [error for error in sorted(g.validator.iter_errors(manifest))])
+
+        raise ApiException("Comment not found", 404)
+
+    except ApiException as error:
+        raise error
+    except UnicodeDecodeError as unicodeerr:
+        raise ApiException("Only utf-8 compatible charsets are supported, " +
+                           "the request body does not appear to be utf-8", 400)
+    except Exception as err:
+        raise ApiException(str(err), 500)
+
+
+@projects.route('/api/projects/<uuid:project_id>/comment/<uuid:comment_id>', methods=['DELETE'])
+@login_required
+def delete_comment(project_id, comment_id):
+    """Deletes comment
+
+    Args:
+        project_id, comment_id
+
+    Returns:
+        response: Success response
+                  or 404 if project is not found
+                  or 400 if validation error occurs
+    """
+    try:
+        manifest = g.projects.find_one({'_id': project_id})
+        if manifest is None:
+            raise ApiException("Project not found", 404)
+        comments = manifest[comments]
+        if not manifest[comments]:
+            deleted = 0
+        else:
+            deleted = 0
+            for comment in manifest[comments]:
+                if str(comment_id) == comment[commentId]:
+                    manifest[comments].remove(comment)
+                    deleted = comment
+                    print("deleted", file=sys.stderr)
+                    print(deleted, file=sys.stderr)
+                    break
+        if deleted == 0:
+            raise ApiException("Comment not found", 404)
+        elif not manifest[comments]:
+            del manifest[comments]
+        else:
+            is_valid = g.validator.is_valid(manifest)
+            if is_valid:
+                g.projects.find_one_and_replace({'_id': project_id}, manifest,
+                                                return_document=ReturnDocument.AFTER)
+                make_response("Success")
+            else:
+                validation_errs = [error for error in
+                                   sorted(g.validator.iter_errors(manifest))]
+                if validation_errs is not None:
+                    raise ApiException("Validation Error: \n" +
+                                       str(is_valid), 400, validation_errs)
+    except ApiException as error:
+        raise error
+    except Exception as err:
+        raise ApiException(str(err), 500)

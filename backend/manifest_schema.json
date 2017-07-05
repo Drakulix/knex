@@ -152,9 +152,28 @@
             "type": "string"
           }
         }
+      },
+      "comments": {
+        "type": "array",
+        "items": {
+          "author": {
+            "$ref": "#/project/definitions/user"
+          },
+          "authors_name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "commentMsg": {
+            "type": "string"
+          },
+          "datetime": {
+            "type": "string"
+          }
+        }
       }
     }
   }
 }
-
-
