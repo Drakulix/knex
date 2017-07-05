@@ -16,9 +16,9 @@ import styles from '../common/Styles.jsx';
 
 
 const statusString = [
-  {id: "0" , text :"Done", value : "done"},
-  {id: "1" , text :"In review", value : "inreview"},
-  {id: "2" , text :"In progress", value : "inprogress"}];
+  {id: "0" , text :"Done", value : "DONE"},
+  {id: "1" , text :"In review", value : "IN_REVIEW"},
+  {id: "2" , text :"In progress", value : "IN_PROGRESS"}];
 
   const log = (type) => console.log.bind(console, type);
 
@@ -27,14 +27,10 @@ const statusString = [
     constructor(props) {
       super(props);
       this.state = {
-        _id:'',
-        date: '',
-        status: 'inprogress',
-        title: '',
-        description: '',
-        tags: ["MA"],
+
+        tags: [],
         authors: [],
-        urls: [],
+        url: [],
         invalid : true,
         snackbar : false,
         value : "0"
@@ -52,7 +48,7 @@ const statusString = [
     handleRequestAdd (chip, name) {
       if(name === "authors" && this.state["suggestedAuthors"].indexOf(chip) == -1)
       return;
-      if(name === "urls" && chip.indexOf("http://") != 0)
+      if(name === "url" && chip.indexOf("http://") != 0)
       return;
       this.setState({
         [name]: [...this.state[name], chip]
@@ -89,35 +85,63 @@ const statusString = [
 
 
       loadProjectInf(uuid) {
+
+
+        //TODO LOADAuthorsFromBackend
+
         var suggestedAuthors = [{id:"marko@knex.", name :"Marko"},
         {id:"victor@knex", name :"Victor"},{id:"cedric@knex", name :"Cedric"}];
         var suggestedAuthorsArray = []
         for (var i in suggestedAuthors) {
           suggestedAuthorsArray = suggestedAuthorsArray.concat([suggestedAuthors[i].name + " ("+suggestedAuthors[i].id+ ")"]);
         }
+
+        //TODO LOADTagsFromBackend
         var suggestedTags = ["your", "tags", "here"];
 
-        //TODO LOAD
+
+        //TODO LOADProjectFromBackend
+        var project = {
+          _id :"dsa",
+          title:"Stream - 0-Follower Analysis",
+          status:"DONE",
+          date_creation :
+          "2015-12-12", date_update:"11",
+          description : "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
+          tags:[
+            "av","dasda",
+            "adsadas"
+          ],
+          url:["http://google.com","http://github.org", "http://soundloud.com"],
+          authors :[
+            {
+              id:"33", name :"dda"
+            },
+            {
+              id:"32", name :"ddaa"
+            }
+          ]
+        };
 
 
 
-        var loadedStatus = "inprogress";
+        var loadedStatus = project.status;
         var stateValue=  statusString.filter(
-          function(data){return data.value == loadedStatus }
+          function(data){return data.value === loadedStatus }
         );
-        var authors = [{id:"33", name :"dda"},{id:"32", name :"ddaa"},{id:"323", name :"kk"}];
         var authorArray = []
-        for (var i in authors) {
-          authorArray = authorArray.concat([authors[i].name + " ("+authors[i].id+ ")"]);
+        for (var i in project.authors) {
+          authorArray = authorArray.concat([project.authors[i].name + " ("+project.authors[i].id+ ")"]);
         }
-
-        this.setState({   _id :"dsa",
-          title:"TestProject",
-          status:"done",
-          date: new Date(2012,11,11,0,0,0,0),
-          description : "lirum larum",
-          tags:["recommender","tags", "music"],
-          urls:["http://test","http://git", "http://ggole"],
+        this.setState({
+          title :project.title,
+          status:project.status,
+          date  : new Date( project.date_creation.split("-")[0],
+          project.date_creation.split("-")[1]-1,
+          project.date_creation.split("-")[2],0,0,0,0),
+          description : project.description,
+          tags:project.tags,
+          url:project.url,
           authors: authorArray,
           suggestedAuthors: suggestedAuthorsArray,
           suggestedTags : suggestedTags,
@@ -133,7 +157,7 @@ const statusString = [
           + this.state["date"].getDate(),
           "tags"          : this.state["tags"],
           "description"   : this.state["description"],
-          "url"           : this.state["urls"],
+          "url"           : this.state["url"],
           "status"        : statusString[this.state["value"]].value,
           "authors"        : []
         };
@@ -148,6 +172,8 @@ const statusString = [
 
 
         alert(this.state.authors)
+
+        console.log(project);
 
         fetch('/api/projects', {
           method: 'POST',
@@ -243,11 +269,11 @@ const statusString = [
                       )}/>
                       <div className="profile-info">Links</div>
                       <ChipInput
-                        value={this.state.urls}
+                        value={this.state.url}
                         onChange={this.onChangeUrls}
                         hintText='Add Links...'
-                        onRequestAdd={(chip) => this.handleRequestAdd(chip, "urls")}
-                        onRequestDelete={(deletedChip) => this.handleRequestDelete(deletedChip, "urls")}
+                        onRequestAdd={(chip) => this.handleRequestAdd(chip, "url")}
+                        onRequestDelete={(deletedChip) => this.handleRequestDelete(deletedChip, "url")}
                         fullWidth
                         chipRenderer={({ value, isFocused, isDisabled, handleClick, handleRequestDelete }, key) => (
                           <Chip

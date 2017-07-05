@@ -11,12 +11,10 @@ import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
-import injectTapEventPlugin from "react-tap-event-plugin";
 import MenuItem from 'material-ui/MenuItem';
 import logo from '../../style/img/black_logo_title_below.svg';
 import {login, isLoggedIn, logout,register, isAdmin, getUserInfo, getMyEmail} from '../common/Authentication.jsx';
 
-injectTapEventPlugin();
 
 export default class SignUp extends Component {
 
@@ -145,18 +143,18 @@ export default class SignUp extends Component {
             <TextField
               type="text"
               value={this.state.firstname}
-              onChange={this.handleChangeFirstName} 
+              onChange={this.handleChangeFirstName}
               hintText="First Name"
               errorText={(this.state.firstname == "") ? "Field is requiered" : ""}
               required autofocus
             />
-          </div> 
+          </div>
           {/*Input Last Name*/}
           <div className="input-group input-login" id="email-signup">
             <TextField
               type="text"
               value={this.state.lastname}
-              onChange={this.handleChangeLastName} 
+              onChange={this.handleChangeLastName}
               hintText="Last Name"
               errorText={(this.state.lastname == "") ? "Field is requiered" : ""}
               required autofocus
@@ -167,7 +165,7 @@ export default class SignUp extends Component {
             <TextField
               type="email"
               value={this.state.email}
-              onChange={this.handleChangeEmail} 
+              onChange={this.handleChangeEmail}
               hintText="Email"
               errorText={(!this.isValidEmailAddress(this.state.email)) ? "Needs to be a valid email" : ""}
               required autofocus
@@ -179,7 +177,7 @@ export default class SignUp extends Component {
             <TextField
               type="password"
               value={this.state.password}
-              onChange={this.handleChangePassword} 
+              onChange={this.handleChangePassword}
               hintText="Password"
               errorText={(this.state.password == "") ? "Field is requiered" : ""}
               required
@@ -192,7 +190,7 @@ export default class SignUp extends Component {
             <TextField
               type="password"
               value={this.state.password_confirm}
-              onChange={this.handleChangePasswordConfirm} 
+              onChange={this.handleChangePasswordConfirm}
               hintText="Confirm Password"
               errorText={( this.state.password != this.state.password_confirm ) ? "Passwords do not match" : "" }
               required
