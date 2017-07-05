@@ -70,7 +70,7 @@ ReactDOM.render(
         <PageRoute path="/createbylink" component={CreateProject} />
         <PageRoute path="/project/:getURL" component={ProjectContainer} />
         <PageRoute path="/bookmarks" component={BookmarksTable} />
-        <PageRoute path="/profile" component={ProfileContainer} />
+        <PageRoute path="/profile/:email" component={ProfileContainer} />
         <PageRoute path="/yourprojects" component={UserProjects} />
         <Route path="/register" component={SignUp} />
         <Route exact path="/" component={SignIn} />

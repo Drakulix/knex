@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
+import {Tabs, Tab} from 'material-ui/Tabs';
 import {login, isLoggedIn, logout, getCookie, setCookie, isAdmin, getMyEmail, getUserInfo, changePassword, changeProfile} from '../common/Authentication.jsx';
 
 export default class ProfileContainer extends React.Component {
-
-
   constructor(props) {
     super(props);
     this.state = {
@@ -22,7 +21,8 @@ export default class ProfileContainer extends React.Component {
       pw_old: '',
       pw_new: '',
       pw_new_confirm: '',
-      is_admin: false
+      is_admin: false,
+      value: 'a',
     };
     this.handlePwOldChange = this.handlePwOldChange.bind(this);
     this.handlePwNewChange = this.handlePwNewChange.bind(this);
@@ -33,6 +33,12 @@ export default class ProfileContainer extends React.Component {
     this.handleBioChange = this.handleBioChange.bind(this);
     this.handleProfileChangeSubmit = this.handleProfileChangeSubmit.bind(this)
   }
+
+  handleChange = (value) => {
+    this.setState({
+      value: value,
+    });
+  };
 
   isUserAdmin(){
     return (this.state.is_admin);
@@ -163,221 +169,205 @@ export default class ProfileContainer extends React.Component {
   getBio(){
     if(this.state.profileInf.bio){
       return (this.state.profileInf.bio.split('\n').map((item, key) => {return <span key={key}>{item}<br/></span>}));
-    }else{
-      return ' ';
+      }else{
+        return ' ';
+      }
     }
-  }
 
 
-  render() {
-    if( !this.state.profile_exists){
-      return (
-        <div className="container">
-          <div className="header">Profile Not Found</div>
-        </div>
-      );
+    render() {
+      if( !this.state.profile_exists){
+        return (
+          <div className="container">
+            <div className="header">Profile Not Found</div>
+          </div>
+        );
+      }
+      else {
+        return (
+          <div className="container">
+            <div className="header">Profile Details</div>
+            <Tabs
+              value={this.state.value}
+              onChange={this.handleChange}
+              style={{marginBottom:"40px"}}
+              >
+              <Tab
+                label="Your Profile" value="a">
+                <div className="row padding">
+                  <div className="col-9">
+                    <p className="profile-header">Information:</p>
+                    <p className="profile-info">
+                      {this.state.profileInf.first_name} {this.state.profileInf.last_name}
+                    </p>
+                    <p className="profile-header">Biography:</p>
+                    <p className="profile-info">
+                      {this.getBio()}
+                    </p>
+                  </div>
+                  <div className="col-3">
+                    <img src="http://www.freeiconspng.com/uploads/profile-icon-9.png" width="200px" height="200px" alt="..." className="rounded-circle profile-icon" />
+                  </div>
+                </div>
+                <p>{this.state.profileInf.first_name}'s Projects</p>
+                <div className="table-container">
+                  <table className="table">
+                    <thead className="thead-default">
+                      <tr>
+                        <th>Project Name</th>
+                        <th>Status</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th scope="row">Contextual music information retrieval and recommendation</th>
+                        <td>pending</td>
+                        <td>descriptions are useful</td>
+                        <td>22/06/17</td>
+                        <td>
+                          <i className="fa fa-bookmark" aria-hidden="true"></i>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Semantic Analysis of Song Lyrics</th>
+                        <td>pending</td>
+                        <td>descriptions are great</td>
+                        <td>22/06/17</td>
+                        <td>
+                          <i className="fa fa-bookmark-o" aria-hidden="true"></i>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Combining Audio Content and Social Context for Semantic Music Discovery</th>
+                        <td>done</td>
+                        <td>descriptions are love</td>
+                        <td>22/06/17</td>
+                        <td>
+                          <i className="fa fa-bookmark-o" aria-hidden="true"></i>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div className="pagination-container">
+                  <div className="text-xs-center">
+                    <div>
+                      <ul className="pagination">
+                        <li className="page-item">
+                          <a className="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span className="sr-only">Previous</span>
+                          </a>
+                        </li>
+                        <li className="page-item"><a className="page-link" href="#">1</a></li>
+                        <li className="page-item"><a className="page-link" href="#">2</a></li>
+                        <li className="page-item"><a className="page-link" href="#">3</a></li>
+                        <li className="page-item">
+                          <a className="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span className="sr-only">Next</span>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </Tab>
+              <Tab label="Edit Profile" value="b">
+                <div className="row">
+                  <div className="col-9">
+                    <form onSubmit={this.handleProfileChangeSubmit}>
+                      <p className="profile-header">Information:</p>
+                      <p className="profile-info">
+                        First Name:
+                        <TextField
+                          onChange={this.handleFirstNameChange}
+                          defaultValue={this.state.profileInf.first_name}
+                          />
+                        <br />
+                        Last Name:
+                        <TextField
+                          onChange={this.handleLastNameChange}
+                          defaultValue={this.state.profileInf.last_name}
+                          />
+                      </p>
+                      <p className="profile-header">Biography:</p>
+                      <TextField
+                        hintText="Something about you"
+                        onChange={this.handleBioChange}
+                        multiLine={true}
+                        defaultValue={this.state.profileInf.bio}
+                        rows={8}
+                        rowsMax={4}
+                        fullWidth={true}
+                        /><br />
+                      <FlatButton
+                        type="Submit"
+                        label="Change Profile"
+                        primary={true}
+                        />
+                    </form>
+                  </div>
+                  <div className="col-3">
+                    <img src="http://www.freeiconspng.com/uploads/profile-icon-9.png" width="200px" height="200px" alt="..." className="rounded-circle profile-icon" />
+                    <p className="profile-icon-text">Change Avatar</p>
+                  </div>
+                </div>
+                <div className="change-password">
+                  <form onSubmit={this.handlePwChangeSubmit}>
+                    <div className="form-group row">
+                      <label className="col-2 col-form-label">Email</label>
+                      <div className="col-10">
+                        <p className="form-control-static">{ this.state.email }</p>
+                      </div>
+                    </div>
+                    <div className="form-group row" style ={this.getEditSiteOldPasswordStyle()} >
+                      <label for="inputPassword" className="col-2 col-form-label">Old Password</label>
+                      <div className="col-4">
+                        <TextField
+                          type="password"
+                          hintText="Your Old Password"
+                          onChange={this.handlePwOldChange}
+                          />
+                      </div>
+                    </div>
+                    <div className="form-group row">
+                      <label for="inputPassword" className="col-2 col-form-label">New Password</label>
+                      <div className="col-4">
+                        <TextField
+                          type="password"
+                          hintText="Your New Password"
+                          onChange={this.handlePwNewChange}
+                          />
+                      </div>
+                    </div>
+                    <div className="form-group row">
+                      <label for="inputPassword" className="col-2 col-form-label">Confirm Password</label>
+                      <div className="col-4">
+                        <TextField
+                          type="password"
+                          hintText="Your New Password Again"
+                          onChange={this.handlePwNewConfChange}
+                          />
+                      </div>
+                    </div>
+                    <div className="form-group row">
+                      <div className="col-10">
+                        <FlatButton
+                          type="Submit"
+                          label="Change Password"
+                          primary={true}
+                          />
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </Tab>
+            </Tabs>
+          </div>
+        )}
+      }
     }
-    if(this.state.site == 'info'){
-    return (
-      <div className="container">
-        <div className="header">Profile Details</div>
-        <ul className="nav nav-tabs">
-          <li className="nav-item" onClick={() => this.handleSiteChange('info')}>
-            <p className="nav-link active" href="#">Profile</p>
-          </li>
-          <li className="nav-item" onClick={() => this.handleSiteChange('edit')} style={this.getMenuEditStyle()}>
-            <p className="nav-link" href="#">Edit</p>
-          </li>
-        </ul>
-        <div className="row">
-          <div className="col-9">
-            <p className="profile-header">Information:</p>
-            <p className="profile-info">
-              {this.state.profileInf.first_name} {this.state.profileInf.last_name}
-            </p>
-            <p className="profile-header">Biography:</p>
-            <p className="profile-info">
-              {this.getBio()}
-            </p>
-          </div>
-          <div className="col-3">
-            <img src="http://www.freeiconspng.com/uploads/profile-icon-9.png" width="200px" height="200px" alt="..." className="rounded-circle profile-icon" />
-
-          </div>
-        </div>
-
-        <p>{this.state.profileInf.first_name}'s Projects</p>
-        <div className="table-container">
-          <table className="table">
-            <thead className="thead-default">
-              <tr>
-                <th>Project Name</th>
-                <th>Status</th>
-                <th>Description</th>
-                <th>Date</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">Contextual music information retrieval and recommendation</th>
-                <td>pending</td>
-                <td>descriptions are useful</td>
-                <td>22/06/17</td>
-                <td>
-                  <i className="fa fa-bookmark" aria-hidden="true"></i>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">Semantic Analysis of Song Lyrics</th>
-                <td>pending</td>
-                <td>descriptions are great</td>
-                <td>22/06/17</td>
-                <td>
-                  <i className="fa fa-bookmark-o" aria-hidden="true"></i>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">Combining Audio Content and Social Context for Semantic Music Discovery</th>
-                <td>done</td>
-                <td>descriptions are love</td>
-                <td>22/06/17</td>
-                <td>
-                  <i className="fa fa-bookmark-o" aria-hidden="true"></i>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div className="pagination-container">
-          <div className="text-xs-center">
-            <div>
-              <ul className="pagination">
-                <li className="page-item">
-                  <a className="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                    <span className="sr-only">Previous</span>
-                  </a>
-                </li>
-                <li className="page-item"><a className="page-link" href="#">1</a></li>
-                <li className="page-item"><a className="page-link" href="#">2</a></li>
-                <li className="page-item"><a className="page-link" href="#">3</a></li>
-                <li className="page-item">
-                <a className="page-link" href="#" aria-label="Next">
-                  <span aria-hidden="true">&raquo;</span>
-                  <span className="sr-only">Next</span>
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-  if(this.state.site == 'edit'){
-    return (
-      <div className="container">
-        <div className="header">Profile Details</div>
-        <ul className="nav nav-tabs">
-          <li className="nav-item" onClick={() => this.handleSiteChange('info')}>
-            <p className="nav-link " href="#">Profile</p>
-          </li>
-          <li className="nav-item" onClick={() => this.handleSiteChange('edit')} style={this.getMenuEditStyle()}>
-            <p className="nav-link active" href="#">Edit</p>
-          </li>
-        </ul>
-        <div className="row">
-          <div className="col-9">
-            <form onSubmit={this.handleProfileChangeSubmit}>
-              <p className="profile-header">Information:</p>
-              <p className="profile">
-                First Name:
-                <TextField
-                  onChange={this.handleFirstNameChange}
-                  defaultValue={this.state.profileInf.first_name}
-                />
-              <br />
-                Last Name:
-                <TextField
-                  onChange={this.handleLastNameChange}
-                  defaultValue={this.state.profileInf.last_name}
-                />
-
-              </p>
-              <p className="profile-header">Biography:</p>
-                <TextField
-                  hintText="Something about you"
-                  onChange={this.handleBioChange}
-                  multiLine={true}
-                  defaultValue={this.state.profileInf.bio}
-                  rows={8}
-                  rowsMax={4}
-                  fullWidth={true}
-                /><br />
-
-                <FlatButton
-                  type="Submit"
-                  label="Change Profile"
-                  primary={true}
-
-                />
-            </form>
-          </div>
-          <div className="col-3">
-            <img src="http://www.freeiconspng.com/uploads/profile-icon-9.png" width="200px" height="200px" alt="..." className="rounded-circle profile-icon" />
-            <p className="profile-icon-text">Change Avatar</p>
-          </div>
-        </div>
-        <div className="change-password">
-          <form onSubmit={this.handlePwChangeSubmit}>
-            <div className="form-group row">
-              <label className="col-2 col-form-label">Email</label>
-              <div className="col-10">
-                <p className="form-control-static">{ this.state.email }</p>
-              </div>
-            </div>
-            <div className="form-group row" style ={this.getEditSiteOldPasswordStyle()} >
-              <label for="inputPassword" className="col-2 col-form-label">Old Password</label>
-              <div className="col-4">
-                <TextField
-                  type="password"
-                  hintText="Your Old Password"
-                  onChange={this.handlePwOldChange}
-                />
-              </div>
-            </div>
-            <div className="form-group row">
-              <label for="inputPassword" className="col-2 col-form-label">New Password</label>
-              <div className="col-4">
-                <TextField
-                  type="password"
-                  hintText="Your New Password"
-                  onChange={this.handlePwNewChange}
-                />
-              </div>
-            </div>
-            <div className="form-group row">
-              <label for="inputPassword" className="col-2 col-form-label">Confirm Password</label>
-              <div className="col-4">
-                <TextField
-                  type="password"
-                  hintText="Your New Password Again"
-                  onChange={this.handlePwNewConfChange}
-                />
-              </div>
-            </div>
-            <div className="form-group row">
-              <div className="col-10">
-                <FlatButton
-                  type="Submit"
-                  label="Change Password"
-                  primary={true}
-               />
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-  );
-  }}}
