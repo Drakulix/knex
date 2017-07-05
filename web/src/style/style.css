@@ -850,3 +850,7 @@ legend {
 .rt-td > a {
     color: black !important;
 }
+
+.table-link-text {
+  text-decoration: underline !important;
+}

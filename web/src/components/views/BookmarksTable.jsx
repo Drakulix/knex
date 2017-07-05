@@ -56,11 +56,30 @@ export default class BookmarksTable extends React.Component {
       id: 'name',
       accessor: d => d,
       filterMethod: (filter, row) => (row[filter.id].name.includes(filter.value)),
-      Cell: props => <Link to={`projects/${props.value._id}`}>{props.value.name}</Link>
+      Cell: props => <Link to={`projects/${props.value._id}`}><a className="table-link-text">{props.value.name}</a></Link>,
     }, {
       Header: 'Status',
       accessor: 'status',
-      width: 100
+      width: 100,
+      Cell: row => (
+        <span>
+          <span style={{
+            color: row.value === 'PENDING' ? '#ff2e00'
+              : row.value === 'IN_PROGRESS' ? '#ffbf00'
+              : row.value === 'DONE' ? '#57d500'
+              : '#57d500',
+            transition: 'all .3s ease',
+            textAlign: 'center'
+          }}>
+            &#x25cf;
+          </span> {
+            row.value === 'IN_PROGRESS' ? 'In Progress'
+            : row.value === 'PENDING' ? `Pending`
+            : row.value === 'DONE' ? `Done`
+            : 'No Status'
+          }
+        </span>
+      )
     }, {
       Header: 'Description',
       accessor: 'description',
@@ -73,8 +92,10 @@ export default class BookmarksTable extends React.Component {
           <ReactTable
             data={this.state.data}
             columns={columns}
+            defaultExpanded={{1: true}}
             filterable={true}
-            defaultPageSize={5}
+            showPageSizeOptions={false}
+            defaultPageSize={10}
           />
         <div className="footer" />
     </div>

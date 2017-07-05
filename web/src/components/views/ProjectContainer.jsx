@@ -101,15 +101,13 @@ export default class ProjectContainer extends Component {
     this.setState({commentBar:false});
     this.setState({sharePane:false});
   if(this.state.bookmarked){
-    //deleteBookmark
-    this.setState({bookmarked : false});
-
-  }
-  else {
-    //addBookmark
-    this.setState({bookmarked : true});
-  }
-
+      //deleteBookmark
+      this.setState({bookmarked : false});
+    }
+    else {
+      //addBookmark
+      this.setState({bookmarked : true});
+    }
   }
 
   handleEdit(event){
