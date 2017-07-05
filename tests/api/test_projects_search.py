@@ -31,7 +31,7 @@ class TestGET(object):
         print(response.text)
         assert "superawesometitle" in response.text
 
-    def test_success_tag(self, flask_api_url, session, pytestconfig):
+    def test_success_advanced(self, flask_api_url, session, pytestconfig):
         """Test if advanced search for tag is successful.
         """
         test_manifest = os.path.join(
@@ -55,7 +55,7 @@ class TestGET(object):
         print("tags of result:", resulttags)
         assert "superawesometag" in resulttags
 
-    def test_no_success_tag(self, flask_api_url, session, pytestconfig):
+    def test_no_success_advanced(self, flask_api_url, session, pytestconfig):
         """Test if search for non-existent tag (but existent title) is unsuccessful.
         """
         test_manifest = os.path.join(
