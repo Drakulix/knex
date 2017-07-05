@@ -121,7 +121,7 @@ class TopBar extends Component {
                 {this.state.notifications.map(notification =>
                   <MenuItem>
                     <Link style={styles["linkStyle"]}
-                      to={"/project/"+notification.projectID}>
+                      to={"/projects/"+notification.projectID}>
                       {notification.text} {notification.title}
                     </Link>
                   </MenuItem>)}

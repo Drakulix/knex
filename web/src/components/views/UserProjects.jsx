@@ -74,7 +74,7 @@ export default class UserProjects extends React.Component {
             data={this.state.data}
             columns={columns}
             filterable={true}
-            defaultPageSize={5}
+            defaultPageSize={10}
           />
         <div className="footer" />
     </div>
