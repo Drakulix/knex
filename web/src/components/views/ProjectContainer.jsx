@@ -1,253 +1,243 @@
-  import React, { Component } from 'react';
-import {fetchProjectDetails, fetchJson} from '../common/Backend'
-import { Link } from 'react-router-dom';
 
-import ChipInput from 'material-ui-chip-input'
-import Chip from 'material-ui/Chip'
-import IconButton from 'material-ui/IconButton';
-import SharePane from '../common/SharePane';
-import styles from '../common/Styles.jsx';
-import CommentSideBar from '../common/CommentSideBar.jsx'
+import React, { Component } from 'react';
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Redirect,
+  withRouter
+} from 'react-router-dom';
+import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
+import TextField from 'material-ui/TextField';
+import SelectField from 'material-ui/SelectField';
+import injectTapEventPlugin from "react-tap-event-plugin";
+import MenuItem from 'material-ui/MenuItem';
+import logo from '../../style/img/black_logo_title_below.svg';
+import {login, isLoggedIn, logout,register, isAdmin, getUserInfo, getMyEmail} from '../common/Authentication.jsx';
 
+injectTapEventPlugin();
 
-const update_url='/update/'
-export default class ProjectContainer extends Component {
+export default class SignUp extends Component {
+
   constructor(props) {
     super(props);
+
+    // set the initial component state
     this.state = {
-      projectID : "",
-      projectInf:{},
-      bookmarked:false,
-      owner : false,
-      sharePane: false,
-      commentBar: false
+      redirect: false,
+      error: '',
+      profileInf: {},
+      firstname: '',
+      lastname: '',
+      email: '',
+      password: '',
+      password_confirm: '',
+      role: 'user',
+      myProfile: getMyEmail()
     };
-
-    this.handleEdit = this.handleEdit.bind(this);
-    this.handleComment = this.handleComment.bind(this);
-    this.handleBookmark = this.handleBookmark.bind(this);
-    this.handleShare = this.handleShare.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
+    this.handleChangeFirstName = this.handleChangeFirstName.bind(this);
+    this.handleChangeLastName = this.handleChangeLastName.bind(this);
+    this.handleChangeEmail = this.handleChangeEmail.bind(this);
+    this.handleChangePassword = this.handleChangePassword.bind(this);
+    this.handleChangePasswordConfirm = this.handleChangePasswordConfirm.bind(this);
+    this.handleRoleChange = this.handleRoleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  componentWillMount(){
-    this.setState({projectInf : this.props.match.params.getURL});
-    this.loadProjectInf(this.props.match.params.getURL);
-    this.setState({projectID :this.props.match.params.getURL});
+  handleChangeFirstName(event) {
+    this.setState({firstname: event.target.value});
   }
 
-  componentWillReceiveProps(nextProps){
-    this.loadProjectInf(nextProps)
+  handleChangeLastName(event) {
+    this.setState({lastname: event.target.value});
+  }
+
+  handleChangeEmail(event) {
+    this.setState({email: event.target.value});
+  }
+
+  handleChangePassword(event) {
+    this.setState({password: event.target.value});
+  }
+
+
+  handleRoleChange(event, index, value) {
+    this.setState({'role': value});
+  }
+
+  handleChangePasswordConfirm(event) {
+    this.setState({password_confirm: event.target.value});
+  }
+
+  handleSubmit(event){
+    event.preventDefault();
+    if(this.state.password != this.state.password_confirm){
+      alert("Passwords do not match");
+      return;
+    }
+    register(this.state.firstname, this.state.lastname, this.state.email, this.state.password, this.state.password_confirm, this.state.role).then((success) => {
+
+      if(success){
+        alert("Registration successfull!");
+        this.setState({ redirect: true });
+      }else{
+        this.setState({ redirect: false, error: 'Registration failed!' });
+        alert("Registration failed!");
+      }
+    });
+  }
+
+  isValidEmailAddress(address) {
+    return !! address.match(/\S+@\S+\.\S+/);
+  }
+
+  loadProfileInf(e) {
+    getUserInfo(e).then(data => {
+      this.setState({profileInf: data});
+      if(!data){
+        this.setState({profile_exists: false});
+      }else{
+        this.setState({first_name: data.first_name, last_name: data.last_name, bio: data.bio});
+      }
+    }).catch(ex => {
+      this.setState({profile_exists: false});
+    });
+
   }
 
   componentDidMount(){
-    this.loadProjectInf(this.props);
+    this.loadProfileInf(this.state.myProfile);
   }
 
-
-  loadProjectInf(uuid) {
-
-    this.setState({
-      projectInf : {
-        _id :"dsa",
-        title:"Stream - 0-Follower Analysis",
-        status:"DONE",
-        date_creation :
-          "12", date_update:"11", description : "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
-        tags:[
-          "av","dasda",
-          "adsadas"
-        ],
-        url:["http://google.com","http://github.org", "http://soundloud.com"],
-        authors :[
-          {
-            id:"33", name :"dda"
-          },
-          {
-            id:"32", name :"ddaa"
-          }
-        ]
-      }
-    });
-
-  this.setState({bookmarked : true});
-  this.setState({owner : true});
-
-    /*    fetchProjectDetails(uuid).then(data => {
-    this.setState({projectInf: data})
-    });*/
-
+  isUserAdmin(){
+    return this.state.profileInf && (this.state.profileInf.roles == 'admin');
   }
 
-  handleComment(event){
-    event.preventDefault();
-  //  window.location = '/comment/'+  this.state.projectID;
-    this.setState({sharePane:false});
-    this.setState({commentBar:true});
-  }
-
-  handleShare(event){
-    event.preventDefault();
-    //window.location = '/share/'+  this.state.projectID;
-    this.setState({commentBar:false});
-    this.setState({sharePane:true});
-  }
-
-  handleBookmark(event){
-    event.preventDefault();
-    this.setState({commentBar:false});
-    this.setState({sharePane:false});
-  if(this.state.bookmarked){
-    //deleteBookmark
-    this.setState({bookmarked : false});
-
-  }
-  else {
-    //addBookmark
-    this.setState({bookmarked : true});
-  }
-
-  }
-
-  handleEdit(event){
-    event.preventDefault();
-    window.location = '/update/'+  this.state.projectID;
-  }
-
-
-  handleDelete(event){
-    event.preventDefault();
-    window.location = '/delete/'+  this.state.projectID;
-  }
-
-  render(){
-    let status_badge = null;
-    if (this.state.projectInf.status == 'DONE'){
-      status_badge = <span className="badge badge-success">DONE</span>
-    } else if (this.state.projectInf.status == 'IN_PROGRESS') {
-      status_badge = <span className="badge badge-warning">IN_PROGRESS</span>
-    } else if (this.state.projectInf.status == 'IN_REVIEW') {
-      status_badge = <span className="badge badge-info">IN_REVIEW</span>
-    } else {
-      status_badge = this.state.projectInf.status
+  getRoleStyle(){
+    if(!this.isUserAdmin()){
+      return {visibility: 'hidden', display: 'none'};
+    }else{
+      return {};
     }
-    return(
+  }
 
-      <div className="container">
-        <div className="innerContainer">
-          <SharePane value={this.state.sharePane} uuid={this.state.projectID}></SharePane>
-          <CommentSideBar value={this.state.commentBar} uuid={this.state.projectID}></CommentSideBar>
-          <div className = "row headerCreation" style={{width:"100%"}}>
-            <div className="col-12">
-              <div>Project</div>
-              <div style={{fontSize: '20px'}}> {this.state.projectInf.title}</div>
-            </div>
+  render() {
+    const { teamName } = this.props;
+
+    if (this.state.redirect) {
+      return <Redirect to='/'/>;
+    }
+
+    return (
+      <section className="sign-container">
+
+        {/*Information*/}
+        <img className="service-name" src={logo}/>
+        <h2 className="team-name">{teamName}</h2>
+        <div className="rectangle-sign">
+          <h3 className="sign-type-desc">Sign Up
+          </h3>
+          <form onSubmit={this.handleSubmit}>
+          {/*Input First Name*/}
+          <div className="input-group input-login" id="email-signup">
+
+            <TextField
+              type="text"
+              value={this.state.firstname}
+              onChange={this.handleChangeFirstName}
+              hintText="First Name"
+              errorText={(this.state.firstname == "") ? "Field is requiered" : ""}
+              required autofocus
+            />
           </div>
-          <div className="row">
-            <div className="col-5">
-              <div className="row">
-                <div className="col-4">
-                  <div className="profile-info">Status</div>
-                  <div>{status_badge}</div>
-                </div>
-                <div className="col-4">
-                  <div className="profile-info">Creation date</div>
-                  <div>{this.state.projectInf.date_creation}</div>
-                </div>
-                <div className="col-4">
-                  <div className="profile-info">Last update </div>
-                  <div> {this.state.projectInf.date_update}</div>
-                </div>
-              </div>
-              <div style={{marginTop:30}}>
-                <div className="profile-info">Authors</div>
-                <div style = {styles["wrapper"]}>
-                  {this.state.projectInf.authors.map(item => <Chip style= {styles["chip"]}>
-                  <Link to={"/profile/"+item.id} style= {styles["chipText"]}>{item.name}</Link></Chip>)}
-                  </div>
-                </div>
-                <div style={{marginTop:30}}>
-                  <div className="profile-info">Links</div>
-                  <div style = {styles["wrapper"]}>
-                    {this.state.projectInf.url.map(item => <Chip style= {styles["chip"]}>
-                    <a href={item} style= {styles["chipText"]}>{item}</a></Chip>)}
-                    </div>
-                  </div>
-                </div>
-                <div className="col-1"></div>
-                <div className="col-6">
-                  <div style={{marginTop:10}}>
-                    <div className="profile-info">Tags </div>
-                    <div style = {styles["wrapper"]}>
-                      {this.state.projectInf.tags.map(item =>
-                        <Chip style= {styles["chip"]}>
-                          <Link to={item} style= {styles["chipText"]} >{item}</Link></Chip>)}
-                          </div>
-                        </div>
-                        <div style={{marginTop:30}}>
-                          <div className="profile-info">Description</div>
-                          <div><a>{this.state.projectInf.description}</a></div>
-                        </div>
-                      </div>
-                    </div>
-                    <div style={{textAlign:"center", marginTop:75}} >
-                      <IconButton
-                        onClick={this.handleComment}
-                        touch={true}
-                        style = {styles.largeIcon}
-                        tooltipPosition="top-center"
-                        tooltip="Comment project"
-                        iconStyle={{fontSize: '24px'}}
-                        >
-                        <i className="material-icons">comment</i>
-                      </IconButton>
-                      <IconButton
-                        onClick={this.handleBookmark}
-                        touch={true}
-                        style = {styles.largeIcon}
-                        tooltipPosition="top-center"
-                        tooltip="Bookmark project"
-                        iconStyle={{fontSize: '24px'}}
-                        >
-                        <i className="material-icons">
-                          {(this.state.bookmarked) ? "star_rate" : "star_border"}
-                        </i>
-                      </IconButton>
-                      <IconButton
-                        onClick={this.handleShare}
-                        touch={true}
-                        style = {styles.largeIcon}
-                        tooltipPosition="top-center"
-                        tooltip="Share project"
-                        iconStyle={{fontSize: '24px'}}
-                        >
-                        <i className="material-icons">share</i>
-                      </IconButton>
-                      <IconButton
-                        onClick={this.handleEdit}
-                        touch={true}
-                        style = {styles.largeIcon}
-                        disabled={!this.state.owner}
-                        tooltipPosition="top-center"
-                        tooltip="Edit project"
-                        iconStyle={{fontSize: '24px'}}
-                        >
-                        <i className="material-icons">mode_edit</i>
-                      </IconButton>
-                      <IconButton
-                        onClick={this.handleDelete}
-                        touch={true}
-                        style = {styles.largeIcon}
-                        disabled={!this.state.owner}
-                        tooltipPosition="top-center"
-                        tooltip="Delete project"
-                        iconStyle={{fontSize: '24px'}}
-                        >
-                        <i className="material-icons">delete</i>
-                      </IconButton>
-                    </div>
-                  </div>
-                </div>
+          {/*Input Last Name*/}
+          <div className="input-group input-login" id="email-signup">
+            <TextField
+              type="text"
+              value={this.state.lastname}
+              onChange={this.handleChangeLastName}
+              hintText="Last Name"
+              errorText={(this.state.lastname == "") ? "Field is requiered" : ""}
+              required autofocus
+            />
+          </div>
+          {/*Input Email*/}
+          <div className="input-group input-login" id="email-signup">
+            <TextField
+              type="email"
+              value={this.state.email}
+              onChange={this.handleChangeEmail}
+              hintText="Email"
+              errorText={(!this.isValidEmailAddress(this.state.email)) ? "Needs to be a valid email" : ""}
+              required autofocus
+            />
+          </div>
+
+          {/*Input password*/}
+          <div className="input-group input-login">
+            <TextField
+              type="password"
+              value={this.state.password}
+              onChange={this.handleChangePassword}
+              hintText="Password"
+              errorText={(this.state.password == "") ? "Field is requiered" : ""}
+              required
+            />
+          </div>
+
+          {/*Input confirm password*/}
+          <div className="input-group input-login">
+
+            <TextField
+              type="password"
+              value={this.state.password_confirm}
+              onChange={this.handleChangePasswordConfirm}
+              hintText="Confirm Password"
+              errorText={( this.state.password != this.state.password_confirm ) ? "Passwords do not match" : "" }
+              required
+            />
+          </div>
+          <div >
+            <SelectField
+              style={this.getRoleStyle()}
+              floatingLabelText="Role"
+              value={this.state.role}
+              onChange={this.handleRoleChange}
+            >
+              <MenuItem value={'user'} primaryText="User" />
+              <MenuItem value={'admin'} primaryText="Admin" />
+            </SelectField>
+          </div>
+            <RaisedButton
+              type="Submit"
+              label="Register"
+              primary={true}
+              style={{width: 250}}
+              required
+            />
+        </form>
+          </div>
+
+        <div>
+          <Link to="/">
+            <a href="#" className="register-info">
+              You already have an account?<br/>Login here.
+            </a>
+          </Link>
+        </div>
+
+      </section>
     );
   }
 }
+
+SignUp.propTypes = {
+  serviceName: React.PropTypes.string,
+  teamName: React.PropTypes.string,
+}
+
+SignUp.defaultProps = {
+  serviceName: 'Knex',
+  teamName: 'brings light to the cloud'
+};
