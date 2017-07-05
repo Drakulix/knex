@@ -185,9 +185,6 @@ export default class ProfileContainer extends React.Component {
           <li className="nav-item" onClick={() => this.handleSiteChange('info')}>
             <p className="nav-link active" href="#">Profile</p>
           </li>
-          <li className="nav-item" onClick={() => this.handleSiteChange('comment')}>
-            <p className="nav-link" href="#" >Comments</p>
-          </li>
           <li className="nav-item" onClick={() => this.handleSiteChange('edit')} style={this.getMenuEditStyle()}>
             <p className="nav-link" href="#">Edit</p>
           </li>
@@ -286,9 +283,6 @@ export default class ProfileContainer extends React.Component {
           <li className="nav-item" onClick={() => this.handleSiteChange('info')}>
             <p className="nav-link " href="#">Profile</p>
           </li>
-          <li className="nav-item" onClick={() => this.handleSiteChange('comment')}>
-            <p className="nav-link" href="#" >Comments</p>
-          </li>
           <li className="nav-item" onClick={() => this.handleSiteChange('edit')} style={this.getMenuEditStyle()}>
             <p className="nav-link active" href="#">Edit</p>
           </li>
@@ -297,7 +291,7 @@ export default class ProfileContainer extends React.Component {
           <div className="col-9">
             <form onSubmit={this.handleProfileChangeSubmit}>
               <p className="profile-header">Information:</p>
-              <p className="profile-info">
+              <p className="profile">
                 First Name:
                 <TextField
                   onChange={this.handleFirstNameChange}
@@ -384,91 +378,6 @@ export default class ProfileContainer extends React.Component {
             </div>
           </form>
         </div>
-
-
       </div>
   );
-  }else if(this.state.site == 'comment'){
-    return (
-      <div className="container">
-        <div className="header">Profile Details</div>
-        <ul className="nav nav-tabs">
-          <li className="nav-item" onClick={() => this.handleSiteChange('info')}>
-            <p className="nav-link" href="#">Profile</p>
-          </li>
-          <li className="nav-item" onClick={() => this.handleSiteChange('comment')}>
-            <p className="nav-link active" href="#" >Comments</p>
-          </li>
-          <li className="nav-item" onClick={() => this.handleSiteChange('edit')} style={this.getMenuEditStyle()}>
-            <p className="nav-link" href="#">Edit</p>
-          </li>
-        </ul>
-        <p>{this.state.profileInf.first_name}'s Comments</p>
-        <div className="table-container">
-          <table className="table">
-            <thead className="thead-default">
-              <tr>
-                <th>Project Name</th>
-                <th>Status</th>
-                <th>Description</th>
-                <th>Date</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">Contextual music information retrieval and recommendation</th>
-                <td>pending</td>
-                <td>descriptions are useful</td>
-                <td>22/06/17</td>
-                <td>
-                  <i className="fa fa-bookmark" aria-hidden="true"></i>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">Semantic Analysis of Song Lyrics</th>
-                <td>pending</td>
-                <td>descriptions are great</td>
-                <td>22/06/17</td>
-                <td>
-                  <i className="fa fa-bookmark-o" aria-hidden="true"></i>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">Combining Audio Content and Social Context for Semantic Music Discovery</th>
-                <td>done</td>
-                <td>descriptions are love</td>
-                <td>22/06/17</td>
-                <td>
-                  <i className="fa fa-bookmark-o" aria-hidden="true"></i>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div className="pagination-container">
-          <div className="text-xs-center">
-            <div>
-              <ul className="pagination">
-                <li className="page-item">
-                  <a className="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                    <span className="sr-only">Previous</span>
-                  </a>
-                </li>
-                <li className="page-item"><a className="page-link" href="#">1</a></li>
-                <li className="page-item"><a className="page-link" href="#">2</a></li>
-                <li className="page-item"><a className="page-link" href="#">3</a></li>
-                <li className="page-item">
-                <a className="page-link" href="#" aria-label="Next">
-                  <span aria-hidden="true">&raquo;</span>
-                  <span className="sr-only">Next</span>
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-);
-}}}
+  }}}

@@ -5,8 +5,6 @@ import './style/style.css';
 import './style/fonts/font-awesome/css/font-awesome.css';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-
 import {
   BrowserRouter,
   Route,
@@ -32,17 +30,11 @@ import SideBar from './components/common/SideBar';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import styles from './components/common/Styles.jsx';
 
-
-var injectTapEventPlugin = require("react-tap-event-plugin");
-injectTapEventPlugin();
-
-
+import injectTapEventPlugin from "react-tap-event-plugin";
 
 const muiTheme = getMuiTheme(
 styles
   );
-
-
 
 
 const PageRoute = ({ component: Component, path, ...rest }) => (
@@ -67,13 +59,13 @@ ReactDOM.render(
       <div>
         <PageRoute path="/discovery" component={SearchPage} />
         <PageRoute path="/admin" component={AdminOverview} />
-        <PageRoute path="/createNew" component={CreateProjectByPattern} />
-        <PageRoute exact path="/create" component={CreateProject} />
-        <PageRoute path="/update/:getURL" component={CreateProjectByPattern} />
+        <PageRoute path="/create/:getURL" component={CreateProjectByPattern} />
+        <PageRoute exact path="/create" component={CreateProjectByPattern} />
+        <PageRoute path="/update" component={UpdateProject} />
         <PageRoute path="/createbylink" component={CreateProject} />
-        <PageRoute path="/project/:getURL" component={ProjectContainer} />
+        <PageRoute path="/projects/:uuid" component={ProjectContainer} />
         <PageRoute path="/bookmarks" component={BookmarksTable} />
-        <PageRoute path="/profile" component={ProfileContainer} />
+        <PageRoute path="/profile/:email" component={ProfileContainer} />
         <PageRoute path="/yourprojects" component={UserProjects} />
         <Route path="/register" component={SignUp} />
         <Route exact path="/" component={SignIn} />
