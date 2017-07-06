@@ -205,7 +205,7 @@ and gets the data from the backend. Data is stored in state.results
         this.setState({lastString: this.props.searchString})
 
     }
-    if(this.state.results.length >= 0){
+    if(this.state.results.length > 0){
       return(
         <div>
           <div className="row padding">
