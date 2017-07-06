@@ -8,7 +8,7 @@ import json
 import json5
 
 from flask import request, jsonify, make_response, g, Blueprint
-from flask_security import login_required, roles_required
+from flask_security import login_required, roles_required, current_user
 from pymongo.collection import ReturnDocument
 from flask_security import login_required, roles_required, login_user,\
     logout_user, current_user
@@ -29,6 +29,8 @@ def is_permitted(user, entry):
         """
 
     if user.has_role('admin'):
+        return True
+    elif entry['author'] and user['email'] == entry['author']:
         return True
     return user['email'] in entry['authors']
 
@@ -210,7 +212,7 @@ def update_project(project_id):
         raise ApiException(str(err), 500)
 
 
-@projects.route('/api/projects/<uuid:project_id>/comment', methods=['PUT'])
+@projects.route('/api/projects/<uuid:project_id>/comment', methods=['POST'])
 @login_required
 def add_comment(project_id):
     """Adds new comment to project by project_id
@@ -244,11 +246,9 @@ def add_comment(project_id):
                                             return_document=ReturnDocument.AFTER)
             make_response("Success", 200)
         else:
-            validation_errs = [error for error in
-                               sorted(g.validator.iter_errors(manifest))]
-            if validation_errs is not None:
-                raise ApiException("Validation Error: \n" +
-                                   str(is_valid), 400, validation_errs)
+            raise ApiException(
+                        "Validation Error: \n" + str(is_valid), 400,
+                        [error for error in sorted(g.validator.iter_errors(manifest))])
     except ApiException as error:
         raise error
     except UnicodeDecodeError as unicodeerr:
@@ -261,10 +261,10 @@ def add_comment(project_id):
 @projects.route('/api/projects/<uuid:project_id>/comment', methods=['GET'])
 @login_required
 def get_comment(project_id):
-    """Adds new comment to project by project_id
+    """Gets all comments of project sorted by descending creation date
 
     Args:
-        project_id, comment in string format
+        project_id
 
     Returns:
         response: Success response
@@ -273,7 +273,8 @@ def get_comment(project_id):
     try:
         comments = g.projects.find({'_id': project_id}, {'comments': 1, '_id': 0}).sort(
                    key=lambda x: x['datetime'], reverse=True)
-        if not comments:
+        if comments is None:
+            # Problems, when manifest['comments']==None Ideas?
             raise ApiException("Project not found", 404)
         return jsonify(comments)
     except ApiException as error:
@@ -284,11 +285,12 @@ def get_comment(project_id):
 
 @projects.route('/api/projects/<uuid:project_id>/comment', methods=['DELETE'])
 @login_required
+@ADMIN_PERMISSION.require()
 def delete_comments(project_id):
-    """Adds new comment to project
+    """Deletes all comments of project
 
     Args:
-        project_id, comment in string format
+        project_id
 
     Returns:
         response: Success response
@@ -299,18 +301,16 @@ def delete_comments(project_id):
         manifest = g.projects.find_one({'_id': project_id})
         if manifest is None:
             raise ApiException("Project not found", 404)
-        del manifest[comments]
+        del manifest['comments']
         is_valid = g.validator.is_valid(manifest)
         if is_valid:
             g.projects.find_one_and_replace({'_id': project_id}, manifest,
                                             return_document=ReturnDocument.AFTER)
-            make_response("Success")
+            make_response("Success", 200)
         else:
-            validation_errs = [error for error in
-                               sorted(g.validator.iter_errors(manifest))]
-            if validation_errs is not None:
-                raise ApiException("Validation Error: \n" +
-                                   str(is_valid), 400, validation_errs)
+            raise ApiException(
+                        "Validation Error: \n" + str(is_valid), 400,
+                        [error for error in sorted(g.validator.iter_errors(manifest))])
     except ApiException as error:
         raise error
     except Exception as err:
@@ -339,11 +339,10 @@ def update_comment(project_id, comment_id):
 
         if not manifest['comments']:
             raise ApiException("Project has no comments", 404)
-        # TODO Usermanagement
-        comment_msg = request.data.decode('utf-8')
+
         for comment in manifest['comments']:
-            if str(comment_id) == str(comment['id']):
-                comment['message'] = comment_msg
+            if str(comment_id) == str(comment['id']) and is_permitted(current_user, comment):
+                comment['message'] = request.data.decode('utf-8')
                 is_valid = g.validator.is_valid(manifest)
                 if is_valid:
                     g.projects.find_one_and_replace({'_id': project_id}, manifest,
@@ -368,7 +367,7 @@ def update_comment(project_id, comment_id):
 @projects.route('/api/projects/<uuid:project_id>/comment/<uuid:comment_id>', methods=['DELETE'])
 @login_required
 def delete_comment(project_id, comment_id):
-    """Deletes comment
+    """Deletes comment by comment_id
 
     Args:
         project_id, comment_id
@@ -376,40 +375,33 @@ def delete_comment(project_id, comment_id):
     Returns:
         response: Success response
                   or 404 if project is not found
-                  or 400 if validation error occurs
+                  or 500 if validation error occurs
     """
     try:
         manifest = g.projects.find_one({'_id': project_id})
         if manifest is None:
             raise ApiException("Project not found", 404)
-        comments = manifest[comments]
-        if not manifest[comments]:
-            deleted = 0
-        else:
-            deleted = 0
-            for comment in manifest[comments]:
-                if str(comment_id) == comment[commentId]:
-                    manifest[comments].remove(comment)
-                    deleted = comment
-                    print("deleted", file=sys.stderr)
-                    print(deleted, file=sys.stderr)
-                    break
-        if deleted == 0:
-            raise ApiException("Comment not found", 404)
-        elif not manifest[comments]:
-            del manifest[comments]
-        else:
-            is_valid = g.validator.is_valid(manifest)
-            if is_valid:
-                g.projects.find_one_and_replace({'_id': project_id}, manifest,
-                                                return_document=ReturnDocument.AFTER)
-                make_response("Success")
-            else:
-                validation_errs = [error for error in
-                                   sorted(g.validator.iter_errors(manifest))]
-                if validation_errs is not None:
-                    raise ApiException("Validation Error: \n" +
-                                       str(is_valid), 400, validation_errs)
+
+        if not manifest['comments']:
+            raise ApiException("Project has no comments", 404)
+
+        for comment in manifest['comments']:
+            if str(comment_id) == comment['id'] and is_permitted(current_user, comment):
+                manifest['comments'].remove(comment)
+                print("deleted", file=sys.stderr)
+                print(comment, file=sys.stderr)
+                if not manifest['comments']:
+                    del manifest['comments']
+                is_valid = g.validator.is_valid(manifest)
+                if is_valid:
+                    g.projects.find_one_and_replace({'_id': project_id}, manifest,
+                                                    return_document=ReturnDocument.AFTER)
+                    make_response("Success", 200)
+                else:
+                    raise ApiException(
+                        "Validation Error: \n" + str(is_valid), 500,
+                        [error for error in sorted(g.validator.iter_errors(manifest))])
+        raise ApiException("Comment not found", 404)
     except ApiException as error:
         raise error
     except Exception as err:

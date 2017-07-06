@@ -159,14 +159,14 @@
           "author": {
             "$ref": "#/project/definitions/user"
           },
-          "authors_name": {
+          "author_name": {
             "type": "string"
           },
           "id": {
             "type": "string",
             "format": "uuid"
           },
-          "commentMsg": {
+          "message": {
             "type": "string"
           },
           "datetime": {
