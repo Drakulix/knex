@@ -149,7 +149,7 @@ class AdvancedSearch extends Component {
               />
             </div>
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <label for="dateStart" className ="input-group-addon search-bar-title primary">
               Date from:
             </label>
@@ -162,7 +162,7 @@ class AdvancedSearch extends Component {
               />
             </div>
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <label for="DateEnd" className ="input-group-addon search-bar-title primary">
             To:
           </label>
@@ -173,6 +173,23 @@ class AdvancedSearch extends Component {
                 name="dateEnd"
                 onChange={(value) => this.props.changeStateTo(value.target.value)}
               />
+            </div>
+          </div>
+          <div className="col-md-2" id="dropdownStatusDiv">
+            <div className="input-group form-inline panel">
+              <label className ="input-group-addon primary">
+                Status:
+              </label>
+              <select
+                className="form-control"
+                id="dropdown_status"
+                name="status"
+                onChange={(value) => this.props.ChangeStateStatus(value.target.value)}
+              >
+                <option>DONE</option>
+                <option>pending</option>
+                <option>in progress</option>
+              </select>
             </div>
           </div>
         </div>
@@ -236,25 +253,6 @@ class AdvancedSearch extends Component {
             </div>
           </div>
       </div>
-      <div className="row" >
-        <div className="col-md-2">
-          <div className="input-group form-inline panel">
-            <label className ="input-group-addon primary">
-              Status
-            </label>
-            <select
-              className="form-control"
-              id="dropdown_status"
-              name="status"
-              onChange={(value) => this.props.ChangeStateStatus(value.target.value)}
-            >
-              <option>DONE</option>
-              <option>pending</option>
-              <option>in progress</option>
-            </select>
-          </div>
-        </div>
-      </div>
     </div>
     );
   }
@@ -295,7 +293,7 @@ class Search extends Component{
               />
             </form>
             <a onClick={() => this.toggle()}  className="clickable-text col-md-2" id="minimize">
-              <u>Minimize</u>
+              <u><b>Simple Search</b></u>
             </a>
           </div>
         </div>
@@ -309,8 +307,8 @@ class Search extends Component{
             </form>
           </div>
           <div className="row padding" id="advancedSearchToggle">
-            <a onClick={() => this.toggle()} className="clickable-text padding text-right">
-              <u>Advanced Search</u>
+            <a onClick={() => this.toggle()} className="clickable-text padding text-right" id="filterSearchToggle">
+              <u><b>Filtered Search</b></u>
             </a>
           </div>
         </div>

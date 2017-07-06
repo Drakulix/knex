@@ -205,13 +205,30 @@ and gets the data from the backend. Data is stored in state.results
         this.setState({lastString: this.props.searchString})
 
     }
-    if(this.state.results.length > 0){
+    if(this.state.results.length >= 0){
       return(
         <div>
           <div className="row padding">
-            <div className="col-2">
-            Found Projects: {this.state.numberOfResults}
+            <div className="col-10">
+              <label for="n-results" id="n-results-label">Number of results per page:</label>
+              <select className="selectpicker"
+                      id="n-results"
+                      onChange={event => this.setState({
+                         pageSize : parseInt(event.target.value, 10),
+                         pageNumber : 0,
+                         dirty : true,
+                       })}
+                      value={this.state.pageSize}>
+                <option value="4">4</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+              </select>
+
             </div>
+            <div className="col-2">
+            Projects found: {this.state.numberOfResults}
+            </div>
+
           </div>
           <div className="row">
             <div className="table-container">
@@ -233,28 +250,10 @@ and gets the data from the backend. Data is stored in state.results
             </div>
           </div>
           <div className="row">
-            <div className="col-12">
               <div className="centered-pagination">
-                <div>
                   {this.renderPrevButton()}
                   {this.renderNextButton()}
-                </div>
-              </div>
             </div>
-          </div>
-          <div className="col-2">
-            <select className="selectpicker"
-                    id="n-results"
-                    onChange={event => this.setState({
-                       pageSize : parseInt(event.target.value, 10),
-                       pageNumber : 0,
-                       dirty : true,
-                     })}
-                    value={this.state.pageSize}>
-              <option value="4">4</option>
-              <option value="10">10</option>
-              <option value="20">20</option>
-            </select>
           </div>
         </div>
       );
