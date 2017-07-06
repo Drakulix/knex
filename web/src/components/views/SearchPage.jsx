@@ -103,17 +103,17 @@ class AdvancedSearch extends Component {
     super(props);
     this.state = {
       chips: [],
-      counter: ""
     }
   }
 
+  /*
+    Function to parse the chips to the search class, for using it in the filter function
+  */
   onChange = chips => {
     this.setState({ chips: chips });
     var stringArray = [];
-    var counter = 0;
     for (var i = 0; i< chips.length; i++){
       stringArray.push(chips[i].toString());
-      counter ++;
     }
 
     var searchstring = "";
@@ -126,8 +126,6 @@ class AdvancedSearch extends Component {
     }
     searchstring = searchstring.concat(")");
 
-
-    this.setState({counter: searchstring})
     this.props.changeStateTags(searchstring);
   }
   //View for advanced search, the onChange in the <input> parses the state all the way to the parent
@@ -307,9 +305,9 @@ class Search extends Component{
             </form>
           </div>
           <div className="row padding" id="advancedSearchToggle">
-            <a onClick={() => this.toggle()} className="clickable-text padding text-right" id="filterSearchToggle">
-              <u><b>Filtered Search</b></u>
-            </a>
+              <a onClick={() => this.toggle()} className="clickable-text padding text-right" id="filterSearchToggle">
+                <u><b>Filtered Search</b></u>
+              </a>
           </div>
         </div>
       );
