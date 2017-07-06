@@ -379,6 +379,7 @@ a:hover {
   margin-top: 30px;
 }
 
+
 /* createProjectByPattern.js and createProjectView.js */
 
 legend {
@@ -408,6 +409,7 @@ legend {
   font-size: 18px;
   color: #000000;
   margin-top:46px;
+  margin-bottom: 20px;
 
   display: block;
   margin-left: auto;
@@ -550,6 +552,11 @@ legend {
   text-align: center;
   color: #000000;
 }
+
+#formular{
+  margin-top: 46px;
+}
+
 
 /* Project Container */
 .projecttitle {
