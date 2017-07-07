@@ -24,7 +24,7 @@ def login():
     email = request.form['email']
     password = request.form['password']
     user = g.user_datastore.get_user(email)
-    if user is None:
+    if not user:
         return make_response("Username oder Password invalid", 403)
 
     if verify_password(password, user["password"]):
@@ -122,9 +122,16 @@ def get_user(mail):
         Returns:
             res: A user with given mail as json
     """
-    res = g.user_datastore.get_user(mail)
-    if res is None:
+    user = g.user_datastore.get_user(mail)
+    if not user:
         return make_response("Unknown User with Email-address: " + mail, 400)
+
+    roles = [role for role in ['admin', 'user'] and user.has_role(role)]
+    
+    res = dict(user)
+    del res['roles']
+    del res['password']
+    res['roles'] = roles
 
     return jsonify(res)
 
@@ -134,7 +141,7 @@ def get_user(mail):
 def insert_bookmarks(id):
     user = current_user
     res = g.user_datastore.get_user(user['email'])
-    if res is None:
+    if not res:
         return make_response("Unknown User with Email-address: ", 400)
 
     if id in res.bookmarks:
@@ -147,10 +154,7 @@ def insert_bookmarks(id):
 @users.route('/api/users/bookmarks/<uuid:id>', methods=['DELETE'])
 @login_required
 def delete_bookmarks(id):
-    user = current_user
-    if user is None:
-        return make_response("No current user detected ", 400)
-    res = g.user_datastore.get_user(user['email'])
+    res = g.user_datastore.get_user(current_user['email'])
     if not res:
         return make_response("Unknown User with Email-address: " +
                              user['email'], 400)
@@ -165,10 +169,7 @@ def delete_bookmarks(id):
 @users.route('/api/users/bookmarks', methods=['GET'])
 @login_required
 def get_bookmarks():
-    user = current_user
-    if user is None:
-        return make_response("No current user detected ", 400)
-    res = g.user_datastore.get_user(user['email'])
+    res = g.user_datastore.get_user(current_user['email'])
     if not res:
         return make_response("Unknown User with Email-address: " +
                              user['email'], 400)
