@@ -136,7 +136,7 @@ const statusString = [
           }
 
           var stateValue=  statusString.filter(
-          function(data){return this.state.projectInf.status === loadedStatus }
+          function(data){return this.state.projectInf.status === data }
           );
 
           this.setState({ date:
@@ -145,7 +145,7 @@ const statusString = [
             this.state.projectInf.date_creation.split("-")[2],0,0,0,0),
 
 status : stateValue
-              
+
           });
 
 
