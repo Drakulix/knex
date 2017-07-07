@@ -109,12 +109,15 @@ const statusString = [
 
       render(){
         return   <div style={{marginBottom:20}}>
-          <div className="row">
-            <div className="col-5"></div>
+          <div style={{display:(this.state.expanded) ? "none" : "block"}}>
+          <div className="row" >
+            <div className="col-10"></div>
             <div className="col-2" style={{textAlign:"center",marginTop: 0, marginBottom: 20}}>
-              <RaisedButton  style={{width:"100%"}} onClick={() => this.setState({expanded: !this.state.expanded})} label={(this.state.expanded) ? "Hide filters" : "Show filters"} primary={true}/>
+              <RaisedButton  style={{width:"100%"}} onClick={() => this.setState({expanded: true})} label="Show filters" primary={true}/>
             </div>
           </div>
+          </div>
+
           <div style={{ textAlign:"left", verticalAlign:"center", display:(this.state.expanded) ? "block" : "none"}} >
             <div className="row">
               <div className="col-1 filter-label" style={{textAlign: "left"}}>Title</div>
@@ -159,36 +162,47 @@ const statusString = [
             </div>
             <div className="row">
               <div className="col-1 filter-label" style={{textAlign: "left"}}>From</div>
-              <div className="col-3" style={{marginLeft:-40}}>
+              <div className="col-2" style={{marginTop:3}}>
                 <DatePicker hintText="Pick date from... "
                   mode="landscape"
                   name ="date_from"
+                  style={{marginLeft:-40}}
+                  underlineStyle={{width: '100%', marginLeft:0}}
+                  textFieldStyle={{width: '100%'}}
                   value={this.state.date_from}
                   onChange={this.handleChangeDateFrom}
                   />
               </div>
+
               <div className="col-1 filter-label" style={{textAlign: "left"}}>Till</div>
-              <div className="col-3" style={{marginLeft:-50}}>
+              <div className="col-2" style={{marginTop:3}}>
                 <DatePicker hintText="Pick date until..."
                   mode="landscape"
+                  style={{marginLeft:-50}}
                   name ="date_till"
                   value={this.state.date_till}
+                  underlineStyle={{width: '90%', marginLeft:0}}
+                  textFieldStyle={{width: '90%'}}
                   onChange={this.handleChangeDateTill}
                   />
               </div>
-              <div className="col-1 filter-label">Status</div>
-              <div clasName="col-3" style={{marginTop:-8}}>
+              <div className="col-1 filter-label" style={{textAlign: "left", marginLeft:-43}} >Status</div>
+              <div className="col-2" style={{marginTop:-3}}>
                 <DropDownMenu
-                  labelStyle={{width: '100%', paddingLeft:0}}
                   onChange={this.handleStatusChange}
                   value={this.state.value}
-                  underlineStyle={{width: '100%', marginLeft:0}}
                   hintText="Pick a status..."
+                  labelStyle={{width: '100%', paddingLeft:0}}
+                  underlineStyle={{width: '100%', marginLeft:0}}
                   autoWidth={false}
-                  style={{width: 200}}
+                  style={{width: '100%'}}
                   >
                   {statusString.map(item =><MenuItem value={item.id} primaryText={item.text} />)}
                 </DropDownMenu>
+              </div>
+              <div className="col-1"></div>
+              <div className="col-2" style={{textAlign:"right",marginTop: 0, marginLeft: 43}}>
+                  <RaisedButton  style={{width:"100%"}} onClick={() => this.setState({expanded: false})} label= "Hide filters" primary={true}/>
               </div>
             </div>
           </div>

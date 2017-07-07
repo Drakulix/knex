@@ -134,9 +134,9 @@ const statusString = [
           if(this.state.projectID !== ""){
             //   this.loadProjectInf(this.state.projectID);
           }
-
+          var status = this.state.projectInf.status;
           var stateValue=  statusString.filter(
-          function(data){return this.state.projectInf.status === data }
+          function(data){return status === data }
           );
 
           this.setState({ date:
@@ -327,8 +327,8 @@ status : stateValue
         isInValid(){
           return      this.state.projectInf["title"] === ''
           ||  this.state.projectInf["date_creation"] === ''
-          ||  this.state.projectInf["description"] == ''
-          ||  this.state.authors.length == 0;
+          ||  this.state.projectInf["description"] === ''
+          ||  this.state.authors.length === 0;
         }
 
         render() {
@@ -359,7 +359,7 @@ status : stateValue
                         onChange={this.handleTitleChange}
                         hintText="Add title..."
                         style={{width:'100%'}}
-                        errorText={(this.state.projectInf.title=="") ? this.props.titleErrorText : ""}
+                        errorText={(this.state.projectInf.title==="") ? this.props.titleErrorText : ""}
                         />
                     </div>
                     <div className="row">
@@ -374,7 +374,7 @@ status : stateValue
                                 onChange={this.handleChangeDate}
                                 style={{display: "inline"}}
                                 textFieldStyle={{width: '100%', marginTop:8}}
-                                errorText={(this.state.date=="") ? this.props.dateErrorText : ""}
+                                errorText={(this.state.date==="") ? this.props.dateErrorText : ""}
                                 />
                             </div>
                           </div>
@@ -428,7 +428,7 @@ status : stateValue
                           hintText="Add description..."
                           style={{width:'100%'}}
                           multiLine={true}
-                          errorText={(this.state.projectInf.description=="") ? this.props.descriptionErrorText : ""}
+                          errorText={(this.state.projectInf.description==="") ? this.props.descriptionErrorText : ""}
                           />
                         <div className="row" style={{marginTop:100}}>
                           <div className="col-10"></div>
