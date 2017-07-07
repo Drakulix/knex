@@ -51,10 +51,7 @@ const statusString = [
       this.handleTagChange = this.handleTagChange.bind(this);
       this.handleTitleChange = this.handleTitleChange.bind(this);
       this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
-
       this.handleStatusChange = this.handleStatusChange.bind(this);
-
-
     }
 
 
@@ -91,17 +88,15 @@ const statusString = [
     );
     }
 
-
-
-            handleStatusChange = (event, index, value) => {
-              var projectInf = this.state.projectInf;
+    handleStatusChange = (event, index, value) => {
+      var projectInf = this.state.projectInf;
               projectInf.status = statusString[0].value;
               this.setState({status : value,
                 projectInf: projectInf}
             );
           }
 
-            handleChangeDate = (event, date) => {
+    handleChangeDate = (event, date) => {
               this.setState({
                 date: date,
                 projectInf: {date_creation :  date.getYear() + 1900 + "-" +
@@ -113,7 +108,7 @@ const statusString = [
 
             };
 
-        componentWillMount(){
+    componentWillMount(){
 
           //TODO LOADAuthorsFromBackend
 
@@ -139,10 +134,18 @@ const statusString = [
           if(this.state.projectID !== ""){
             //   this.loadProjectInf(this.state.projectID);
           }
+
+          var stateValue=  statusString.filter(
+          function(data){return this.state.projectInf.status === loadedStatus }
+          );
+
           this.setState({ date:
             new Date( this.state.projectInf.date_creation.split("-")[0],
             this.state.projectInf.date_creation.split("-")[1]-1,
             this.state.projectInf.date_creation.split("-")[2],0,0,0,0),
+
+status : stateValue
+              
           });
 
 
