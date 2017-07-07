@@ -167,7 +167,7 @@ export function register(reg_firstname, reg_lastname, reg_email, reg_password, r
     "email" : reg_email,
     "password" : reg_password,
     "bio" : "",
-    "roles" : reg_role
+    "role" : reg_role
   };
 
   if(reg_password != reg_password_confirm || reg_password == ''){

@@ -261,7 +261,7 @@ export default class ProfileContainer extends React.Component {
               style={{marginBottom:"40px"}}
               >
               <Tab
-                label="Your Profile" value="a">
+                label="Profile Info" value="a">
                 <div className="row padding">
                   <div className="col-9">
                     <p className="profile-header">Information:</p>
@@ -277,16 +277,18 @@ export default class ProfileContainer extends React.Component {
                     <img src="http://www.freeiconspng.com/uploads/profile-icon-9.png" width="200px" height="200px" alt="..." className="rounded-circle profile-icon" />
                   </div>
                 </div>
-                <p>{this.state.profileInf.first_name}'s Projects</p>
+               
+              </Tab>
+              <Tab
+                label={this.state.profileInf.first_name+ '\'s Projects'} value="c">
                 <div className="table-container">
                   <div className="container">
-                    <div className="header">Your own Projects</div>
-                      <ReactTable
-                        data={this.state.data}
-                        columns={columns}
-                        filterable={true}
-                        defaultPageSize={10}
-                      />
+{/*
+                    <DataTable 
+                      columns= {['title', 'status', 'tags', 'description', '_id', 'bookmarked', 'delete']}
+                      fetchURL={'/api/projects/search/advanced/?q=(authors.name: ' + this.state.email + ')'}
+                    ></DataTable>
+*/}
                     <div className="footer" />
                   </div>
                 </div>
