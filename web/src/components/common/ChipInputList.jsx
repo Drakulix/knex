@@ -45,6 +45,7 @@ export default class ChipInputList extends React.Component {
         filter={AutoComplete.fuzzyFilter}
         onRequestAdd={(chip) => this.handleRequestAdd(chip)}
         onRequestDelete={(deletedChip) => this.handleRequestDelete(deletedChip)}
+        errorText={this.props.errorText}
         hintText={this.props.hintText}
         filtered = {this.props.filtered}
         fullWidth
