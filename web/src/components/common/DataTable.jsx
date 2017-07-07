@@ -57,6 +57,11 @@ export default class BookmarksTable extends React.Component {
         data: filteredData
       });
     }.bind(this));
+
+    this.setState({
+filteredTable : JSON.parse(JSON.stringify(this.state.data))
+
+    });
   }
 
 

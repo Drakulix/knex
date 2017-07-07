@@ -17,7 +17,7 @@ export default class ProjectContainer extends Component {
     super(props);
 
     this.state = {
-      projectID : this.props.match.params.getURL,
+      projectID : this.props.match.params.uuid,
       projectInf:{},
       bookmarked:false,
       owner : false,
@@ -38,7 +38,7 @@ export default class ProjectContainer extends Component {
   }
 
   componentWillReceiveProps(nextProps){
-    this.setState({projectID: nextProps.getURL});
+    this.setState({projectID: nextProps.uuid});
     this.loadProjectInf(this.state.projectID)
   }
 
@@ -121,7 +121,7 @@ export default class ProjectContainer extends Component {
           <div className="header"><CircularProgress size={80} thickness={5} /></div>
         </div>
       );
-    }   
+    }
     if(!this.state.project_exists){
       return (
         <div className="container">
@@ -171,12 +171,12 @@ export default class ProjectContainer extends Component {
                 <div className="profile-info">Authors</div>
                 <div style = {styles["wrapper"]}>
                   {
-                    this.state.projectInf.authors.map(item => 
+                    this.state.projectInf.authors.map(item =>
                       <Chip style= {styles["chip"]}>
                         <Link to={"/profile/"+item.email} style= {styles["chipText"]}>{item.name}</Link>
                       </Chip>
-                    ) 
-                  } 
+                    )
+                  }
                   </div>
                 </div>
                 <div style={{marginTop:30}}>
@@ -245,7 +245,7 @@ export default class ProjectContainer extends Component {
                         tooltipPosition="top-center"
                         tooltip="Edit project"
                         iconStyle={{fontSize: '24px'}}
-                        >                      
+                        >
                         <i className="material-icons">mode_edit</i>
                       </IconButton>
                       </Link>
@@ -267,4 +267,3 @@ export default class ProjectContainer extends Component {
   }
   }
 }
-

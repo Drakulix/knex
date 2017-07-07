@@ -30,16 +30,17 @@ const statusString = [
     constructor(props) {
       super(props);
       this.state = {
-        projectID: this.props.match.params.getURL,
+        projectID: this.props.match.params.uuid,
         projectInf:{
           title :"",
           description: "",
-          date_creation: "2012-12-12"
+          date_creation: "2012-12-12",
+          tags: [],
+          url: []
         },
         status : "2",
-        tags: [],
         authors: [],
-        url: [],
+
         invalid : true,
         snackbar : false,
         site_loaded: false,
@@ -132,7 +133,7 @@ const statusString = [
 
 
           if(this.state.projectID !== ""){
-            //   this.loadProjectInf(this.state.projectID);
+               this.loadProjectInf(this.state.projectID);
           }
           var status = this.state.projectInf.status;
           var stateValue=  statusString.filter(
@@ -406,7 +407,7 @@ status : stateValue
 
                         <div className="profile-info">Links</div>
                         <ChipInputList
-                          value={this.state.url}
+                          value={this.state.projectInf.url}
                           onChange={this.handleURLChange}
                           hintText='Add Links...'/>
                       </div>
@@ -417,7 +418,7 @@ status : stateValue
                         <ChipInputList suggestions = {this.state.suggestedTags}
                           onChange={this.handleTagChange}
                           filtered ={true}
-                          value={this.state.tags}
+                          value={this.state.projectInf.tags}
                           hintText={'Add tags...'}
                           />
 

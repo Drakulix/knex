@@ -65,9 +65,9 @@ ReactDOM.render(
         <PageRoute path="/admin" component={AdminOverview} />
         <PageRoute path="/createNew" component={CreateProjectByPattern} />
         <PageRoute exact path="/create" component={CreateProject} />
-        <PageRoute path="/update/:getURL" component={CreateProjectByPattern} />
+        <PageRoute path="/update/:uuid" component={CreateProjectByPattern} />
         <PageRoute path="/createbylink" component={CreateProject} />
-        <PageRoute path="/project/:getURL" component={ProjectContainer} />
+        <PageRoute path="/project/:uuid" component={ProjectContainer} />
         <PageRoute path="/bookmarks" component={BookmarksTable} />
         <PageRoute path="/profile/:email" component={ProfileContainer} />
         <PageRoute path="/yourprojects" component={UserProjects} />
