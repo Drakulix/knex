@@ -36,6 +36,7 @@ const statusString = [
         value : "0"
       };
       this.handleChange = this.handleChange.bind(this);
+      this.handleUpload = this.handleUpload.bind(this);
     }
 
     componentDidMount(){
@@ -61,12 +62,16 @@ const statusString = [
       })
     }
 
-    handleChange(event) {
-      if(typeof event.target.name  === "undefined"){
+
+    handleUpload(event){
         event.preventDefault();
         console.log(event);
         this.submit();
-      }
+      
+    }
+
+
+    handleChange(event) {
       const name = event.target.name;
       const value = event.target.value;
       this.setState({
@@ -321,7 +326,7 @@ const statusString = [
                             <div className="col-1" >
                               <RaisedButton label="Submit"
                                 disabled={this.isInValid()}
-                                onClick={this.handleChange}
+                                onClick={this.handleUpload}
                                 primary={true}/>
                             </div>
                           </div>

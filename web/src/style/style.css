@@ -801,6 +801,18 @@ legend {
   border-top-right-radius: 0rem;
 }
 
+
+.filter-label {
+  margin-top: 13px;
+  font-weight: 300;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+
+
+
+
 /* Profile Details */
 
 .profile-header {

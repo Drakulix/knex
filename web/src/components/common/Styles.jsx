@@ -41,6 +41,8 @@ export default {
   },
   palette : {
       primary1Color : mainColor,
-      accent1Color : mainColor
+      accent1Color : "#000000",
+      pickerHeaderColor: mainColor,
+
   }
 };
