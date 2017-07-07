@@ -11,6 +11,7 @@ import DropDownMenu from 'material-ui/DropDownMenu'
 import MenuItem from 'material-ui/MenuItem';
 
 import ChipInputList from '../common/ChipInputList';
+import DataTable from '../common/DataTable';
 
 
 import Filters from '../common/Filters';
@@ -58,6 +59,12 @@ const statusString = [
       }else {
         this.state.filters[name] = value;
       }
+
+
+      this.setState({fetchURL : "simple/?q="+this.state.searchString});
+
+
+
       }
 
       handleFilterChange(key, value){
@@ -81,6 +88,7 @@ const statusString = [
                 <TextField  style={{width:"100%"}}
                   onKeyPress={this.onKeyPress}
                   name="searchString"
+                  value={this.state.searchString}
                   placeholder="Enter your query here..."
                   onChange={this.handleChange} />
               </div>
@@ -89,7 +97,12 @@ const statusString = [
               </div>
             </div>
             <div style={{marginTop:20}}>
-            <Filters value={this.state.filters} onChange={this.handleFilterChange}></Filters>
+              <DataTable columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'date_creation' ,'bookmarked']}
+                fetchURL={this.state.fetchURL}
+
+
+                ></DataTable>
+
             </div>
           </div>
         );
