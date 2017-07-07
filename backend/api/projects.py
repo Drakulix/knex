@@ -264,12 +264,11 @@ def get_comment(project_id):
                   or 404 if project is not found
     """
     try:
-        comments = g.projects.find({'_id': project_id}, {'comments': 1, '_id': 0}).sort(
-                   key=lambda x: x['datetime'], reverse=True)
-        if not comments:
-            # Problems, when manifest['comments']==None Ideas?
+        project = g.projects.find_one({'_id': project_id})
+        if not project:
             raise ApiException("Project not found", 404)
-        return jsonify(comments)
+        res = project['comments'] if project['comments'] else []
+        return jsonify(res)
     except ApiException as error:
         raise error
     except Exception as err:
