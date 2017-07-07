@@ -277,10 +277,12 @@ export default class ProfileContainer extends React.Component {
                     <img src="http://www.freeiconspng.com/uploads/profile-icon-9.png" width="200px" height="200px" alt="..." className="rounded-circle profile-icon" />
                   </div>
                 </div>
-                <p>{this.state.profileInf.first_name}'s Projects</p>
+               
+              </Tab>
+              <Tab
+                label={this.state.profileInf.first_name+ '\'s Projects'} value="c">
                 <div className="table-container">
                   <div className="container">
-                    <div className="header">Your own Projects</div>
                       <ReactTable
                         data={this.state.data}
                         columns={columns}

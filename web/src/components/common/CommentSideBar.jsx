@@ -32,7 +32,7 @@ export default class CommentSideBar extends React.Component {
     const name = event.target.name;
     const value = event.target.value;
 
-    var fetchURL ="/api/projects/"this.props.uuid+"/comment/";
+    var fetchURL ="/api/projects/"+this.props.uuid+"/comment/";
 
     // PUT comment irgendwie
     this.setState({
@@ -61,7 +61,7 @@ export default class CommentSideBar extends React.Component {
     ];
 
 
-  var fetchURL ="/api/projects/"this.props.uuid+"/comment/"; //GET
+  var fetchURL ="/api/projects/"+this.props.uuid+"/comment/"; //GET
 
 
 this.setState({comments: comments});
