@@ -11,6 +11,7 @@ import Chip from 'material-ui/Chip';
 import Snackbar from 'material-ui/Snackbar';
 import DropDownMenu from 'material-ui/DropDownMenu'
 import MenuItem from 'material-ui/MenuItem';
+import CircularProgress from 'material-ui/CircularProgress';
 import styles from '../common/Styles.jsx';
 
 
@@ -27,24 +28,104 @@ const statusString = [
     constructor(props) {
       super(props);
       this.state = {
-
+        projectID: this.props.match.params.getURL,
+        projectInf:{title :"FF"},
         tags: [],
         authors: [],
-        url: [],
+        url: ['lll','lppp'],
         invalid : true,
         snackbar : false,
-        value : "0"
+        value : "0",
+        site_loaded: false,
+        project_exists: false
       };
       this.handleChange = this.handleChange.bind(this);
       this.handleUpload = this.handleUpload.bind(this);
     }
 
-    componentDidMount(){
-      if(this.props.match.params.getURL != "")
-      this.loadProjectInf(this.props.match.params.getURL);
-      this.setState({getURL :this.props.match.params.getURL });
+    componentWillMount(){
+
+      this.setState({
+        projectInf : {title : "dd"}
+
+      });
+      if(this.state.projectID !== ""){
+        //   this.loadProjectInf(this.state.projectID);
+         }
+    }
+
+
+    fetchProjectInfo(uuid){
+      var res;
+      return fetch('/api/projects/' + uuid, {
+        method: 'GET',
+        mode: 'no-cors',
+        credentials: 'include',
+        headers: {
+          "Accept": "application/json",
+        }
+      }).then(response => response.json()).catch(ex => {
+        console.error('parsing failes', ex);
+      });
+    }
+
+    loadProjectInf(uuid) {
+
+        //TODO LOADAuthorsFromBackend
+
+        var suggestedAuthors = [{email:"marko@knex.", name :"Marko"},
+        {email:"victor@knex", name :"Victor"},{email:"cedric@knex", name :"Cedric"}];
+        var suggestedAuthorsArray = []
+        for (var i in suggestedAuthors) {
+          suggestedAuthorsArray = suggestedAuthorsArray.concat([suggestedAuthors[i].name + " ("+suggestedAuthors[i].email+ ")"]);
+        }
+
+        //TODO LOADTagsFromBackend
+        var suggestedTags = ["your", "tags", "here"];
+
+
+
+
+
+
+      // Load Project info into state
+      this.fetchProjectInfo(uuid).then(data => {
+        this.setState({projectInf: data});
+        if(!data){
+          this.setState({project_exists: false});
+        }else{
+          this.setState({project_exists: true})
+        }
+        this.setState({site_loaded: true})
+      }).catch(ex => {
+        this.setState({project_exists: false});
+        this.setState({site_loaded: true})
+      });
+
+
+
+        var authorArray = []
+        for (var i in this.state.projectInf.authors) {
+          authorArray = authorArray.concat([this.state.projectInf.authors[i].name + " ("+ this.state.projectInf.authors[i].email+ ")"]);
+        }
+
+        this.setState({
+//          title :project.title,
+//          status:project.status,
+//          date  : new Date( project.date_creation.split("-")[0],
+//          project.date_creation.split("-")[1]-1,
+//          project.date_creation.split("-")[2],0,0,0,0),
+//          description : project.description,
+//          tags:project.tags,
+//          url:project.url,
+          authors: authorArray,
+          suggestedAuthors: suggestedAuthorsArray,
+          suggestedTags : suggestedTags,
+//          value : stateValue[0].id
+        });
 
     }
+
 
     handleRequestAdd (chip, name) {
       if(name === "authors" && this.state["suggestedAuthors"].indexOf(chip) == -1)
@@ -67,7 +148,7 @@ const statusString = [
         event.preventDefault();
         console.log(event);
         this.submit();
-      
+
     }
 
 
@@ -88,7 +169,11 @@ const statusString = [
         });
       };
 
+      onchangeUrls(){
 
+      }
+
+/*
       loadProjectInf(uuid) {
 
 
@@ -136,7 +221,7 @@ const statusString = [
         );
         var authorArray = []
         for (var i in project.authors) {
-          authorArray = authorArray.concat([project.authors[i].name + " ("+project.authors[i].id+ ")"]);
+          authorArray = authorArray.concat([project.authors[i].name + " ("+project.authors[i].email+ ")"]);
         }
         this.setState({
           title :project.title,
@@ -154,7 +239,7 @@ const statusString = [
         });
       }
 
-
+*/
       submit(){
         var project = { "title"         : this.state["title"],
           "date_creation" : this.state["date"].getYear() + 1900 + "-"
@@ -203,146 +288,162 @@ const statusString = [
       }
 
       render() {
-        return(
-          <div className="container">
-            <div className="innerContainer">
-              <div className = "headerCreation" style={{width:"100%"}}>
-                {(this.state.getURL != undefined) ? "Edit project" : "Add new project"}
+          if(!this.state.site_loaded && this.state.projectID){
+            return (
+              <div className="container">
+                <div className="header"><CircularProgress size={80} thickness={5} /></div>
               </div>
-              <form>
-                <div>
-                  <div className="profile-info">Title</div>
-                  <TextField  value={this.state.title}
-                    onChange={this.handleChange}
-                    name="title"
-                    hintText="Add title..."
-                    style={{width:'100%'}}
-                    errorText={(this.state.title=="") ? this.props.titleErrorText : ""}
-                    />
-                </div>
-                <div className="row">
-                  <div className="col-4">
-                    <div className="row">
-                      <div className="col-6">
-                        <div className="profile-info">Creation date</div>
-                        <div>
-                          <DatePicker hintText="Pick a creation Date..."
-                            value={this.state.date}
-                            mode="landscape"
-                            onChange={this.handleChangeDate}
-                            style={{display: "inline"}}
-                            textFieldStyle={{width: '100%', marginTop:8}}
-                            errorText={(this.state.date=="") ? this.props.dateErrorText : ""}
-                            />
-                        </div>
-                      </div>
-                      <div className="col-6">
-                        <div className="profile-info">Status</div>
-                        <div>
-                          <DropDownMenu  value={this.state.value}
-                            onChange={this.handleStatusChange}
-                            labelStyle={{width: '100%', paddingLeft:0}}
-                            underlineStyle={{width: '100%', marginLeft:0}}
-                            autoWidth={false}
-                            style={{width: '100%'}}
-                            >
-                            {statusString.map(item =><MenuItem value={item.id} primaryText={item.text} />)}
-                          </DropDownMenu>
-                        </div>
-                      </div>
+            );
+          }
+          if(!this.state.project_exists && this.state.projectID){
+            return (
+              <div className="container">
+                <div className="header">Project Not Found</div>
+              </div>
+            );
+          }else{
+            return(
+                <div className="container">
+                  <div className="innerContainer">
+                    <div className = "headerCreation" style={{width:"100%"}}>
+                      {(this.state.projectID != undefined) ? "Edit project" : "Add new project"}
                     </div>
-                    <div className="profile-info">Authors</div>
-                    <ChipInput
-                      dataSource={this.state.suggestedAuthors}
-                      value={this.state.authors}
-                      filter={AutoComplete.fuzzyFilter}
-                      onChange={this.onChangeAuthors}
-                      hintText='Add authors...'
-                      errorText={(this.state.authors.length === 0) ? this.props.authorsErrorText : ""}
-                      onRequestAdd={(chip) => this.handleRequestAdd(chip, "authors")}
-                      onRequestDelete={(deletedChip) => this.handleRequestDelete(deletedChip, "authors")}
-                      fullWidth
-                      chipRenderer={({ value, isFocused, isDisabled, handleClick, handleRequestDelete }, key) => (
-                        <Chip
-                          key={key}
-                          style= {styles["chip"]}
-                          backgroundColor={styles.chip.background}
-                          onTouchTap={handleClick}
-                          onRequestDelete={handleRequestDelete}>
-                          <span style={styles["chipText"]}> {value} </span>
-                        </Chip>
-                      )}/>
-                      <div className="profile-info">Links</div>
-                      <ChipInput
-                        value={this.state.url}
-                        onChange={this.onChangeUrls}
-                        hintText='Add Links...'
-                        onRequestAdd={(chip) => this.handleRequestAdd(chip, "url")}
-                        onRequestDelete={(deletedChip) => this.handleRequestDelete(deletedChip, "url")}
-                        fullWidth
-                        chipRenderer={({ value, isFocused, isDisabled, handleClick, handleRequestDelete }, key) => (
-                          <Chip
-                            key={key}
-                            style= {styles["chip"]}
-                            backgroundColor={styles.chip.background}
-                            onTouchTap={handleClick}
-                            onRequestDelete={handleRequestDelete}>
-                            <span style={styles["chipText"]}> {value} </span>
-                          </Chip>
-                        )}/>
+                    <form>
+                      <div>
+                        <div className="profile-info">Title</div>
+                        <TextField  value={this.state.projectInf.title}
+                          onChange={this.handleChange}
+                          name="title"
+                          hintText="Add title..."
+                          style={{width:'100%'}}
+                          errorText={(this.state.title=="") ? this.props.titleErrorText : ""}
+                          />
                       </div>
-                      <div className="col-1"></div>
-                      <div className="col-7">
-                        <div className="profile-info"> Tags</div>
-                        <ChipInput
-                          dataSource={this.state.suggestedTags}
-                          value={this.state.tags}
-                          filter={AutoComplete.fuzzyFilter}
-                          onRequestAdd={(chip) => this.handleRequestAdd(chip, "tags")}
-                          onRequestDelete={(deletedChip) => this.handleRequestDelete(deletedChip, "tags")}
-                          hintText='Add tags...'
-                          fullWidth
-                          chipRenderer={({ value, isFocused, isDisabled, handleClick, handleRequestDelete }, key) => (
-                            <Chip
-                              key={key}
-                              style= {styles["chip"]}
-                              backgroundColor={styles.chip.background}
-                              onTouchTap={handleClick}
-                              onRequestDelete={handleRequestDelete}>
-                              <span style={styles["chipText"]}> {value} </span>
-                            </Chip>
-                          )}/>
-                          <div className="profile-info">Description</div>
-                          <TextField  value={this.state.description}
-                            onChange={this.handleChange}
-                            name="description"
-                            hintText="Add description..."
-                            style={{width:'100%'}}
-                            multiLine={true}
-                            errorText={(this.state.description=="") ? this.props.descriptionErrorText : ""}
-                            />
-                          <div className="row" style={{marginTop:100}}>
-                            <div className="col-10"></div>
-                            <div className="col-1" >
-                              <RaisedButton label="Submit"
-                                disabled={this.isInValid()}
-                                onClick={this.handleUpload}
-                                primary={true}/>
+                      <div className="row">
+                        <div className="col-4">
+                          <div className="row">
+                            <div className="col-6">
+                              <div className="profile-info">Creation date</div>
+                              <div>
+                                <DatePicker hintText="Pick a creation Date..."
+                                  value={this.state.projectInf.date_creation}
+                                  mode="landscape"
+                                  onChange={this.handleChangeDate}
+                                  style={{display: "inline"}}
+                                  textFieldStyle={{width: '100%', marginTop:8}}
+                                  errorText={(this.state.date=="") ? this.props.dateErrorText : ""}
+                                  />
+                              </div>
+                            </div>
+                            <div className="col-6">
+                              <div className="profile-info">Status</div>
+                              <div>
+                                <DropDownMenu
+                                  value={this.state.status}
+                                  onChange={this.handleStatusChange}
+                                  labelStyle={{width: '100%', paddingLeft:0}}
+                                  underlineStyle={{width: '100%', marginLeft:0}}
+                                  autoWidth={false}
+                                  style={{width: '100%'}}
+                                  >
+                                  {statusString.map(item =><MenuItem value={item.id} primaryText={item.text} />)}
+                                </DropDownMenu>
+                              </div>
                             </div>
                           </div>
+                          <div className="profile-info">Authors</div>
+                          <ChipInput
+                            dataSource={this.state.suggestedAuthors}
+                            value={this.state.authors}
+                            filter={AutoComplete.fuzzyFilter}
+                            onChange={this.onChangeAuthors}
+                            hintText='Add authors...'
+                            errorText={(this.state.authors.length === 0) ? this.props.authorsErrorText : ""}
+                            onRequestAdd={(chip) => this.handleRequestAdd(chip, "authors")}
+                            onRequestDelete={(deletedChip) => this.handleRequestDelete(deletedChip, "authors")}
+                            fullWidth
+                            chipRenderer={({ value, isFocused, isDisabled, handleClick, handleRequestDelete }, key) => (
+                              <Chip
+                                key={key}
+                                style= {styles["chip"]}
+                                backgroundColor={styles.chip.background}
+                                onTouchTap={handleClick}
+                                onRequestDelete={handleRequestDelete}>
+                                <span style={styles["chipText"]}> {value} </span>
+                              </Chip>
+                            )}/>
+                            <div className="profile-info">Links</div>
+                            <ChipInput
+                              value={this.state.url}
+                              onChange={this.onChangeUrls}
+                              hintText='Add Links...'
+                              onRequestAdd={(chip) => this.handleRequestAdd(chip, "url")}
+                              onRequestDelete={(deletedChip) => this.handleRequestDelete(deletedChip, "url")}
+                              fullWidth
+                              chipRenderer={({ value, isFocused, isDisabled, handleClick, handleRequestDelete }, key) => (
+                                <Chip
+                                  key={key}
+                                  style= {styles["chip"]}
+                                  backgroundColor={styles.chip.background}
+                                  onTouchTap={handleClick}
+                                  onRequestDelete={handleRequestDelete}>
+                                  <span style={styles["chipText"]}> {value} </span>
+                                </Chip>
+                              )}/>
+                            </div>
+                            <div className="col-1"></div>
+                            <div className="col-7">
+                              <div className="profile-info"> Tags</div>
+                              <ChipInput
+                                dataSource={this.state.suggestedTags}
+                                value={this.state.tags}
+                                filter={AutoComplete.fuzzyFilter}
+                                onRequestAdd={(chip) => this.handleRequestAdd(chip, "tags")}
+                                onRequestDelete={(deletedChip) => this.handleRequestDelete(deletedChip, "tags")}
+                                hintText='Add tags...'
+                                fullWidth
+                                chipRenderer={({ value, isFocused, isDisabled, handleClick, handleRequestDelete }, key) => (
+                                  <Chip
+                                    key={key}
+                                    style= {styles["chip"]}
+                                    backgroundColor={styles.chip.background}
+                                    onTouchTap={handleClick}
+                                    onRequestDelete={handleRequestDelete}>
+                                    <span style={styles["chipText"]}> {value} </span>
+                                  </Chip>
+                                )}/>
+                                <div className="profile-info">Description</div>
+                                <TextField  value={this.state.projectInf.description}
+                                  onChange={this.handleChange}
+                                  name="description"
+                                  hintText="Add description..."
+                                  style={{width:'100%'}}
+                                  multiLine={true}
+                                  errorText={(this.state.description=="") ? this.props.descriptionErrorText : ""}
+                                  />
+                                <div className="row" style={{marginTop:100}}>
+                                  <div className="col-10"></div>
+                                  <div className="col-1" >
+                                    <RaisedButton label="Submit"
+                                      disabled={this.isInValid()}
+                                      onClick={this.handleChange}
+                                      primary={true}/>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </form>
                         </div>
+                        <Snackbar
+                          open={this.state.snackbar}
+                          message="New project added!"
+                          autoHideDuration={10000}
+                          />
                       </div>
-                    </form>
-                  </div>
-                  <Snackbar
-                    open={this.state.snackbar}
-                    message="New project added!"
-                    autoHideDuration={10000}
-                    />
-                </div>
-              )
-            }
-          }
+                    )
+                  }
+                }
+              }
 
           UploadByPattern.defaultProps = {
             authorsErrorText: 'Please provide an author',
