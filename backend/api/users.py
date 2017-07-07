@@ -1,7 +1,7 @@
-from flask import request, jsonify, make_response, current_app, g, Blueprint
-from flask_security import login_required, roles_required, login_user,\
-    logout_user, current_user
+from flask import request, jsonify, make_response, g, Blueprint
+from flask_security import login_required, login_user, logout_user, current_user
 from flask_security.utils import verify_password, encrypt_password
+
 from api.helper.apiexception import ApiException
 
 users = Blueprint('api_users', __name__)
@@ -77,9 +77,9 @@ def create_user():
 @login_required
 def update_user():
     user = request.get_json()
-    if(is_permitted(current_user, user)):
+    if is_permitted(current_user, user):
         res = g.user_datastore.get_user(user['email'])
-        if res is None:
+        if not res:
             return make_response("Unknown User with Email-address: " +
                                  user['email'], 400)
         res.first_name = user['first name']
@@ -99,6 +99,7 @@ def update_user():
 @users.route('/api/users/password', methods=['PUT'])
 @login_required
 def update_password():
+    user = request.get_json()
     res = g.user_datastore.get_user(user['email'])
     if not res:
         return make_response("Unknown User with Email-address: " +
@@ -109,9 +110,8 @@ def update_password():
         res.password = encrypt_password(new_password)
         res.save()
         return make_response("Password restored!", 200)
-    else:
-        return make_response("You don't have permission " +
-                             "to edit this user", 400)
+
+    return make_response("You don't have permission to edit this user", 400)
 
 
 @users.route('/api/users/<email:mail>', methods=['GET'])
@@ -127,7 +127,7 @@ def get_user(mail):
         return make_response("Unknown User with Email-address: " + mail, 400)
 
     roles = [role for role in ['admin', 'user'] and user.has_role(role)]
-    
+
     res = dict(user)
     del res['roles']
     del res['password']
@@ -155,22 +155,17 @@ def insert_bookmarks(id):
 @login_required
 def delete_bookmarks(id):
     res = g.user_datastore.get_user(current_user['email'])
-    if not res:
-        return make_response("Unknown User with Email-address: " +
-                             user['email'], 400)
-
     if id in res.bookmarks:
         res.bookmarks.remove(id)
         res.save()
         return jsonify(res['bookmarks'])
-    return make_response("Project is not bookmarked: ", 400)
+    return make_response("Project is not bookmarked: " + id, 400)
 
 
 @users.route('/api/users/bookmarks', methods=['GET'])
 @login_required
 def get_bookmarks():
-    res = g.user_datastore.get_user(current_user['email'])
-    if not res:
-        return make_response("Unknown User with Email-address: " +
-                             user['email'], 400)
+    user = g.user_datastore.get_user(current_user['email'])
+    if not user:
+        raise ApiException("Couldn't find current_user in datastore", 500)
     return jsonify(res['bookmarks'])

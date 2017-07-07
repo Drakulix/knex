@@ -4,7 +4,6 @@
 import sys
 import time
 import uuid
-import json5
 
 from flask import g
 from api.helper.apiexception import ApiException

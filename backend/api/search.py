@@ -1,4 +1,4 @@
-from flask import request, jsonify, make_response, g, Blueprint
+from flask import request, jsonify, g, Blueprint
 from elasticsearch.exceptions import RequestError
 from flask_security import login_required
 

@@ -2,16 +2,14 @@
 Defines API points and starts the application
 """
 
-import sys
 import time
 import json
 import json5
+import uuid
 
 from flask import request, jsonify, make_response, g, Blueprint
-from flask_security import login_required, roles_required, current_user
 from pymongo.collection import ReturnDocument
-from flask_security import login_required, roles_required, login_user,\
-    logout_user, current_user
+from flask_security import login_required, current_user
 
 from api.helper import uploader
 from api.helper.apiexception import ApiException
@@ -144,8 +142,7 @@ def delete_project(project_id):
     """
     if g.projects.delete_one({'_id': project_id}).deleted_count == 0:
         return make_response("Project could not be found", 404)
-    else:
-        return make_response("Success")
+    return make_response("Success")
 
 
 @projects.route('/api/projects/<uuid:project_id>', methods=['PUT'])
@@ -167,17 +164,8 @@ def update_project(project_id):
         if not res:
             raise ApiException("Project not found", 404)
         elif request.is_json or "application/json5" in request.content_type:
-            if request.is_json:
-                manifest = request.get_json()
-                if manifest['_id'] != str(project_id):
-                    raise ApiException("Updated project owns different id",
-                                       409)
-            else:
-                manifest = json5.loads(request.data.decode("utf-8"))
-                if '_id' in manifest:
-                    if manifest['_id'] != str(project_id):
-                        raise ApiException("Updated project owns different id",
-                                           409)
+            manifest = request.get_json() if request.is_json\
+                else json5.loads(request.data.decode("utf-8"))
             is_valid = g.validator.is_valid(manifest)
             if is_valid and is_permitted(current_user, manifest):
                 manifest['_id'] = project_id
@@ -192,8 +180,8 @@ def update_project(project_id):
                 raise ApiException("You are not allowed to edit this project", 403)
             else:
                 raise ApiException(
-                        "Validation Error: \n" + str(is_valid), 400,
-                        [error for error in sorted(g.validator.iter_errors(manifest))])
+                    "Validation Error: \n" + str(is_valid), 400,
+                    [error for error in sorted(g.validator.iter_errors(manifest))])
         else:
             raise ApiException("Manifest had wrong format", 400)
     except ApiException as error:
@@ -240,8 +228,8 @@ def add_comment(project_id):
             make_response("Success", 200)
         else:
             raise ApiException(
-                        "Validation Error: \n" + str(is_valid), 400,
-                        [error for error in sorted(g.validator.iter_errors(manifest))])
+                "Validation Error: \n" + str(is_valid), 400,
+                [error for error in sorted(g.validator.iter_errors(manifest))])
     except ApiException as error:
         raise error
     except UnicodeDecodeError:
@@ -301,8 +289,8 @@ def delete_comments(project_id):
             make_response("Success", 200)
         else:
             raise ApiException(
-                        "Validation Error: \n" + str(is_valid), 400,
-                        [error for error in sorted(g.validator.iter_errors(manifest))])
+                "Validation Error: \n" + str(is_valid), 400,
+                [error for error in sorted(g.validator.iter_errors(manifest))])
     except ApiException as error:
         raise error
     except Exception as err:
