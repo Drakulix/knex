@@ -32,7 +32,7 @@ def logout():
 
 
 @users.route('/api/users', methods=['POST'])
-@roles_required('admin')
+#@roles_required('admin')
 def create_user():
     try:
         user = request.get_json()

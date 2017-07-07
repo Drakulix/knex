@@ -19,6 +19,7 @@ export default class ProjectContainer extends Component {
     this.state = {
       projectID : this.props.match.params.uuid,
       projectInf:{},
+      myBookmarks: {},
       bookmarked:false,
       owner : false,
       sharePane: false,
@@ -34,15 +35,28 @@ export default class ProjectContainer extends Component {
   }
 
   componentWillMount(){
-    this.loadProjectInf(this.state.projectID);
+    this.loadSiteInf(this.state.projectID);
   }
 
   componentWillReceiveProps(nextProps){
     this.setState({projectID: nextProps.uuid});
-    this.loadProjectInf(this.state.projectID)
+    this.loadSiteInf(this.state.projectID)
   }
 
 
+  fetchMyBookmarks(){
+    var res;
+    return fetch('/api/users/bookmarks', {
+      method: 'GET',
+      mode: 'no-cors',
+      credentials: 'include',
+      headers: {
+        "Accept": "application/json",
+      }
+    }).then(response => response.json()).catch(ex => {
+      console.error('parsing failes', ex);
+    });
+  }
 
   fetchProjectInfo(uuid){
     var res;
@@ -58,7 +72,7 @@ export default class ProjectContainer extends Component {
     });
   }
 
-  loadProjectInf(uuid) {
+  loadSiteInf(uuid) {
     this.fetchProjectInfo(uuid).then(data => {
       this.setState({projectInf: data});
       if(!data){
@@ -71,6 +85,22 @@ export default class ProjectContainer extends Component {
       this.setState({project_exists: false});
         this.setState({site_loaded: true})
     });
+
+    this.fetchMyBookmarks().then(data => {
+      this.setState({myBookmarks: data});
+      if(!data){
+        this.setState({});
+      }else{
+        this.setState({project_exists: true})
+      }
+      this.setState({site_loaded: true})
+    }).catch(ex => {
+      this.setState({project_exists: false});
+        this.setState({site_loaded: true})
+    });
+
+
+
   this.setState({bookmarked : true});
   this.setState({owner : true});
   }
@@ -89,19 +119,42 @@ export default class ProjectContainer extends Component {
     this.setState({sharePane:true});
   }
 
+  addBookmark(){
+  return fetch('/api/users/bookmarks/' + this.state.projectID , {
+      method: 'PUT',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    }).then(function(response){
+      if(response.status==200){
+        return true;
+      }else{
+        return false;
+      }
+    });
+  }
+
   handleBookmark(event){
     event.preventDefault();
     this.setState({commentBar:false});
     this.setState({sharePane:false});
-  if(this.state.bookmarked){
+
+
+    if(this.state.bookmarked){
       //deleteBookmark
       this.setState({bookmarked : false});
-    }
-    else {
-      //addBookmark
-      this.setState({bookmarked : true});
+    }else {
+      this.addBookmark().then(res => {
+        if(res){
+          this.setState({bookmarked : true});
+        }
+      });
+
     }
   }
+
+
 
   handleEdit(event){
     event.preventDefault();

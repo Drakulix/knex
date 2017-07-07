@@ -261,7 +261,7 @@ export default class ProfileContainer extends React.Component {
               style={{marginBottom:"40px"}}
               >
               <Tab
-                label="Your Profile" value="a">
+                label="Profile Info" value="a">
                 <div className="row padding">
                   <div className="col-9">
                     <p className="profile-header">Information:</p>
@@ -283,12 +283,12 @@ export default class ProfileContainer extends React.Component {
                 label={this.state.profileInf.first_name+ '\'s Projects'} value="c">
                 <div className="table-container">
                   <div className="container">
-                      <ReactTable
-                        data={this.state.data}
-                        columns={columns}
-                        filterable={true}
-                        defaultPageSize={10}
-                      />
+{/*
+                    <DataTable 
+                      columns= {['title', 'status', 'tags', 'description', '_id', 'bookmarked', 'delete']}
+                      fetchURL={'/api/projects/search/advanced/?q=(authors.name: ' + this.state.email + ')'}
+                    ></DataTable>
+*/}
                     <div className="footer" />
                   </div>
                 </div>
