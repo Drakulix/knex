@@ -22,7 +22,6 @@ import CreateProject from './components/views/CreateProjectView.jsx';
 import ProfileContainer from './components/views/ProfileContainer.jsx';
 import ProjectContainer from './components/views/ProjectContainer';
 import SearchPage from './components/views/SearchPage';
-import UpdateProject from './components/views/UpdateProjectView';
 import BookmarksTable from './components/views/BookmarksTable';
 import UserProjects from './components/views/UserProjects.jsx';
 
