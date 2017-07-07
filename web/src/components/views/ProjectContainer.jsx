@@ -6,6 +6,7 @@ import ChipInput from 'material-ui-chip-input'
 import Chip from 'material-ui/Chip'
 import IconButton from 'material-ui/IconButton';
 import SharePane from '../common/SharePane';
+import CircularProgress from 'material-ui/CircularProgress';
 import styles from '../common/Styles.jsx';
 import CommentSideBar from '../common/CommentSideBar.jsx'
 
@@ -14,13 +15,15 @@ const update_url='/update/'
 export default class ProjectContainer extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      projectID : "",
+      projectID : this.props.match.params.getURL,
       projectInf:{},
       bookmarked:false,
       owner : false,
       sharePane: false,
-      commentBar: false
+      commentBar: false,
+      project_exists: false
     };
 
     this.handleEdit = this.handleEdit.bind(this);
@@ -31,55 +34,45 @@ export default class ProjectContainer extends Component {
   }
 
   componentWillMount(){
-    this.setState({projectInf : this.props.match.params.getURL});
-    this.loadProjectInf(this.props.match.params.getURL);
-    this.setState({projectID :this.props.match.params.getURL});
+    this.loadProjectInf(this.state.projectID);
   }
 
   componentWillReceiveProps(nextProps){
-    this.loadProjectInf(nextProps)
+    this.setState({projectID: nextProps.getURL});
+    this.loadProjectInf(this.state.projectID)
   }
 
-  componentDidMount(){
-    this.loadProjectInf(this.props);
-  }
 
+
+  fetchProjectInfo(uuid){
+    var res;
+    return fetch('/api/projects/' + uuid, {
+      method: 'GET',
+      mode: 'no-cors',
+      credentials: 'include',
+      headers: {
+        "Accept": "application/json",
+      }
+    }).then(response => response.json()).catch(ex => {
+      console.error('parsing failes', ex);
+    });
+  }
 
   loadProjectInf(uuid) {
-    var project = {
-      _id :"dsa",
-      title:"Stream - 0-Follower Analysis",
-      status:"DONE",
-      date_creation :
-        "12", date_update:"11",
-         description : "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
-      tags:[
-        "av","dasda",
-        "adsadas"
-      ],
-      url:["http://google.com","http://github.org", "http://soundloud.com"],
-      authors :[
-        {
-          id:"33", name :"dda"
-        },
-        {
-          id:"32", name :"ddaa"
-        }
-      ]
-    };
-
-
-    this.setState({
-      projectInf : project
+    this.fetchProjectInfo(uuid).then(data => {
+      this.setState({projectInf: data});
+      if(!data){
+        this.setState({project_exists: false});
+      }else{
+        this.setState({project_exists: true})
+      }
+      this.setState({site_loaded: true})
+    }).catch(ex => {
+      this.setState({project_exists: false});
+        this.setState({site_loaded: true})
     });
-
   this.setState({bookmarked : true});
   this.setState({owner : true});
-
-    /*    fetchProjectDetails(uuid).then(data => {
-    this.setState({projectInf: data})
-    });*/
-
   }
 
   handleComment(event){
@@ -122,6 +115,20 @@ export default class ProjectContainer extends Component {
   }
 
   render(){
+    if(!this.state.site_loaded){
+      return (
+        <div className="container">
+          <div className="header"><CircularProgress size={80} thickness={5} /></div>
+        </div>
+      );
+    }   
+    if(!this.state.project_exists){
+      return (
+        <div className="container">
+          <div className="header">Project Not Found</div>
+        </div>
+      );
+    }else{
     let status_badge = null;
     if (this.state.projectInf.status == 'DONE'){
       status_badge = <span className="badge badge-success">DONE</span>
@@ -157,21 +164,26 @@ export default class ProjectContainer extends Component {
                 </div>
                 <div className="col-4">
                   <div className="profile-info">Last update </div>
-                  <div> {this.state.projectInf.date_update}</div>
+                  <div> {this.state.projectInf.date_last_updated}</div>
                 </div>
               </div>
               <div style={{marginTop:30}}>
                 <div className="profile-info">Authors</div>
                 <div style = {styles["wrapper"]}>
-                  {this.state.projectInf.authors.map(item => <Chip style= {styles["chip"]}>
-                  <Link to={"/profile/"+item.id} style= {styles["chipText"]}>{item.name}</Link></Chip>)}
+                  {
+                    this.state.projectInf.authors.map(item => 
+                      <Chip style= {styles["chip"]}>
+                        <Link to={"/profile/"+item.email} style= {styles["chipText"]}>{item.name}</Link>
+                      </Chip>
+                    ) 
+                  } 
                   </div>
                 </div>
                 <div style={{marginTop:30}}>
                   <div className="profile-info">Links</div>
                   <div style = {styles["wrapper"]}>
-                    {this.state.projectInf.url.map(item => <Chip style= {styles["chip"]}>
-                    <a href={item} style= {styles["chipText"]}>{item}</a></Chip>)}
+                    { this.state.projectInf.url.map(item => <Chip style= {styles["chip"]}>
+                    <a href={item} style= {styles["chipText"]}>{item}</a></Chip>) }
                     </div>
                   </div>
                 </div>
@@ -180,9 +192,9 @@ export default class ProjectContainer extends Component {
                   <div style={{marginTop:10}}>
                     <div className="profile-info">Tags </div>
                     <div style = {styles["wrapper"]}>
-                      {this.state.projectInf.tags.map(item =>
+                      { this.state.projectInf.tags.map(item =>
                         <Chip style= {styles["chip"]}>
-                          <Link to={item} style= {styles["chipText"]} >{item}</Link></Chip>)}
+                          <Link to={item} style= {styles["chipText"]} >{item}</Link></Chip>) }
                           </div>
                         </div>
                         <div style={{marginTop:30}}>
@@ -224,17 +236,19 @@ export default class ProjectContainer extends Component {
                         >
                         <i className="material-icons">share</i>
                       </IconButton>
+                      <Link to={"/update/" + this.state.projectID}  >
                       <IconButton
-                        onClick={this.handleEdit}
+
                         touch={true}
                         style = {styles.largeIcon}
                         disabled={!this.state.owner}
                         tooltipPosition="top-center"
                         tooltip="Edit project"
                         iconStyle={{fontSize: '24px'}}
-                        >
+                        >                      
                         <i className="material-icons">mode_edit</i>
                       </IconButton>
+                      </Link>
                       <IconButton
                         onClick={this.handleDelete}
                         touch={true}
@@ -251,4 +265,6 @@ export default class ProjectContainer extends Component {
                 </div>
     );
   }
+  }
 }
+

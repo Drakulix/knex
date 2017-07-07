@@ -2,8 +2,13 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
+import ReactTable from 'react-table';
 import {Tabs, Tab} from 'material-ui/Tabs';
+import CircularProgress from 'material-ui/CircularProgress';
 import {login, isLoggedIn, logout, getCookie, setCookie, isAdmin, getMyEmail, getUserInfo, changePassword, changeProfile} from '../common/Authentication.jsx';
+import { fetchJson } from '../common/Backend';
+
+const FILTER_ATTRIBUTES = ['title', 'status', 'description', '_id'];
 
 export default class ProfileContainer extends React.Component {
   constructor(props) {
@@ -11,6 +16,7 @@ export default class ProfileContainer extends React.Component {
     this.state = {
       profile_exists : true,
       site: 'info',
+      site_loaded: false,
       error: '',
       profileInf: {},
       myProfileInf: {},
@@ -82,9 +88,37 @@ export default class ProfileContainer extends React.Component {
     this.loadMyProfileInf(getMyEmail());
   }
 
+
+  transformObj(dataObject)  {
+    var filteredDataObject = {};
+    for(let attr of FILTER_ATTRIBUTES ) {
+      if(attr == 'title') {
+        filteredDataObject['name'] = dataObject[attr];
+      } else {
+        filteredDataObject[attr] = dataObject[attr];
+      }
+    }
+    return filteredDataObject;
+  }
+
+  transformArray(dataArray) {
+    var filteredDataArray = [];
+    for(let dataObject of dataArray) {
+      filteredDataArray.push(this.transformObj(dataObject));
+    }
+    return filteredDataArray;
+  };
+
   componentWillMount(){
     this.loadProfileInf(this.state.email);
     this.loadMyProfileInf(getMyEmail());
+
+    fetchJson( '/api/projects/search/advanced/?q=(authors.name: ja*)').then(function(datas) {
+      var filteredData = this.transformArray(datas);
+      this.setState({
+        data: filteredData
+      });
+    });
   }
 
   componentDidMount(){
@@ -98,9 +132,11 @@ export default class ProfileContainer extends React.Component {
         this.setState({profile_exists: false});
       }else{
         this.setState({first_name: data.first_name, last_name: data.last_name, bio: data.bio});
+        this.setState({site_loaded: true})
       }
     }).catch(ex => {
       this.setState({profile_exists: false});
+      this.setState({site_loaded: true})
     });
 
   }
@@ -113,9 +149,12 @@ export default class ProfileContainer extends React.Component {
       }else{
         var admin = (data.roles == 'admin');
         this.setState({is_admin: admin});
+ 
       }
+      this.setState({site_loaded: true})
     }).catch(ex => {
       this.setState({profile_exists: false});
+      this.setState({site_loaded: true})
     });
 
   }
@@ -166,6 +205,9 @@ export default class ProfileContainer extends React.Component {
     });
   }
 
+
+
+
   getBio(){
     if(this.state.profileInf.bio){
       return (this.state.profileInf.bio.split('\n').map((item, key) => {return <span key={key}>{item}<br/></span>}));
@@ -176,6 +218,32 @@ export default class ProfileContainer extends React.Component {
 
 
     render() {
+
+    const columns = [{
+      Header: 'Project Name',
+      id: 'name',
+      accessor: d => d,
+      filterMethod: (filter, row) => (row[filter.id].name.includes(filter.value)),
+      Cell: props => <Link to={`project/${props.value._id}`}>{props.value.name}</Link>
+    }, {
+      Header: 'Status',
+      accessor: 'status',
+      width: 100
+    }, {
+      Header: 'Description',
+      accessor: 'description',
+      pivot: true
+    }]
+
+
+
+      if(!this.state.site_loaded){
+        return (
+          <div className="container">
+            <div className="header"><CircularProgress size={80} thickness={5} /></div>
+          </div>
+        );
+      }   
       if( !this.state.profile_exists){
         return (
           <div className="container">
@@ -211,68 +279,15 @@ export default class ProfileContainer extends React.Component {
                 </div>
                 <p>{this.state.profileInf.first_name}'s Projects</p>
                 <div className="table-container">
-                  <table className="table">
-                    <thead className="thead-default">
-                      <tr>
-                        <th>Project Name</th>
-                        <th>Status</th>
-                        <th>Description</th>
-                        <th>Date</th>
-                        <th></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <th scope="row">Contextual music information retrieval and recommendation</th>
-                        <td>pending</td>
-                        <td>descriptions are useful</td>
-                        <td>22/06/17</td>
-                        <td>
-                          <i className="fa fa-bookmark" aria-hidden="true"></i>
-                        </td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Semantic Analysis of Song Lyrics</th>
-                        <td>pending</td>
-                        <td>descriptions are great</td>
-                        <td>22/06/17</td>
-                        <td>
-                          <i className="fa fa-bookmark-o" aria-hidden="true"></i>
-                        </td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Combining Audio Content and Social Context for Semantic Music Discovery</th>
-                        <td>done</td>
-                        <td>descriptions are love</td>
-                        <td>22/06/17</td>
-                        <td>
-                          <i className="fa fa-bookmark-o" aria-hidden="true"></i>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <div className="pagination-container">
-                  <div className="text-xs-center">
-                    <div>
-                      <ul className="pagination">
-                        <li className="page-item">
-                          <a className="page-link" href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                            <span className="sr-only">Previous</span>
-                          </a>
-                        </li>
-                        <li className="page-item"><a className="page-link" href="#">1</a></li>
-                        <li className="page-item"><a className="page-link" href="#">2</a></li>
-                        <li className="page-item"><a className="page-link" href="#">3</a></li>
-                        <li className="page-item">
-                          <a className="page-link" href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                            <span className="sr-only">Next</span>
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
+                  <div className="container">
+                    <div className="header">Your own Projects</div>
+                      <ReactTable
+                        data={this.state.data}
+                        columns={columns}
+                        filterable={true}
+                        defaultPageSize={10}
+                      />
+                    <div className="footer" />
                   </div>
                 </div>
               </Tab>

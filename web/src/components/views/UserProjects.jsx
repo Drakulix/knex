@@ -15,10 +15,6 @@ export default class UserProjects extends React.Component {
     };
   }
 
-  componentWillMount() {
-
-  }
-
   transformObj(dataObject)  {
     var filteredDataObject = {};
     for(let attr of FILTER_ATTRIBUTES ) {
@@ -39,7 +35,9 @@ export default class UserProjects extends React.Component {
     return filteredDataArray;
   };
 
-  componentDidMount() {
+
+
+  componentWillMount() {
     var self = this;
     fetchJson('/api/projects').then(function(datas) {
       var filteredData = this.transformArray(datas);
@@ -56,7 +54,7 @@ export default class UserProjects extends React.Component {
       id: 'name',
       accessor: d => d,
       filterMethod: (filter, row) => (row[filter.id].name.includes(filter.value)),
-      Cell: props => <Link to={`projects/${props.value._id}`}>{props.value.name}</Link>
+      Cell: props => <Link to={`project/${props.value._id}`}>{props.value.name}</Link>
     }, {
       Header: 'Status',
       accessor: 'status',
