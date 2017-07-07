@@ -32,7 +32,7 @@ a:hover {
 }
 
 .logo-banner {
-  margin-top: 2em;
+  margin-top: 0.4em;
   margin-left: 12px;
   width: 80%;
 }
@@ -277,11 +277,16 @@ a:hover {
 }
 
 .centered-pagination {
-  width: 110px;
   margin-left: auto;
   margin-right: auto;
   margin-top: 2em;
   margin-bottom: 4em;
+  display: inline-block;
+  float: left;
+}
+
+#buttonNext{
+  float: left;
 }
 
 .table-hover tbody tr:hover td{
@@ -320,11 +325,35 @@ a:hover {
 #dropdown_status{
   height: auto;
   width: 165px;
+
+}
+
+#dropdownStatusDiv{
+  margin-top: -10px;
+
+}
+#dropdownStatusDiv select{
+  margin-top: -3px;
+
+}
+
+#dropdownStatusDiv label{
+  margin-top: 3px;
 }
 
 #noResults{
   margin-top: 50px;
 }
+
+#n-results-label{
+  display: inline-block;
+}
+
+#n-results{
+  margin-top: -20px;
+  margin-left: 16px;
+}
+
 
 .input-group-addon.primary {
     color: #333333;
@@ -339,12 +368,17 @@ a:hover {
 }
 
 #minimize{
-  margin-left: 17px;
+  margin-left: 7px;
+}
+
+#filterSearchToggle{
+  margin-left: 19px;
 }
 
 #advancedSearch{
-  margin-top: 30px;
+  margin-top: -18px;
 }
+
 
 /* createProjectByPattern.js and createProjectView.js */
 
@@ -375,6 +409,7 @@ legend {
   font-size: 18px;
   color: #000000;
   margin-top:46px;
+  margin-bottom: 20px;
 
   display: block;
   margin-left: auto;
@@ -517,6 +552,11 @@ legend {
   text-align: center;
   color: #000000;
 }
+
+#formular{
+  margin-top: 46px;
+}
+
 
 /* Project Container */
 .projecttitle {

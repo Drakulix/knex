@@ -21,14 +21,14 @@ export default class UploadByLink extends React.Component {
     return (
       <div className="container"style={{textAlign : 'center'}} >
         <div className="header">Create Project</div>
-          <form>
+          <form id="inputLink">
 
             <div>
               <TextField value={this.state.title}
                   ID="url"
                   name="title"
                   hintText="enter url here (e.g. “http://soundloud.com/stuff/manifest.json”)"
-                  style={{width:'430px',}}
+                  style={{width:'450px',}}
                   onChange={event => this.setState({
                             sourceURL : event.target.value,
                            })}
@@ -37,32 +37,34 @@ export default class UploadByLink extends React.Component {
             </div>
             <div >
               <RaisedButton style={{width:'300px'}}
-                          label="from online json"
+                          label="upload json file via link"
                           primary={true}
                           onSubmit={() => {history.push("/create/"+encodeURIComponent(this.state.sourceURL))}}/>
             </div>
           </form>
-        <div className="text" >or</div>
-        <div>
-          <RaisedButton
-                    label="from local json"
-                    labelPosition="before"
-                    style={styles.uploadButton}
-                    containerElement="label"
-                    primary={true}
-                    style={{width:'300px'}}>
-                  <input type="file" style={styles.uploadInput} />
-          </RaisedButton>
-        </div>
-        <div className="text" >or</div>
-        <div>
-          <RaisedButton label="with online formular"
-                      href="/createNew/"
-                      primary={true}
-                      style={{ width:'300px'}}
-                        />
-        </div>
+          <div className="text" ><b>or</b></div>
+            <div>
+
+              <div>
+                <RaisedButton
+                          label="upload local json file"
+                          labelPosition="before"
+                          style={styles.uploadButton}
+                          containerElement="label"
+                          primary={true}
+                          style={{width:'300px'}}>
+                        <input type="file" style={styles.uploadInput} />
+                </RaisedButton>
+            </div>
+            <div id="formular">
+                <RaisedButton label="use formular to create project"
+                            href="/createNew/"
+                            primary={true}
+                            style={{ width:'300px'}}
+                              />
+          </div>
       </div>
+    </div>
     );
   }
 }

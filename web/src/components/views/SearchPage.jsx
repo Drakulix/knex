@@ -103,17 +103,17 @@ class AdvancedSearch extends Component {
     super(props);
     this.state = {
       chips: [],
-      counter: ""
     }
   }
 
+  /*
+    Function to parse the chips to the search class, for using it in the filter function
+  */
   onChange = chips => {
     this.setState({ chips: chips });
     var stringArray = [];
-    var counter = 0;
     for (var i = 0; i< chips.length; i++){
       stringArray.push(chips[i].toString());
-      counter ++;
     }
 
     var searchstring = "";
@@ -126,8 +126,6 @@ class AdvancedSearch extends Component {
     }
     searchstring = searchstring.concat(")");
 
-
-    this.setState({counter: searchstring})
     this.props.changeStateTags(searchstring);
   }
   //View for advanced search, the onChange in the <input> parses the state all the way to the parent
@@ -149,7 +147,7 @@ class AdvancedSearch extends Component {
               />
             </div>
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <label for="dateStart" className ="input-group-addon search-bar-title primary">
               Date from:
             </label>
@@ -162,7 +160,7 @@ class AdvancedSearch extends Component {
               />
             </div>
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <label for="DateEnd" className ="input-group-addon search-bar-title primary">
             To:
           </label>
@@ -173,6 +171,23 @@ class AdvancedSearch extends Component {
                 name="dateEnd"
                 onChange={(value) => this.props.changeStateTo(value.target.value)}
               />
+            </div>
+          </div>
+          <div className="col-md-2" id="dropdownStatusDiv">
+            <div className="input-group form-inline panel">
+              <label className ="input-group-addon primary">
+                Status:
+              </label>
+              <select
+                className="form-control"
+                id="dropdown_status"
+                name="status"
+                onChange={(value) => this.props.ChangeStateStatus(value.target.value)}
+              >
+                <option>DONE</option>
+                <option>pending</option>
+                <option>in progress</option>
+              </select>
             </div>
           </div>
         </div>
@@ -236,25 +251,6 @@ class AdvancedSearch extends Component {
             </div>
           </div>
       </div>
-      <div className="row" >
-        <div className="col-md-2">
-          <div className="input-group form-inline panel">
-            <label className ="input-group-addon primary">
-              Status
-            </label>
-            <select
-              className="form-control"
-              id="dropdown_status"
-              name="status"
-              onChange={(value) => this.props.ChangeStateStatus(value.target.value)}
-            >
-              <option>DONE</option>
-              <option>pending</option>
-              <option>in progress</option>
-            </select>
-          </div>
-        </div>
-      </div>
     </div>
     );
   }
@@ -295,7 +291,7 @@ class Search extends Component{
               />
             </form>
             <a onClick={() => this.toggle()}  className="clickable-text col-md-2" id="minimize">
-              <u>Minimize</u>
+              <u><b>Simple Search</b></u>
             </a>
           </div>
         </div>
@@ -309,9 +305,9 @@ class Search extends Component{
             </form>
           </div>
           <div className="row padding" id="advancedSearchToggle">
-            <a onClick={() => this.toggle()} className="clickable-text padding text-right">
-              <u>Advanced Search</u>
-            </a>
+              <a onClick={() => this.toggle()} className="clickable-text padding text-right" id="filterSearchToggle">
+                <u><b>Filtered Search</b></u>
+              </a>
           </div>
         </div>
       );
