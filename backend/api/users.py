@@ -2,12 +2,23 @@ from flask import request, jsonify, make_response, current_app, g, Blueprint
 from flask_security import login_required, roles_required, login_user,\
     logout_user, current_user
 from flask_security.utils import verify_password, encrypt_password
-
 from api.helper.apiexception import ApiException
 
 from api.helper.userpermission import is_permitted
 
 users = Blueprint('api_users', __name__)
+
+
+def is_permitted(user, entry):
+    """Return boolean value if user has admin permission, arg->list with roles
+
+        Returns:
+            res: true if user has admin role
+        """
+
+    if user.has_role('admin'):
+        return True
+    return user['email'] == entry['email']
 
 
 @users.route('/api/users/login', methods=['POST'])
@@ -32,23 +43,29 @@ def logout():
 
 
 @users.route('/api/users', methods=['POST'])
-@roles_required('admin')
 def create_user():
     try:
         user = request.get_json()
 
+        if user['roles'] == 'admin':
+            if current_user.has_role('admin'):
+                pass
+            else:
+                raise ApiException('Cannot create admin user', 403)
+
         # still without json validation
         # a new user does not have bookmarks
-        role = g.user_datastore.find_or_create_role(user['role'])
+        roles = g.user_datastore.find_or_create_role(user['roles'])
         # if res is not None:
         # return make_response('User already exists',500)
 
         g.user_datastore.create_user(first_name=user['first name'],
                                      last_name=user['last name'],
                                      email=user['email'],
-                                     password=encrypt_password(user['password']),
+                                     password=encrypt_password(
+                                         user['password']),
                                      bio=user['bio'],
-                                     roles=[role])
+                                     roles=[roles])
 
         return jsonify(g.user_datastore.get_user(user['email']))
 
@@ -62,19 +79,23 @@ def create_user():
 #@roles_required('admin')
 def update_user():
     user = request.get_json()
+    if(is_permitted(current_user, user)):
+        res = g.user_datastore.get_user(user['email'])
+        if res is None:
+            return make_response("Unknown User with Email-address: " +
+                                 user['email'], 400)
+        res.first_name = user['first name']
+        res.last_name = user['last name']
+        res.bio = user['bio']
+        res.save()
+        res = make_response(jsonify(res))
+        res.headers['Content-Type'] = 'application/json'
 
-    res = g.user_datastore.get_user(user['email'])
-    if res is None:
-        return make_response("Unknown User with Email-address: " +
-                             user['email'], 400)
-    res.first_name = user['first name']
-    res.last_name = user['last name']
-    res.bio = user['bio']
-    res.save()
-    res = make_response(dumps(res))
-    res.headers['Content-Type'] = 'application/json'
+        return make_response("User with email: " +
+                             user['email'] + " updated", 200)
 
-    return make_response("User with email: " + user['email'] + " updated", 200)
+    return make_response("You don't have permission " +
+                         "to edit this user", 400)
 
 
 @users.route('/api/users/password', methods=['PUT'])
@@ -152,10 +173,10 @@ def delete_bookmarks(id):
     user = current_user
     if user is None:
         return make_response("No current user detected ", 400)
-    res = g.user_datastore.get_user(user.email)
-    if res is None:
+    res = g.user_datastore.get_user(user['email'])
+    if not res:
         return make_response("Unknown User with Email-address: " +
-                             user.email, 400)
+                             user['email'], 400)
 
     if id in res.bookmarks:
         res.bookmarks.remove(id)
@@ -170,8 +191,8 @@ def get_bookmarks():
     user = current_user
     if user is None:
         return make_response("No current user detected ", 400)
-    res = g.user_datastore.get_user(user.email)
-    if res is None:
+    res = g.user_datastore.get_user(user['email'])
+    if not res:
         return make_response("Unknown User with Email-address: " +
-                             user.email, 400)
+                             user['email'], 400)
     return jsonify(res['bookmarks'])
