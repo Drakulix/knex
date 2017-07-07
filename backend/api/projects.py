@@ -30,9 +30,7 @@ def is_permitted(user, entry):
 
     if user.has_role('admin'):
         return True
-    elif entry['author'] and user['email'] == entry['author']:
-        return True
-    return user['email'] in entry['authors']
+    return user['email'] == entry['author'] or user['email'] in entry['authors']
 
 
 @projects.route('/api/projects', methods=['POST'])
@@ -71,7 +69,7 @@ def add_projects():
         except ApiException as e:
             raise e
 
-        except UnicodeDecodeError as ue:
+        except UnicodeDecodeError:
             raise ApiException("Only utf-8 compatible charsets are " +
                                "supported, the request body does not " +
                                "appear to be utf-8.", 400)
@@ -121,7 +119,7 @@ def get_project_by_id(project_id):
         res (json): Project corresponding to the ID
     """
     res = g.projects.find_one({'_id': project_id})
-    if res is None:
+    if not res:
         return make_response("Project not found", 404)
     try:
         res['is_bookmark'] = 'true' if str(project_id) in current_user['bookmarks'] else 'false'
@@ -166,7 +164,7 @@ def update_project(project_id):
     """
     try:
         res = g.projects.find_one({'_id': project_id})
-        if res is None:
+        if not res:
             raise ApiException("Project not found", 404)
         elif request.is_json or "application/json5" in request.content_type:
             if request.is_json:
@@ -182,30 +180,25 @@ def update_project(project_id):
                                            409)
             is_valid = g.validator.is_valid(manifest)
             if is_valid and is_permitted(current_user, manifest):
-                print("manifest validated", file=sys.stderr)
                 manifest['_id'] = project_id
                 manifest['date_last_updated'] = time.strftime("%Y-%m-%d")
                 g.projects.find_one_and_replace({'_id': project_id}, manifest,
                                                 return_document=ReturnDocument.AFTER)
-                print("mongo replaced:", file=sys.stderr)
-                print(manifest, file=sys.stderr)
                 return make_response("Success")
-            elif request.on_json_loading_failed() is not None:
+            elif not request.on_json_loading_failed():
                 raise ApiException("json could not be parsed",
                                    400, request.on_json_loading_failed())
             elif not is_permitted(current_user, manifest):
                 raise ApiException("You are not allowed to edit this project", 403)
             else:
-                validation_errs = [error for error in
-                                   sorted(g.validator.iter_errors(manifest))]
-                if validation_errs is not None:
-                    raise ApiException("Validation Error: \n" +
-                                       str(is_valid), 400, validation_errs)
+                raise ApiException(
+                        "Validation Error: \n" + str(is_valid), 400,
+                        [error for error in sorted(g.validator.iter_errors(manifest))])
         else:
             raise ApiException("Manifest had wrong format", 400)
     except ApiException as error:
         raise error
-    except UnicodeDecodeError as unicodeerr:
+    except UnicodeDecodeError:
         raise ApiException("Only utf-8 compatible charsets are supported, " +
                            "the request body does not appear to be utf-8", 400)
     except Exception as err:
@@ -227,7 +220,7 @@ def add_comment(project_id):
     """
     try:
         manifest = g.projects.find_one({'_id': project_id})
-        if manifest is None:
+        if not manifest:
             raise ApiException("Project not found", 404)
         if "text/plain" not in request.content_type:
             raise ApiException("'text/plain' must be in Content-Type", 400)
@@ -251,7 +244,7 @@ def add_comment(project_id):
                         [error for error in sorted(g.validator.iter_errors(manifest))])
     except ApiException as error:
         raise error
-    except UnicodeDecodeError as unicodeerr:
+    except UnicodeDecodeError:
         raise ApiException("Only utf-8 compatible charsets are supported, " +
                            "the request body does not appear to be utf-8", 400)
     except Exception as err:
@@ -273,7 +266,7 @@ def get_comment(project_id):
     try:
         comments = g.projects.find({'_id': project_id}, {'comments': 1, '_id': 0}).sort(
                    key=lambda x: x['datetime'], reverse=True)
-        if comments is None:
+        if not comments:
             # Problems, when manifest['comments']==None Ideas?
             raise ApiException("Project not found", 404)
         return jsonify(comments)
@@ -299,7 +292,7 @@ def delete_comments(project_id):
     """
     try:
         manifest = g.projects.find_one({'_id': project_id})
-        if manifest is None:
+        if not manifest:
             raise ApiException("Project not found", 404)
         del manifest['comments']
         is_valid = g.validator.is_valid(manifest)
@@ -332,7 +325,7 @@ def update_comment(project_id, comment_id):
     """
     try:
         manifest = g.projects.find_one({'_id': project_id})
-        if manifest is None:
+        if not manifest:
             raise ApiException("Project not found", 404)
         if 'text/plain' not in request.content_type:
             raise ApiException("Content-Type header must include 'text/plain'", 400)
@@ -357,7 +350,7 @@ def update_comment(project_id, comment_id):
 
     except ApiException as error:
         raise error
-    except UnicodeDecodeError as unicodeerr:
+    except UnicodeDecodeError:
         raise ApiException("Only utf-8 compatible charsets are supported, " +
                            "the request body does not appear to be utf-8", 400)
     except Exception as err:
@@ -379,7 +372,7 @@ def delete_comment(project_id, comment_id):
     """
     try:
         manifest = g.projects.find_one({'_id': project_id})
-        if manifest is None:
+        if not manifest:
             raise ApiException("Project not found", 404)
 
         if not manifest['comments']:
@@ -388,8 +381,6 @@ def delete_comment(project_id, comment_id):
         for comment in manifest['comments']:
             if str(comment_id) == comment['id'] and is_permitted(current_user, comment):
                 manifest['comments'].remove(comment)
-                print("deleted", file=sys.stderr)
-                print(comment, file=sys.stderr)
                 if not manifest['comments']:
                     del manifest['comments']
                 is_valid = g.validator.is_valid(manifest)
