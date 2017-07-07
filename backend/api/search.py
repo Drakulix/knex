@@ -2,6 +2,7 @@ from flask import request, jsonify, g, Blueprint
 from elasticsearch.exceptions import RequestError
 from flask_security import login_required
 
+
 search = Blueprint('api_projects_search', __name__)
 
 

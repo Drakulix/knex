@@ -2,6 +2,7 @@ from flask import request, jsonify, make_response, g, Blueprint
 from flask_security import login_required, login_user, logout_user, current_user
 from flask_security.utils import verify_password, encrypt_password
 
+
 from api.helper.apiexception import ApiException
 
 users = Blueprint('api_users', __name__)
@@ -138,25 +139,25 @@ def get_user(mail):
 
 @users.route('/api/users/bookmarks/<uuid:id>', methods=['POST'])
 @login_required
-def insert_bookmarks(id):
+def insert_bookmarks(bookmarkid):
     user = current_user
     res = g.user_datastore.get_user(user['email'])
     if not res:
         return make_response("Unknown User with Email-address: ", 400)
 
-    if id in res.bookmarks:
+    if bookmarkid in res.bookmarks:
         return make_response("Project is already bookmarked ", 400)
-    res.bookmarks.append(id)
+    res.bookmarks.append(bookmarkid)
     res.save()
     return jsonify(res['bookmarks'])
 
 
 @users.route('/api/users/bookmarks/<uuid:id>', methods=['DELETE'])
 @login_required
-def delete_bookmarks(id):
+def delete_bookmarks(bookmarkid):
     res = g.user_datastore.get_user(current_user['email'])
-    if id in res.bookmarks:
-        res.bookmarks.remove(id)
+    if bookmarkid in res.bookmarks:
+        res.bookmarks.remove(bookmarkid)
         res.save()
         return jsonify(res['bookmarks'])
     return make_response("Project is not bookmarked: " + id, 400)
@@ -168,4 +169,4 @@ def get_bookmarks():
     user = g.user_datastore.get_user(current_user['email'])
     if not user:
         raise ApiException("Couldn't find current_user in datastore", 500)
-    return jsonify(res['bookmarks'])
+    return jsonify(user['bookmarks'])

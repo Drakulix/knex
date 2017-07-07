@@ -1,5 +1,3 @@
-import json
-
 from elasticsearch import Elasticsearch
 from flask import Flask, g, jsonify, request
 from flask.helpers import make_response
@@ -21,6 +19,7 @@ from api.search import search
 from api.helper.apiexception import ApiException
 from globals import ADMIN_PERMISSION
 
+
 app = Flask(__name__, static_url_path='')
 CORS(app)
 
@@ -35,7 +34,6 @@ app.config['SECURITY_PASSWORD_SALT'] = 'THISISMYOWNSALT'
 app.config['UPLOAD_FOLDER'] = ''
 app.config['MAX_CONTENT_PATH'] = 1000000  # 100.000 byte = 100kb
 
-global DB
 DB = MongoEngine(app)
 
 LOGINMANAGER = LoginManager()
@@ -78,6 +76,7 @@ def handle_unauthorized_access():
 
 @app.before_first_request
 def init_global_manifest_validator():
+    import json
     with app.open_resource("manifest_schema.json", mode='r') as schema_file:
         schema = json.load(schema_file)
         global VALIDATOR
@@ -163,13 +162,12 @@ def handle_insufficient_permission(error):
 
 
 @app.errorhandler(404)
-def index(e):
+def index(path):
     """Index of knex
     """
     if request.path.startswith("/api/"):
-        return e, 404
-    else:
-        return app.send_static_file('index.html')
+        return path, 404
+    return app.send_static_file('index.html')
 
 
 @app.route('/', methods=['GET'])

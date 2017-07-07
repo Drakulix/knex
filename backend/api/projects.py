@@ -3,9 +3,9 @@ Defines API points and starts the application
 """
 
 import time
+import uuid
 import json
 import json5
-import uuid
 
 from flask import request, jsonify, make_response, g, Blueprint
 from pymongo.collection import ReturnDocument
