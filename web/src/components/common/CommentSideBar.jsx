@@ -31,6 +31,10 @@ export default class CommentSideBar extends React.Component {
   handleSubmit(event){
     const name = event.target.name;
     const value = event.target.value;
+
+    var fetchURL ="/api/projects/"this.props.uuid+"/comment/";
+
+    // PUT comment irgendwie
     this.setState({
       comment: ""});
   }
@@ -50,11 +54,15 @@ export default class CommentSideBar extends React.Component {
 
   loadComments(){
     var comments = [
-      {comment : "Thats a comment" , name :"Marko", id:"21", date: "12.12.2012"},
+      {message : "Thats a comment" , author_name :"Marko", id:"21", datetime: "12.12.2012"},
 
 
-      {comment : "Thats a comment" , name :"Marko", id:"21", date: "12.12.2012"}
+      {message : "Thats a comment" , author_name :"Marko", id:"21", datetime: "12.12.2012"}
     ];
+
+
+  var fetchURL ="/api/projects/"this.props.uuid+"/comment/"; //GET
+
 
 this.setState({comments: comments});
   }
@@ -84,8 +92,8 @@ this.setState({comments: comments});
           {this.state.comments.map(item =>
             <div>
               <Divider/>
-              <ListItem primaryText={item.comment}
-                        secondaryText={item.name + " " + item.date}
+              <ListItem primaryText={item.message}
+                        secondaryText={item.author_name + " " + item.datetime}
               />
             </div>)
           }
