@@ -13,7 +13,9 @@ import ChipInputList from '../common/ChipInputList';
 const statusString = [
   {id: "0" , text :"Done", value : "DONE"},
   {id: "1" , text :"In review", value : "IN_REVIEW"},
-  {id: "2" , text :"In progress", value : "IN_PROGRESS"}];
+  {id: "2" , text :"In progress", value : "IN_PROGRESS"},
+  {id: "3" , text :"No filter", value : ""}
+];
 
   export default class Filters extends React.Component{
 
@@ -24,6 +26,7 @@ const statusString = [
         authors : [],
         title : "",
         tags : [],
+        value : "3",
         status : "",
         date_from:"",
         date_till:"",
@@ -39,12 +42,32 @@ const statusString = [
 
 
     componentWillMount(){
-      this.setState({suggestedAuthors :["aaa", "bbb"]})    ;
+
+
+      var suggestedAuthors = [{email:"marko@knex.", name :"Marko"},
+            {email:"victor@knex", name :"Victor"},{email:"cedric@knex", name :"Cedric"},
+
+
+
+
+            {"name": "Pedro Moreno",
+             "email": "Pedro.Moreno@hp.com"}
+
+          ];
+      var suggestedAuthorsArray = []
+      for (var i in suggestedAuthors) {
+        suggestedAuthorsArray = suggestedAuthorsArray.concat([suggestedAuthors[i].name + " ("+suggestedAuthors[i].email+ ")"]);
+      }
+
+
+
+      this.setState({suggestedAuthors :suggestedAuthorsArray})    ;
       this.setState({suggestedTags :[        "multimedia indexing",
         "rich media",  
         "music information retrieval",  
         "Algorithms",  
         "Design",
+        "Social computing",
         "Experimentation", 
         "Music information retrieval",
         "Web content mining",
@@ -63,25 +86,29 @@ const statusString = [
 
       }
 
+
+      dateToString(date){
+        var mm = date.getMonth()+1;
+        var dd = date.getDate();
+        return [date.getFullYear(),'-', ((mm > 9) ? '' :'0')+ mm, '-',
+         ((dd> 9) ? '':'0')+ dd].join('');
+      }
+
       handleChangeDateFrom = (event, date) => {
         this.setState({
           date_from: date,
-          filter_date_from :  date.getYear() + 1900 + "-" + (date .getMonth() + 1) + "-"  + date.getDate()
+          filter_date_from : this.dateToString(date)
 
         });
-
-        this.props.onChange("filter_date_from",  date.getYear() + 1900 + "-" + (date .getMonth() + 1) + "-"  + date.getDate());
-
+        this.props.onChange("filter_date_from",  this.dateToString(date));
       };
 
       handleChangeDateTill = (event, date) => {
         this.setState({
           date_till: date,
-          filter_date_to :  date.getYear() + 1900 + "-" + (date .getMonth() + 1) + "-"  + date.getDate()
+          filter_date_to :  this.dateToString(date)
         });
-
-        this.props.onChange("filter_date_to",  date.getYear() + 1900 + "-" + (date .getMonth() + 1) + "-"  + date.getDate());
-
+        this.props.onChange("filter_date_to", this.dateToString(date));
       };
 
 

@@ -25,7 +25,7 @@ render(){
 
 
 
-        <DataTable columns= {['title', 'status', 'tags', 'description', '_id', 'bookmarked', 'delete']}
+        <DataTable columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'bookmarked', 'delete']}
 
 fetchURL="/api/projects"
           ></DataTable>

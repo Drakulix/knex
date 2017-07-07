@@ -98,11 +98,15 @@ const statusString = [
           }
 
     handleChangeDate = (event, date) => {
+
+      var mm = date.getMonth()+1;
+      var dd = date.getDate();
+      var dateString =  [date.getFullYear(),'-', ((mm > 9) ? '' :'0')+ mm, '-',
+       ((dd> 9) ? '':'0')+ dd].join('');
+
               this.setState({
                 date: date,
-                projectInf: {date_creation :  date.getYear() + 1900 + "-" +
-                  (date.getMonth() + 1) + "-" +
-                  date.getDate()
+                projectInf: {date_creation : dateString
                 }
               });
 
@@ -114,7 +118,7 @@ const statusString = [
           //TODO LOADAuthorsFromBackend
 
           var suggestedAuthors = [{email:"marko@knex.", name :"Marko"},
-          {email:"victor@knex", name :"Victor"},{email:"cedric@knex", name :"Cedric"}];
+                {email:"victor@knex", name :"Victor"},{email:"cedric@knex", name :"Cedric"}];
           var suggestedAuthorsArray = []
           for (var i in suggestedAuthors) {
             suggestedAuthorsArray = suggestedAuthorsArray.concat([suggestedAuthors[i].name + " ("+suggestedAuthors[i].email+ ")"]);

@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import {fetchProjectDetails, fetchJson} from '../common/Backend'
 import { Link } from 'react-router-dom';
 
-import ChipInput from 'material-ui-chip-input'
 import Chip from 'material-ui/Chip'
+import styles from '../common/Styles.jsx';
+
 import IconButton from 'material-ui/IconButton';
 import SharePane from '../common/SharePane';
 import CircularProgress from 'material-ui/CircularProgress';
-import styles from '../common/Styles.jsx';
 import CommentSideBar from '../common/CommentSideBar.jsx'
 
 
