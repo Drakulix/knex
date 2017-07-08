@@ -28,7 +28,9 @@ def is_permitted(user, entry):
 
     if user.has_role('admin'):
         return True
-    return user['email'] == entry['author'] or user['email'] in entry['authors']
+    elif 'author' in entry:
+        return user['email'] == entry['author']['email']
+    return user['email'] in entry['authors']
 
 
 @projects.route('/api/projects', methods=['POST'])
@@ -166,8 +168,8 @@ def update_project(project_id):
         elif request.is_json or "application/json5" in request.content_type:
             manifest = request.get_json() if request.is_json\
                 else json5.loads(request.data.decode("utf-8"))
-            if manifest['id'] != str(project_id):
-                return make_response("project_id and json['id'] do not match.", 409)
+            if manifest['_id'] != str(project_id):
+                return make_response("project_id and json['_id'] do not match.", 409)
             is_valid = g.validator.is_valid(manifest)
             if is_valid and is_permitted(current_user, manifest):
                 manifest['_id'] = project_id
@@ -218,20 +220,24 @@ def add_comment(project_id):
         author = {}
         author['email'] = current_user['email']
         user = g.user_datastore.get_user(current_user['email'])
-        author['name'] = user['first_name'] if 'first_name' in user\
-            else " " + user['last_name'] if 'last_name' in author\
-            else ""
+        firstn = user['first_name'] if 'first_name' in user else ""
+        lastn = user['last_name'] if 'last_name' in user else ""
+        author['name'] = firstn+" "+lastn
         comment['author'] = author
-        comment['datetime'] = time.strftime("%Y-%m-%d %H:%M")
-        comment['id'] = uuid.uuid4()
+        comment['datetime'] = time.strftime("%Y-%m-%d %H:%M:%S")
+        comment['id'] = str(uuid.uuid4())
         comment['message'] = request.data.decode("utf-8")
-        manifest['comments'] = manifest['comments'].append(comment)\
-            if 'comments' in manifest else [comment]
+        if 'comments' in manifest:
+            manifest['comments'].append(comment)
+        else:
+            manifest['comments'] = [comment]
+        manifest['_id'] = str(project_id)
         is_valid = g.validator.is_valid(manifest)
         if is_valid:
+            manifest['_id'] = project_id
             g.projects.find_one_and_replace({'_id': project_id}, manifest,
                                             return_document=ReturnDocument.AFTER)
-            make_response("Success", 200)
+            return(make_response("Success", 200))
         else:
             raise ApiException(
                 "Validation Error: \n" + str(is_valid), 400,
@@ -289,16 +295,20 @@ def delete_comments(project_id):
         manifest = g.projects.find_one({'_id': project_id})
         if not manifest:
             raise ApiException("Project not found", 404)
-        del manifest['comments']
-        is_valid = g.validator.is_valid(manifest)
-        if is_valid:
-            g.projects.find_one_and_replace({'_id': project_id}, manifest,
-                                            return_document=ReturnDocument.AFTER)
-            make_response("Success", 200)
-        else:
-            raise ApiException(
-                "Validation Error: \n" + str(is_valid), 400,
-                [error for error in sorted(g.validator.iter_errors(manifest))])
+        if 'comments' in manifest:
+            del manifest['comments']
+            manifest['_id'] = str(project_id)
+            is_valid = g.validator.is_valid(manifest)
+            if is_valid:
+                manifest['_id'] = project_id
+                g.projects.find_one_and_replace({'_id': project_id}, manifest,
+                                                return_document=ReturnDocument.AFTER)
+                return(make_response("Success", 200))
+            else:
+                raise ApiException(
+                    "Validation Error: \n" + str(is_valid), 400,
+                    [error for error in sorted(g.validator.iter_errors(manifest))])
+        raise ApiException("Project has no comments", 404)
     except ApiException as error:
         raise error
     except Exception as err:
@@ -332,13 +342,17 @@ def update_comment(project_id, comment_id):
             raise ApiException("json['comments'] must be a list of comments.", 400)
 
         for comment in manifest['comments']:
-            if str(comment_id) == str(comment['id']) and is_permitted(current_user, comment):
+            if str(comment_id) == comment['id']:
+                if not is_permitted(current_user, comment):
+                    raise ApiException("permission denied", 403)
                 comment['message'] = request.data.decode('utf-8')
+                manifest['_id'] = str(project_id)
                 is_valid = g.validator.is_valid(manifest)
                 if is_valid:
+                    manifest['_id'] = project_id
                     g.projects.find_one_and_replace({'_id': project_id}, manifest,
                                                     return_document=ReturnDocument.AFTER)
-                    make_response("Success", 200)
+                    return(make_response("Success", 200))
                 else:
                     raise ApiException(
                         "Validation Error: \n" + str(is_valid), 400,
@@ -380,15 +394,19 @@ def delete_comment(project_id, comment_id):
             raise ApiException("json['comments'] must be a list of comments.", 400)
 
         for comment in manifest['comments']:
-            if str(comment_id) == comment['id'] and is_permitted(current_user, comment):
+            if str(comment_id) == comment['id']:
+                if not is_permitted(current_user, comment):
+                    raise ApiException("permission denied", 403)
                 manifest['comments'].remove(comment)
                 if not manifest['comments']:
                     del manifest['comments']
+                manifest['_id'] = str(project_id)
                 is_valid = g.validator.is_valid(manifest)
                 if is_valid:
+                    manifest['_id'] = project_id
                     g.projects.find_one_and_replace({'_id': project_id}, manifest,
                                                     return_document=ReturnDocument.AFTER)
-                    make_response("Success", 200)
+                    return(make_response("Success", 200))
                 else:
                     raise ApiException(
                         "Validation Error: \n" + str(is_valid), 500,
