@@ -76,11 +76,7 @@ def create_user():
 
 
 @users.route('/api/users', methods=['PUT'])
-<<<<<<< HEAD
-#@roles_required('admin')
-=======
 @login_required
->>>>>>> master
 def update_user():
     user = request.get_json()
     if(is_permitted(current_user, user)):
@@ -104,18 +100,6 @@ def update_user():
 
 @users.route('/api/users/password', methods=['PUT'])
 @login_required
-<<<<<<< HEAD
-#@roles_required("admin")
-def update_password():
-    editor = current_user
-    user = request.get_json()
-    is_same_user = editor['email'] == user['email']
-    if(is_permitted(editor["roles"]) is True):
-        res = g.user_datastore.get_user(user['email'])
-        if res is None:
-            return make_response("Unknown User with Email-address: " +
-                                 user['email'], 404)
-=======
 def update_password():
     res = g.user_datastore.get_user(user['email'])
     if not res:
@@ -123,36 +107,13 @@ def update_password():
                              user['email'], 404)
 
     if current_user.has_role('admin') or verify_password(user["old_password"], res.password):
->>>>>>> master
         new_password = user["new password"]
         res.password = encrypt_password(new_password)
         res.save()
         return make_response("Password restored!", 200)
-<<<<<<< HEAD
-
-    elif (editor["email"] == user['email']):
-        res = g.user_datastore.get_user(user['email'])
-        if res is None:
-            return make_response("Unknown User with Email-address: " +
-                                 user['email'], 404)
-        old_password = user["old password"]
-        if verify_password(old_password, res.password):
-            new_password = user["new password"]
-            if new_password == old_password:
-                return make_response("The old and new passwords" +
-                                     "can not be the same", 200)
-            res.password = encrypt_password(new_password)
-            res.save()
-            return make_response("Password updated!", 200)
-        return make_response("Old password is wrong", 400)
-
-    return make_response("You don't have the permissions " +
-                         "to edit this user", 405)
-=======
     else:
         return make_response("You don't have permission " +
                              "to edit this user", 400)
->>>>>>> master
 
 
 @users.route('/api/users/<email:mail>', methods=['GET'])
