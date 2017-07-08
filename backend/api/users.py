@@ -126,7 +126,7 @@ def get_user(mail):
     if not user:
         return make_response("Unknown User with Email-address: " + mail, 400)
 
-    roles = [role for role in ['admin', 'user'] and user.has_role(role)]
+    roles = [role for role in ['admin', 'user'] if user.has_role(role)]
 
     res = dict(user)
     del res['roles']
@@ -138,25 +138,25 @@ def get_user(mail):
 
 @users.route('/api/users/bookmarks/<uuid:id>', methods=['POST'])
 @login_required
-def insert_bookmarks(bookmarkid):
+def insert_bookmarks(id):
     user = current_user
     res = g.user_datastore.get_user(user['email'])
     if not res:
         return make_response("Unknown User with Email-address: ", 400)
 
-    if bookmarkid in res.bookmarks:
+    if id in res.bookmarks:
         return make_response("Project is already bookmarked ", 400)
-    res.bookmarks.append(bookmarkid)
+    res.bookmarks.append(id)
     res.save()
     return jsonify(res['bookmarks'])
 
 
 @users.route('/api/users/bookmarks/<uuid:id>', methods=['DELETE'])
 @login_required
-def delete_bookmarks(bookmarkid):
+def delete_bookmarks(id):
     res = g.user_datastore.get_user(current_user['email'])
-    if bookmarkid in res.bookmarks:
-        res.bookmarks.remove(bookmarkid)
+    if id in res.bookmarks:
+        res.bookmarks.remove(id)
         res.save()
         return jsonify(res['bookmarks'])
     return make_response("Project is not bookmarked: " + id, 400)
