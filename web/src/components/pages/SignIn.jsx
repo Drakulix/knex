@@ -92,7 +92,7 @@ export default class SignIn extends Component {
                 onChange={this.handleChangePassword}
                 hintText="Password"
 
-                required
+                
               />
             </div>
             <div>
@@ -101,7 +101,7 @@ export default class SignIn extends Component {
                 label="Login"
                 primary={true}
                 style={{width: 250, marginTop:40}}
-                required
+                
               />
           </div>
           </form>

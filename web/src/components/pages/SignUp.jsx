@@ -27,6 +27,11 @@ export default class SignUp extends Component {
       error: '',
       profileInf: {},
       firstname: '',
+      firstname_error : 'Requiered',
+      lastname_error : 'Requiered',
+      email_error : 'Requiered',
+      password_error : '',
+      password_confirm_error : '',
       lastname: '',
       email: '',
       password: '',
@@ -44,18 +49,38 @@ export default class SignUp extends Component {
   }
 
   handleChangeFirstName(event) {
+    if(event.target.value == ''){
+      this.setState({firstname_error: 'Requiered'});
+    }else{
+      this.setState({firstname_error: ''});
+    }
     this.setState({firstname: event.target.value});
   }
 
   handleChangeLastName(event) {
+    if(event.target.value == ''){
+      this.setState({lastname_error: 'Requiered'});
+    }else{
+      this.setState({lastname_error: ''});
+    }
     this.setState({lastname: event.target.value});
   }
 
   handleChangeEmail(event) {
+    if(event.target.value == '' || !this.isValidEmailAddress(event.target.value)){
+      this.setState({email_error: 'Not a valid email'});
+    }else{
+      this.setState({email_error: ''});
+    }
     this.setState({email: event.target.value});
   }
 
   handleChangePassword(event) {
+    if(event.target.value == ''){
+      this.setState({password_error: 'Can not be empty!'});
+    }else{
+      this.setState({password_error: ''});
+    }
     this.setState({password: event.target.value});
   }
 
@@ -65,15 +90,17 @@ export default class SignUp extends Component {
   }
 
   handleChangePasswordConfirm(event) {
+    if(event.target.value != this.state.password){
+      this.setState({possword_confirm_error: 'Requiered'});
+    }else{
+      this.setState({password_confirm_error: ''});
+    }
     this.setState({password_confirm: event.target.value});
   }
 
   handleSubmit(event){
     event.preventDefault();
-    if(this.state.password != this.state.password_confirm){
-      alert("Passwords do not match");
-      return;
-    }
+    if(this.state.firstname_error == '' && this.state.lastname_error == '' &&this.state.email_error == '' && this.state.password_error == '' &&  this.state.password_confirm_error == ''){
     register(this.state.firstname, this.state.lastname, this.state.email, this.state.password, this.state.password_confirm, this.state.role).then((success) => {
 
       if(success){
@@ -84,6 +111,7 @@ export default class SignUp extends Component {
         alert("Registration failed!");
       }
     });
+    }
   }
 
   isValidEmailAddress(address) {
@@ -146,7 +174,7 @@ export default class SignUp extends Component {
               onChange={this.handleChangeFirstName}
               hintText="First Name"
               errorText={(this.state.firstname == "") ? "Field is requiered" : ""}
-              required autofocus
+              
             />
           </div>
           {/*Input Last Name*/}
@@ -157,7 +185,7 @@ export default class SignUp extends Component {
               onChange={this.handleChangeLastName}
               hintText="Last Name"
               errorText={(this.state.lastname == "") ? "Field is requiered" : ""}
-              required autofocus
+              
             />
           </div>
           {/*Input Email*/}
@@ -167,8 +195,8 @@ export default class SignUp extends Component {
               value={this.state.email}
               onChange={this.handleChangeEmail}
               hintText="Email"
-              errorText={(!this.isValidEmailAddress(this.state.email)) ? "Needs to be a valid email" : ""}
-              required autofocus
+              errorText={this.state.email_error}
+               autofocus
             />
           </div>
 
@@ -180,7 +208,7 @@ export default class SignUp extends Component {
               onChange={this.handleChangePassword}
               hintText="Password"
               errorText={(this.state.password == "") ? "Field is requiered" : ""}
-              required
+              
             />
           </div>
 
@@ -193,7 +221,7 @@ export default class SignUp extends Component {
               onChange={this.handleChangePasswordConfirm}
               hintText="Confirm Password"
               errorText={( this.state.password != this.state.password_confirm ) ? "Passwords do not match" : "" }
-              required
+              
             />
           </div>
           <div >
