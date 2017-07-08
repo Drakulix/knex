@@ -226,12 +226,13 @@ export default class BookmarksTable extends React.Component {
         columns.push({
           Header: 'Project Name',
           id: 'title',
+          width: 230,
           accessor: d => d,
           Cell: props =>{
             var text = new String(props.value.title).split(" ");
             var line = "";
             var result = [];
-            var linebreak  = 31;
+            var linebreak  = 32;
             for(let word in text ){
               if (line.length + text[word].length < linebreak){
                 line += text[word]+ " ";
@@ -242,8 +243,8 @@ export default class BookmarksTable extends React.Component {
             }
             result.push(line.trim());
             return(
-              <div>
-                <Link style={{width:100}} to={`project/${props.value._id}`}
+              <div style={{width : 50}}>
+                <Link to={`project/${props.value._id}`}
                   className="table-link-text">
                   {result.map(item =><span>{item}<br></br></span>) }
                 </Link>
@@ -256,6 +257,8 @@ export default class BookmarksTable extends React.Component {
         columns.push({
           Header: 'Status',
           accessor: 'status',
+          style: {textAlign:"center"},
+
           width: 80,
           Cell: props =>
           {
@@ -281,23 +284,26 @@ export default class BookmarksTable extends React.Component {
           Header: 'Date',
           accessor: 'date_creation',
           pivot: true,
-          width:95
+          width:95,
+          style: {textAlign:"center"},
+
         });
       }
       if(this.props.columns.indexOf("tags") !== -1){
         columns.push({
           Header: 'Tags',
           accessor: "tagString",
-          width: 230,
+          width: 220,
+          style: {textAlign:"center"},
           Cell: props =>{
             var t = new String(props.value);
             var array = t.split(",");
             return(
-              <div style = {styles["wrapper"]} >
-                {array.map(item =>
+
+                array.map(item =>
                   <Chip style= {styles["chip"]}>
-                    <Link to={item} style= {styles["chipText"]} >{item}</Link></Chip>) }
-              </div>
+                    <Link to={item} style= {styles["chipText"]} >{item}</Link></Chip>)
+
             );},
         });
       }
@@ -305,7 +311,7 @@ export default class BookmarksTable extends React.Component {
         columns.push({
           Header: 'Authors',
           accessor: "authorString",
-          width: 160,
+          width: 150,
           Cell: props =>{
             var t = new String(props.value);
             var array = t.split(",");
@@ -322,12 +328,13 @@ export default class BookmarksTable extends React.Component {
             if(this.props.columns.indexOf("description") !== -1){  columns.push({
               Header: 'Description',
               id: 'description',
+              style: {width: "100%"},
               accessor: d => d,
               Cell: props =>{
                 var text = new String(props.value.description).split(" ");
                 var line = "";
                 var result = [];
-                var linebreak  = 28;
+                var linebreak  =36;
                 for(let word in text ){
                   if(result.length > 5){
                     line = "";
@@ -345,17 +352,19 @@ export default class BookmarksTable extends React.Component {
                 return(
                   <div>
                     {result.map(item =><span>{item}<br></br></span>) }
+
                   </div>
                 )}
               });
             }
             if(this.props.columns.indexOf("bookmarked") !== -1){
               columns.push({
-                Header: 'Bookmarked',
+                Header: 'Bookmark',
                 id: 'is_bookmark',
                 accessor: d=>d,
                 pivot: true,
-                width: 100,
+                width: 85,
+                style: {textAlign:"center"},
                 Cell: props =>{
                   return(
                     (new String(props.value.is_bookmark) === "true") ?
@@ -369,7 +378,7 @@ export default class BookmarksTable extends React.Component {
                       <IconButton onClick={()=>this.handleAddBookmark(props.value._id)}
                                   touch={true}
                                   style = {styles.largeIcon}
-                                  iconStyle={{fontSize: '24px'}}       
+                                  iconStyle={{fontSize: '24px'}}
                             >
                             <i className="material-icons">star_border</i>
                           </IconButton>
@@ -383,7 +392,8 @@ export default class BookmarksTable extends React.Component {
                           accessor: d => d,
                           id: 'delete',
                           sortable:false,
-                          width: 50,
+                          width: 60,
+                          style: {textAlign:"center"},
                           Cell: props => <IconButton
                           onClick={()=>this.handleDelete(props.value._id)}
                           touch={true}
