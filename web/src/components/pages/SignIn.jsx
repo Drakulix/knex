@@ -79,7 +79,6 @@ export default class SignIn extends Component {
                 value={this.state.email}
                 onChange={this.handleChangeEmail}
                 hintText="Email"
-                required autofocus
               />
             </div>
 
