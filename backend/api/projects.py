@@ -166,6 +166,8 @@ def update_project(project_id):
         elif request.is_json or "application/json5" in request.content_type:
             manifest = request.get_json() if request.is_json\
                 else json5.loads(request.data.decode("utf-8"))
+            if manifest['id'] != str(project_id):
+                return make_response("project_id and json['id'] do not match.", 409)
             is_valid = g.validator.is_valid(manifest)
             if is_valid and is_permitted(current_user, manifest):
                 manifest['_id'] = project_id
