@@ -128,7 +128,7 @@ def get_user(mail):
 
     roles = [role for role in ['admin', 'user'] if user.has_role(role)]
 
-    res = dict(user)
+    res = user.to_dict()
     del res['roles']
     del res['password']
     res['roles'] = roles
@@ -139,8 +139,7 @@ def get_user(mail):
 @users.route('/api/users/bookmarks/<uuid:id>', methods=['POST'])
 @login_required
 def insert_bookmarks(id):
-    user = current_user
-    res = g.user_datastore.get_user(user['email'])
+    res = g.user_datastore.get_user(current_user['email'])
     if not res:
         return make_response("Unknown User with Email-address: ", 400)
 

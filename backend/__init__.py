@@ -105,8 +105,21 @@ class User(DB.Document, UserMixin):
     password = DB.StringField(max_length=255)
     active = DB.BooleanField(default=True)
     bio = DB.StringField(max_length=255)
-    bookmarks = DB.ListField(UUIDField(), default=[])
+    bookmarks = DB.ListField(DB.UUIDField(), default=[])
     roles = DB.ListField(DB.ReferenceField(Role), default=[])
+
+    # we must not override the method __iter__ because Document.save() stops working then
+    def to_dict(self):
+        dic = {}
+        dic['email'] = str(self.email)
+        dic['first_name'] = str(self.first_name)
+        dic['last_name'] = str(self.last_name)
+        dic['password'] = str(self.password)
+        dic['active'] = str(self.active)
+        dic['bio'] = str(self.bio)
+        dic['bookmarks'] = [str(bookmark) for bookmark in self.bookmarks]
+        dic['roles'] = [str(role) for role in self.roles]
+        return dic
 
 
 class EmailConverter(BaseConverter):
@@ -118,9 +131,6 @@ class EmailConverter(BaseConverter):
 
 app.url_map.converters['email'] = EmailConverter
 
-global USER_DATASTORE
-global SECURITY
-
 USER_DATASTORE = MongoEngineUserDatastore(DB, User, Role)
 SECURITY = Security(app, USER_DATASTORE)
 
@@ -128,13 +138,23 @@ SECURITY = Security(app, USER_DATASTORE)
 @app.before_first_request
 def initialize_users():
     user_role = USER_DATASTORE.find_or_create_role('user')
-    pw = encrypt_password("user")
-    USER_DATASTORE.create_user(
-        email='user@knex.com', password=pw, roles=[user_role])
     admin_role = USER_DATASTORE.find_or_create_role('admin')
-    pw = encrypt_password("admin")
-    USER_DATASTORE.create_user(
-        email='admin@knex.com', password=pw, roles=[user_role, admin_role])
+    userpw = encrypt_password("user")
+    adminpw = encrypt_password("admin")
+    try:
+        if not USER_DATASTORE.get_user('user@knex.com'):
+            USER_DATASTORE.create_user(
+                email='user@knex.com', password=userpw, roles=[user_role])
+    except Exception:
+        USER_DATASTORE.create_user(
+                email='user@knex.com', password=userpw, roles=[user_role])
+    try:
+        if not USER_DATASTORE.get_user('admin@knex.com'):
+            USER_DATASTORE.create_user(
+                email='admin@knex.com', password=adminpw, roles=[user_role, admin_role])
+    except Exception:
+        USER_DATASTORE.create_user(
+                email='admin@knex.com', password=adminpw, roles=[user_role, admin_role])
 
 
 @app.errorhandler(ApiException)
