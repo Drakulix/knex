@@ -122,6 +122,8 @@ def get_project_by_id(project_id):
     res = g.projects.find_one({'_id': project_id})
     if res is None:
         return make_response("Project not found", 404)
+    res['is_bookmark'] = 'true' if str(project_id) in res['bookmarks'] else 'false'
+    res['is_owner'] = 'true' if str(project_id) in res['authors'] else 'false'
     return jsonify(res)
 
 
