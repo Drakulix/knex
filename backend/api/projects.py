@@ -215,14 +215,19 @@ def add_comment(project_id):
         if "text/plain" not in request.content_type:
             raise ApiException("'text/plain' must be in Content-Type", 400)
         comment = {}
-        comment['author'] = current_user['email']
-        author = g.user_datastore.get_user(current_user['email'])
-        comment['author_name'] = author['first_name']+" "+author['last_name']
+        author = {}
+        author['email'] = current_user['email']
+        user = g.user_datastore.get_user(current_user['email'])
+        author['name'] = user['first_name']\
+            if 'first_name' in user else ""\
+            +" "+user['last_name']\
+            if 'last_name' in author else ""
+        comment['author'] = author
         comment['datetime'] = time.strftime("%Y-%m-%d %H:%M")
         comment['id'] = uuid.uuid4()
         comment['message'] = request.data.decode("utf-8")
         manifest['comments'] = manifest['comments'].append(comment)\
-            if manifest['comments'] else [comment]
+            if 'comments' in manifest else [comment]
         is_valid = g.validator.is_valid(manifest)
         if is_valid:
             g.projects.find_one_and_replace({'_id': project_id}, manifest,
@@ -257,9 +262,10 @@ def get_comment(project_id):
         project = g.projects.find_one({'_id': project_id})
         if not project:
             raise ApiException("Project not found", 404)
-        comments = sorted(project['comments'], key=lambda k: k['datetime'],
-                          reverse=True) if project['comments'] else []
-        return jsonify(comments)
+
+        res = sorted(project['comments'], key=lambda k: k['datetime'],
+                     reverse=True) if 'comments' in project else []
+        return jsonify(res)
     except ApiException as error:
         raise error
     except Exception as err:
@@ -320,7 +326,7 @@ def update_comment(project_id, comment_id):
         if 'text/plain' not in request.content_type:
             raise ApiException("Content-Type header must include 'text/plain'", 400)
 
-        if not manifest['comments']:
+        if not 'comments' in manifest:
             raise ApiException("Project has no comments", 404)
 
         for comment in manifest['comments']:
@@ -365,7 +371,7 @@ def delete_comment(project_id, comment_id):
         if not manifest:
             raise ApiException("Project not found", 404)
 
-        if not manifest['comments']:
+        if not 'comments' in manifest:
             raise ApiException("Project has no comments", 404)
 
         for comment in manifest['comments']:

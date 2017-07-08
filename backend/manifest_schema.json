@@ -88,6 +88,27 @@
             "$ref": "#/project/definitions/related_project"
           }
         }
+      },
+      "comments": {
+        "type": "array",
+        "items": {
+          "type":"object",
+          "properties": {
+            "author": {
+              "$ref": "#/project/definitions/user"
+            },
+            "id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "message": {
+              "type": "string"
+            },
+            "datetime": {
+              "type": "string"
+            }
+          }  
+        }
       }
     },
     "additionalProperties": false,
@@ -149,27 +170,6 @@
             "format": "url"
           },
           "_id": {
-            "type": "string"
-          }
-        }
-      },
-      "comments": {
-        "type": "array",
-        "items": {
-          "author": {
-            "$ref": "#/project/definitions/user"
-          },
-          "author_name": {
-            "type": "string"
-          },
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "message": {
-            "type": "string"
-          },
-          "datetime": {
             "type": "string"
           }
         }
