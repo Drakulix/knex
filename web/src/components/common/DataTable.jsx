@@ -46,21 +46,6 @@ export default class BookmarksTable extends React.Component {
 
   }
 
-
-
-  transformObj(dataObject)  {
-    var filteredDataObject = {};
-    for(let attr of this.props.columns ) {
-
-        filteredDataObject[attr] = dataObject[attr];
-
-    }
-    filteredDataObject["_id"] = dataObject["_id"];
-
-    return filteredDataObject;
-  }
-
-
   componentWillReceiveProps(nextProps){
     this.fetchData(nextProps.fetchURL);
   }
@@ -130,7 +115,7 @@ fetchData(url){
     var dataArray = [];
 
     for(let dataObject of datas) {
-      var transformedObject= dataObject;//this.transformObj(dataObject);
+      var transformedObject= dataObject;
 
 
       var t = new String(dataObject.tags);
