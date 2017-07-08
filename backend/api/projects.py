@@ -325,8 +325,11 @@ def update_comment(project_id, comment_id):
         if 'text/plain' not in request.content_type:
             raise ApiException("Content-Type header must include 'text/plain'", 400)
 
-        if 'comments' not in manifest:
+        if 'comments' not in manifest or not manifest['comments']:
             raise ApiException("Project has no comments", 404)
+
+        elif not isinstance(manifest['comments'], list):
+            raise ApiException("json['comments'] must be a list of comments.", 400)
 
         for comment in manifest['comments']:
             if str(comment_id) == str(comment['id']) and is_permitted(current_user, comment):
@@ -370,8 +373,11 @@ def delete_comment(project_id, comment_id):
         if not manifest:
             raise ApiException("Project not found", 404)
 
-        if 'comments' not in manifest:
+        if 'comments' not in manifest or not manifest['comments']:
             raise ApiException("Project has no comments", 404)
+
+        elif not isinstance(manifest['comments'], list):
+            raise ApiException("json['comments'] must be a list of comments.", 400)
 
         for comment in manifest['comments']:
             if str(comment_id) == comment['id'] and is_permitted(current_user, comment):
