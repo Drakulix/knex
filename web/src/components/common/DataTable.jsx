@@ -42,7 +42,7 @@ export default class BookmarksTable extends React.Component {
   }
 
   handleRemoveBookmark(projectID){
-    alert("REMOVE BOOKMARK " + projectID);
+    alert("REMOVE  " + projectID);
 
   }
 
@@ -79,7 +79,7 @@ fetchData(url){
     {
 
 
-      "bookmarked": "true",
+      "is_bookmark": "true",
       "_id" : "abcd",
       "title": "Contextual music information retrieval and recommendation: State of the art and challenges",
       "url": ["http://example.org"],
@@ -103,7 +103,7 @@ fetchData(url){
       ]
     },
     {"_id" : "999",
-      "bookmarked" : "false",
+      "is_bookmark" : "false",
       "title": "Semantic Analysis of Song Lyrics",
       "authors": [
         {"name": "Beth Logan",
@@ -397,7 +397,7 @@ render() {
   columns.push(
               {
                 Header: 'Bookmarked',
-                id: 'bookmarked',
+                id: 'is_bookmark',
                 accessor: d=>d,
                 pivot: true,
                 width: 100,
@@ -405,7 +405,7 @@ render() {
 Cell: props =>{
   return(
 
-(new String(props.value.bookmarked) == "true") ?
+(new String(props.value.is_bookmark) == "true") ?
 <IconButton
  onClick={()=>this.handleRemoveBookmark(props.value._id)}
  touch={true}
