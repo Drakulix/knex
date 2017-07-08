@@ -71,6 +71,16 @@ def search_avanced():
     if count is None:
         count = 10
 
+    # string manipulation to get the user email if projects from a user were searched
+    searchuser = False
+    try:
+        start = text.index('authors.email: ') + len('authors.email: ')
+        end = text.index(last, start)
+        usermail = text[start:end]
+        searchuser = True
+    except ValueError:
+        pass
+
     request_json = {
         'query': {
             'query_string': {
@@ -87,7 +97,19 @@ def search_avanced():
         }
     try:
         res = g.es.search(index="knexdb", body=request_json)
-        return jsonify(res['hits'])
+        projects = res['hits'][:]
+        try:
+            if searchuser:
+                user = g.user_datastore.get_user(usermail)
+                if user:
+                    for project in projects:
+                        project['is_bookmark'] = 'true' if project['id']\
+                            in user['bookmarks'] else 'false'
+                        project['is_owner'] = 'true' if user['email']\
+                            in [author['email'] for author in res['authors']] else 'false'
+        except Exception:
+            pass
+        return jsonify(projects)
     except RequestError as e:
         return (str(e), 400)
 
