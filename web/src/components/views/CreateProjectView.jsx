@@ -4,6 +4,7 @@ import { Redirect } from 'react-router'
 import history from '../common/history'
 import 'isomorphic-fetch';
 
+const JSON5 = require('json5');
 
 export default class UploadByLink extends React.Component {
   constructor(props) {
@@ -26,8 +27,27 @@ export default class UploadByLink extends React.Component {
       });
       var that = this;
       fetch(request)
-      .then(response => response.json())
       .then(
+        function(response){
+          if(response.ok){
+            response.text().then(
+              function(text){
+                try{
+                  var test = JSON5.parse(text);
+                  that.setState({
+                    redirect : true,
+                  });
+                } catch (error) {
+                  alert(error);
+                }
+              }
+            );
+          } else {
+            alert("Connection Error.\n Unable to find anything at the given URL");
+          }
+        }
+      )
+      /*.then(
         function(){
           that.setState({
             redirect : true,
@@ -36,7 +56,7 @@ export default class UploadByLink extends React.Component {
         function(exception){
           alert("Could not read file.\nParser returned:\n"+exception);
         }
-      );
+      );*/
   };
 
   render() {

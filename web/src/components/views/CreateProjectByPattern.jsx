@@ -5,6 +5,8 @@ import Form from "../libraries/react-jsonschema-form";
 import { Redirect } from 'react-router-dom';
 //import exampleJSON from "../../data/test_project.json";
 
+const JSON5 = require('json5');
+
 const schema = {
   type: "object",
   required: ["title", "authors", "date_creation", "description", "status"],
@@ -145,63 +147,78 @@ export default class UploadByPattern extends React.Component {
     });
     var that = this;
     fetch(request)
-    .then(response => response.json()).catch(ex => {
-      alert("Errors reading file:\n"+ex);
-    })
-    .then(function(data) {
-      if(data!=null){
-        if(data.title!=null){
-          that.setState({
-            title : data.title,
-            titleSet : true,
-            anySet: true,
-          })
-        };
-        if(data.authors!=null){
-          that.setState({
-            authors : data.authors,
-            authorsSet : true,
-            anySet: true,
-          })
-        };
-        if(data.date_creation!=null){
-          that.setState({
-            creationDate : data.date_creation,
-            creationDateSet : true,
-            anySet: true,
-          })
-        };
-        if(data.description!=null){
-          that.setState({
-            description : data.description,
-            descriptionSet : true,
-            anySet: true,
-          })
-        };
-        if(data.status!=null){
-          that.setState({
-            status : data.status,
-            statusSet : true,
-            anySet: true,
-            anySet: true,
-          })
-        };
-        if(data.tags!=null){
-          that.setState({
-            tags : data.tags,
-            tagsSet : true,
-            anySet: true,
-          })
-        };
-        if(data.url!=null){
-          that.setState({
-            url : data.url,
-            urlSet : true,
-            anySet: true,
-          })
-        };
+    .then(
+      function(response){
+        if(response.ok) {
+          response.text().then(
+            function(text){
+              try {
+                var data = JSON5.parse(text);
+                if(data!=null){
+                  if(data.title!=null){
+                    that.setState({
+                      title : data.title,
+                      titleSet : true,
+                      anySet: true,
+                    })
+                  };
+                  if(data.authors!=null){
+                    that.setState({
+                      authors : data.authors,
+                      authorsSet : true,
+                      anySet: true,
+                    })
+                  };
+                  if(data.date_creation!=null){
+                    that.setState({
+                      creationDate : data.date_creation,
+                      creationDateSet : true,
+                      anySet: true,
+                    })
+                  };
+                  if(data.description!=null){
+                    that.setState({
+                      description : data.description,
+                      descriptionSet : true,
+                      anySet: true,
+                    })
+                  };
+                  if(data.status!=null){
+                    that.setState({
+                      status : data.status,
+                      statusSet : true,
+                      anySet: true,
+                      anySet: true,
+                    })
+                  };
+                  if(data.tags!=null){
+                    that.setState({
+                      tags : data.tags,
+                      tagsSet : true,
+                      anySet: true,
+                    })
+                  };
+                  if(data.url!=null){
+                    that.setState({
+                      url : data.url,
+                      urlSet : true,
+                      anySet: true,
+                    })
+                  };
+                }
+              } catch (error) {
+                alert(error);
+              }
+            }
+          );
+        } else {
+          alert("Connection Error.\n Unable to find anything at the given URL");
+        }
+      },
+      function(exception){
+        alert("Connection Error:\n"+exception);
       }
-    });
+    )
   }
 
   dlschema(){
