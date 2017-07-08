@@ -2,7 +2,6 @@ from flask import request, jsonify, make_response, g, Blueprint
 from flask_security import login_required, login_user, logout_user, current_user
 from flask_security.utils import verify_password, encrypt_password
 
-
 from api.helper.apiexception import ApiException
 
 users = Blueprint('api_users', __name__)

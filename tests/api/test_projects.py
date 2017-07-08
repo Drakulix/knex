@@ -29,7 +29,7 @@ class TestPOST(object):
         response = session.post(flask_api_url + "/api/projects", data=data.encode('utf-8'),
                                 headers={'Content-Type': 'application/json5'})
         print(response.text)
-        for _id in response.json():
+        for pid in response.json():
             assert UUID(pid, version=4)
 
     def test_success_json(self, session, flask_api_url, pytestconfig):

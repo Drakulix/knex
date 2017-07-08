@@ -257,9 +257,9 @@ def get_comment(project_id):
         project = g.projects.find_one({'_id': project_id})
         if not project:
             raise ApiException("Project not found", 404)
-        res = sorted(project['comments'], key=lambda k: k['datetime'],
-                     reverse=True) if project['comments'] else []
-        return jsonify(res)
+        comments = sorted(project['comments'], key=lambda k: k['datetime'],
+                          reverse=True) if project['comments'] else []
+        return jsonify(comments)
     except ApiException as error:
         raise error
     except Exception as err:
