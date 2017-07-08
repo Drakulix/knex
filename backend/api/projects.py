@@ -218,10 +218,9 @@ def add_comment(project_id):
         author = {}
         author['email'] = current_user['email']
         user = g.user_datastore.get_user(current_user['email'])
-        author['name'] = user['first_name']\
-            if 'first_name' in user else ""\
-            +" "+user['last_name']\
-            if 'last_name' in author else ""
+        author['name'] = user['first_name'] if 'first_name' in user\
+            else " " + user['last_name'] if 'last_name' in author\
+            else ""
         comment['author'] = author
         comment['datetime'] = time.strftime("%Y-%m-%d %H:%M")
         comment['id'] = uuid.uuid4()
@@ -326,7 +325,7 @@ def update_comment(project_id, comment_id):
         if 'text/plain' not in request.content_type:
             raise ApiException("Content-Type header must include 'text/plain'", 400)
 
-        if not 'comments' in manifest:
+        if 'comments' not in manifest:
             raise ApiException("Project has no comments", 404)
 
         for comment in manifest['comments']:
@@ -371,7 +370,7 @@ def delete_comment(project_id, comment_id):
         if not manifest:
             raise ApiException("Project not found", 404)
 
-        if not 'comments' in manifest:
+        if 'comments' not in manifest:
             raise ApiException("Project has no comments", 404)
 
         for comment in manifest['comments']:

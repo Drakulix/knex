@@ -24,7 +24,7 @@ def save_manifest_to_db(manifest):
     try:
         manifestlist = manifest if isinstance(manifest, list) else [manifest]
         for entry in manifestlist:
-            if not 'date_creation' in entry:
+            if 'date_creation' not in entry:
                 entry['date_creation'] = time.strftime("%Y-%m-%d")
 
         is_valid = g.validator.is_valid(manifestlist)

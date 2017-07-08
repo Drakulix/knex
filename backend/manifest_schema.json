@@ -89,26 +89,14 @@
           }
         }
       },
-      "comments": {
+	  "comments": {
         "type": "array",
         "items": {
-          "type":"object",
-          "properties": {
-            "author": {
-              "$ref": "#/project/definitions/user"
-            },
-            "id": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "message": {
-              "type": "string"
-            },
-            "datetime": {
-              "type": "string"
-            }
-          }  
-        }
+          "comment": {
+            "$ref": "#/project/definitions/comments_comment"
+          }
+        },
+		"additionalProperties": false
       }
     },
     "additionalProperties": false,
@@ -173,6 +161,31 @@
             "type": "string"
           }
         }
+      },
+	  "comments_comment": {
+        "type": "object",
+		"required": [
+			"author",
+			"id",
+			"message",
+			"datetime"
+		],
+        "properties": {
+          "author": {
+            "$ref": "#/project/definitions/user"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "message": {
+            "type": "string"
+          },
+          "datetime": {
+            "type": "string"
+          }
+        },
+		"additionalProperties": false
       }
     }
   }
