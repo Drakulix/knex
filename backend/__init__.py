@@ -6,7 +6,8 @@ from flask.helpers import make_response
 from flask_cors import CORS
 from flask_login import LoginManager
 from flask_mongoengine import MongoEngine
-from flask_security import Security, MongoEngineUserDatastore, UserMixin, RoleMixin
+from flask_security import Security, MongoEngineUserDatastore,\
+    UserMixin, RoleMixin
 from flask_security.utils import encrypt_password
 from flask_principal import PermissionDenied
 from jsonschema import FormatChecker, Draft4Validator
@@ -99,7 +100,7 @@ class Role(DB.Document, RoleMixin):
 
 
 class User(DB.Document, UserMixin):
-    email = DB.StringField(max_length=255)
+    email = DB.StringField(max_length=255, unique=True)
     first_name = DB.StringField(max_length=255)
     last_name = DB.StringField(max_length=255)
     password = DB.StringField(max_length=255)
@@ -134,7 +135,7 @@ def initialize_users():
     admin_role = USER_DATASTORE.find_or_create_role('admin')
     pw = encrypt_password("admin")
     USER_DATASTORE.create_user(
-        email='admin@knex.com', password=pw, roles=[admin_role])
+        email='admin@knex.com', password=pw, roles=[user_role, admin_role])
 
 
 @app.errorhandler(ApiException)
