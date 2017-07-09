@@ -74,8 +74,8 @@ def search_avanced():
     # string manipulation to get the user email if projects from a user were searched
     searchuser = False
     try:
-        start = text.index('authors.email: ') + len('authors.email: ')
-        end = text.index(last, start)
+        start = text.index('(authors.email: ') + len('(authors.email: ')
+        end = text.index(')', start)
         usermail = text[start:end]
         searchuser = True
     except ValueError:
