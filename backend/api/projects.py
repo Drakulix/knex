@@ -155,7 +155,9 @@ def get_project_by_id(project_id):
             in [author['email'] for author in res['authors']] else 'false'
     except KeyError:
         pass
-    return jsonify(res)
+    res = make_response(jsonify(res))
+    res.headers['Content-Type'] = 'application/json'
+    return res
 
 
 @projects.route('/api/projects/<uuid:project_id>', methods=['DELETE'])

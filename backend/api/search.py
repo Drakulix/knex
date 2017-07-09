@@ -24,7 +24,6 @@ def search_simple():
     count = request.args.get('count', type=int)
     if count is None:
         count = 10
-        
 
     # ^2 is boosting the attribute, *_is allowing wildcards to be used
     request_json = {
@@ -58,7 +57,9 @@ def search_simple():
                     else 'false'
         except KeyError:
             pass
-        return jsonify(res['hits'])
+        res = make_response(jsonify(res['hits']))
+        res.headers['Content-Type'] = 'application/json'
+        return res
     except RequestError as e:
         return (str(e), 400)
 
@@ -118,7 +119,10 @@ def search_avanced():
                     else 'false'
         except KeyError:
             pass
-        return jsonify(projects)
+
+        res = make_response(jsonify(projects))
+        res.headers['Content-Type'] = 'application/json'
+        return res
     except RequestError as e:
         return (str(e), 400)
 
@@ -163,7 +167,9 @@ def search_tag():
         }
     try:
         res = g.es.search(index="knexdb", body=request_json)
-        return jsonify(res['hits'])
+        res = make_response(jsonify(res['hits']))
+        res.headers['Content-Type'] = 'application/json'
+        return res
     except RequestError as e:
         return (str(e), 400)
 

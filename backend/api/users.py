@@ -133,9 +133,9 @@ def get_user(mail):
     if not user:
         return make_response("Unknown User with Email-address: " + mail, 400)
 
+
     res = user.to_dict()
     res['roles'] = [role for role in ['admin', 'user'] if user.has_role(role)]
-
     return jsonify(res)
 
 
