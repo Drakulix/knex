@@ -34,7 +34,7 @@ const statusString = [
         date_till:"",
         filter_date_from :"",
         filter_date_to:"",
-        description: ""
+        description: "",
         searchString :"",
       }
       this.handleAuthorChange = this.handleAuthorChange.bind(this);
