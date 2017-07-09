@@ -102,7 +102,14 @@ def get_projects():
         res = g.projects.find({}, skip=skip)
     else:
         return make_response('Invalid parameters', 400)
-
+    try:
+        for project in res:
+            project['is_bookmark'] = 'true' if str(project['id'])\
+                in current_user['bookmarks'] else 'false'
+            project['is_owner'] = 'true' if current_user['email']\
+                in [author['email'] for author in project['authors']] else 'false'
+    except KeyError:
+        pass
     res = make_response(jsonify([x for x in res[:]]))
     res.headers['Content-Type'] = 'application/json'
     return res

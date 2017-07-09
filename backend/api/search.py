@@ -48,6 +48,15 @@ def search_simple():
 
     try:
         res = g.es.search(index="knexdb", body=request_json)
+        try:
+            for project in res:
+                project['is_bookmark'] = 'true' if str(project['id'])\
+                    in current_user['bookmarks'] else 'false'
+                project['is_owner'] = 'true' if current_user['email']\
+                    in [author['email'] for author in project['authors']]\
+                    else 'false'
+        except KeyError:
+            pass
         return jsonify(res['hits'])
     except RequestError as e:
         return (str(e), 400)
@@ -100,15 +109,13 @@ def search_avanced():
         res = g.es.search(index="knexdb", body=request_json)
         projects = res['hits'][:]
         try:
-            if searchuser:
-                user = g.user_datastore.get_user(usermail)
-                if user:
-                    for project in projects:
-                        project['is_bookmark'] = 'true' if project['id']\
-                            in user['bookmarks'] else 'false'
-                        project['is_owner'] = 'true' if user['email']\
-                            in [author['email'] for author in res['authors']] else 'false'
-        except Exception:
+            for project in projects:
+                project['is_bookmark'] = 'true' if str(project['id'])\
+                    in current_user['bookmarks'] else 'false'
+                project['is_owner'] = 'true' if current_user['email']\
+                    in [author['email'] for author in project['authors']]\
+                    else 'false'
+        except KeyError:
             pass
         return jsonify(projects)
     except RequestError as e:
