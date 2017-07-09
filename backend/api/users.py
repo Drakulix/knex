@@ -1,5 +1,3 @@
-import sys
-
 from flask import request, jsonify, make_response, g, Blueprint
 from flask_security import login_required, login_user, logout_user, current_user
 from flask_security.utils import verify_password, encrypt_password
@@ -155,7 +153,7 @@ def get_user_tags(mail):
         taglist = sorted(list(g.projects.aggregate(pipeline)), key=lambda k: k['count'],
                          reverse=True) if g.projects.aggregate(pipeline) else []
 
-        toptags = taglist[0:10] if (len(taglist) > 9) else taglist
+        toptags = taglist[0:10] if len(taglist) > 9 else taglist
         return jsonify(sorted([x['_id'] for x in toptags], key=str.lower))
 
     except Exception as err:
@@ -179,7 +177,7 @@ def get_cur_user_tags():
         taglist = sorted(list(g.projects.aggregate(pipeline)), key=lambda k: k['count'],
                          reverse=True) if g.projects.aggregate(pipeline) else []
 
-        toptags = taglist[0:10] if (len(taglist) > 9) else taglist
+        toptags = taglist[0:10] if len(taglist) > 9 else taglist
         return jsonify(sorted([x['_id'] for x in toptags], key=str.lower))
 
     except Exception as err:
