@@ -145,6 +145,7 @@ def initialize_users():
         if not USER_DATASTORE.get_user('user@knex.com'):
             USER_DATASTORE.create_user(
                 email='user@knex.com', password=userpw, roles=[user_role])
+    # user_datastore.get_user might return None or throw an exception if the user does not exist
     except Exception:
         USER_DATASTORE.create_user(
                 email='user@knex.com', password=userpw, roles=[user_role])
@@ -152,6 +153,7 @@ def initialize_users():
         if not USER_DATASTORE.get_user('admin@knex.com'):
             USER_DATASTORE.create_user(
                 email='admin@knex.com', password=adminpw, roles=[user_role, admin_role])
+    # user_datastore.get_user might return None or throw an exception if the user does not exist
     except Exception:
         USER_DATASTORE.create_user(
                 email='admin@knex.com', password=adminpw, roles=[user_role, admin_role])
