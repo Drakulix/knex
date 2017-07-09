@@ -51,9 +51,11 @@ def search_simple():
     try:
         res = g.es.search(index="knexdb", body=request_json)
         try:
+            for hit in res['hits']['hits']:
+                hit['_source']['_id'] = hit['_id']
             projects = [hit['_source'] for hit in res['hits']['hits']]
             for project in projects:
-                project['is_bookmark'] = 'true' if project['id']\
+                project['is_bookmark'] = 'true' if project['_id']\
                     in current_user['bookmarks'] else 'false'
                 project['is_owner'] = 'true' if current_user['email']\
                     in [author['email'] for author in project['authors']]\
@@ -101,10 +103,13 @@ def search_avanced():
         }
     try:
         res = g.es.search(index="knexdb", body=request_json)
-        projects = [hit['_source'] for hit in res['hits']['hits']]
+
         try:
+            for hit in res['hits']['hits']:
+                hit['_source']['_id'] = hit['_id']
+            projects = [hit['_source'] for hit in res['hits']['hits']]
             for project in projects:
-                project['is_bookmark'] = 'true' if project['id']\
+                project['is_bookmark'] = 'true' if project['_id']\
                     in current_user['bookmarks'] else 'false'
                 project['is_owner'] = 'true' if current_user['email']\
                     in [author['email'] for author in project['authors']]\
@@ -112,6 +117,7 @@ def search_avanced():
             return jsonify(projects)
         except KeyError as ke:
             raise ApiException(str(ke), 400)
+
     except RequestError as e:
         raise ApiException(str(e), 400)
 
@@ -156,10 +162,12 @@ def search_tag():
         }
     try:
         res = g.es.search(index="knexdb", body=request_json)
-        projects = [hit['_source'] for hit in res['hits']['hits']]
         try:
+            for hit in res['hits']['hits']:
+                hit['_source']['_id'] = hit['_id']
+            projects = [hit['_source'] for hit in res['hits']['hits']]
             for project in projects:
-                project['is_bookmark'] = 'true' if project['id']\
+                project['is_bookmark'] = 'true' if project['_id']\
                     in current_user['bookmarks'] else 'false'
                 project['is_owner'] = 'true' if current_user['email']\
                     in [author['email'] for author in project['authors']]\
