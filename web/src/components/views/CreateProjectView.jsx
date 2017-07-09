@@ -3,6 +3,10 @@ import { Link } from 'react-router-dom';
 import { Redirect } from 'react-router'
 import history from '../common/history'
 import 'isomorphic-fetch';
+import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
+import styles from '../common/Styles.jsx';
+
 
 const JSON5 = require('json5');
 
@@ -33,7 +37,7 @@ export default class UploadByLink extends React.Component {
             response.text().then(
               function(text){
                 try{
-                  var test = JSON5.parse(text);
+                  JSON5.parse(text);
                   that.setState({
                     redirect : true,
                   });
@@ -47,40 +51,55 @@ export default class UploadByLink extends React.Component {
           }
         }
       )
-      /*.then(
-        function(){
-          that.setState({
-            redirect : true,
-          });
-        },
-        function(exception){
-          alert("Could not read file.\nParser returned:\n"+exception);
-        }
-      );*/
   };
 
   render() {
     if (this.state.redirect){
-      return <Redirect to={'/create/'+encodeURIComponent(this.state.sourceURL)}/>;
+      return <Redirect to={'/createNew/'+encodeURIComponent(this.state.sourceURL)}/>;
     }
     return (
-      <div className="container">
-        <div className="header">Create Project from Manifest</div>
-        <form onSubmit={this.submitForm}>
-          <input className="enterUrl"
-                 id="url"
-                 type="text"
-                 placeholder="enter url here (e.g. “http://soundloud.com/stuff/manifest.json”)"
-                 onChange={event => this.setState({
-                   sourceURL : event.target.value,
-                 })}
-                 value={this.state.sourceURL}></input>
-        </form>
-        <h1> {this.state.jsonIsValid}</h1>
-        <div className="text">or</div>
-        <Link to="/create">
-          <button className="submit">Create New Project</button>
-        </Link>
+      <div className="container"style={{textAlign : 'center'}} >
+        <div className="header">Create Project</div>
+          <form onSubmit={this.submitForm}>
+            <div>
+              <TextField value={this.state.title}
+                  ID="url"
+                  name="title"
+                  hintText="enter url here (e.g. “http://soundloud.com/stuff/manifest.json”)"
+                  style={{width:'430px',}}
+                  onChange={event => this.setState({
+                            sourceURL : event.target.value,
+                           })}
+                            value={this.state.sourceURL}
+                           />
+            </div>
+            <div >
+              <RaisedButton style={{width:'300px'}}
+                          label="from online json"
+                          primary={true}
+                          type="submit"/>
+            </div>
+          </form>
+        <div className="text" >or</div>
+        <div>
+          <RaisedButton
+                    label="from local json"
+                    labelPosition="before"
+                    style={styles.uploadButton}
+                    containerElement="label"
+                    primary={true}
+                    style={{width:'300px'}}>
+                  <input type="file" style={styles.uploadInput} />
+          </RaisedButton>
+        </div>
+        <div className="text" >or</div>
+        <div>
+          <RaisedButton label="with online formular"
+                      href="/createNew/"
+                      primary={true}
+                      style={{ width:'300px'}}
+                        />
+        </div>
       </div>
     );
   }
