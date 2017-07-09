@@ -25,9 +25,10 @@ render(){
 
 
 
-        <DataTable columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'bookmarked', 'delete']}
+        <DataTable columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'bookmarked']}
 
 fetchURL="/api/projects"
+bookmarksSite = {"true"}
           ></DataTable>
 
         <div className="footer" />
