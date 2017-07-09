@@ -184,7 +184,6 @@ export default class BookmarksTable extends React.Component {
             case "tags":  var temp = dataObject.tags.join().toLowerCase();
               for(let i in value){
                 var tag = value[i];
-                  alert(tag);
                 discard = temp.indexOf(tag.toLowerCase()) === -1;
                 if(discard)
                 break;
