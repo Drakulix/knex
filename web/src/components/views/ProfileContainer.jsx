@@ -378,8 +378,7 @@ export default class ProfileContainer extends React.Component {
                     <DataTable
                       fetchURL = "/api/projects"
                       columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'bookmarked']}
-                      email = {this.state.email}
-                      bookmarks = {this.state.bookmarks}
+                      
                       isProfile = {true}
 
                       ></DataTable>

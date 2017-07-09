@@ -18,7 +18,8 @@ export default class BookmarksTable extends React.Component {
       data: [{
       }],
       filters : {},
-      filteredTable : [{}]
+      filteredTable : [{}],
+      isProfile : "false"
     };
 
     this.handleFilterChange = this.handleFilterChange.bind(this);
@@ -92,6 +93,9 @@ export default class BookmarksTable extends React.Component {
 
   componentWillMount() {
     var self = this;
+    if(this.props.isProfile != undefined){
+      this.state.isProfile = true;
+    }
     this.fetchData(this.props.fetchURL);
   }
 
@@ -101,8 +105,21 @@ export default class BookmarksTable extends React.Component {
 
       var datas =[]
       datas = data
+      var tmp = []
+      if(this.state.isProfile == true){
+        for (let projects of   datas){
+          var project = projects
+          
+        if(project["is_bookmark"] == "true" || project["is_owner"] == "true"){
+          tmp.push(project)
+
+        }
 
 
+
+      }
+      datas = tmp
+      }
 
         var filteredDataArray = [];
         var dataArray = [];
@@ -372,7 +389,7 @@ export default class BookmarksTable extends React.Component {
                         :
                       <IconButton onClick={()=>this.handleAddBookmark(props.value._id)}
                                   onClick={()=>alert(props.value.is_bookmark)}
-                                  
+
                                   touch={true}
                                   style = {styles.largeIcon}
                                   iconStyle={{fontSize: '24px'}}
