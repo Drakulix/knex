@@ -42,6 +42,7 @@ const statusString = [
       this.state = {
         searchString :"",
         filters :{},
+        fetchURL : "/api/projects"
       };
 
       this.handleFilterChange = this.handleFilterChange.bind(this);
@@ -60,8 +61,9 @@ const statusString = [
       }
 
 
-      this.setState({fetchURL : "simple/?q="+this.state.searchString+"*"});
-
+      //this.setState({fetchURL : "simple/?q="+this.state.searchString+"*"});
+      var end = "/api/projects/search/"
+      this.state.fetchURL = end+"simple/?q="+this.state.searchString+"*"
 
 
     }

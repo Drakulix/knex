@@ -57,56 +57,10 @@ export default class BookmarksTable extends React.Component {
 
   fetchData(url){
 
-    fetchJson(url).then(function(datas) {
+    fetchJson(url).then(function(data) {
 
-      var datas = [
-        {
-
-
-          "is_bookmark": "true",
-          "_id" : "abcd",
-          "title": "Contextual music information retrieval and recommendation: State of the art and challenges",
-          "url": ["http://example.org"],
-          "authors":[
-            {"name": "Marius Kaminskas",
-              "email": "mkaminskas@unibz.it"
-            },
-            {"name": "Francesco Ricci",
-              "email": "fricci@unibz.it"
-            }
-          ],
-          "status": "IN_REVIEW",
-          "description": "Increasing amount of online music content has opened new opportunities for implementing new effective information access services – commonly known as music recommender systems – that support music navigation, discovery, sharing, and formation of user communities. In the recent years a new research area of contextual (or situational) music recommendation and retrieval has emerged. The basic idea is to retrieve and suggest music depending on the user’s actual situation, for instance emotional state, or any other contextual conditions that might influence the user’s perception of music. Despite the high potential of such idea, the development of real-world applications that retrieve or recommend music depending on the user’s context is still in its early stages. This survey illustrates various tools and techniques that can be used for addressing the research challenges posed by context-aware music retrieval and recommendation. This survey covers a broad range of topics, starting from classical music information retrieval (MIR)and recommender system (RS) techniques, and then focusing on context-aware music applications as well as the newer trends of affective and social computing applied to the music domain.",
-          "date_creation": "2017-07-09",
-          "tags": [
-            "Music information retrieval",
-            "Music recommender systems",
-            "Context-aware services",
-            "Affective computing",
-            "Social computing"
-          ]
-        },
-        {"_id" : "999",
-          "is_bookmark" : "false",
-          "title": "Semantic Analysis of Song Lyrics",
-          "authors": [
-            {"name": "Beth Logan",
-              "email": "Beth.Logan@hp.com"
-            },
-            {"name": "Pedro Moreno",
-              "email": "Pedro.Moreno@hp.com"
-            }
-          ],
-          "url": ["http://example1.org"],
-          "status": "IN_PROGRESS",
-          "description": "We explore the use of song lyrics for automatic indexing of music. Using lyrics mined from the Web we apply a standard text processing technique to characterize their semantic content. We then determine artist similarity in this space. We found lyrics can be used to discover natural genre clusters. Experiments on a publicly available set of 399 artists showed that determining artist similarity using lyrics is better than random but inferior to a state-of-the-art acoustic similarity technique. However, the approaches made different errors, suggesting they could be profitably combined.",
-          "date_creation": "2014-04-14",
-          "tags": [
-            "multimedia indexing",
-            "rich media",
-            "music information retrieval"
-          ]
-        }];
+      var datas =[]
+      datas = data
 
 
 
