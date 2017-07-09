@@ -24,6 +24,7 @@ const PROJECT_URL = '/api/projects/'
     }).then(response => response.json()).catch(ex => {
       console.error('parsing failes', ex);
     });
+  }
 
 
   export function fetchProjectDetails(uuid){
