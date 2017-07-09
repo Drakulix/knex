@@ -16,8 +16,6 @@ import styles from '../common/Styles.jsx';
 import ChipInputList from '../common/ChipInputList';
 import { sendJson } from '../common/Backend.jsx'
 
-
-
 const statusString = [
   {id: "0" , text :"Done", value : "DONE"},
   {id: "1" , text :"In review", value : "IN_REVIEW"},
@@ -27,24 +25,39 @@ const statusString = [
 
   export default class UploadByPattern extends React.Component {
 
+
     constructor(props) {
       super(props);
-      this.state = {
-        projectID: this.props.match.params.uuid,
-        projectInf:{
-          title :"",
-          description: "",
-          date_creation: "2012-12-12",
-          tags: [],
-          url: []
-        },
-        status : "2",
-        authors: [],
-        invalid : true,
-        snackbar : false,
-        site_loaded: false,
-        project_exists: false,
-      };
+      if(props.fromURL){
+        this.state = {
+          projectInf:props.projectInf,
+          status :  props.status,
+          authors: props.authors,
+
+          invalid : true,
+          snackbar : false,
+          site_loaded: false,
+          project_exists: false,
+        };
+      } else {
+        this.state = {
+          projectID: this.props.match.params.uuid,
+          projectInf:{
+            title :"",
+            description: "",
+            date_creation: "2012-12-12",
+            tags: [],
+            url: []
+          },
+          status : "2",
+          authors: [],
+          invalid : true,
+          snackbar : false,
+          site_loaded: false,
+          project_exists: false,
+        };
+      }
+
       this.handleUpload = this.handleUpload.bind(this);
       this.handleURLChange = this.handleURLChange.bind(this);
       this.handleAuthorChange = this.handleAuthorChange.bind(this);
@@ -134,6 +147,7 @@ const statusString = [
           var stateValue=  statusString.filter(
           function(data){return status === data }
           );
+
           this.setState({
               date: new Date( this.state.projectInf.date_creation.split("-")[0],
                               this.state.projectInf.date_creation.split("-")[1]-1,
@@ -186,7 +200,20 @@ const statusString = [
           ||  this.state.authors.length === 0;
         }
 
+        componentDidMount(){
+          /* Some bug resets this.state.status initialy to [].
+           * This happens inbetween the end of componentWillMount()
+           * and the beginning of the first time the component renders.
+           * This is a temporary workaround until the issue is resolved.
+           * Please don't remove this unless you know how to fix it.
+           */
+          if(this.props.fromURL&&(this.state.status!==this.props.status)){
+            this.setState({status : this.props.status});
+          }
+        }
+
         render() {
+          console.log(this.state);
           if(!this.state.site_loaded && this.state.projectID){
             return (
               <div className="container">
@@ -237,6 +264,7 @@ const statusString = [
                             <div className="profile-info">Status</div>
                             <div>
                               <DropDownMenu
+                                defaultValue={this.state.status}
                                 value={this.state.status}
                                 onChange={this.handleStatusChange}
                                 labelStyle={{width: '100%', paddingLeft:0}}
@@ -259,6 +287,7 @@ const statusString = [
                           />
                         <div className="profile-info">Links</div>
                         <ChipInputList
+                          defaultValue={this.state.projectInf.url}
                           value={this.state.projectInf.url}
                           onChange={this.handleURLChange}
                           hintText='Add Links...'/>
@@ -308,5 +337,5 @@ const statusString = [
         authorsErrorText: 'Please provide an author',
         titleErrorText: 'Please provide a title',
         dateErrorText: 'Please provide a creation date',
-        descriptionErrorText: 'Please provide a description'
+        descriptionErrorText: 'Please provide a description',
       }

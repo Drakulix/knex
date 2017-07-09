@@ -5,6 +5,7 @@
   "dependencies": {
     "babel-polyfill": "^6.23.0",
     "isomorphic-fetch": "^2.2.1",
+    "json5-loader": "^1.0.1",
     "lodash": "^3.10.1",
     "react-tap-event-plugin": "^2.0.1",
     "material-design-icons": "^3.0.1",
