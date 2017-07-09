@@ -108,6 +108,30 @@ def get_projects():
     return res
 
 
+@projects.route('/api/projects/authors', methods=['GET'])
+@login_required
+def get_all_authors():
+    try:
+        authors = g.projects.distinct('authors')
+        if not authors:
+            return jsonify([])
+        result = sorted([author['name'] for author in authors] +
+                        [author['email'] for author in authors], key=str.lower)
+        return jsonify(result)
+    except Exception as err:
+        raise ApiException(str(err), 500)
+
+
+@projects.route('/api/projects/tags', methods=['GET'])
+@login_required
+def get_all_tags():
+    try:
+        tags = g.projects.distinct('tags')
+        return jsonify(sorted(tags, key=str.lower) if tags else [])
+    except Exception as err:
+        raise ApiException(str(err), 500)
+
+
 @projects.route('/api/projects/<uuid:project_id>', methods=['GET'])
 def get_project_by_id(project_id):
     """Returns project by ID number, 404 if it is not found.
