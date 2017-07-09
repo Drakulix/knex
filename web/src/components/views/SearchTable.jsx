@@ -81,6 +81,16 @@ and gets the data from the backend. Data is stored in state.results
     var title = result.title;
     var authors = result.authors;
     var description = result.description;
+    var status_badge = null;
+    if (result.status == 'DONE'){
+      status_badge = <span className="badge badge-success">DONE</span>
+    } else if (result.status == 'IN_PROGRESS') {
+      status_badge = <span className="badge badge-warning">IN_PROGRESS</span>
+    } else if (result.status == 'IN_REVIEW') {
+      status_badge = <span className="badge badge-info">IN_REVIEW</span>
+    } else {
+      status_badge = status
+    }
     var status = result.status;
     var date_creation = result.date_creation;
 
@@ -96,10 +106,10 @@ and gets the data from the backend. Data is stored in state.results
             </Link>
           </td>
           <td> {authors}</td>
-          <td> {status} </td>
+          <td className="td-center">{status_badge}</td>
           <td data-toggle="tooltip" title={description}> {shortenedDescription} </td>
           <td> {date_creation} </td>
-          <td> {this.shuffleBookmarks()} </td>
+          <td className="td-center"> {this.shuffleBookmarks()} </td>
         </tr>
     );
   }
@@ -197,24 +207,9 @@ and gets the data from the backend. Data is stored in state.results
     if(this.state.results.length > 0){
       return(
         <div>
-          <div className="row">
+          <div className="row padding">
             <div className="col-2">
-              <label htmlFor="n-results"> Show Results:&nbsp;</label>
-              <select className="selectpicker"
-                      id="n-results"
-                      onChange={event => this.setState({
-                         pageSize : parseInt(event.target.value, 10),
-                         pageNumber : 0,
-                         dirty : true,
-                       })}
-                      value={this.state.pageSize}>
-                <option value="4">4</option>
-                <option value="10">10</option>
-                <option value="20">20</option>
-              </select>
-            </div>
-            <div>
-              Number of Results: {this.state.numberOfResults}
+            Found Projects: {this.state.numberOfResults}
             </div>
           </div>
           <div className="row">
@@ -224,10 +219,10 @@ and gets the data from the backend. Data is stored in state.results
                   <tr>
                     <th className="col-xs-3">Project Name</th>
                     <th className="col-xs-2">Authors</th>
-                    <th className="col-xs-1">Status</th>
+                    <th className="col-xs-1 th-center">Status</th>
                     <th className="col-xs-3">Description</th>
                     <th className="col-xs-2">Date</th>
-                    <th className="col-xs-1">Fav</th>
+                    <th className="col-xs-1 th-center">Fav</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -245,6 +240,20 @@ and gets the data from the backend. Data is stored in state.results
                 </div>
               </div>
             </div>
+          </div>
+          <div className="col-2">
+            <select className="selectpicker"
+                    id="n-results"
+                    onChange={event => this.setState({
+                       pageSize : parseInt(event.target.value, 10),
+                       pageNumber : 0,
+                       dirty : true,
+                     })}
+                    value={this.state.pageSize}>
+              <option value="4">4</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+            </select>
           </div>
         </div>
       );

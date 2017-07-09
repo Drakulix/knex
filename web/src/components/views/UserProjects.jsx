@@ -6,8 +6,7 @@ import { fetchJson } from '../common/Backend'
 
 const FILTER_ATTRIBUTES = ['title', 'status', 'description', '_id'];
 
-
-export default class BookmarksTable extends React.Component {
+export default class UserProjects extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -70,7 +69,7 @@ export default class BookmarksTable extends React.Component {
 
     return (
       <div className="container">
-        <div className="header">Your Bookmarks</div>
+        <div className="header">Your own Projects</div>
           <ReactTable
             data={this.state.data}
             columns={columns}

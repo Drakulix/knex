@@ -29,8 +29,18 @@ export default class ProjectContainer extends Component {
 //
 
   render(){
-    const {authors, date_update, description } = this.state.projectInf;
-    const {tags, url} = this.state.projectInf;
+    const { _id, authors, date_creation, date_update, description } = this.state.projectInf;
+    const { status, tags, title, url} = this.state.projectInf;
+    var status_badge = null;
+    if (status == 'DONE'){
+      status_badge = <span className="badge badge-success">DONE</span>
+    } else if (status == 'IN_PROGRESS') {
+      status_badge = <span className="badge badge-warning">IN_PROGRESS</span>
+    } else if (status == 'IN_REVIEW') {
+      status_badge = <span className="badge badge-info">IN_REVIEW</span>
+    } else {
+      status_badge = status
+    }
 
     var authors_string = null;
     if (authors != null){
@@ -42,16 +52,13 @@ export default class ProjectContainer extends Component {
     } else {
       authors_string = ''
     }
-
-    var tag_string = null;
     if (tags != null){
       var tag_container = []
-      for (i = 0; i < tags.length; i++){
-        tag_container.push(tags[i])
+      for (var i = 0; i < tags.length; i++){
+        tag_container.push(<span className="badge badge-default">{tags[i]}</span>)
       }
-      tag_string = tag_container.join(", ")
     } else {
-      tag_string = ''
+      tag_container = ''
     }
     return(
       <div className="container">
@@ -62,7 +69,7 @@ export default class ProjectContainer extends Component {
         </div>
         <div className="status">
           <p>
-          Status: {this.state.projectInf.status}
+          Status: {status_badge}
           </p>
         </div>
         <ul className="nav nav-tabs overviewbar">
@@ -76,6 +83,7 @@ export default class ProjectContainer extends Component {
             <p className="nav-link" href="#">GitHub</p>
           </li>
         </ul>
+        <div className="projectbox">
         <div className="btn-group project-btn-group" role="group" aria-label="Basic example">
         <button className="btn btn-secondary">
         <span className="fa fa-star" aria-hidden="true"></span>
@@ -91,9 +99,6 @@ export default class ProjectContainer extends Component {
 
         </button>
         </div>
-
-        <div className="projectbox">
-
           <div className="list_project_info_title">
             <div className="authors">
               <span className="sec-label">Authors:</span><br />
@@ -105,7 +110,7 @@ export default class ProjectContainer extends Component {
             </div>
             <div className="tags-pb">
               <span className="sec-label">Tags: </span><br />
-              <a> {tag_string}</a>
+              <a> {tag_container}</a>
             </div>
             <div className="github">
                 <div className="sec-label">Github: </div>
