@@ -169,13 +169,15 @@ def get_bookmarks():
     user = g.user_datastore.get_user(current_user['email'])
     if not user:
         raise ApiException("Couldn't find current_user in datastore", 500)
-    return jsonify(user['bookmarks'])
+    projects = [g.projects.find_one({'_id': project_id}) for project_id in user['bookmarks']]
 
-    if user is None:
-        return make_response("No current user detected ", 400)
-    res = g.user_datastore.get_user(user['email'])
-    if not res:
-        return make_response("Unknown User with Email-address: " +
-                             current_user['email'], 400)
+    try:
+        for project in projects:
+            project['is_bookmark'] = 'true'
+            project['is_owner'] = 'true' if current_user['email']\
+                in [author['email'] for author in project['authors']] else 'false'
 
-    return jsonify(res['bookmarks'])
+        return jsonify(projects)
+
+    except KeyError as err:
+        raise ApiException(str(err), 500)

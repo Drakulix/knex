@@ -29,7 +29,7 @@ def search_simple():
 
     # ^2 is boosting the attribute, *_is allowing wildcards to be used
     request_json = {
-            'query': {
+        'query': {
             'multi_match': {
                 'query': text,
                 'fields': [
