@@ -163,7 +163,7 @@ def search_tag():
                     in current_user['bookmarks'] else 'false'
                 project['is_owner'] = 'true' if current_user['email']\
                     in [author['email'] for author in project['authors']]\
-                    else 'false'                    
+                    else 'false'
             return jsonify(projects)
         except KeyError as ke:
             raise ApiException(str(ke), 400)
