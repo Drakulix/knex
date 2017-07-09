@@ -5,3 +5,5 @@ web/node_modules
 *.sln
 *__pycache__/
 *.cache
+*.lock
+*node_modules

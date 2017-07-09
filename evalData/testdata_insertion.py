@@ -1,6 +1,4 @@
-import io
 import os
-import json
 import requests
 
 if __name__ == "__main__":
@@ -11,14 +9,14 @@ if __name__ == "__main__":
     for file in os.listdir("."):
 
         if file.endswith(".json"):
-            str = open(file, "r").read()
-            res = session.post("http://localhost:5000/api/projects", data=str.encode('utf-8'),
+            text = open(file, "r").read()
+            res = session.post("http://localhost:5000/api/projects", data=text.encode('utf-8'),
                                headers={'Content-Type': 'application/json'})
             print(res)
 
         elif file.endswith(".json5"):
-            str = open(file, "r").read()
-            res = session.post("http://localhost:5000/api/projects", data=str.encode('utf-8'),
+            text = open(file, "r").read()
+            res = session.post("http://localhost:5000/api/projects", data=text.encode('utf-8'),
                                headers={'Content-Type': 'application/json5'})
             print(res)
 
