@@ -320,6 +320,10 @@ class TestGET(object):
         print(projects[0])
         for project in projects:
             print(project)
+            if 'is_bookmark' in project:
+                del project['is_bookmark']
+            if 'is_owner' in project:
+                del project['is_owner']
             print(manifest_validator.is_valid(project))
             assert manifest_validator.is_valid(project)
             print("project_id: ", project["_id"])

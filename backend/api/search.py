@@ -57,7 +57,7 @@ def search_simple():
                 project['is_owner'] = 'true' if current_user['email']\
                     in [author['email'] for author in project['authors']]\
                     else 'false'
-                    
+
             return jsonify(res['hits'])
         except KeyError as ke:
             raise ApiException(str(ke), 400)

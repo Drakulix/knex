@@ -177,5 +177,5 @@ def get_bookmarks():
     if not res:
         return make_response("Unknown User with Email-address: " +
                              current_user['email'], 400)
-   
+
     return jsonify(res['bookmarks'])
