@@ -9,7 +9,6 @@ import {login, isLoggedIn, logout, getCookie, setCookie, isAdmin, getMyEmail, ge
 import { fetchJson } from '../common/Backend';
 import DataTable from '../common/DataTable';
 
-
 const FILTER_ATTRIBUTES = ['title', 'status', 'description', '_id'];
 
 export default class ProfileContainer extends React.Component {
@@ -31,6 +30,7 @@ export default class ProfileContainer extends React.Component {
       pw_new_confirm: '',
       is_admin: false,
       value: 'a',
+      bookmarks : ''
     };
     this.handlePwOldChange = this.handlePwOldChange.bind(this);
     this.handlePwNewChange = this.handlePwNewChange.bind(this);
@@ -133,7 +133,7 @@ export default class ProfileContainer extends React.Component {
       if(!data){
         this.setState({profile_exists: false});
       }else{
-        this.setState({first_name: data.first_name, last_name: data.last_name, bio: data.bio});
+        this.setState({first_name: data.first_name, last_name: data.last_name, bio: data.bio, bookmarks : data.bookmarks});
         this.setState({site_loaded: true})
       }
     }).catch(ex => {
@@ -151,7 +151,7 @@ export default class ProfileContainer extends React.Component {
       }else{
         var admin = (data.roles == 'admin');
         this.setState({is_admin: admin});
- 
+
       }
       this.setState({site_loaded: true})
     }).catch(ex => {
@@ -245,7 +245,7 @@ export default class ProfileContainer extends React.Component {
             <div className="header"><CircularProgress size={80} thickness={5} /></div>
           </div>
         );
-      }   
+      }
       if( !this.state.profile_exists){
         return (
           <div className="container">
@@ -279,22 +279,9 @@ export default class ProfileContainer extends React.Component {
                     <img src="http://www.freeiconspng.com/uploads/profile-icon-9.png" width="200px" height="200px" alt="..." className="rounded-circle profile-icon" />
                   </div>
                 </div>
-               
-              </Tab>
-              <Tab
-                label={this.state.profileInf.first_name+ '\'s Projects'} value="c">
-                <div className="table-container">
-                  <div className="container">
 
-                    <DataTable 
-                      columns= {['title', 'status', 'tags', 'description', '_id', 'bookmarked', 'delete']}
-                      fetchURL={'/api/projects/search/advanced/?q=(authors.email: ' + this.state.email + ')'}
-                    ></DataTable>
-
-                    <div className="footer" />
-                  </div>
-                </div>
               </Tab>
+
               <Tab label="Edit Profile" value="b">
                 <div className="row">
                   <div className="col-9">
@@ -385,6 +372,23 @@ export default class ProfileContainer extends React.Component {
                   </form>
                 </div>
               </Tab>
+              <Tab
+                label="Your Projects" value="c">
+<div className="header-tab">Manage Projects</div>
+                    <DataTable
+                      fetchURL = "/api/projects"
+                      columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'bookmarked']}
+                      email = {this.state.email}
+                      bookmarks = {this.state.bookmarks}
+                      isProfile = {true}
+
+                      ></DataTable>
+
+                    <div className="footer" />
+
+
+              </Tab>
+
             </Tabs>
           </div>
         )}

@@ -12,6 +12,11 @@ module.exports = {
       {
         exclude: /node_modules/,
         loader: 'babel'
+      },
+      {
+        // make all files ending in .json5 use the `json5-loader`
+        test: /\.json5$/,
+        loader: 'json5-loader'
       }
     ],
     rules: [

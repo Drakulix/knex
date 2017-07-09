@@ -18,7 +18,7 @@ export function getMyEmail(){
   return ( myemail || getCookie('email') );
 }
 
-export function isAdmin(){ 
+export function isAdmin(){
 
         return getUserInfo(getMyEmail()).then(function(response) {
           return response.json;
@@ -26,7 +26,7 @@ export function isAdmin(){
             myProfile = response;
             return (myProfile && (myProfile.roles == 'admin'));
         }).then(res => {return res});
-        
+
 }
 
 
@@ -180,6 +180,7 @@ export function register(reg_firstname, reg_lastname, reg_email, reg_password, r
   //    mode: 'no-cors',
   //    credentials: 'include',
       method: 'POST',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json'
       },
