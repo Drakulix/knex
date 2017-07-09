@@ -188,12 +188,14 @@ export default class BookmarksTable extends React.Component {
             discard = dataObject.date_creation  < value;
             break;
             case "tags":  var temp = dataObject.tags.join().toLowerCase();
-            for(let i in value){
-              var tag = value[i];
-              discard = temp.indexOf(tag.toLowerCase()) === -1;
-              if(discard)
-              break;
+              for(let i in value){
+                var tag = value[i];
+                  alert(tag);
+                discard = temp.indexOf(tag.toLowerCase()) === -1;
+                if(discard)
+                break;
             }
+            break;
             case "authors":
             var temp = [];
             for (var i in  dataObject.authors) {
