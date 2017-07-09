@@ -51,7 +51,7 @@ class TestGET(object):
 
         response = session.get(
             flask_api_url + "/api/projects/search/advanced/?q=tags:superawesometag&sort=desc")
-        resulttags = json.loads(response.text)["hits"][0]['_source']['tags']
+        resulttags = response.json()["hits"][0]['_source']['tags']
         print("tags of result:", resulttags)
         assert "superawesometag" in resulttags
 
