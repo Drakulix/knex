@@ -46,7 +46,7 @@ export default class BookmarksTable extends React.Component {
       .catch(ex => {
       console.error('parsing failed', ex)
     });
-  
+
   }
 
   handleAddBookmark(projectID){
@@ -388,7 +388,7 @@ export default class BookmarksTable extends React.Component {
                       </IconButton>
                         :
                       <IconButton onClick={()=>this.handleAddBookmark(props.value._id)}
-                                  onClick={()=>alert(props.value.is_bookmark)}
+                                  
 
                                   touch={true}
                                   style = {styles.largeIcon}
