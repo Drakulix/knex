@@ -297,8 +297,10 @@ def delete_comments(project_id):
             raise ApiException("Project not found", 404)
         if 'comments' in manifest:
             del manifest['comments']
+            manifest['_id'] = str(project_id)
             is_valid = g.validator.is_valid(manifest)
             if is_valid:
+                manifest['_id'] = project_id
                 g.projects.find_one_and_replace({'_id': project_id}, manifest,
                                                 return_document=ReturnDocument.AFTER)
                 return make_response("Success", 200)
@@ -344,8 +346,10 @@ def update_comment(project_id, comment_id):
                 if not is_permitted(current_user, comment):
                     raise ApiException("Permission denied", 403)
                 comment['message'] = request.data.decode('utf-8')
+                manifest['_id'] = str(project_id)
                 is_valid = g.validator.is_valid(manifest)
                 if is_valid:
+                    manifest['_id'] = project_id
                     g.projects.find_one_and_replace({'_id': project_id}, manifest,
                                                     return_document=ReturnDocument.AFTER)
                     return make_response("Success", 200)
@@ -396,8 +400,10 @@ def delete_comment(project_id, comment_id):
                 manifest['comments'].remove(comment)
                 if not manifest['comments']:
                     del manifest['comments']
+                manifest['_id'] = str(project_id)
                 is_valid = g.validator.is_valid(manifest)
                 if is_valid:
+                    manifest['_id'] = project_id
                     g.projects.find_one_and_replace({'_id': project_id}, manifest,
                                                     return_document=ReturnDocument.AFTER)
                     return make_response("Success", 200)
