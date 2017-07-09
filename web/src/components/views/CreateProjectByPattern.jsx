@@ -143,16 +143,8 @@ const statusString = [
             alert(this.state.projectID)
                this.loadProjectInf(this.state.projectID);
           }
-          var status = this.state.projectInf.status;
-          var stateValue=  statusString.filter(
-          function(data){return status === data }
-          );
 
           this.setState({
-              date: new Date( this.state.projectInf.date_creation.split("-")[0],
-                              this.state.projectInf.date_creation.split("-")[1]-1,
-                              this.state.projectInf.date_creation.split("-")[2],0,0,0,0),
-              status : stateValue,
               suggestedAuthors: suggestedAuthorsArray,
               suggestedTags : suggestedTags,
           });
@@ -182,10 +174,26 @@ const statusString = [
             this.setState({project_exists: true})
           }
           var authorArray = []
-          for (var i in this.state.projectInf.authors) {
-            authorArray = authorArray.concat([this.state.projectInf.authors[i].name + " ("+ this.state.projectInf.authors[i].email+ ")"]);
+          var authors = data.authors
+          for (var i in data.authors) {
+            authorArray = authorArray.concat([data.authors[i].name + " ("+ data.authors[i].email+ ")"]);
           }
-          this.setState({projectInf: data});
+
+          var status = data.status;
+          var stateValue=  statusString.filter(
+          function(stateField){return status === stateField }
+          );
+
+
+          this.setState({
+            projectInf: data
+            date: new Date( data.date_creation.split("-")[0],
+                            data.date_creation.split("-")[1]-1,
+                            data.date_creation.split("-")[2],0,0,0,0),
+            status : stateValue,
+            authors : authors
+
+          });
           this.setState({site_loaded: true})
         }
         ).catch(ex => {
