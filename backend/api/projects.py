@@ -258,7 +258,7 @@ def add_comment(project_id):
             manifest['_id'] = project_id
             g.projects.find_one_and_replace({'_id': project_id}, manifest,
                                             return_document=ReturnDocument.AFTER)
-            return make_response("Success", 200)
+            return jsonify(comment['id'])
         else:
             raise ApiException(
                 "Validation Error: \n" + str(is_valid), 400,
