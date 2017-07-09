@@ -158,6 +158,19 @@ const statusString = [
           });
         }
 
+        fetchProjectInfo(uuid){
+          var res;
+          return fetch('/api/projects/' + uuid, {
+            method: 'GET',
+            mode: 'no-cors',
+            credentials: 'include',
+            headers: {
+              "Accept": "application/json",
+            }
+          }).then(response => response.json()).catch(ex => {
+            console.error('parsing failes', ex);
+          });
+        }
 
       loadProjectInf(uuid) {
         // Load Project info into state
