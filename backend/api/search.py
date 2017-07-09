@@ -24,6 +24,7 @@ def search_simple():
     count = request.args.get('count', type=int)
     if count is None:
         count = 10
+        
 
     # ^2 is boosting the attribute, *_is allowing wildcards to be used
     request_json = {
