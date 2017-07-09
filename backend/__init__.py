@@ -103,7 +103,7 @@ class Notification(EmbeddedDocument):
     notification_id = DB.ObjectIdField(default=ObjectId)
     title = DB.StringField(max_length=255)
     description = DB.StringField(max_length=255)
-    link = DB.URLField()
+    link = DB.URLField(verify_exists=False, url_regex=None, schemes=None)
 
 
 class User(DB.Document, UserMixin):
@@ -143,9 +143,8 @@ app.url_map.converters['email'] = EmailConverter
 USER_DATASTORE = MongoEngineUserDatastore(DB, User, Role)
 SECURITY = Security(app, USER_DATASTORE)
 
+
 # internal function to append notifications to the given userlist
-
-
 def notify_users(useremail_list, n_description, n_title, n_link):
     n = Notification(description=n_description, title=n_title, link=n_link)
     for email in useremail_list:
