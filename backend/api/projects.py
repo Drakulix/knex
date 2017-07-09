@@ -113,11 +113,8 @@ def get_projects():
 def get_all_authors():
     try:
         authors = g.projects.distinct('authors')
-        if not authors:
-            return jsonify([])
-        result = sorted([author['name'] for author in authors] +
-                        [author['email'] for author in authors], key=str.lower)
-        return jsonify(result)
+        res = sorted(authors, key=lambda k: str(k['name']).lower()) if authors else []
+        return jsonify(res)
     except Exception as err:
         raise ApiException(str(err), 500)
 

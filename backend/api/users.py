@@ -142,26 +142,27 @@ def get_user(mail):
 @users.route('/api/users/bookmarks/<uuid:id>', methods=['POST'])
 @login_required
 def insert_bookmarks(id):
-    res = g.user_datastore.get_user(current_user['email'])
-    if not res:
-        return make_response("Unknown User with Email-address: ", 400)
-
-    if id in res.bookmarks:
-        return make_response("Project is already bookmarked ", 400)
-    res.bookmarks.append(id)
-    res.save()
-    return jsonify(res['bookmarks'])
+    user = g.user_datastore.get_user(current_user['email'])
+    if not user:
+        raise ApiException("Couldn't find current_user in datastore", 500)
+    if id in user.bookmarks:
+        return make_response("Project is already bookmarked.", 400)
+    user.bookmarks.append(id)
+    user.save()
+    return jsonify(user['bookmarks'])
 
 
 @users.route('/api/users/bookmarks/<uuid:id>', methods=['DELETE'])
 @login_required
 def delete_bookmarks(id):
-    res = g.user_datastore.get_user(current_user['email'])
-    if id in res.bookmarks:
-        res.bookmarks.remove(id)
-        res.save()
-        return jsonify(res['bookmarks'])
-    return make_response("Project is not bookmarked: " + id, 400)
+    user = g.user_datastore.get_user(current_user['email'])
+    if not user:
+        raise ApiException("Couldn't find current_user in datastore", 500)
+    if id in user.bookmarks:
+        user.bookmarks.remove(id)
+        user.save()
+        return jsonify(user['bookmarks'])
+    return make_response("Project is not bookmarked: " + str(id), 400)
 
 
 @users.route('/api/users/bookmarks', methods=['GET'])

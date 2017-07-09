@@ -182,11 +182,11 @@ def handle_insufficient_permission(error):
 
 
 @app.errorhandler(404)
-def index(path):
+def index(err):
     """Index of knex
     """
     if request.path.startswith("/api/"):
-        return path, 404
+        return err, 404
     return app.send_static_file('index.html')
 
 
