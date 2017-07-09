@@ -13,7 +13,6 @@ from pymongo.collection import ReturnDocument
 from flask_security import login_required, roles_required, login_user,\
     logout_user, current_user
 
-
 from api.helper import uploader
 from api.helper.apiexception import ApiException
 from globals import ADMIN_PERMISSION
