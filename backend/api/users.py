@@ -1,3 +1,5 @@
+import sys
+
 from flask import request, jsonify, make_response, g, Blueprint
 from flask_security import login_required, login_user, logout_user, current_user
 from flask_security.utils import verify_password, encrypt_password
@@ -134,6 +136,54 @@ def get_user(mail):
     res = user.to_dict()
     res['roles'] = [role for role in ['admin', 'user'] if user.has_role(role)]
     return jsonify(res)
+
+
+@users.route('/api/users/<email:mail>/tags', methods=['GET'])
+@login_required
+def get_user_tags(mail):
+    """Return topten tags of user
+
+        Returns:
+            res: Array with topten tags lexicographical order
+    """
+    try:
+        pipeline = [{"$unwind": "$authors"},
+                    {"$match": {"authors.email": mail}},
+                    {"$unwind": "$tags"},
+                    {"$group": {"_id": "$tags", "count": {"$sum": 1}}}
+                    ]
+        taglist = sorted(list(g.projects.aggregate(pipeline)), key=lambda k: k['count'],
+                         reverse=True) if g.projects.aggregate(pipeline) else []
+
+        toptags = taglist[0:10] if (len(taglist) > 9) else taglist
+        return jsonify(sorted([x['_id'] for x in toptags], key=str.lower))
+
+    except Exception as err:
+        raise ApiException(str(err), 500)
+
+
+@users.route('/api/users/tags', methods=['GET'])
+@login_required
+def get_cur_user_tags():
+    """Return topten tags of current_user
+
+        Returns:
+            res: Array with topten tags lexicographical order
+    """
+    try:
+        pipeline = [{"$unwind": "$authors"},
+                    {"$match": {"authors.email": current_user['email']}},
+                    {"$unwind": "$tags"},
+                    {"$group": {"_id": "$tags", "count": {"$sum": 1}}}
+                    ]
+        taglist = sorted(list(g.projects.aggregate(pipeline)), key=lambda k: k['count'],
+                         reverse=True) if g.projects.aggregate(pipeline) else []
+
+        toptags = taglist[0:10] if (len(taglist) > 9) else taglist
+        return jsonify(sorted([x['_id'] for x in toptags], key=str.lower))
+
+    except Exception as err:
+        raise ApiException(str(err), 500)
 
 
 @users.route('/api/users/bookmarks/<uuid:id>', methods=['POST'])
