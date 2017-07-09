@@ -109,7 +109,7 @@ export default class BookmarksTable extends React.Component {
       if(this.state.isProfile == true){
         for (let projects of   datas){
           var project = projects
-          
+
         if(project["is_bookmark"] == "true" || project["is_owner"] == "true"){
           tmp.push(project)
 
@@ -379,7 +379,7 @@ export default class BookmarksTable extends React.Component {
                 style: {textAlign:"center"},
                 Cell: props =>{
                   return(
-                    (new String(props.value.is_bookmark) === "true") ?
+                    (new String(props.value.is_bookmark) == "true") ?
                       <IconButton onClick={()=>this.handleRemoveBookmark(props.value._id)}
                                   touch={true}
                                   style = {styles.largeIcon}
