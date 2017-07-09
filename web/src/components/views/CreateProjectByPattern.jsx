@@ -186,7 +186,7 @@ const statusString = [
 
 
           this.setState({
-            projectInf: data
+            projectInf: data,
             date: new Date( data.date_creation.split("-")[0],
                             data.date_creation.split("-")[1]-1,
                             data.date_creation.split("-")[2],0,0,0,0),
