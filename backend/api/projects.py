@@ -78,7 +78,7 @@ def add_projects():
 
 
 @projects.route('/api/projects', methods=['GET'])
-@login_required
+#@login_required
 def get_projects():
     """Return list of projects, args->limit, skip
 
@@ -88,7 +88,6 @@ def get_projects():
     limit = request.args.get('limit', type=int)
     skip = request.args.get('skip', type=int)
     argc = len(request.args)
-
     if g.projects.count() == 0:
         return make_response(jsonify([]), 200)
 
@@ -102,17 +101,18 @@ def get_projects():
         res = g.projects.find({}, skip=skip)
     else:
         return make_response('Invalid parameters', 400)
+
     try:
+        res = [x for x in res[:]]
         for project in res:
             project['is_bookmark'] = 'true' if str(project['_id'])\
                 in current_user['bookmarks'] else 'false'
             project['is_owner'] = 'true' if current_user['email']\
                 in [author['email'] for author in project['authors']] else 'false'
-    except KeyError:
+    except KeyError as err:
+        raise ApiException(str(err), 400)
         pass
-    res = make_response(jsonify([x for x in res[:]]))
-    res.headers['Content-Type'] = 'application/json'
-    return res
+    return jsonify([x for x in res[:]]
 
 
 @projects.route('/api/projects/authors', methods=['GET'])
@@ -155,9 +155,7 @@ def get_project_by_id(project_id):
             in [author['email'] for author in res['authors']] else 'false'
     except KeyError:
         pass
-    res = make_response(jsonify(res))
-    res.headers['Content-Type'] = 'application/json'
-    return res
+    return jsonify(res)
 
 
 @projects.route('/api/projects/<uuid:project_id>', methods=['DELETE'])

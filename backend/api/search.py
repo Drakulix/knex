@@ -57,9 +57,7 @@ def search_simple():
                     else 'false'
         except KeyError:
             pass
-        res = make_response(jsonify(res['hits']))
-        res.headers['Content-Type'] = 'application/json'
-        return res
+        return res jsonify(res['hits'])
     except RequestError as e:
         return (str(e), 400)
 
@@ -119,10 +117,7 @@ def search_avanced():
                     else 'false'
         except KeyError:
             pass
-
-        res = make_response(jsonify(projects))
-        res.headers['Content-Type'] = 'application/json'
-        return res
+        return jsonify(projects)
     except RequestError as e:
         return (str(e), 400)
 
@@ -167,9 +162,7 @@ def search_tag():
         }
     try:
         res = g.es.search(index="knexdb", body=request_json)
-        res = make_response(jsonify(res['hits']))
-        res.headers['Content-Type'] = 'application/json'
-        return res
+        return jsonify(res['hits'])
     except RequestError as e:
         return (str(e), 400)
 

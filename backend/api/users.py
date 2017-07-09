@@ -93,8 +93,6 @@ def update_user():
         res.last_name = user['last name']
         res.bio = user['bio']
         res.save()
-        res = make_response(jsonify(res))
-        res.headers['Content-Type'] = 'application/json'
 
         return make_response("User with email: " +
                              user['email'] + " updated", 200)
@@ -186,7 +184,6 @@ def get_bookmarks():
             project['is_owner'] = 'true' if current_user['email']\
                 in [author['email'] for author in project['authors']]\
                 else 'false'
-
     except KeyError:
         pass
     return jsonify(res['bookmarks'])
