@@ -4,7 +4,7 @@ import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
 import {List, ListItem} from 'material-ui/List';
 import Divider from 'material-ui/Divider';
-
+import {fetchJson} from './Backend'
 import TextField from 'material-ui/TextField';
 
 
@@ -14,11 +14,21 @@ export default class CommentSideBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {showCommentBar: false,
-    comment:""};
+    comment:"",
+    comments: []};
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
+
+  transformArray(dataArray) {
+    var filteredDataArray = [];
+    for(let dataObject of dataArray) {
+      filteredDataArray.push(dataObject);
+    }
+    return filteredDataArray;
+  };
+
 
   handleChange(event){
     const name = event.target.name;
@@ -32,11 +42,26 @@ export default class CommentSideBar extends React.Component {
     const name = event.target.name;
     const value = event.target.value;
 
-    var fetchURL ="/api/projects/"+this.props.uuid+"/comment/";
+    var fetchURL ="/api/projects/"+this.props.uuid+"/comment";
 
-    // PUT comment irgendwie
+    fetch(fetchURL, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'text/plain'
+        },
+        body: this.state.comment
+      }).then(function(response){
+        if(response.status==200){
+          return true;
+        }else{
+          return false;
+        }
+      });
     this.setState({
       comment: ""});
+
+    this.loadComments();
   }
 
 
@@ -53,7 +78,7 @@ export default class CommentSideBar extends React.Component {
 
 
   loadComments(){
-    var comments = [
+    var comments2 = [
       {message : "Thats a comment" , author_name :"Marko", id:"21", datetime: "12.12.2012"},
 
 
@@ -61,10 +86,14 @@ export default class CommentSideBar extends React.Component {
     ];
 
 
-  var fetchURL ="/api/projects/"+this.props.uuid+"/comment/"; //GET
+  var fetchURL ="/api/projects/"+this.props.uuid+"/comment"; //GET
 
-
-this.setState({comments: comments});
+  fetchJson(fetchURL).then(function(data) {
+    var filteredData = this.transformArray(data);
+    this.setState({
+      comments: filteredData
+    });
+  }.bind(this));
   }
 
   render() {
@@ -93,7 +122,7 @@ this.setState({comments: comments});
             <div>
               <Divider/>
               <ListItem primaryText={item.message}
-                        secondaryText={item.author_name + " " + item.datetime}
+                        secondaryText={item.author.name + " " + item.datetime}
               />
             </div>)
           }
