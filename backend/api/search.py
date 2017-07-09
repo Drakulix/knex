@@ -2,6 +2,8 @@ from flask import request, jsonify, g, Blueprint
 from elasticsearch.exceptions import RequestError
 from flask_security import login_required, current_user
 
+from api.helper.apiexception import ApiException
+
 
 search = Blueprint('api_projects_search', __name__)
 
@@ -49,17 +51,18 @@ def search_simple():
     try:
         res = g.es.search(index="knexdb", body=request_json)
         try:
-            for project in res:
+            for project in res['hits']:
                 project['is_bookmark'] = 'true' if project['id']\
                     in current_user['bookmarks'] else 'false'
                 project['is_owner'] = 'true' if current_user['email']\
                     in [author['email'] for author in project['authors']]\
                     else 'false'
-        except KeyError:
-            pass
-        return jsonify(res['hits'])
+                    
+            return jsonify(res['hits'])
+        except KeyError as ke:
+            raise ApiException(str(ke), 400)
     except RequestError as e:
-        return (str(e), 400)
+        raise ApiException(str(e), 400)
 
 
 @search.route('/api/projects/search/advanced/', methods=['GET'])
@@ -107,7 +110,7 @@ def search_avanced():
         }
     try:
         res = g.es.search(index="knexdb", body=request_json)
-        projects = res['hits'][:]
+        projects = res['hits']
         try:
             for project in projects:
                 project['is_bookmark'] = 'true' if project['id']\

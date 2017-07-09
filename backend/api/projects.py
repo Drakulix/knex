@@ -78,7 +78,7 @@ def add_projects():
 
 
 @projects.route('/api/projects', methods=['GET'])
-#@login_required
+@login_required
 def get_projects():
     """Return list of projects, args->limit, skip
 
@@ -88,6 +88,7 @@ def get_projects():
     limit = request.args.get('limit', type=int)
     skip = request.args.get('skip', type=int)
     argc = len(request.args)
+
     if g.projects.count() == 0:
         return make_response(jsonify([]), 200)
 
@@ -109,10 +110,9 @@ def get_projects():
                 in current_user['bookmarks'] else 'false'
             project['is_owner'] = 'true' if current_user['email']\
                 in [author['email'] for author in project['authors']] else 'false'
+        return jsonify(res)
     except KeyError as err:
         raise ApiException(str(err), 400)
-        pass
-    return jsonify([x for x in res[:]])
 
 
 @projects.route('/api/projects/authors', methods=['GET'])
@@ -150,11 +150,11 @@ def get_project_by_id(project_id):
     if not res:
         return make_response("Project not found", 404)
     try:
-        res['is_bookmark'] = 'true' if str(project_id) in current_user['bookmarks'] else 'false'
+        res['is_bookmark'] = 'true' if project_id in current_user['bookmarks'] else 'false'
         res['is_owner'] = 'true' if current_user['email']\
             in [author['email'] for author in res['authors']] else 'false'
-    except KeyError:
-        pass
+    except KeyError as err:
+        raise ApiException(str(err), 500)
     return jsonify(res)
 
 
