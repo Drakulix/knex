@@ -145,10 +145,6 @@ def get_user(mail):
     res = g.user_datastore.get_user(mail)
     if res is None:
         return make_response("Unknown User with Email-address: " + mail, 400)
-    if(is_permitted(res.roles) is True):
-        res.roles = "admin"
-    else:
-        res.roles = "user"
     return jsonify(res)
 
 

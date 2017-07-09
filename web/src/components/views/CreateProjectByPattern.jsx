@@ -14,7 +14,7 @@ import MenuItem from 'material-ui/MenuItem';
 import CircularProgress from 'material-ui/CircularProgress';
 import styles from '../common/Styles.jsx';
 import ChipInputList from '../common/ChipInputList';
-
+import { sendJson } from '../common/Backend.jsx'
 
 const statusString = [
   {id: "0" , text :"Done", value : "DONE"},
@@ -50,13 +50,12 @@ const statusString = [
             url: []
           },
           status : "2",
-          authors : [],
-
+          authors: [],
           invalid : true,
           snackbar : false,
           site_loaded: false,
           project_exists: false,
-        }
+        };
       }
 
       this.handleUpload = this.handleUpload.bind(this);
@@ -69,9 +68,18 @@ const statusString = [
     }
 
 
-    handleAuthorChange(value, name) {
-      alert(name);
+    handleAuthorChange(value) {
       this.setState({authors : value});
+      var authors = [];
+      for (var i in value) {
+        var string = value[i];
+        var name = string.substring(0, string.lastIndexOf("(")-1);
+        var id = string.substring(string.lastIndexOf("(")+1, string.length-1);
+        authors.push([{"name" : name, "email" :id}]);
+      }
+      var projectInf = this.state.projectInf;
+      projectInf.authors = authors;
+      this.setState({projectInf: projectInf});
     }
 
     handleTagChange(value) {
@@ -95,39 +103,32 @@ const statusString = [
     handleDescriptionChange(event,value) {
       var projectInf = this.state.projectInf;
       projectInf.description = value;
-      this.setState({title: projectInf}
-    );
+      this.setState({title: projectInf});
     }
 
     handleStatusChange = (event, index, value) => {
       var projectInf = this.state.projectInf;
-              projectInf.status = statusString[0].value;
-              this.setState({status : value,
-                projectInf: projectInf}
-            );
-          }
+      projectInf.status = statusString[0].value;
+      this.setState({ status : value,
+                      projectInf: projectInf}
+      );
+    }
 
     handleChangeDate = (event, date) => {
-
       var mm = date.getMonth()+1;
       var dd = date.getDate();
-      var dateString =  [date.getFullYear(),'-', ((mm > 9) ? '' :'0')+ mm, '-',
-       ((dd> 9) ? '':'0')+ dd].join('');
-
-              this.setState({
-                date: date,
-                projectInf: {date_creation : dateString
-                }
-              });
-
-
-            };
+      var dateString =  [date.getFullYear(),'-', ((mm > 9) ? '' :'0')+ mm, '-', ((dd> 9) ? '':'0')+ dd].join('');
+      this.setState({
+        date: date,
+        projectInf: {date_creation : dateString}
+      });
+    };
 
     componentWillMount(){
 
           //TODO LOADAuthorsFromBackend
 
-          var suggestedAuthors = [{email:"marko@knex.", name :"Marko"},
+          var suggestedAuthors = [{email:"marko@knex", name :"Marko"},
                 {email:"victor@knex", name :"Victor"},{email:"cedric@knex", name :"Cedric"}];
           var suggestedAuthorsArray = []
           for (var i in suggestedAuthors) {
@@ -136,14 +137,6 @@ const statusString = [
 
           //TODO LOADTagsFromBackend
           var suggestedTags = ["your", "tags", "here"];
-
-
-          this.setState({
-            suggestedAuthors: suggestedAuthorsArray,
-            suggestedTags : suggestedTags,
-
-          });
-
 
 
           if(this.state.projectID !== undefined){
@@ -155,188 +148,49 @@ const statusString = [
           function(data){return status === data }
           );
 
-          this.setState({ date:
-            new Date( this.state.projectInf.date_creation.split("-")[0],
-            this.state.projectInf.date_creation.split("-")[1]-1,
-            this.state.projectInf.date_creation.split("-")[2],0,0,0,0),
-
-            status : stateValue
-
-          });
-
-        }
-
-
-        fetchProjectInfo(uuid){
-          var res;
-          return fetch('/api/projects/' + uuid, {
-            method: 'GET',
-            mode: 'no-cors',
-            credentials: 'include',
-            headers: {
-              "Accept": "application/json",
-            }
-          }).then(response => response.json()).catch(ex => {
-            console.error('parsing failes', ex);
+          this.setState({
+              date: new Date( this.state.projectInf.date_creation.split("-")[0],
+                              this.state.projectInf.date_creation.split("-")[1]-1,
+                              this.state.projectInf.date_creation.split("-")[2],0,0,0,0),
+              status : stateValue,
+              suggestedAuthors: suggestedAuthorsArray,
+              suggestedTags : suggestedTags,
           });
         }
 
-        loadProjectInf(uuid) {
-          // Load Project info into state
-          this.fetchProjectInfo(uuid).then(data => {
-            this.setState({projectInf: data});
-            if(!data){
-              this.setState({project_exists: false});
-            }else{
-              this.setState({project_exists: true})
-            }
-            this.setState({site_loaded: true})
-          }).catch(ex => {
+
+      loadProjectInf(uuid) {
+        // Load Project info into state
+        this.fetchProjectInfo(uuid).then(data => {
+          this.setState({projectInf: data});
+          if(!data){
             this.setState({project_exists: false});
-            this.setState({site_loaded: true})
-          });
-
-
-
+          }else{
+            this.setState({project_exists: true})
+          }
           var authorArray = []
           for (var i in this.state.projectInf.authors) {
             authorArray = authorArray.concat([this.state.projectInf.authors[i].name + " ("+ this.state.projectInf.authors[i].email+ ")"]);
           }
-
-          this.setState({
-            //          title :project.title,
-            //          status:project.status,
-            //          date  : new Date( project.date_creation.split("-")[0],
-            //          project.date_creation.split("-")[1]-1,
-            //          project.date_creation.split("-")[2],0,0,0,0),
-            //          description : project.description,
-            //          tags:project.tags,
-            //          url:project.url,
-
-            //          suggestedTags : suggestedTags,
-            //          value : stateValue[0].id
-          });
-
+          this.setState({projectInf: data});
+          this.setState({site_loaded: true})
         }
-
-
-        handleUpload(event){
-          event.preventDefault();
-          console.log(event);
-          this.submit();
-
-        }
-
-
-
-
-
-
-        /*
-        loadProjectInf(uuid) {
-
-
-        //TODO LOADAuthorsFromBackend
-
-        var suggestedAuthors = [{id:"marko@knex.", name :"Marko"},
-        {id:"victor@knex", name :"Victor"},{id:"cedric@knex", name :"Cedric"}];
-        var suggestedAuthorsArray = []
-        for (var i in suggestedAuthors) {
-        suggestedAuthorsArray = suggestedAuthorsArray.concat([suggestedAuthors[i].name + " ("+suggestedAuthors[i].id+ ")"]);
-        }
-
-        //TODO LOADTagsFromBackend
-        var suggestedTags = ["your", "tags", "here"];
-
-
-        //TODO LOADProjectFromBackend
-        var project = {
-        _id :"dsa",
-        title:"Stream - 0-Follower Analysis",
-        status:"DONE",
-        date_creation :
-        "2015-12-12", date_update:"11",
-        description : "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
-        tags:[
-        "av","dasda",
-        "adsadas"
-        ],
-        url:["http://google.com","http://github.org", "http://soundloud.com"],
-        authors :[
-        {
-        id:"33", name :"dda"
-        },
-        {
-        id:"32", name :"ddaa"
-        }
-        ]
-        };
-
-
-
-        var loadedStatus = project.status;
-        var stateValue=  statusString.filter(
-        function(data){return data.value === loadedStatus }
-        );
-        var authorArray = []
-        for (var i in project.authors) {
-        authorArray = authorArray.concat([project.authors[i].name + " ("+project.authors[i].email+ ")"]);
-        }
-        this.setState({
-        title :project.title,
-        status:project.status,
-        date  : new Date( project.date_creation.split("-")[0],
-        project.date_creation.split("-")[1]-1,
-        project.date_creation.split("-")[2],0,0,0,0),
-        description : project.description,
-        tags:project.tags,
-        url:project.url,
-        authors: authorArray,
-        suggestedAuthors: suggestedAuthorsArray,
-        suggestedTags : suggestedTags,
-        value : stateValue[0].id
+        ).catch(ex => {
+          this.setState({project_exists: false});
+          this.setState({site_loaded: true})
         });
-        }
+      }
 
-        */
-        submit(){
-          var project = { "title"         : this.state["title"],
-            "date_creation" : this.state["date"].getYear() + 1900 + "-"
-            + (this.state["date"].getMonth() + 1) + "-"
-            + this.state["date"].getDate(),
-            "tags"          : this.state["tags"],
-            "description"   : this.state["description"],
-            "url"           : this.state["url"],
-            "status"        : statusString[this.state["value"]].value,
-            "authors"        : []
-          };
-          var authorArray = this.state["authors"];
-          for (var i in authorArray) {
-            var string = authorArray[i];
-            var name = string.substring(0, string.lastIndexOf("(")-1);
-            var id = string.substring(string.lastIndexOf("(")+1, string.length-1);
-            project.authors = project.authors.concat([{"name" : name, "email" :id}]);
-          }
-          //TODO SEND
+      handleUpload(event){
+        event.preventDefault();
+        console.log(event);
+        this.submit();
+      }
 
+      submit(){
 
-          (this.state.authors)
-
-          console.log(project);
-
-          fetch('/api/projects', {
-            method: 'POST',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: project
-          });
-
-
-
-          this.setState({snackbar:true});
-
+        sendJson("POST", "/api/projects", this.state.projectInf)
+        this.setState({snackbar:true});
         }
 
         isInValid(){
@@ -424,7 +278,6 @@ const statusString = [
                           </div>
                         </div>
                         <div className="profile-info">Authors</div>
-
                         <ChipInputList suggestions = {this.state.suggestedAuthors}
                           onChange={this.handleAuthorChange}
                           filtered ={true}
@@ -432,7 +285,6 @@ const statusString = [
                           hintText={'Add authors...'}
                           errorText={(this.state.authors.length === 0) ? this.props.authorsErrorText : ""}
                           />
-
                         <div className="profile-info">Links</div>
                         <ChipInputList
                           defaultValue={this.state.projectInf.url}
@@ -443,15 +295,12 @@ const statusString = [
                       <div className="col-1"></div>
                       <div className="col-7">
                         <div className="profile-info"> Tags</div>
-
                         <ChipInputList suggestions = {this.state.suggestedTags}
                           onChange={this.handleTagChange}
                           filtered ={true}
                           value={this.state.projectInf.tags}
                           hintText={'Add tags...'}
                           />
-
-
                         <div className="profile-info">Description</div>
                         <TextField  value={this.state.projectInf.description}
                           onChange={this.handleDescriptionChange}

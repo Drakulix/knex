@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import {fetchJson, sendJson} from '../common/Backend';
-import  Table from './SearchTable';
-import Chips, { Chip } from 'react-chips';
 import PropTypes from 'prop-types';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';

@@ -7,6 +7,8 @@ import {Tabs, Tab} from 'material-ui/Tabs';
 import CircularProgress from 'material-ui/CircularProgress';
 import {login, isLoggedIn, logout, getCookie, setCookie, isAdmin, getMyEmail, getUserInfo, changePassword, changeProfile} from '../common/Authentication.jsx';
 import { fetchJson } from '../common/Backend';
+import DataTable from '../common/DataTable';
+
 
 const FILTER_ATTRIBUTES = ['title', 'status', 'description', '_id'];
 
@@ -283,12 +285,12 @@ export default class ProfileContainer extends React.Component {
                 label={this.state.profileInf.first_name+ '\'s Projects'} value="c">
                 <div className="table-container">
                   <div className="container">
-{/*
+
                     <DataTable 
                       columns= {['title', 'status', 'tags', 'description', '_id', 'bookmarked', 'delete']}
-                      fetchURL={'/api/projects/search/advanced/?q=(authors.name: ' + this.state.email + ')'}
+                      fetchURL={'/api/projects/search/advanced/?q=(authors.email: ' + this.state.email + ')'}
                     ></DataTable>
-*/}
+
                     <div className="footer" />
                   </div>
                 </div>
