@@ -66,7 +66,7 @@ export default class UploadByLink extends React.Component {
                   ID="url"
                   name="title"
                   hintText="enter url here (e.g. “http://soundloud.com/stuff/manifest.json”)"
-                  style={{width:'430px',}}
+                  style={{width:'460px',}}
                   onChange={event => this.setState({
                             sourceURL : event.target.value,
                            })}
@@ -75,7 +75,7 @@ export default class UploadByLink extends React.Component {
             </div>
             <div >
               <RaisedButton style={{width:'300px'}}
-                          label="from online json"
+                          label="Upload online json"
                           primary={true}
                           type="submit"/>
             </div>
@@ -83,7 +83,7 @@ export default class UploadByLink extends React.Component {
         <div className="text" >or</div>
         <div>
           <RaisedButton
-                    label="from local json"
+                    label="Upload local json"
                     labelPosition="before"
                     style={styles.uploadButton}
                     containerElement="label"
@@ -94,7 +94,7 @@ export default class UploadByLink extends React.Component {
         </div>
         <div className="text" >or</div>
         <div>
-          <RaisedButton label="with online formular"
+          <RaisedButton label="Use online formular"
                       href="/createNew/"
                       primary={true}
                       style={{ width:'300px'}}

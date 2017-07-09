@@ -188,8 +188,8 @@ const statusString = [
               </div>
             </div>
             <div className="row">
-              <div className="col-1 filter-label" style={{textAlign: "left"}}>From</div>
-              <div className="col-2" style={{marginTop:3}}>
+              <div className="col-1 filter-label" style={{textAlign: "left" , marginLeft:2}}>From</div>
+              <div className="col-2" style={{marginTop:2}}>
                 <DatePicker hintText="Pick date from... "
                   mode="landscape"
                   name ="date_from"
@@ -202,7 +202,7 @@ const statusString = [
               </div>
 
               <div className="col-1 filter-label" style={{textAlign: "left"}}>Till</div>
-              <div className="col-2" style={{marginTop:3}}>
+              <div className="col-2" style={{marginTop:2}}>
                 <DatePicker hintText="Pick date until..."
                   mode="landscape"
                   style={{marginLeft:-50}}
@@ -213,7 +213,7 @@ const statusString = [
                   onChange={this.handleChangeDateTill}
                   />
               </div>
-              <div className="col-1 filter-label" style={{textAlign: "left", marginLeft:-43}} >Status</div>
+              <div className="col-1 filter-label" style={{textAlign: "left", marginLeft:-41}} >Status</div>
               <div className="col-2" style={{marginTop:-3}}>
                 <DropDownMenu
                   onChange={this.handleStatusChange}
@@ -228,7 +228,7 @@ const statusString = [
                 </DropDownMenu>
               </div>
               <div className="col-1"></div>
-              <div className="col-2" style={{textAlign:"right",marginTop: 0, marginLeft: 43}}>
+              <div className="col-2" style={{textAlign:"right",marginTop: 6, marginLeft: 39}}>
                   <RaisedButton  style={{width:"100%"}} onClick={() => this.setState({expanded: false})} label= "Hide filters" primary={true}/>
               </div>
             </div>
