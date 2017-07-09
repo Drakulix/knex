@@ -6,7 +6,7 @@ const PROJECT_URL = '/api/projects/'
     // use this function to make a GET request.
     const url = `${path}`
 
-    return fetch(url).then(response => response.json()).catch(ex => {
+    return fetch(url,{credentials: 'include',}).then(response => response.json()).catch(ex => {
       console.error('parsing failes', ex);
     });
 
