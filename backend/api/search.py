@@ -6,6 +6,20 @@ from flask_security import login_required
 search = Blueprint('api_projects_search', __name__)
 
 
+@search.route('/api/search/authors', methods=['GET'])
+@login_required
+def get_all_authors():
+    authors = g.projects.distinct('authors')
+    return jsonify(authors)
+
+
+@search.route('/api/search/tags', methods=['GET'])
+@login_required
+def get_all_tags():
+    tags = g.projects.disctinct('tags')
+    return jsonify(tags)
+
+
 @search.route('/api/projects/search/simple/', methods=['GET'])
 @login_required
 def search_simple():

@@ -114,7 +114,7 @@ class User(DB.Document, UserMixin):
         dic['email'] = str(self.email)
         dic['first_name'] = str(self.first_name)
         dic['last_name'] = str(self.last_name)
-        dic['password'] = str(self.password)
+        # dic['password'] = str(self.password)
         dic['active'] = str(self.active)
         dic['bio'] = str(self.bio)
         dic['bookmarks'] = [str(bookmark) for bookmark in self.bookmarks]

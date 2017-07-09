@@ -216,8 +216,8 @@ def add_comment(project_id):
         if "text/plain" not in request.content_type:
             raise ApiException("'text/plain' must be in Content-Type", 400)
         comment = author = {}
-        firstname = current_user['first_name'] if 'first_name' in user else ""
-        lastname = current_user['last_name'] if 'last_name' in user else ""
+        firstname = current_user['first_name'] if 'first_name' in current_user else ""
+        lastname = current_user['last_name'] if 'last_name' in current_user else ""
         author['name'] = firstname + " " if firstname else "" + lastname
         author['email'] = current_user['email']
         comment['author'] = author

@@ -40,6 +40,13 @@ def logout():
     return make_response("Logged out", 200)
 
 
+@users.route('/api/users', methods=['GET'])
+@login_required
+def get_all_users():
+    users = g.user_datastore.user_model.objects
+    return jsonify([user.to_dict() for user in users])
+
+
 @users.route('/api/users', methods=['POST'])
 def create_user():
     try:
@@ -126,12 +133,8 @@ def get_user(mail):
     if not user:
         return make_response("Unknown User with Email-address: " + mail, 400)
 
-    roles = [role for role in ['admin', 'user'] if user.has_role(role)]
-
     res = user.to_dict()
-    del res['roles']
-    del res['password']
-    res['roles'] = roles
+    res['roles'] = [role for role in ['admin', 'user'] if user.has_role(role)]
 
     return jsonify(res)
 
