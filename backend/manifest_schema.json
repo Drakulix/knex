@@ -88,6 +88,15 @@
             "$ref": "#/project/definitions/related_project"
           }
         }
+      },
+      "comments": {
+        "type": "array",
+        "items": {
+          "comment": {
+            "$ref": "#/project/definitions/comments_comment"
+          }
+        },
+        "additionalProperties": false
       }
     },
     "additionalProperties": false,
@@ -153,26 +162,30 @@
           }
         }
       },
-      "comments": {
-        "type": "array",
-        "items": {
+      "comments_comment": {
+        "type": "object",
+        "required": [
+            "author",
+            "id",
+            "message",
+            "datetime"
+        ],
+        "properties": {
           "author": {
             "$ref": "#/project/definitions/user"
-          },
-          "authors_name": {
-            "type": "string"
           },
           "id": {
             "type": "string",
             "format": "uuid"
           },
-          "commentMsg": {
+          "message": {
             "type": "string"
           },
           "datetime": {
             "type": "string"
           }
-        }
+        },
+        "additionalProperties": false
       }
     }
   }

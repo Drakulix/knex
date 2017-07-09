@@ -4,7 +4,6 @@
 import sys
 import time
 import uuid
-import json5
 
 from flask import g
 from api.helper.apiexception import ApiException
@@ -25,7 +24,7 @@ def save_manifest_to_db(manifest):
     try:
         manifestlist = manifest if isinstance(manifest, list) else [manifest]
         for entry in manifestlist:
-            if not entry['date_creation']:
+            if 'date_creation' not in entry:
                 entry['date_creation'] = time.strftime("%Y-%m-%d")
 
         is_valid = g.validator.is_valid(manifestlist)

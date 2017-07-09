@@ -22,8 +22,8 @@ def docker_client():
 
 @pytest.fixture(scope='session')
 def flask_api_url():
-    flask_api_url = "http://localhost:5000"
-    return flask_api_url
+    url = "http://localhost:5000"
+    return url
 
 
 @pytest.fixture(scope='session')
@@ -51,12 +51,12 @@ def manifest_validator():
 
 @pytest.yield_fixture(scope='session')
 def session():
-    session = requests.Session()
+    _session = requests.Session()
     data = {"email": "admin@knex.com", "password": "admin"}
-    response = session.post(flask_api_url() + '/api/users/login',
-                            data=data)
-    yield session
-    response = session.get(flask_api_url() + '/api/users/logout')
+    _session.post(flask_api_url() + '/api/users/login',
+                  data=data)
+    yield _session
+    _session.get(flask_api_url() + '/api/users/logout')
 
 
 @pytest.yield_fixture(autouse=True)
@@ -66,9 +66,9 @@ def run_around_tests(mongo_client):
     :param mongo_client:
     :return:
     """
-    result = mongo_client.projects.delete_many({})
+    mongo_client.projects.delete_many({})
     yield
-    result = mongo_client.projects.delete_many({})
+    mongo_client.projects.delete_many({})
 
 
 @pytest.yield_fixture()

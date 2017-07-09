@@ -30,8 +30,8 @@ class TestPOST(object):
         response = session.post(flask_api_url + "/api/projects", data=data.encode('utf-8'),
                                 headers={'Content-Type': 'application/json5'})
         print(response.text)
-        for id in response.json():
-            assert UUID(id, version=4)
+        for pid in response.json():
+            assert UUID(pid, version=4)
 
     def test_success_json(self, session, flask_api_url, pytestconfig):
         test_manifest = os.path.join(
@@ -44,8 +44,8 @@ class TestPOST(object):
             test_manifest_json = json.load(tf)
         response = session.post(flask_api_url + "/api/projects", json=test_manifest_json)
         print(response.text)
-        for id in response.json():
-            assert UUID(id, version=4)
+        for pid in response.json():
+            assert UUID(pid, version=4)
 
     def test_success_json5_upload(self, session, flask_api_url, pytestconfig):
         test_manifest = os.path.join(
@@ -199,13 +199,13 @@ class TestPOST(object):
         response = session.post(flask_api_url + "/api/projects", data=data.encode('utf-8'),
                                 headers={'Content-Type': 'application/json5'})
         print(response.text)
+        time.sleep(5)
         for project_id in response.json():
             # This should pass if post is working properly
             assert UUID(project_id, version=4)
             project_uuid = UUID(project_id, version=4)
-            time.sleep(5)
             print(project_id)
-            mongo_test = mongo_client.projects.find({})
+            mongo_client.projects.find({})
             mongo_result = mongo_client.projects.find_one(project_uuid)
             print("mongo:", mongo_result)
 
@@ -251,8 +251,8 @@ class TestDELETE(object):
             test_manifest_json = json.load(tf)
         post_response = session.post(flask_api_url + "/api/projects", json=test_manifest_json)
         print(post_response.text)
-        for id in post_response.json():
-            assert UUID(id, version=4)
+        for pid in post_response.json():
+            assert UUID(pid, version=4)
         assert post_response.status_code == 200
 
         # Delete
@@ -272,8 +272,8 @@ class TestDELETE(object):
             test_manifest_json = json.load(tf)
         post_response = session.post(flask_api_url + "/api/projects", json=test_manifest_json)
         print(post_response.text)
-        for id in post_response.json():
-            assert UUID(id, version=4)
+        for pid in post_response.json():
+            assert UUID(pid, version=4)
         project_id = post_response.json()[0]
         delete_response = session.delete(flask_api_url + "/api/projects/" + project_id)
         print(delete_response.text)
@@ -342,8 +342,8 @@ class TestGET(object):
             test_manifest_json = json.load(tf)
         post_response = session.post(flask_api_url + "/api/projects", json=test_manifest_json)
         print(post_response.text)
-        for id in post_response.json():
-            assert UUID(id, version=4)
+        for pid in post_response.json():
+            assert UUID(pid, version=4)
 
         project_id = post_response.json()[0]
         get_response = session.get(flask_api_url + "/api/projects/" + project_id)

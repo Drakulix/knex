@@ -5,6 +5,13 @@ import requests
 
 from uuid import UUID
 
+class TestPOST(object):
+    def test_success_search(self, flask_api_url):
+        assert True
+
+    def test_project_doesnt_exist(self, flask_api_url):
+        assert True
+
 
 class TestGET(object):
 
