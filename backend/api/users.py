@@ -93,8 +93,6 @@ def update_user():
         res.last_name = user['last name']
         res.bio = user['bio']
         res.save()
-        res = make_response(jsonify(res))
-        res.headers['Content-Type'] = 'application/json'
 
         return make_response("User with email: " +
                              user['email'] + " updated", 200)
@@ -131,11 +129,10 @@ def get_user(mail):
     """
     user = g.user_datastore.get_user(mail)
     if not user:
-        return make_response("Unknown User with Email-address: " + mail, 400)
+        return make_response("Unknown User with Email-address: " + str(mail), 400)
 
     res = user.to_dict()
     res['roles'] = [role for role in ['admin', 'user'] if user.has_role(role)]
-
     return jsonify(res)
 
 
@@ -149,6 +146,18 @@ def insert_bookmarks(id):
         return make_response("Project is already bookmarked.", 400)
     user.bookmarks.append(id)
     user.save()
+    projects = [g.projects.find_one({'_id': project_id}) for project_id in user['bookmarks']]
+
+    try:
+        for project in projects:
+            project['is_bookmark'] = 'true'
+            project['is_owner'] = 'true' if current_user['email']\
+                in [author['email'] for author in project['authors']] else 'false'
+
+        return jsonify(projects)
+
+    except KeyError as err:
+        raise ApiException(str(err), 500)
     return jsonify(user['bookmarks'])
 
 
@@ -161,7 +170,18 @@ def delete_bookmarks(id):
     if id in user.bookmarks:
         user.bookmarks.remove(id)
         user.save()
-        return jsonify(user['bookmarks'])
+        projects = [g.projects.find_one({'_id': project_id}) for project_id in user['bookmarks']]
+
+        try:
+            for project in projects:
+                project['is_bookmark'] = 'true'
+                project['is_owner'] = 'true' if current_user['email']\
+                    in [author['email'] for author in project['authors']] else 'false'
+
+            return jsonify(projects)
+
+        except KeyError as err:
+            raise ApiException(str(err), 500)
     return make_response("Project is not bookmarked: " + str(id), 400)
 
 
@@ -171,4 +191,15 @@ def get_bookmarks():
     user = g.user_datastore.get_user(current_user['email'])
     if not user:
         raise ApiException("Couldn't find current_user in datastore", 500)
-    return jsonify(user['bookmarks'])
+    projects = [g.projects.find_one({'_id': project_id}) for project_id in user['bookmarks']]
+
+    try:
+        for project in projects:
+            project['is_bookmark'] = 'true'
+            project['is_owner'] = 'true' if current_user['email']\
+                in [author['email'] for author in project['authors']] else 'false'
+
+        return jsonify(projects)
+
+    except KeyError as err:
+        raise ApiException(str(err), 500)
