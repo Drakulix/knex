@@ -170,9 +170,11 @@ def update_project(project_id):
                 else json5.loads(request.data.decode("utf-8"))
             if manifest['_id'] != str(project_id):
                 return make_response("project_id and json['_id'] do not match.", 409)
+            manifest['_id'] = str(project_id)
             is_valid = g.validator.is_valid(manifest)
             if is_valid and is_permitted(current_user, manifest):
                 manifest['date_last_updated'] = time.strftime("%Y-%m-%d")
+                manifest['_id'] = project_id
                 g.projects.find_one_and_replace({'_id': project_id}, manifest,
                                                 return_document=ReturnDocument.AFTER)
                 return make_response("Success")
@@ -228,8 +230,10 @@ def add_comment(project_id):
             manifest['comments'].append(comment)
         else:
             manifest['comments'] = [comment]
+        manifest['_id'] = str(project_id)       
         is_valid = g.validator.is_valid(manifest)
         if is_valid:
+            manifest['_id'] = project_id
             g.projects.find_one_and_replace({'_id': project_id}, manifest,
                                             return_document=ReturnDocument.AFTER)
             return make_response("Success", 200)
