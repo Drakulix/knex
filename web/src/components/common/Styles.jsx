@@ -18,7 +18,9 @@ export default {
   chip: {
     margin: '8px 8px 0 0',
     float: 'left',
-    background: mainColor
+    background: mainColor,
+    color: '#ffffff',
+
   },
   wrapper: {
     display: 'flex',
@@ -33,7 +35,7 @@ export default {
     color: '#292b2c',
   },
   chipText:{
-    color : '#ffffff',
+    background: mainColor,
     fontWeight: 'bold'
   },
   datePicker: {

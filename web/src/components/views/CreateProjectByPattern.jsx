@@ -75,7 +75,7 @@ const statusString = [
         var string = value[i];
         var name = string.substring(0, string.lastIndexOf("(")-1);
         var id = string.substring(string.lastIndexOf("(")+1, string.length-1);
-        authors.push([{"name" : name, "email" :id}]);
+        authors.push({"name" : name, "email" :id});
       }
       var projectInf = this.state.projectInf;
       projectInf.authors = authors;

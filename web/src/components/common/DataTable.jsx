@@ -14,10 +14,18 @@ import styles from '../common/Styles.jsx';
 export default class BookmarksTable extends React.Component {
   constructor(props) {
     super(props);
+
+    var filters = {};
+    if(props.predefinedFilter !== "undefined"){
+      filters = props.predefinedFilter;
+    }
+
+
+
     this.state = {
       data: [{
       }],
-      filters : {},
+      filters : filters,
       filteredTable : [{}],
       isProfile : "false",
       url : "/ap/projects",
@@ -88,10 +96,6 @@ this.setState({ url : "/api/projects" });
 
   }
 
-  componentWillReceiveProps(nextProps){
-    this.fetchData(nextProps.fetchURL);
-
-  }
 
 
   componentWillMount() {
@@ -103,7 +107,7 @@ this.setState({ url : "/api/projects" });
       this.state.bookmarksSite = true;
     }
     this.fetchData(this.props.fetchURL);
-    
+
   }
 
   fetchData(url){
@@ -111,7 +115,7 @@ this.setState({ url : "/api/projects" });
     fetchJson(url).then(function(data) {
 
       var datas =[]
-      datas = data
+      //datas = data
       var tmp = []
       if(this.state.isProfile == true){
         for (let projects of   datas){
@@ -169,6 +173,8 @@ this.setState({ url : "/api/projects" });
           data: dataArray,
           filteredTable : filteredDataArray
         });
+
+        this.filter(this.state.filters)
       }.bind(this));
     }
 
@@ -186,11 +192,15 @@ this.setState({ url : "/api/projects" });
       }
       this.setState({filters : state});
       this.filter(state);
+
+      if(this.props.handleFilter !== "undefined")
+        this.props.handleFilter(key,value);
     }
 
 
     filter(filters){
       var array = [];
+
 
       for(let dataObject of this.state.data) {
         var discard = false;
@@ -438,7 +448,8 @@ this.setState({ url : "/api/projects" });
                   }
                   return (
                     <div>
-                      <Filters value={this.state.filters} onChange={this.handleFilterChange}></Filters>
+                      <Filters value={this.state.filters}
+                        onChange={this.handleFilterChange}></Filters>
                       <ReactTable
                         data={this.state.filteredTable}
                         columns={columns}

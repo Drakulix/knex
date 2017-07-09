@@ -21,6 +21,8 @@ const statusString = [
 
     constructor(props){
       super(props);
+
+
       this.state ={
         expanded : false,
         authors : [],
@@ -32,7 +34,7 @@ const statusString = [
         date_till:"",
         filter_date_from :"",
         filter_date_to:"",
-        description:"",
+        description: ""
         searchString :"",
       }
       this.handleAuthorChange = this.handleAuthorChange.bind(this);
@@ -42,7 +44,6 @@ const statusString = [
 
 
     componentWillMount(){
-
 
       var suggestedAuthors = [{email:"marko@knex.", name :"Marko"},
             {email:"victor@knex", name :"Victor"},{email:"cedric@knex", name :"Cedric"},
@@ -152,6 +153,7 @@ const statusString = [
                 <TextField
                   style={{width:"100%"}}
                   name ="title"
+                  value={this.state.title}
                   onChange={this.handleChange}
                   type="text" placeholder="Enter exact  title..."
                   />
@@ -161,6 +163,7 @@ const statusString = [
                 <TextField
                   style={{width:"100%"}}
                   name ="description"
+                  value={this.state.description}
                   onChange={this.handleChange}
                   type="text" placeholder="Enter exact  description..."
                   />

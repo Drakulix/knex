@@ -802,6 +802,12 @@ legend {
 }
 
 
+.query-value{
+  margin-top: 13px;
+  font-weight: 300;
+  font-size: 16px;
+}
+
 .filter-label {
   margin-top: 13px;
   font-weight: 300;
@@ -827,7 +833,7 @@ legend {
   font-weight: 300;
   font-size: 18px;
   font-weight: bold;
-} 
+}
 
 
 /* Profile Details */

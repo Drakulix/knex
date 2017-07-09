@@ -41,8 +41,8 @@ const statusString = [
       super(props);
       this.state = {
         searchString :"",
-        filters :{},
-        fetchURL : "/api/projects"
+        fetchURL : "/api/projects",
+
       };
 
       this.handleFilterChange = this.handleFilterChange.bind(this);
@@ -50,15 +50,33 @@ const statusString = [
       this.handleChange = this.handleChange.bind(this);
     }
 
+
+    componentWillMount(){
+      var query = {
+        searchString :"",
+        authors : [],
+        title : "Test",
+        tags : ["DDSA"],
+        value : "0",
+          status : "DONE",
+          date_from :"212",
+          date_to:"211",
+          description:"ttt",
+          shortName : "TEST",
+          userID:"av"
+      }
+      this.setState({query: query});
+    }
+
+
     handleChange(event) {
       const name = event.target.name;
       const value = event.target.value;
       this.setState({ [name]: value});
-      if(value ==""){
-        delete this.state.filters[name];
-      }else {
-        this.state.filters[name] = value;
-      }
+      var query = this.state.query;
+      query["searchString"] = value;
+      this.setState({query : query});
+
 
 
       //this.setState({fetchURL : "simple/?q="+this.state.searchString+"*"});
@@ -69,16 +87,24 @@ const statusString = [
     }
 
     handleFilterChange(key, value){
-      var state = this.state["filters"];
-      if(value == ""){
-        delete state[key];
-      }
-      else        {state[key] = value;}
-      this.setState({"filters" : state});
+      var query = this.state.query;
+      query[key] = value;
+
+      this.setState({query : query});
+
     }
 
     saveSearch(){
-      alert(Object.keys(this.state.filters));
+      var temp = [];
+      var authors = this.state.query["authors"];
+      for (var i in authors) {
+        var string = authors[i];
+        var name = string.substring(0, string.lastIndexOf("(")-1);
+        var id = string.substring(string.lastIndexOf("(")+1, string.length-1);
+        temp.push({"name" : name, "email" :id});
+      }
+      var query = this.state.query;
+      query["authors"] = temp;
     }
 
     render() {
@@ -102,6 +128,8 @@ const statusString = [
             <div style={{marginTop:20}}>
               <DataTable columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'date_creation' ,'bookmarked']}
                 fetchURL={this.state.fetchURL}
+                handleFilter= {this.handleFilterChange}
+                predefinedFilter = {this.state.query}
                 ></DataTable>
             </div>
           </div>

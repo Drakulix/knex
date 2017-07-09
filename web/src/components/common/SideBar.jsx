@@ -11,6 +11,7 @@ export default class SideBar extends Component {
       menu: {
         discoverProjects: 'Discover Projects',
         createProject: 'Create New Project',
+        queries : "Saved Queries",
         bookmarks: 'Bookmarks',
         userprojects: 'Projects',
         profile: 'Profile',
@@ -63,6 +64,7 @@ export default class SideBar extends Component {
             <ul className="list-group">
                 <SideBarEntry name={this.state.menu.discoverProjects} to="/discovery" active={this.isActive("/discovery")} />
                 <SideBarEntry name={this.state.menu.createProject} to="/createbylink" active={this.isActive("/createbylink")} />
+                <SideBarEntry name={this.state.menu.queries} to="/queries" active={this.isActive("/queries")} />
                 <SideBarEntry name={this.state.menu.bookmarks} to="/bookmarks" active={this.isActive("/bookmarks")} />
                 <SideBarEntry name={this.state.menu.userprojects} to="/yourprojects" active={this.isActive("/yourprojects")} />
                 <SideBarEntry name={this.state.menu.profile} to={'/profile/' + this.state.myProfile } active={this.isActive("/profile")} />
