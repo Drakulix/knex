@@ -14,7 +14,7 @@ import MenuItem from 'material-ui/MenuItem';
 import CircularProgress from 'material-ui/CircularProgress';
 import styles from '../common/Styles.jsx';
 import ChipInputList from '../common/ChipInputList';
-
+import { sendJson } from '../common/Backend.jsx'
 
 
 
@@ -115,7 +115,7 @@ const statusString = [
 
           //TODO LOADAuthorsFromBackend
 
-          var suggestedAuthors = [{email:"marko@knex.", name :"Marko"},
+          var suggestedAuthors = [{email:"marko@knex", name :"Marko"},
                 {email:"victor@knex", name :"Victor"},{email:"cedric@knex", name :"Cedric"}];
           var suggestedAuthorsArray = []
           for (var i in suggestedAuthors) {
@@ -144,19 +144,6 @@ const statusString = [
           });
         }
 
-        fetchProjectInfo(uuid){
-          var res;
-          return fetch('/api/projects/' + uuid, {
-            method: 'GET',
-            mode: 'no-cors',
-            credentials: 'include',
-            headers: {
-              "Accept": "application/json",
-            }
-          }).then(response => response.json()).catch(ex => {
-            console.error('parsing failes', ex);
-          });
-        }
 
       loadProjectInf(uuid) {
         // Load Project info into state
@@ -187,17 +174,9 @@ const statusString = [
       }
 
       submit(){
-          var project = this.state.projectInf;
-          console.log(project);
-          fetch('/api/projects', {
-            method: 'POST',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: project
-          });
-          this.setState({snackbar:true});
+
+        sendJson("POST", "/api/projects", this.state.projectInf)
+        this.setState({snackbar:true});
         }
 
         isInValid(){
