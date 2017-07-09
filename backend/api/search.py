@@ -50,7 +50,7 @@ def search_simple():
         res = g.es.search(index="knexdb", body=request_json)
         try:
             for project in res:
-                project['is_bookmark'] = 'true' if str(project['id'])\
+                project['is_bookmark'] = 'true' if project['id']\
                     in current_user['bookmarks'] else 'false'
                 project['is_owner'] = 'true' if current_user['email']\
                     in [author['email'] for author in project['authors']]\
@@ -110,7 +110,7 @@ def search_avanced():
         projects = res['hits'][:]
         try:
             for project in projects:
-                project['is_bookmark'] = 'true' if str(project['id'])\
+                project['is_bookmark'] = 'true' if project['id']\
                     in current_user['bookmarks'] else 'false'
                 project['is_owner'] = 'true' if current_user['email']\
                     in [author['email'] for author in project['authors']]\

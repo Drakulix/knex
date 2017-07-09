@@ -179,7 +179,7 @@ def get_bookmarks():
                              user['email'], 400)
     try:
         for project in res:
-            project['is_bookmark'] = 'true' if str(project['_id'])\
+            project['is_bookmark'] = 'true' if project['_id']\
                 in current_user['bookmarks'] else 'false'
             project['is_owner'] = 'true' if current_user['email']\
                 in [author['email'] for author in project['authors']]\
