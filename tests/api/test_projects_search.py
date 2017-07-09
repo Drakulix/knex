@@ -51,7 +51,7 @@ class TestGET(object):
 
         response = session.get(
             flask_api_url + "/api/projects/search/advanced/?q=tags:superawesometag&sort=desc")
-        resulttags = response.json()["hits"][0]['_source']['tags']
+        resulttags = response["hits"][0]['_source']['tags']
         print("tags of result:", resulttags)
         assert "superawesometag" in resulttags
 
@@ -75,9 +75,8 @@ class TestGET(object):
 
         response = session.get(
             flask_api_url + "/api/projects/search/advanced/?q=tags:superawesometitle&sort=desc")
-        result = json.loads(response.text)
-        print("result: ", result)
-        assert result['total'] == 0
+        print("result: ", response)
+        assert response['total'] == 0
 
     def test_success_author(self, flask_api_url, pytestconfig, session):
         """Test if search for existent author is successful.
@@ -99,6 +98,6 @@ class TestGET(object):
 
         response = session.get(flask_api_url + "/api/projects/search/advanced/" +
                                "?q=authors.name:superawesomeauthor&sort=desc")
-        resultauthors = json.loads(response.text)['hits'][0]['_source']['authors'][0]['name']
+        resultauthors = response['hits'][0]['_source']['authors'][0]['name']
         print("authors of result:", resultauthors)
         assert "superawesomeauthor" in resultauthors
