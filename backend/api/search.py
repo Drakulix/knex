@@ -51,14 +51,15 @@ def search_simple():
     try:
         res = g.es.search(index="knexdb", body=request_json)
         try:
-            for project in res['hits']:
+            projects = res['hits'][:]
+            for project in projects:
                 project['is_bookmark'] = 'true' if project['id']\
                     in current_user['bookmarks'] else 'false'
                 project['is_owner'] = 'true' if current_user['email']\
                     in [author['email'] for author in project['authors']]\
                     else 'false'
 
-            return jsonify(res['hits'])
+            return jsonify(projects)
         except KeyError as ke:
             raise ApiException(str(ke), 400)
     except RequestError as e:
@@ -84,16 +85,6 @@ def search_avanced():
     if count is None:
         count = 10
 
-    # string manipulation to get the user email if projects from a user were searched
-    searchuser = False
-    try:
-        start = text.index('(authors.email: ') + len('(authors.email: ')
-        end = text.index(')', start)
-        usermail = text[start:end]
-        searchuser = True
-    except ValueError:
-        pass
-
     request_json = {
         'query': {
             'query_string': {
@@ -110,7 +101,7 @@ def search_avanced():
         }
     try:
         res = g.es.search(index="knexdb", body=request_json)
-        projects = res['hits']
+        projects = res['hits'][:]
         try:
             for project in projects:
                 project['is_bookmark'] = 'true' if project['id']\
@@ -118,11 +109,11 @@ def search_avanced():
                 project['is_owner'] = 'true' if current_user['email']\
                     in [author['email'] for author in project['authors']]\
                     else 'false'
-        except KeyError:
-            pass
-        return jsonify(projects)
+            return jsonify(projects)
+        except KeyError as ke:
+            raise ApiException(str(ke), 400)
     except RequestError as e:
-        return (str(e), 400)
+        raise ApiException(str(e), 400)
 
 
 @search.route('/api/projects/search/tag/', methods=['GET'])
@@ -165,7 +156,17 @@ def search_tag():
         }
     try:
         res = g.es.search(index="knexdb", body=request_json)
-        return jsonify(res['hits'])
+        projects = res['hits'][:]
+        try:
+            for project in projects:
+                project['is_bookmark'] = 'true' if project['id']\
+                    in current_user['bookmarks'] else 'false'
+                project['is_owner'] = 'true' if current_user['email']\
+                    in [author['email'] for author in project['authors']]\
+                    else 'false'                    
+            return jsonify(projects)
+        except KeyError as ke:
+            raise ApiException(str(ke), 400)
     except RequestError as e:
         return (str(e), 400)
 
