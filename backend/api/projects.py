@@ -217,7 +217,8 @@ def add_comment(project_id):
             raise ApiException("Project not found", 404)
         if "text/plain" not in request.content_type:
             raise ApiException("'text/plain' must be in Content-Type", 400)
-        comment = author = {}
+        comment = dict()
+        author = dict()
         firstname = current_user['first_name'] if 'first_name' in current_user else ""
         lastname = current_user['last_name'] if 'last_name' in current_user else ""
         author['name'] = firstname + " " if firstname else "" + lastname
@@ -230,7 +231,7 @@ def add_comment(project_id):
             manifest['comments'].append(comment)
         else:
             manifest['comments'] = [comment]
-        manifest['_id'] = str(project_id)       
+        manifest['_id'] = str(project_id)
         is_valid = g.validator.is_valid(manifest)
         if is_valid:
             manifest['_id'] = project_id
