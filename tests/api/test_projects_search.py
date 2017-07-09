@@ -51,7 +51,7 @@ class TestGET(object):
 
         response = session.get(
             flask_api_url + "/api/projects/search/advanced/?q=tags:superawesometag&sort=desc")
-        resulttags = json.dumps(response.text)["hits"][0]['_source']['tags']
+        resulttags = response.json()["hits"][0]['_source']['tags']
         print("tags of result:", resulttags)
         assert "superawesometag" in resulttags
 
@@ -75,7 +75,7 @@ class TestGET(object):
 
         response = session.get(
             flask_api_url + "/api/projects/search/advanced/?q=tags:superawesometitle&sort=desc")
-        result = json.dumps(response)
+        result = response.json()
         print("result: ", result)
         assert result['total'] == 0
 
@@ -99,6 +99,6 @@ class TestGET(object):
 
         response = session.get(flask_api_url + "/api/projects/search/advanced/" +
                                "?q=authors.name:superawesomeauthor&sort=desc")
-        resultauthors = json.dumps(response.text)['hits'][0]['_source']['authors'][0]['name']
+        resultauthors = response.json()['hits'][0]['_source']['authors'][0]['name']
         print("authors of result:", resultauthors)
         assert "superawesomeauthor" in resultauthors
