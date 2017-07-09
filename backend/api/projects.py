@@ -108,11 +108,11 @@ def get_projects():
             project['is_bookmark'] = 'true' if project['_id']\
                 in current_user['bookmarks'] else 'false'
             project['is_owner'] = 'true' if current_user['email']\
-                in [[author['email'] for author in project['authors']] else 'false'
+                in [author['email'] for author in project['authors']] else 'false'
     except KeyError as err:
         raise ApiException(str(err), 400)
         pass
-    return jsonify([x for x in res[:]]
+    return jsonify([x for x in res[:]])
 
 
 @projects.route('/api/projects/authors', methods=['GET'])

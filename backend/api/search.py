@@ -57,7 +57,7 @@ def search_simple():
                     else 'false'
         except KeyError:
             pass
-        return res jsonify(res['hits'])
+        return jsonify(res['hits'])
     except RequestError as e:
         return (str(e), 400)
 
