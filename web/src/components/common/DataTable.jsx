@@ -19,7 +19,9 @@ export default class BookmarksTable extends React.Component {
       }],
       filters : {},
       filteredTable : [{}],
-      isProfile : "false"
+      isProfile : "false",
+      url : "/ap/projects",
+      bookmarksSite : "false"
     };
 
     this.handleFilterChange = this.handleFilterChange.bind(this);
@@ -82,12 +84,13 @@ export default class BookmarksTable extends React.Component {
       console.error('parsing failed', ex)
     }
     );
-
+this.setState({ url : "/api/projects" });
 
   }
 
   componentWillReceiveProps(nextProps){
     this.fetchData(nextProps.fetchURL);
+
   }
 
 
@@ -96,7 +99,11 @@ export default class BookmarksTable extends React.Component {
     if(this.props.isProfile != undefined){
       this.state.isProfile = true;
     }
+    else if(this.props.bookmarksSite != undefined){
+      this.state.bookmarksSite = true;
+    }
     this.fetchData(this.props.fetchURL);
+    
   }
 
   fetchData(url){
@@ -115,12 +122,21 @@ export default class BookmarksTable extends React.Component {
 
         }
 
+      }
+      datas = tmp
+      }
+      else if(this.state.bookmarksSite == true){
+        for (let projects of   datas){
+          var project = projects
 
+        if(project["is_bookmark"] == "true"){
+          tmp.push(project)
+
+        }
 
       }
       datas = tmp
       }
-
         var filteredDataArray = [];
         var dataArray = [];
 
@@ -388,7 +404,7 @@ export default class BookmarksTable extends React.Component {
                       </IconButton>
                         :
                       <IconButton onClick={()=>this.handleAddBookmark(props.value._id)}
-                                  
+
 
                                   touch={true}
                                   style = {styles.largeIcon}
