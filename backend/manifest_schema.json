@@ -89,14 +89,14 @@
           }
         }
       },
-	  "comments": {
+      "comments": {
         "type": "array",
         "items": {
           "comment": {
             "$ref": "#/project/definitions/comments_comment"
           }
         },
-		"additionalProperties": false
+        "additionalProperties": false
       }
     },
     "additionalProperties": false,
@@ -162,14 +162,14 @@
           }
         }
       },
-	  "comments_comment": {
+      "comments_comment": {
         "type": "object",
-		"required": [
-			"author",
-			"id",
-			"message",
-			"datetime"
-		],
+        "required": [
+            "author",
+            "id",
+            "message",
+            "datetime"
+        ],
         "properties": {
           "author": {
             "$ref": "#/project/definitions/user"
@@ -185,7 +185,7 @@
             "type": "string"
           }
         },
-		"additionalProperties": false
+        "additionalProperties": false
       }
     }
   }
