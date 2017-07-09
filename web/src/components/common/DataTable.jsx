@@ -224,7 +224,7 @@ export default class BookmarksTable extends React.Component {
       const columns = [];
       if(this.props.columns.indexOf("title") !== -1){
         columns.push({
-          Header: 'Project Name',
+          Header: 'Project title',
           id: 'title',
           width: 230,
           accessor: d => d,
