@@ -46,7 +46,7 @@ export default class BookmarksTable extends React.Component {
       .catch(ex => {
       console.error('parsing failed', ex)
     });
-    alert("DELETE " + projectID);
+  
   }
 
   handleAddBookmark(projectID){
@@ -64,7 +64,7 @@ export default class BookmarksTable extends React.Component {
     }
 
   );
-    alert("ADD BOOKMARK " + projectID);
+
 
   }
 
@@ -82,7 +82,7 @@ export default class BookmarksTable extends React.Component {
       console.error('parsing failed', ex)
     }
     );
-    alert("REMOVE  " + projectID);
+
 
   }
 
