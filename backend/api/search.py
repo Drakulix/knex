@@ -28,7 +28,20 @@ def search_simple():
         count = 10
 
     # ^2 is boosting the attribute, *_is allowing wildcards to be used
-    r
+    request_json = {
+            'query': {
+            'multi_match': {
+                'query': text,
+                'fields': [
+                    'tags^2',
+                    'title^2',
+                    'description',
+                ],
+            },
+        },
+        'from': offset,
+        'size': count,
+    }
     if (sorting is not None) and (order is not None):
         request_json["sort"] = dict()
         request_json["sort"][sorting] = {
@@ -38,7 +51,7 @@ def search_simple():
     try:
         res = g.es.search(index="knexdb", body=request_json)
         try:
-            projects = res['hits']['hits']
+            projects = [hit['_source'] for hit in res['hits']['hits']]
             for project in projects:
                 project['is_bookmark'] = 'true' if project['id']\
                     in current_user['bookmarks'] else 'false'
@@ -88,7 +101,7 @@ def search_avanced():
         }
     try:
         res = g.es.search(index="knexdb", body=request_json)
-        projects = res['hits']['hits']
+        projects = [hit['_source'] for hit in res['hits']['hits']]
         try:
             for project in projects:
                 project['is_bookmark'] = 'true' if project['id']\
@@ -143,7 +156,7 @@ def search_tag():
         }
     try:
         res = g.es.search(index="knexdb", body=request_json)
-        projects = res['hits']['hits']
+        projects = [hit['_source'] for hit in res['hits']['hits']]
         try:
             for project in projects:
                 project['is_bookmark'] = 'true' if project['id']\
