@@ -75,8 +75,9 @@ class TestGET(object):
 
         response = session.get(
             flask_api_url + "/api/projects/search/advanced/?q=tags:superawesometitle&sort=desc")
-        print("result: ", response)
-        assert response['total'] == 0
+        result = json.dumps(response)
+        print("result: ", result)
+        assert result['total'] == 0
 
     def test_success_author(self, flask_api_url, pytestconfig, session):
         """Test if search for existent author is successful.
