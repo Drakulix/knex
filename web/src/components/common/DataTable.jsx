@@ -32,15 +32,55 @@ export default class BookmarksTable extends React.Component {
 
   handleDelete(projectID){
     //event.preventDefault();
+    var url = "/api/projects/"
+    var status = fetch(url+projectID, {
+      credentials: 'include',
+      method: "DELETE",
+      body: "",
+      headers: {
+
+      }
+    }).then(response => response.status)
+    // .then(json => console.dir(json))
+      .catch(ex => {
+      console.error('parsing failed', ex)
+    });
     alert("DELETE " + projectID);
   }
 
   handleAddBookmark(projectID){
+    var url = "/api/users/bookmarks/"
+    var status = fetch(url+projectID, {
+      credentials: 'include',
+      method: "POST",
+      body: "",
+      headers: {
+
+      }
+    }).then(response => response.status)
+      .catch(ex => {
+      console.error('parsing failed', ex)
+    }
+
+  );
     alert("ADD BOOKMARK " + projectID);
 
   }
 
   handleRemoveBookmark(projectID){
+    var url = "/api/users/bookmarks/"
+    var status = fetch(url+projectID, {
+      credentials: 'include',
+      method: "DELETE",
+      body: "",
+      headers: {
+
+      }
+    }).then(response => response.status)
+      .catch(ex => {
+      console.error('parsing failed', ex)
+    }
+    );
     alert("REMOVE  " + projectID);
 
   }
