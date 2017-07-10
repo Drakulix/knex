@@ -14,7 +14,8 @@ import { Link } from 'react-router-dom';
 const styles = {
 
   linkStyle:{
-    color :'#000000'
+    color :'#000000',
+
   }
 };
 
@@ -56,10 +57,10 @@ alert(notificationID);
                     <Link style={styles["linkStyle"]}
                       onClick={()=>this.resolveNotification(notification.id)}
                       to={notification.link}>
-                      <div>
+                      <div style={{marginBottom:-25}}>
                       {notification.title}</div>
                     <div style={{fontSize:"12px"}}> {notification.description}
-                      </div>
+                    </div>
                     </Link>
                   </MenuItem>)}
                 </Menu>
