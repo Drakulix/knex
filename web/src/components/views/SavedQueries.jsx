@@ -24,8 +24,11 @@ export default class SavedQueries extends Component {
 
 
   componentWillMount(){
-    this.setState({
-      queries :[
+
+//TODO LOAD
+
+
+    var queries =  [
         { _id :"FDAF",
           authors : [{email:"marko@knex", name :"Marko"},
           {email:"marko@knex", name :"Marko"}
@@ -34,8 +37,8 @@ export default class SavedQueries extends Component {
         tags : ["DDSA"],
         value : "0",
         status : "DONE",
-        filter_date_from :"212",
-        filter_date_to:"211",
+        filter_date_from :"2009-12-07",
+        filter_date_to:"2015-05-06",
         description:"ttt",
         searchString :"RE",
         shortName : "TEST",
@@ -50,14 +53,17 @@ export default class SavedQueries extends Component {
       tags : ["DDSA"],
       value : "0",
       status : "DONE",
-      filter_date_from :"212",
-      filter_date_to:"211",
+      filter_date_from :"2012-12-12",
+      filter_date_to:"2011-05-11",
       description:"ttt",
       searchString :"RE",
       shortName : "TEST",
       description :"Fd",
       userID:"av"
-      }]
+    }];
+
+    this.setState({
+    queries : queries
     })
 }
 
@@ -66,22 +72,15 @@ render() {
     <div className="container">
       <div className="innerContainer">
         <Headline />
-
-
-
         <div>
-
           {
             this.state.queries.map(item =>
               <div><SavedQuery value={item}></SavedQuery>
               <hr></hr>
             </div>
-          )
-        }
-
+            )
+          }
       </div>
-
-
     </div>
   </div>
 );

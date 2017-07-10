@@ -63,7 +63,8 @@ ReactDOM.render(
   <MuiThemeProvider  muiTheme={muiTheme}>
     <BrowserRouter history={history}>
       <div>
-        <PageRoute path="/discovery" component={SearchPage} />
+        <PageRoute path="/discovery/:qID" component={SearchPage} />
+        <PageRoute path="/discovery/" component={SearchPage} />
         <PageRoute path="/admin" component={AdminOverview} />
         <PageRoute exact path="/createNew" component={CreateProjectByPattern} />
         <PageRoute path="/createNew/:getURL" component={CreateProjectByURL} />

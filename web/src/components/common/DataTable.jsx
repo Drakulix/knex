@@ -18,6 +18,11 @@ export default class BookmarksTable extends React.Component {
     var filters = {};
     if(props.predefinedFilter !== "undefined"){
       filters = props.predefinedFilter;
+
+
+
+
+
     }
 
 
@@ -92,8 +97,7 @@ export default class BookmarksTable extends React.Component {
       console.error('parsing failed', ex)
     }
     );
-this.setState({ url : "/api/projects" });
-
+    this.setState({ url : "/api/projects" });
   }
 
 

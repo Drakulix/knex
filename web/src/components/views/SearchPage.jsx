@@ -40,34 +40,38 @@ const statusString = [
     constructor(props) {
       super(props);
       this.state = {
-        searchString :"",
+        query : {searchString :""},
         fetchURL : "/api/projects",
 
       };
-
       this.handleFilterChange = this.handleFilterChange.bind(this);
       this.saveSearch = this.saveSearch.bind(this);
       this.handleChange = this.handleChange.bind(this);
     }
 
-
     componentWillMount(){
-      var query = {
-        searchString :"",
-        authors : [],
-        title : "Test",
-        tags : ["DDSA"],
-        value : "0",
-          status : "DONE",
-          date_from :"212",
-          date_to:"211",
-          description:"ttt",
-          shortName : "TEST",
-          userID:"av"
+      if (this.props.match.params.qID !== undefined){
+          //FETCH QUERY FROM DB with ID QID
+          var query = {
+shortName :"",
+            authors : [],
+            title : "Test",
+            tags : ["DDSA"],
+            value : "0",
+            searchString :"fdsfds",
+              status : "DONE",
+              filter_date_from :"2009-1-4",
+              filter_date_to:"2012-1-2",
+              description:"ttt",
+              shortName : "TEST",
+              userID:"av",
+              authors : [{email:"marko@knex", name :"Marko"},
+              {email:"marko@knex", name :"Marko"}
+            ]
+        }
+        this.setState({query: query});
       }
-      this.setState({query: query});
     }
-
 
     handleChange(event) {
       const name = event.target.name;
@@ -81,7 +85,7 @@ const statusString = [
 
       //this.setState({fetchURL : "simple/?q="+this.state.searchString+"*"});
       var end = "/api/projects/search/"
-      this.state.fetchURL = end+"simple/?q="+this.state.searchString+"*"
+      this.state.fetchURL = end+"simple/?q="+this.query["searchString"]+"*"
 
 
     }
@@ -117,7 +121,7 @@ const statusString = [
                 <TextField  style={{width:"100%"}}
                   onKeyPress={this.onKeyPress}
                   name="searchString"
-                  value={this.state.searchString}
+                  value={this.state.query.searchString}
                   placeholder="Enter your query here..."
                   onChange={this.handleChange} />
               </div>
