@@ -18,7 +18,8 @@ class Headline extends Component {
 export default class SavedQueries extends Component {
   constructor(props) {
     super(props);
-    this.state = {queries:{}};
+    this.state = {queries:{}
+  };
 
   }
 
@@ -81,6 +82,8 @@ render() {
             )
           }
       </div>
+
+
     </div>
   </div>
 );

@@ -16,7 +16,7 @@ export default class BookmarksTable extends React.Component {
     super(props);
 
     var filters = {};
-    if(props.predefinedFilter !== "undefined"){
+    if(props.predefinedFilter !== undefined){
       filters = props.predefinedFilter;
 
 
@@ -103,11 +103,11 @@ export default class BookmarksTable extends React.Component {
 
 
   componentWillMount() {
-    var self = this;
-    if(this.props.isProfile != undefined){
+
+    if(this.props.isProfile !== undefined){
       this.state.isProfile = true;
     }
-    else if(this.props.bookmarksSite != undefined){
+    else if(this.props.bookmarksSite !== undefined){
       this.state.bookmarksSite = true;
     }
     this.fetchData(this.props.fetchURL);
@@ -119,13 +119,14 @@ export default class BookmarksTable extends React.Component {
     fetchJson(url).then(function(data) {
 
       var datas =[]
-      datas = data
+    datas = data
+
       var tmp = []
-      if(this.state.isProfile == true){
+      if(this.state.isProfile === true){
         for (let projects of   datas){
           var project = projects
 
-        if(project["is_bookmark"] == "true" || project["is_owner"] == "true"){
+        if(project["is_bookmark"] === "true" || project["is_owner"] === "true"){
           tmp.push(project)
 
         }
@@ -133,11 +134,11 @@ export default class BookmarksTable extends React.Component {
       }
       datas = tmp
       }
-      else if(this.state.bookmarksSite == true){
+      else if(this.state.bookmarksSite === true){
         for (let projects of   datas){
           var project = projects
 
-        if(project["is_bookmark"] == "true"){
+        if(project["is_bookmark"] === "true"){
           tmp.push(project)
 
         }
@@ -188,7 +189,7 @@ export default class BookmarksTable extends React.Component {
 
     handleFilterChange(key, value){
       var state = this.state.filters;
-      if(value == ""){
+      if(value === ""){
         delete state[key];
       }
       else  {
@@ -197,7 +198,7 @@ export default class BookmarksTable extends React.Component {
       this.setState({filters : state});
       this.filter(state);
 
-      if(this.props.handleFilter !== "undefined")
+      if(this.props.handleFilter !== undefined)
         this.props.handleFilter(key,value);
     }
 
@@ -228,27 +229,29 @@ export default class BookmarksTable extends React.Component {
             case "filter_date_from":
             discard = dataObject.date_creation  < value;
             break;
-            case "tags":  var temp = dataObject.tags.join().toLowerCase();
+            case "tags":
+              var temp = dataObject.tags.join().toLowerCase();
               for(let i in value){
                 var tag = value[i];
                 discard = temp.indexOf(tag.toLowerCase()) === -1;
                 if(discard)
                 break;
-            }
-            break;
-            case "authors":
-            var temp = [];
-            for (var i in  dataObject.authors) {
-              temp = temp.concat([dataObject.authors[i].name + " ("+dataObject.authors[i].email+ ")"]);
-            }
-            temp = temp.join().toLowerCase();
-            for(let i in value){
-              var author = value[i];
-              discard = temp.indexOf(author.toLowerCase()) === -1;
-              if(discard)
+              }
               break;
-            }
+            case "authors":
+              var temp = [];
+              for (var i in  dataObject.authors) {
+                temp = temp.concat([dataObject.authors[i].name + " ("+dataObject.authors[i].email+ ")"]);
+              }
+              temp = temp.join().toLowerCase();
+              for(let i in value){
+                var author = value[i];
+                discard = temp.indexOf(author.toLowerCase()) === -1;
+                if(discard)
+                break;
+              }
             default:
+              break;
           }
           if(discard){
             break;
@@ -409,7 +412,7 @@ export default class BookmarksTable extends React.Component {
                 style: {textAlign:"center"},
                 Cell: props =>{
                   return(
-                    (new String(props.value.is_bookmark) == "true") ?
+                    (new String(props.value.is_bookmark) === "true") ?
                       <IconButton onClick={()=>this.handleRemoveBookmark(props.value._id)}
                                   touch={true}
                                   style = {styles.largeIcon}

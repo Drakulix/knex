@@ -10,6 +10,8 @@ import MenuItem from 'material-ui/MenuItem';
 
 import ChipInputList from '../common/ChipInputList';
 import DataTable from '../common/DataTable';
+import Dialog from 'material-ui/Dialog';
+
 
 
 import Filters from '../common/Filters';
@@ -40,14 +42,20 @@ const statusString = [
     constructor(props) {
       super(props);
       this.state = {
-        query : {searchString :""},
+        query : {searchString :"",
+        shortName : "" },
         fetchURL : "/api/projects",
-
+        open :false
       };
       this.handleFilterChange = this.handleFilterChange.bind(this);
       this.saveSearch = this.saveSearch.bind(this);
       this.handleChange = this.handleChange.bind(this);
+      this.handleOpen = this.handleOpen.bind(this);
+      this.handleCommentChange = this.handleCommentChange.bind(this);
+
+
     }
+
 
     componentWillMount(){
       if (this.props.match.params.qID !== undefined){
@@ -74,9 +82,8 @@ shortName :"",
     }
 
     handleChange(event) {
-      const name = event.target.name;
+
       const value = event.target.value;
-      this.setState({ [name]: value});
       var query = this.state.query;
       query["searchString"] = value;
       this.setState({query : query});
@@ -99,6 +106,7 @@ shortName :"",
     }
 
     saveSearch(){
+      this.setState({open: false});
       var temp = [];
       var authors = this.state.query["authors"];
       for (var i in authors) {
@@ -111,10 +119,71 @@ shortName :"",
       query["authors"] = temp;
     }
 
+    handleClose = () => {
+
+
+      this.setState({open: false});
+    };
+
+    handleOpen = () => {
+      this.setState({open: true});
+    };
+
+
+
+    handleCommentChange(event){
+
+      const value = event.target.value;
+
+      var query = this.state.query;
+      query["shortName"] = value;
+      this.setState({query : query});
+
+    }
+
     render() {
+
+
+
+
+      const actions = [
+        <RaisedButton
+          label="Cancel"
+          primary={true}
+          onTouchTap={this.handleClose}
+          />,
+        <RaisedButton
+          label="Save"
+          primary={true}
+          onTouchTap={this.saveSearch}
+          style={{marginLeft:20}}
+          disabled= {(this.state.query["shortName"] === "" ) ? true : false}
+          />,
+      ];
+
+
+
+
       return(
         <div className="container">
           <div className="innerContainer">
+
+                        <Dialog
+                          title="Add a title for your search"
+                          actions={actions}
+                          modal={false}
+                          open={this.state.open}
+                          onRequestClose={this.saveSearch}
+                          >
+                          <TextField value = {this.state.query.shortName}
+                                      placeholder="Enter a title here ... "
+                                      errorText={(this.state.query["shortName"] === "") ? "Please provide a title " : ""}
+                                      onChange={this.handleCommentChange}
+                            ></TextField>
+
+                        </Dialog>
+
+
             <Headline />
             <div className="row" style={{textAlign:"center"}}>
               <div className="col-10">
@@ -126,7 +195,8 @@ shortName :"",
                   onChange={this.handleChange} />
               </div>
               <div className="col-2">
-                <RaisedButton style={{width:"100%"}}  label="Save search" onClick={this.saveSearch} primary={true}/>
+                <RaisedButton style={{width:"100%"}}
+                    label="Save search" onClick={this.handleOpen} primary={true}/>
               </div>
             </div>
             <div style={{marginTop:20}}>
