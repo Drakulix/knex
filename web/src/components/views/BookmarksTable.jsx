@@ -22,7 +22,6 @@ render(){
         <DataTable columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'bookmarked']}
 
 fetchURL="/api/bookmarks"
-bookmarksSite = {"true"}
           ></DataTable>
 
         <div className="footer" />
