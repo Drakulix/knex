@@ -125,7 +125,7 @@ if(data !== undefined)
       datas = data;
 
 
-      
+      /*
        var tmp = []
        if(this.state.isProfile === true){
          for (let projects of   datas){
@@ -151,7 +151,7 @@ if(data !== undefined)
        }
        datas = tmp
        }
-
+*/
         var filteredDataArray = [];
         var dataArray = [];
         for(let dataObject of datas) {
