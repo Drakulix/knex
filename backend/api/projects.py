@@ -101,14 +101,10 @@ def get_projects():
         return make_response(jsonify([]), 200)
     query = {}
     if archived == 'true':
-        if current_user.has_role('admin'):
-            query = {'archived': True}
-        else:
-            query = {'archived': True, 'authors': current_user['email']}
+        query = {'archived': True}
     elif archived == 'false':
         query = {'archived': False}
     elif archived == 'mixed':
-        # TODO how to handle this=?
         query = {}
     if limit and skip:
         res = g.projects.find(query, limit=limit, skip=skip)
@@ -166,11 +162,7 @@ def get_project_by_id(project_id):
     """
     archived = request.args.get('archived', type=str, default="false")
     if archived == 'true':
-        if current_user.has_role('admin'):
-            res = g.projects.find_one({'_id': project_id, 'archived': True})
-        else:
-            res = g.projects.find_one({'_id': project_id,
-                                       'archived': True, 'authors': current_user['email']})
+        res = g.projects.find_one({'_id': project_id, 'archived': True})
     elif archived == 'false':
         res = g.projects.find_one({'_id': project_id, 'archived': False})
     elif archived == 'mixed':
