@@ -114,13 +114,6 @@ export default class ProfileContainer extends React.Component {
   componentWillMount(){
     this.loadProfileInf(this.state.email);
     this.loadMyProfileInf(getMyEmail());
-
-    fetchJson( '/api/projects/search/advanced/?q=(authors.name: ja*)').then(function(datas) {
-      var filteredData = this.transformArray(datas);
-      this.setState({
-        data: filteredData
-      });
-    });
   }
 
   componentDidMount(){
@@ -378,7 +371,7 @@ export default class ProfileContainer extends React.Component {
                     <DataTable
                       fetchURL = "/api/projects"
                       columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'bookmarked']}
-                      
+
                       isProfile = {true}
 
                       ></DataTable>
