@@ -2,16 +2,14 @@
 Defines API points and starts the application
 """
 
-import sys
 import time
+import uuid
 import json
 import json5
 
 from flask import request, jsonify, make_response, g, Blueprint
-from flask_security import login_required, roles_required
 from pymongo.collection import ReturnDocument
-from flask_security import login_required, roles_required, login_user,\
-    logout_user, current_user
+from flask_security import login_required, current_user
 
 from api.helper import uploader
 from api.helper.apiexception import ApiException
@@ -30,6 +28,8 @@ def is_permitted(user, entry):
 
     if user.has_role('admin'):
         return True
+    elif 'author' in entry:
+        return user['email'] == entry['author']['email']
     return user['email'] in entry['authors']
 
 
@@ -69,7 +69,7 @@ def add_projects():
         except ApiException as e:
             raise e
 
-        except UnicodeDecodeError as ue:
+        except UnicodeDecodeError:
             raise ApiException("Only utf-8 compatible charsets are " +
                                "supported, the request body does not " +
                                "appear to be utf-8.", 400)
@@ -103,9 +103,37 @@ def get_projects():
     else:
         return make_response('Invalid parameters', 400)
 
-    res = make_response(jsonify([x for x in res[:]]))
-    res.headers['Content-Type'] = 'application/json'
-    return res
+    try:
+        res = [x for x in res[:]]
+        for project in res:
+            project['is_bookmark'] = 'true' if project['_id']\
+                in current_user['bookmarks'] else 'false'
+            project['is_owner'] = 'true' if current_user['email']\
+                in [author['email'] for author in project['authors']] else 'false'
+        return jsonify(res)
+    except KeyError as err:
+        raise ApiException(str(err), 400)
+
+
+@projects.route('/api/projects/authors', methods=['GET'])
+@login_required
+def get_all_authors():
+    try:
+        authors = g.projects.distinct('authors')
+        res = sorted(authors, key=lambda k: str(k['name']).lower()) if authors else []
+        return jsonify(res)
+    except Exception as err:
+        raise ApiException(str(err), 500)
+
+
+@projects.route('/api/projects/tags', methods=['GET'])
+@login_required
+def get_all_tags():
+    try:
+        tags = g.projects.distinct('tags')
+        return jsonify(sorted(tags, key=str.lower) if tags else [])
+    except Exception as err:
+        raise ApiException(str(err), 500)
 
 
 @projects.route('/api/projects/<uuid:project_id>', methods=['GET'])
@@ -119,14 +147,14 @@ def get_project_by_id(project_id):
         res (json): Project corresponding to the ID
     """
     res = g.projects.find_one({'_id': project_id})
-    if res is None:
+    if not res:
         return make_response("Project not found", 404)
     try:
-        res['is_bookmark'] = 'true' if str(project_id) in current_user['bookmarks'] else 'false'
+        res['is_bookmark'] = 'true' if project_id in current_user['bookmarks'] else 'false'
         res['is_owner'] = 'true' if current_user['email']\
             in [author['email'] for author in res['authors']] else 'false'
-    except KeyError:
-        pass
+    except KeyError as err:
+        raise ApiException(str(err), 500)
     return jsonify(res)
 
 
@@ -144,8 +172,7 @@ def delete_project(project_id):
     """
     if g.projects.delete_one({'_id': project_id}).deleted_count == 0:
         return make_response("Project could not be found", 404)
-    else:
-        return make_response("Success")
+    return make_response("Success")
 
 
 @projects.route('/api/projects/<uuid:project_id>', methods=['PUT'])
@@ -164,53 +191,42 @@ def update_project(project_id):
     """
     try:
         res = g.projects.find_one({'_id': project_id})
-        if res is None:
+        if not res:
             raise ApiException("Project not found", 404)
         elif request.is_json or "application/json5" in request.content_type:
-            if request.is_json:
-                manifest = request.get_json()
-                if manifest['_id'] != str(project_id):
-                    raise ApiException("Updated project owns different id",
-                                       409)
-            else:
-                manifest = json5.loads(request.data.decode("utf-8"))
-                if '_id' in manifest:
-                    if manifest['_id'] != str(project_id):
-                        raise ApiException("Updated project owns different id",
-                                           409)
+            manifest = request.get_json() if request.is_json\
+                else json5.loads(request.data.decode("utf-8"))
+            if manifest['_id'] != str(project_id):
+                return make_response("project_id and json['_id'] do not match.", 409)
+            manifest['_id'] = str(project_id)
             is_valid = g.validator.is_valid(manifest)
             if is_valid and is_permitted(current_user, manifest):
-                print("manifest validated", file=sys.stderr)
-                manifest['_id'] = project_id
                 manifest['date_last_updated'] = time.strftime("%Y-%m-%d")
+                manifest['_id'] = project_id
                 g.projects.find_one_and_replace({'_id': project_id}, manifest,
                                                 return_document=ReturnDocument.AFTER)
-                print("mongo replaced:", file=sys.stderr)
-                print(manifest, file=sys.stderr)
                 return make_response("Success")
-            elif request.on_json_loading_failed() is not None:
+            elif not request.on_json_loading_failed():
                 raise ApiException("json could not be parsed",
                                    400, request.on_json_loading_failed())
             elif not is_permitted(current_user, manifest):
                 raise ApiException("You are not allowed to edit this project", 403)
             else:
-                validation_errs = [error for error in
-                                   sorted(g.validator.iter_errors(manifest))]
-                if validation_errs is not None:
-                    raise ApiException("Validation Error: \n" +
-                                       str(is_valid), 400, validation_errs)
+                raise ApiException(
+                    "Validation Error: \n" + str(is_valid), 400,
+                    [error for error in sorted(g.validator.iter_errors(manifest))])
         else:
             raise ApiException("Manifest had wrong format", 400)
     except ApiException as error:
         raise error
-    except UnicodeDecodeError as unicodeerr:
+    except UnicodeDecodeError:
         raise ApiException("Only utf-8 compatible charsets are supported, " +
                            "the request body does not appear to be utf-8", 400)
     except Exception as err:
         raise ApiException(str(err), 500)
 
 
-@projects.route('/api/projects/<uuid:project_id>/comment', methods=['PUT'])
+@projects.route('/api/projects/<uuid:project_id>/comment', methods=['POST'])
 @login_required
 def add_comment(project_id):
     """Adds new comment to project by project_id
@@ -225,33 +241,38 @@ def add_comment(project_id):
     """
     try:
         manifest = g.projects.find_one({'_id': project_id})
-        if manifest is None:
+        if not manifest:
             raise ApiException("Project not found", 404)
         if "text/plain" not in request.content_type:
             raise ApiException("'text/plain' must be in Content-Type", 400)
-        comment = {}
-        comment['author'] = current_user['email']
-        author = g.user_datastore.get_user(current_user['email'])
-        comment['author_name'] = author['first_name']+" "+author['last_name']
-        comment['datetime'] = time.strftime("%Y-%m-%d %H:%M")
-        comment['id'] = uuid.uuid4()
-        comment['message'] = request.data.decode("utf-8")
-        manifest['comments'] = manifest['comments'].append(comment)\
-            if manifest['comments'] else [comment]
+        comment = dict()
+        author = dict()
+        firstname = current_user['first_name'] if 'first_name' in current_user else ""
+        lastname = current_user['last_name'] if 'last_name' in current_user else ""
+        author['name'] = firstname + " " if firstname else "" + lastname
+        author['email'] = current_user['email']
+        comment['author'] = author
+        comment['datetime'] = time.strftime("%Y-%m-%d %H:%M:%S")
+        comment['id'] = str(uuid.uuid4())
+        comment['message'] = request.data.decode('utf-8')
+        if 'comments' in manifest and isinstance(manifest['comments'], list):
+            manifest['comments'].append(comment)
+        else:
+            manifest['comments'] = [comment]
+        manifest['_id'] = str(project_id)
         is_valid = g.validator.is_valid(manifest)
         if is_valid:
+            manifest['_id'] = project_id
             g.projects.find_one_and_replace({'_id': project_id}, manifest,
                                             return_document=ReturnDocument.AFTER)
-            make_response("Success", 200)
+            return jsonify(comment['id'])
         else:
-            validation_errs = [error for error in
-                               sorted(g.validator.iter_errors(manifest))]
-            if validation_errs is not None:
-                raise ApiException("Validation Error: \n" +
-                                   str(is_valid), 400, validation_errs)
+            raise ApiException(
+                "Validation Error: \n" + str(is_valid), 400,
+                [error for error in sorted(g.validator.iter_errors(manifest))])
     except ApiException as error:
         raise error
-    except UnicodeDecodeError as unicodeerr:
+    except UnicodeDecodeError:
         raise ApiException("Only utf-8 compatible charsets are supported, " +
                            "the request body does not appear to be utf-8", 400)
     except Exception as err:
@@ -261,21 +282,23 @@ def add_comment(project_id):
 @projects.route('/api/projects/<uuid:project_id>/comment', methods=['GET'])
 @login_required
 def get_comment(project_id):
-    """Adds new comment to project by project_id
+    """Gets all comments of project sorted by descending creation date
 
     Args:
-        project_id, comment in string format
+        project_id
 
     Returns:
         response: Success response
                   or 404 if project is not found
     """
     try:
-        comments = g.projects.find({'_id': project_id}, {'comments': 1, '_id': 0}).sort(
-                   key=lambda x: x['datetime'], reverse=True)
-        if not comments:
+        project = g.projects.find_one({'_id': project_id})
+        if not project:
             raise ApiException("Project not found", 404)
-        return jsonify(comments)
+
+        res = sorted(project['comments'], key=lambda k: k['datetime'], reverse=True)\
+            if 'comments' in project and isinstance(project['comments'], list) else []
+        return jsonify(res)
     except ApiException as error:
         raise error
     except Exception as err:
@@ -284,11 +307,12 @@ def get_comment(project_id):
 
 @projects.route('/api/projects/<uuid:project_id>/comment', methods=['DELETE'])
 @login_required
+@ADMIN_PERMISSION.require()
 def delete_comments(project_id):
-    """Adds new comment to project
+    """Deletes all comments of project
 
     Args:
-        project_id, comment in string format
+        project_id
 
     Returns:
         response: Success response
@@ -297,20 +321,22 @@ def delete_comments(project_id):
     """
     try:
         manifest = g.projects.find_one({'_id': project_id})
-        if manifest is None:
+        if not manifest:
             raise ApiException("Project not found", 404)
-        del manifest[comments]
-        is_valid = g.validator.is_valid(manifest)
-        if is_valid:
-            g.projects.find_one_and_replace({'_id': project_id}, manifest,
-                                            return_document=ReturnDocument.AFTER)
-            make_response("Success")
-        else:
-            validation_errs = [error for error in
-                               sorted(g.validator.iter_errors(manifest))]
-            if validation_errs is not None:
-                raise ApiException("Validation Error: \n" +
-                                   str(is_valid), 400, validation_errs)
+        if 'comments' in manifest:
+            del manifest['comments']
+            manifest['_id'] = str(project_id)
+            is_valid = g.validator.is_valid(manifest)
+            if is_valid:
+                manifest['_id'] = project_id
+                g.projects.find_one_and_replace({'_id': project_id}, manifest,
+                                                return_document=ReturnDocument.AFTER)
+                return make_response("Success", 200)
+            else:
+                raise ApiException(
+                    "Validation Error: \n" + str(is_valid), 400,
+                    [error for error in sorted(g.validator.iter_errors(manifest))])
+        raise ApiException("Project has no comments", 404)
     except ApiException as error:
         raise error
     except Exception as err:
@@ -332,23 +358,29 @@ def update_comment(project_id, comment_id):
     """
     try:
         manifest = g.projects.find_one({'_id': project_id})
-        if manifest is None:
+        if not manifest:
             raise ApiException("Project not found", 404)
         if 'text/plain' not in request.content_type:
             raise ApiException("Content-Type header must include 'text/plain'", 400)
 
-        if not manifest['comments']:
+        if 'comments' not in manifest or not manifest['comments']:
             raise ApiException("Project has no comments", 404)
-        # TODO Usermanagement
-        comment_msg = request.data.decode('utf-8')
+
+        elif not isinstance(manifest['comments'], list):
+            raise ApiException("json['comments'] must be a list of comments.", 400)
+
         for comment in manifest['comments']:
-            if str(comment_id) == str(comment['id']):
-                comment['message'] = comment_msg
+            if str(comment_id) == comment['id']:
+                if not is_permitted(current_user, comment):
+                    raise ApiException("Permission denied", 403)
+                comment['message'] = request.data.decode('utf-8')
+                manifest['_id'] = str(project_id)
                 is_valid = g.validator.is_valid(manifest)
                 if is_valid:
+                    manifest['_id'] = project_id
                     g.projects.find_one_and_replace({'_id': project_id}, manifest,
                                                     return_document=ReturnDocument.AFTER)
-                    make_response("Success", 200)
+                    return make_response("Success", 200)
                 else:
                     raise ApiException(
                         "Validation Error: \n" + str(is_valid), 400,
@@ -358,7 +390,7 @@ def update_comment(project_id, comment_id):
 
     except ApiException as error:
         raise error
-    except UnicodeDecodeError as unicodeerr:
+    except UnicodeDecodeError:
         raise ApiException("Only utf-8 compatible charsets are supported, " +
                            "the request body does not appear to be utf-8", 400)
     except Exception as err:
@@ -368,7 +400,7 @@ def update_comment(project_id, comment_id):
 @projects.route('/api/projects/<uuid:project_id>/comment/<uuid:comment_id>', methods=['DELETE'])
 @login_required
 def delete_comment(project_id, comment_id):
-    """Deletes comment
+    """Deletes comment by comment_id
 
     Args:
         project_id, comment_id
@@ -376,41 +408,79 @@ def delete_comment(project_id, comment_id):
     Returns:
         response: Success response
                   or 404 if project is not found
-                  or 400 if validation error occurs
+                  or 500 if validation error occurs
     """
     try:
         manifest = g.projects.find_one({'_id': project_id})
-        if manifest is None:
+        if not manifest:
             raise ApiException("Project not found", 404)
-        comments = manifest[comments]
-        if not manifest[comments]:
-            deleted = 0
-        else:
-            deleted = 0
-            for comment in manifest[comments]:
-                if str(comment_id) == comment[commentId]:
-                    manifest[comments].remove(comment)
-                    deleted = comment
-                    print("deleted", file=sys.stderr)
-                    print(deleted, file=sys.stderr)
-                    break
-        if deleted == 0:
-            raise ApiException("Comment not found", 404)
-        elif not manifest[comments]:
-            del manifest[comments]
-        else:
-            is_valid = g.validator.is_valid(manifest)
-            if is_valid:
-                g.projects.find_one_and_replace({'_id': project_id}, manifest,
-                                                return_document=ReturnDocument.AFTER)
-                make_response("Success")
-            else:
-                validation_errs = [error for error in
-                                   sorted(g.validator.iter_errors(manifest))]
-                if validation_errs is not None:
-                    raise ApiException("Validation Error: \n" +
-                                       str(is_valid), 400, validation_errs)
+
+        if 'comments' not in manifest or not manifest['comments']:
+            raise ApiException("Project has no comments", 404)
+
+        elif not isinstance(manifest['comments'], list):
+            raise ApiException("json['comments'] must be a list of comments.", 400)
+
+        for comment in manifest['comments']:
+            if str(comment_id) == comment['id']:
+                if not is_permitted(current_user, comment):
+                    raise ApiException("permission denied", 403)
+                manifest['comments'].remove(comment)
+                if not manifest['comments']:
+                    del manifest['comments']
+                manifest['_id'] = str(project_id)
+                is_valid = g.validator.is_valid(manifest)
+                if is_valid:
+                    manifest['_id'] = project_id
+                    g.projects.find_one_and_replace({'_id': project_id}, manifest,
+                                                    return_document=ReturnDocument.AFTER)
+                    return make_response("Success", 200)
+                else:
+                    raise ApiException(
+                        "Validation Error: \n" + str(is_valid), 500,
+                        [error for error in sorted(g.validator.iter_errors(manifest))])
+        raise ApiException("Comment not found", 404)
     except ApiException as error:
         raise error
     except Exception as err:
         raise ApiException(str(err), 500)
+
+
+@projects.route('/api/projects/<uuid:project_id>/share/<user_mail>', methods=['POST'])
+@login_required
+def share_via_email(project_id, user_mail):
+    """Creates and saves notification object
+
+        Returns:
+            res: Notification object as json
+    """
+    user = g.user_datastore.get_user(user_mail)
+    if not user:
+        return make_response("Unknown User with Email-address: " + user_mail, 404)
+    res = g.projects.find_one({'_id': project_id})
+    if not res:
+        raise ApiException("Project not found", 404)
+
+    description = res["title"] + "was shared with you."
+    link = "/projects/" + str(project_id)
+    title = "Project shared."
+    return g.notify_users([user_mail], description, title, link)
+
+
+@projects.route('/api/projects/<uuid:project_id>/share', methods=['POST'])
+@login_required
+def share_with_users(project_id):
+    """Creates and saves notification object
+
+        Returns:
+            res: Notification object as json
+    """
+    emails_list = request.get_json()
+    res = g.projects.find_one({'_id': project_id})
+    if not res:
+        raise ApiException("Project not found", 404)
+
+    description = res["title"] + "was shared with you"
+    link = "/projects/" + str(project_id)
+    title = "Project shared"
+    return g.notify_users(emails_list, description, title, link)
