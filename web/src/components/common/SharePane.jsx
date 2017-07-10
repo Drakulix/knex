@@ -24,6 +24,26 @@ export default class SharePane extends React.Component {
     this.setState({open: false});
   };
 
+
+  shareProject =() =>{
+    for (var i in this.state.authors) {
+      var string = this.state.authors[i];
+      var id = string.substring(string.lastIndexOf("(")+1, string.length-1);
+      var shareURL =  "/api/projects/"+this.props.uuid+"/share/"+id
+      fetch(shareURL, {
+        method: 'POST',
+        mode: 'no-cors',
+        credentials: 'include',
+        headers: {
+          "Accept": "application/json",
+        }
+      }).then(response => response.json()).catch(ex => {
+        console.error('parsing failes', ex);
+      });
+    }
+    this.setState({open: false});
+  }
+
   componentWillMount(){
     this.loadAuthors();
   }
@@ -49,7 +69,6 @@ export default class SharePane extends React.Component {
 
   handleAuthorChange(value) {
     this.setState({authors : value});
-    this.props.onChange("tags" , value);
   }
 
   render() {
@@ -62,7 +81,7 @@ export default class SharePane extends React.Component {
       <RaisedButton
         label="Share"
         primary={true}
-        onTouchTap={this.handleClose}
+        onTouchTap={this.shareProject}
         style={{marginLeft:20}}
         />,
     ];
