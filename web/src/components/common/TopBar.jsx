@@ -63,18 +63,18 @@ id :"dsa"
 
 
 
-
-    var data = fetchJson("/api/users/notifications").then(function (data) {
-
-            this.setState({
-              notifications: data
-            });
-        },function(data){
-          this.setState({
-              notifications: []
-            });
-        }
-        .bind(this));
+    //
+    // var data = fetchJson("/api/users/notifications").then(function (data) {
+    //
+    //         this.setState({
+    //           notifications: data
+    //         });
+    //     },function(data){
+    //       this.setState({
+    //           notifications: []
+    //         });
+    //     }
+    //     .bind(this));
 
 
    this.setState({notifications: []});
