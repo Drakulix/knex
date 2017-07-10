@@ -69,7 +69,7 @@ export default class BookmarksTable extends React.Component {
 
 
 
-    for(let dataObject of this.props.data) {
+    for(let dataObject of this.state.data) {
       var project = dataObject;
       if(project._id === projectID){
         project["is_bookmark"] = true;
@@ -77,7 +77,7 @@ export default class BookmarksTable extends React.Component {
       }
     }
 
-    for(let dataObject of this.props.filteredTable) {
+    for(let dataObject of this.state.filteredTable) {
       var project = dataObject;
       if(project._id === projectID){
         project["is_bookmark"] = true;
