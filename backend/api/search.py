@@ -1,6 +1,9 @@
-from flask import request, jsonify, make_response, g, Blueprint
+from flask import request, jsonify, g, Blueprint
 from elasticsearch.exceptions import RequestError
-from flask_security import login_required
+from flask_security import login_required, current_user
+
+from api.helper.apiexception import ApiException
+
 
 search = Blueprint('api_projects_search', __name__)
 
@@ -47,9 +50,22 @@ def search_simple():
 
     try:
         res = g.es.search(index="knexdb", body=request_json)
-        return jsonify(res['hits'])
+        try:
+            for hit in res['hits']['hits']:
+                hit['_source']['_id'] = hit['_id']
+            projects = [hit['_source'] for hit in res['hits']['hits']]
+            for project in projects:
+                project['is_bookmark'] = 'true' if project['_id']\
+                    in current_user['bookmarks'] else 'false'
+                project['is_owner'] = 'true' if current_user['email']\
+                    in [author['email'] for author in project['authors']]\
+                    else 'false'
+
+            return jsonify(projects)
+        except KeyError as ke:
+            raise ApiException(str(ke), 400)
     except RequestError as e:
-        return (str(e), 400)
+        raise ApiException(str(e), 400)
 
 
 @search.route('/api/projects/search/advanced/', methods=['GET'])
@@ -71,16 +87,6 @@ def search_avanced():
     if count is None:
         count = 10
 
-    # string manipulation to get the user email if projects from a user were searched
-    searchuser = False
-    try:
-        start = text.index('(authors.email: ') + len('(authors.email: ')
-        end = text.index(')', start)
-        usermail = text[start:end]
-        searchuser = True
-    except ValueError:
-        pass
-
     request_json = {
         'query': {
             'query_string': {
@@ -97,21 +103,23 @@ def search_avanced():
         }
     try:
         res = g.es.search(index="knexdb", body=request_json)
-        projects = res['hits'][:]
+
         try:
-            if searchuser:
-                user = g.user_datastore.get_user(usermail)
-                if user:
-                    for project in projects:
-                        project['is_bookmark'] = 'true' if project['id']\
-                            in user['bookmarks'] else 'false'
-                        project['is_owner'] = 'true' if user['email']\
-                            in [author['email'] for author in res['authors']] else 'false'
-        except Exception:
-            pass
-        return jsonify(projects)
+            for hit in res['hits']['hits']:
+                hit['_source']['_id'] = hit['_id']
+            projects = [hit['_source'] for hit in res['hits']['hits']]
+            for project in projects:
+                project['is_bookmark'] = 'true' if project['_id']\
+                    in current_user['bookmarks'] else 'false'
+                project['is_owner'] = 'true' if current_user['email']\
+                    in [author['email'] for author in project['authors']]\
+                    else 'false'
+            return jsonify(projects)
+        except KeyError as ke:
+            raise ApiException(str(ke), 400)
+
     except RequestError as e:
-        return (str(e), 400)
+        raise ApiException(str(e), 400)
 
 
 @search.route('/api/projects/search/tag/', methods=['GET'])
@@ -154,7 +162,19 @@ def search_tag():
         }
     try:
         res = g.es.search(index="knexdb", body=request_json)
-        return jsonify(res['hits'])
+        try:
+            for hit in res['hits']['hits']:
+                hit['_source']['_id'] = hit['_id']
+            projects = [hit['_source'] for hit in res['hits']['hits']]
+            for project in projects:
+                project['is_bookmark'] = 'true' if project['_id']\
+                    in current_user['bookmarks'] else 'false'
+                project['is_owner'] = 'true' if current_user['email']\
+                    in [author['email'] for author in project['authors']]\
+                    else 'false'
+            return jsonify(projects)
+        except KeyError as ke:
+            raise ApiException(str(ke), 400)
     except RequestError as e:
         return (str(e), 400)
 
