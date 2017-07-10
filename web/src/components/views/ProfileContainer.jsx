@@ -119,13 +119,6 @@ export default class ProfileContainer extends React.Component {
     this.loadProfileInf(this.state.email);
     this.loadMyProfileInf(getMyEmail());
 
-    fetchJson( '/api/projects/search/advanced/?q=(authors.name: ja*)').then(function(datas) {
-      var filteredData = this.transformArray(datas);
-      this.setState({
-        data: filteredData
-      });
-    });
-
     //TODO Fill topTenTags with data from endpoint / get_cur_user_tags(): respectively /api/users/<email:mail>/tags
   }
 
