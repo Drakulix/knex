@@ -1,7 +1,7 @@
 body {
   overflow-x: hidden;
   min-height: 100%;
-  font-family: 'Open Sans', sans-serif !important;
+  font-family: 'Roboto', sans-serif !important;
 }
 
 html {
@@ -15,7 +15,7 @@ p {
 a {
   vertical-align: center;
   color: #FFF;
-  font-family: 'Open Sans', sans-serif !important;
+  font-family: 'Roboto', sans-serif !important;
   font-weight: 300;
 
 }
@@ -23,7 +23,7 @@ a {
 a:hover {
   color: inherit;
   text-decoration: none;
-  font-family: 'Open Sans', sans-serif !important;
+  font-family: 'Roboto', sans-serif !important;
   font-weight: 300;
 }
 
@@ -52,10 +52,7 @@ a:hover {
   display: inline-block !important;
 }
 
-.notification-container {
-  width: 50px;
-  position: relative;
-}
+
 
 .popover {
   border-radius: 0px;
@@ -68,7 +65,7 @@ a:hover {
 .top-bar-company {
   width: 162px;
   margin-top: 16px;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 300;
   font-size: 16px;
   color: #ffffff;
@@ -77,7 +74,7 @@ a:hover {
 .top-bar-text {
   margin-top: 16px;
   text-align: center;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 300;
   font-size: 16px;
   color: #ffffff;
@@ -86,7 +83,7 @@ a:hover {
 .top-bar-searchbar {
   margin-top: 16px;
   margin-left: 41px;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 300;
   font-size: 16px;
   color: #ffffff;
@@ -157,7 +154,7 @@ a:hover {
   background-color: #333333 !important;
   border: 0px !important;
   color: white;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 300;
 }
 
@@ -183,6 +180,10 @@ a:hover {
   color: white;
 }
 
+.abcd{
+  text-align: center !important;
+}
+
 .header-title {
   margin-top: 100px;
   width : 100%;
@@ -190,10 +191,6 @@ a:hover {
   color: #333333;
 }
 
-/* Start SignIn SignUp Styling */
-.sign-container{
-  text-align: center !important;
-}
 
 .slogan{
   margin-top:3em;
@@ -361,7 +358,7 @@ legend {
 
 .header{
   height: 41px;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 300;
   font-size: 30px;
   color: #000000;
@@ -373,11 +370,12 @@ legend {
 .text{
   width: 30px;
   height: 41px;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 300;
-  font-size: 30px;
+  font-size: 18px;
   color: #000000;
   margin-top:46px;
+
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -386,7 +384,7 @@ legend {
 .enterUrl{
   width: 548px;
   height: 32px;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 300;
   font-size: 18px;
   font-weight: 200;
@@ -416,7 +414,7 @@ legend {
   background-color: #ff5500;
   border: solid 1px #ff5500;
   color: white;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 300;
   font-size: 18px;
   margin-top:46px;
@@ -427,13 +425,13 @@ legend {
 
 .headerCreation{
   width: 316px;
-  height: 41px;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 300;
   font-size: 30px;
   color: #000000;
   margin-top: 100px;
   margin-bottom: 50px;
+  text-align: center;
 }
 
 
@@ -441,7 +439,7 @@ legend {
 .caption{
   width: 108px;
   height: 19px;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 300;
   font-size: 14px;
   color: #999999;
@@ -501,7 +499,7 @@ legend {
   height: 43px;
   background-color: #333333;
   border: solid 1px #333333;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 300;
   font-size: 18px;
   text-align: center;
@@ -513,7 +511,7 @@ legend {
   height: 43px;
   border: solid 1px #cccccc;
   margin-left: 37px;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 300;
   font-size: 18px;
   text-align: center;
@@ -526,7 +524,7 @@ legend {
   position: relative;
   width: 1001px;
   height: 24px;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 400;
   font-size: 18px;
   text-align: left;
@@ -537,7 +535,7 @@ legend {
   margin-top: 14px;
   width: 300px;
   height: 16px;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 300;
   font-size: 16px;
   text-align: left;
@@ -613,7 +611,7 @@ legend {
   width: 110px;
   height: 30px;
   background-color: #e7e7e7;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 18px;
   font-weight: 300;
   text-align: center;
@@ -625,7 +623,7 @@ legend {
   position:relative;
   width: 83px;
   height: 24px;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 18px;
   font-weight: 300;
   text-align: center;
@@ -636,7 +634,7 @@ legend {
   margin-top:10px;
   width: 835px;
   height: 16px;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 400;
   font-size: 16px;
   text-align: left;
@@ -646,7 +644,7 @@ legend {
   position: relative;
   width: 835px;
   height: 16px;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 300;
   font-size: 16px;
   text-align: left;
@@ -718,6 +716,11 @@ legend {
   border: 1px solid #ddd;
 }
 
+.sign-container{
+   text-align: center !important;
+ }
+
+
 .table-container {
   margin-top: 2em;
 }
@@ -728,7 +731,7 @@ legend {
   background-color: #333333;
   border: solid 1px #333333;
   color: #ffffff;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 300;
   font-size: 18px;
   text-align: center;
@@ -747,7 +750,7 @@ legend {
   height: 39px;
   background-color: #ff5500;
   border: solid 1px #ff5500;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 300;
   font-size: 18px;
   text-align: center;
@@ -770,7 +773,7 @@ legend {
   background-color: #333333;
   border: solid 1px #333333;
   color: white;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 300;
   font-size: 18px;
   margin-top: 26px;
@@ -798,6 +801,41 @@ legend {
   border-top-right-radius: 0rem;
 }
 
+
+.query-value{
+  margin-top: 13px;
+  font-weight: 300;
+  font-size: 16px;
+}
+
+.filter-label {
+  margin-top: 13px;
+  font-weight: 300;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+
+.header-tab{
+  height: 25px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+  font-size: 25px;
+  color: #000000;
+  margin-top: 2em;
+  margin-bottom: 2em;
+  text-align: left;
+}
+
+.profile-info_2{
+  margin-top: 2em;
+  margin-bottom: 2em;
+  font-weight: 300;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+
 /* Profile Details */
 
 .profile-header {
@@ -809,6 +847,8 @@ legend {
   margin-top: 10px;
   margin-bottom: 10px;
   font-weight: 300;
+  font-size: 18px;
+  font-weight: bold;
 }
 
 .profile-icon-text {
@@ -838,10 +878,43 @@ legend {
   margin-bottom: 50px;
 }
 
+.ReactTable .rt-thead{
+  background-color: #292b2c;
+  color: #ffffff;
+}
+
+.ReactTable .rt-thead .rt-th.-sort-desc, .ReactTable .rt-thead .rt-td.-sort-desc {
+    -webkit-box-shadow: inset 0 -3px 0 0 rgba(0,0,0,0.6);
+    box-shadow: inset 0 -3px 0 0 rgba(255, 80, 0, 1) !important;
+}
+
+.ReactTable .rt-thead .rt-th.-sort-asc, .ReactTable .rt-thead .rt-td.-sort-asc {
+    -webkit-box-shadow: inset 0 3px 0 0 rgba(0,0,0,0.6);
+    box-shadow: inset 0 3px 0 0 rgba(255, 80, 0, 1) !important;
+}
+
+.ReactTable .rt-thead .rt-th, .ReactTable .rt-thead .rt-td {
+    border-right: 1px solid rgba(255, 255, 255, 0.4) !important;
+}
+
+.ReactTable .rt-tbody .rt-td {
+    border-right: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.ReactTable .rt-tbody .rt-td {
+  border-right: none !important;
+}
+
 .rt-td {
   font-weight: 100;
-}
+  }
 
 .rt-td > a {
     color: black !important;
+}
+
+.table-link-text {
+  font-weight: bold !important;
+  color: black !important;
+  width: 100px;
 }

@@ -1,6 +1,3 @@
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import { Link } from "react-router-dom";
 import 'isomorphic-fetch';
 import 'babel-polyfill';
 import { Redirect } from 'react-router-dom';
@@ -8,17 +5,25 @@ import { Redirect } from 'react-router-dom';
 
 var loggedin = false;
 var myemail = '';
+var myProfile;
 
 export function isLoggedIn(){
   return loggedin;
 }
 
 export function getMyEmail(){
-  return myemail;
+  return ( myemail || getCookie('email') );
 }
 
 export function isAdmin(){
-  return false;
+
+        return getUserInfo(getMyEmail()).then(function(response) {
+          return response.json;
+        }).then(function (response){
+            myProfile = response;
+            return (myProfile && (myProfile.roles === 'admin'));
+        }).then(res => {return res});
+
 }
 
 
@@ -35,36 +40,72 @@ export function getCookie(cname) {
     var ca = document.cookie.split(';');
     for(var i = 0; i < ca.length; i++) {
         var c = ca[i];
-        while (c.charAt(0) == ' ') {
+        while (c.charAt(0) === ' ') {
             c = c.substring(1);
         }
-        if (c.indexOf(name) == 0) {
+        if (c.indexOf(name) === 0) {
             return c.substring(name.length, c.length);
         }
     }
     return "";
 }
 
+export function changePassword(email, oldpw, newpw){
+
+  const requestBody = `email=${email}&old password=${oldpw}&new password=${newpw}`;
+
+    const formData = new FormData();
+    formData.append('email', email);
+    formData.append('old password', oldpw);
+    formData.append('new password', newpw);
+
+  var sbody = {'email': email, 'old password': oldpw, 'new password': newpw};
+  return fetch('/api/users/password' , {
+      method: 'PUT',
+      credentials: 'include',
+      headers: {
+//        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(sbody)
+   }).then(function(response){
+      if(response.status===200){
+        return true;
+      }else{
+        return false;
+      }
+});
+}
+
+export function changeProfile(email, first_name, last_name, bio){
+
+  var sbody = {'email': email, 'first name': first_name, 'last name': last_name, 'bio': bio};
+
+  return fetch('/api/users' , {
+      method: 'PUT',
+      credentials: 'include',
+      headers: {
+//        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(sbody)
+
+   }).then(response => response.status).catch(ex => {
+      console.error('parsing failes', ex);
+    });
+}
+
 export function getUserInfo(e){
   var res;
-  fetch('/api/users/' + e, {
+  return fetch('/api/users/' + e, {
       method: 'GET',
       mode: 'no-cors',
       credentials: 'include',
       headers: {
         "Accept": "application/json",
       }
-   }).then(function(response){
-      if(response.status==200){
-        console.log("getUserInfo status: " + response.status);
-        return response.json();
-      }else{
-        console.log("getUserInfostatus: " + response.status);
-        return false;
-      }
-    }).then(function(data) {
-      console.log(data);
-      return data;
+   }).then(response => response.json()).catch(ex => {
+      console.error('parsing failes', ex);
     });
 }
 
@@ -72,7 +113,7 @@ export function login(login_email, login_password){
   const m = encodeURIComponent(login_email);
   const p = encodeURIComponent(login_password);
   const requestBody = `email=${m}&password=${p}`;
-  return fetch('/api/users/login', {
+  var res = fetch('/api/users/login', {
       mode: 'no-cors',
       credentials: 'include',
       method: 'POST',
@@ -82,9 +123,8 @@ export function login(login_email, login_password){
       body: requestBody
     }).then( response => {
       setCookie('email', login_email);
-      if(response.status==200){
+      if(response.status===200){
         console.log("MYLOG status: " + response.status);
-        getUserInfo(login_email);
         myemail = login_email;
         loggedin = true;
         return true;
@@ -93,6 +133,10 @@ export function login(login_email, login_password){
         return false;
       }
     });
+    getUserInfo(myemail).then((success) => {
+        myProfile = success;
+    });;
+    return res;
 }
 
 export function logout(){
@@ -101,7 +145,7 @@ export function logout(){
       credentials: 'include',
       method: 'GET'
     }).then(function(response){
-      if(response.status==200){
+      if(response.status===200){
         myemail = '';
         loggedin = false;
         return true;
@@ -120,10 +164,10 @@ export function register(reg_firstname, reg_lastname, reg_email, reg_password, r
     "email" : reg_email,
     "password" : reg_password,
     "bio" : "",
-    "role" : "user"
+    "roles" : reg_role
   };
 
-  if(reg_password != reg_password_confirm || reg_password == ''){
+  if(reg_password !== reg_password_confirm || reg_password === ''){
     alert('password does not match' );
     return false;
   }
@@ -132,18 +176,17 @@ export function register(reg_firstname, reg_lastname, reg_email, reg_password, r
   return fetch('/api/users', {
   //    mode: 'no-cors',
   //    credentials: 'include',
-      method: 'put',
+      method: 'POST',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify( payload )
     }).then(function(response){
-      if(response.status==200){
+      if(response.status===200){
         return true;
       }else{
         return false;
       }
     });
 }
-
-

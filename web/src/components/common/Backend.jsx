@@ -6,11 +6,61 @@ const PROJECT_URL = '/api/projects/'
     // use this function to make a GET request.
     const url = `${path}`
 
-    return fetch(url).then(response => response.json()).catch(ex => {
+    return fetch(url,{credentials: 'include',}).then(response => response.json()).catch(ex => {
       console.error('parsing failes', ex);
     });
 
   }
+
+
+  export function fetchDelete(url){
+    return fetch(url, {
+      method: "DELETE",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }).then(response => response.json())
+    // .then(json => console.dir(json))
+      .catch(ex => {
+      console.error('parsing failed', ex)
+    });
+  }
+
+
+
+
+    export function fetchNotification(){
+      var res;
+      return fetch('/api/notifications/', {
+        method: 'GET',
+        mode: 'no-cors',
+        credentials: 'include',
+        headers: {
+          "Accept": "application/json",
+        }
+      }).then(response => response.json()).catch(ex => {
+        console.error('parsing failes', ex);
+      });
+    }
+
+
+
+
+  export function fetchProjectInfo(uuid){
+    var res;
+    return fetch('/api/projects/' + uuid, {
+      method: 'GET',
+      mode: 'no-cors',
+      credentials: 'include',
+      headers: {
+        "Accept": "application/json",
+      }
+    }).then(response => response.json()).catch(ex => {
+      console.error('parsing failes', ex);
+    });
+  }
+
 
   export function fetchProjectDetails(uuid){
     // Return project details from project with specified uuid
@@ -35,6 +85,9 @@ const PROJECT_URL = '/api/projects/'
       console.error('parsing failed', ex)
     });
   }
+
+
+
   export function sendJson(method, path, payload) {
     //use this function to make a POST requst
     const url = `${path}`
@@ -44,6 +97,7 @@ const PROJECT_URL = '/api/projects/'
       body: JSON.stringify(payload),
       headers: {
         'Accept': 'application/json',
+        'credentials': 'include',
         'Content-Type': 'application/json'
       }
     }).then(response => response.json())
@@ -65,7 +119,7 @@ const PROJECT_URL = '/api/projects/'
     }
 
     render() {
-      fetchJson('/api/projects'),
+      fetchJson('/api/projects');
       sendJson('POST', '/api/projects/search', {
         "query": {
           "match_all": {}

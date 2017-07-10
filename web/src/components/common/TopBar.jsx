@@ -7,11 +7,26 @@ import {
   withRouter
 } from 'react-router-dom';
 import { login, isLoggedIn, logout, getCookie, setCookie } from '../common/Authentication.jsx';
-import { Popover, PopoverTitle, PopoverContent } from 'reactstrap';
-import NotificationBadge from 'react-notification-badge';
-import { Effect } from 'react-notification-badge';
 
-class TopBar extends Component {
+import Badge from 'material-ui/Badge';
+import IconButton from 'material-ui/IconButton';
+import Snackbar from 'material-ui/Snackbar';
+import Popover from 'material-ui/Popover';
+import Menu from 'material-ui/Menu';
+import MenuItem from 'material-ui/MenuItem';
+import NotificationPane from '../common/NotificationPane'
+import { fetchJson } from '../common/Backend';
+
+
+const styles = {
+
+  linkStyle:{
+    color :'#000000'
+  }
+};
+
+
+export default class TopBar extends Component {
   constructor(props) {
     super(props);
 
@@ -19,76 +34,115 @@ class TopBar extends Component {
       redirect: false,
       popoverOpen: false,
       logo: 'Company Logo',
-      count: 3
+
+      snackbar: false,
+      popover : false,
+
     };
     this.handleLogout = this.handleLogout.bind(this);
-    this.toggle = this.toggle.bind(this);
+    this.handleNotificationClick = this.handleNotificationClick.bind(this);
+    this.handleRequestClose = this.handleRequestClose.bind(this);
+
+  }
+
+  componentWillMount(){
+    this.loadNotifications();
   }
 
 
-  toggle() {
+
+  loadNotifications() {
+    var notifications = [{description : "New Update on" , link: "/projects/da", title:"Title",
+id :"dsa"
+    },
+    {description : "New Project matching query" , link: "/projects/da", title:"Title2",
+
+    id :"dsa"},
+    {description : "New Comment on " , link: "/projects/da", title:"Title",
+    id :"dsa"}];
+
+
+
+    //
+    // var data = fetchJson("/api/users/notifications").then(function (data) {
+    //
+    //         this.setState({
+    //           notifications: data
+    //         });
+    //     },function(data){
+    //       this.setState({
+    //           notifications: []
+    //         });
+    //     }
+    //     .bind(this));
+
+
+   this.setState({notifications: []});
+  }
+
+
+
+  handleNotificationClick(event){
+    event.preventDefault();
     this.setState({
-      popoverOpen: !this.state.popoverOpen,
-      count: 0
+      popover: true,
+      anchorEl: event.currentTarget,
     });
+  }
+
+  handleRequestClose(){
+    this.setState({popover:false});
   }
 
   handleLogout(event){
     event.preventDefault();
     logout().then((success) => {
-
       if(success){
         this.setState({ redirect: true });
       }else{
         this.setState({ redirect: false});
-        alert("Logout failed");
+        this.setState({snackbar:true})
       }
     });
   }
 
   render() {
-
     if (this.state.redirect) {
       return <Redirect to='/'/>;
     }
-
     return (
       <div className="container-fluid topbar">
         <div className="row">
           <div className="col-10">
           </div>
-          <div className="col-1">
-            <div className="top-bar-text">
-              <div className="notification-container">
-                <NotificationBadge count={this.state.count} effect={Effect.SCALE}/>
-                <i id="Popover1" onClick={this.toggle} className="bell fa fa-bell" aria-hidden="true"></i>
-              </div>
-              <Popover placement="bottom" isOpen={this.state.popoverOpen} target="Popover1" toggle={this.toggle}>
-                <PopoverTitle>Notifications</PopoverTitle>
-                <PopoverContent>
-                  <div>
-                    <a>A Project got updated</a>
-                  </div>
-                  <div>
-                    <a>A Project got updated</a>
-                  </div>
-                  <div>
-                    <a>Janette bookmarked a project</a>
-                  </div>
-                </PopoverContent>
-              </Popover>
+          <div className="col-1" style={{marginTop:2}}>
+            <IconButton tooltip="Notifications" style={{color: 'white'}} onClick={this.handleNotificationClick}>
+              <i className="material-icons">notifications</i>
+              <Badge  badgeContent={this.state.notifications.length} primary={true}
+                badgeStyle={{top:-30, height:20, width: 20}} />
+            </IconButton>
+
+            <NotificationPane value={this.state.popover}
+                              anchorEl={this.state.anchorEl}
+                              onRequestClose={this.handleRequestClose}
+                              notifications={this.state.notifications}
+              ></NotificationPane>
+
+
+                        </div>
+
+            <div className="col-1" style={{marginTop:2}}>
+              <IconButton tooltip="Log out" style={{color: 'white'}} onClick={this.handleLogout}>
+                <i className="material-icons">exit_to_app</i>
+              </IconButton>
             </div>
-        </div>
-
-          <div className="col-1">
-            <p className="top-bar-text">
-              <i className="fa fa-power-off" aria-hidden="true" onClick={this.handleLogout}></i>
-            </p>
           </div>
+          <Snackbar
+            open={this.state.snackbar}
+            message="Log out failed!"
+            autoHideDuration={10000}
+          />
         </div>
-      </div>
-    );
+      );
+    }
   }
-}
-
-export default TopBar;

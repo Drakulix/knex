@@ -6,6 +6,9 @@ import {
   Redirect,
   withRouter
 } from 'react-router-dom';
+import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
 import logo from '../../style/img/black_logo_title_below.svg';
 import {login, isLoggedIn, logout, getCookie, setCookie} from '../common/Authentication.jsx';
 
@@ -51,8 +54,6 @@ export default class SignIn extends Component {
         alert("Login failed");
       }
     });
-
-
   }
 
   render() {
@@ -73,52 +74,46 @@ export default class SignIn extends Component {
           <form onSubmit={this.handleSubmit}>
             {/*Input Email*/}
             <div className="input-group input-login">
-              <span className="input-group-addon">
-                <span
-                  className="fa fa-envelope-o"
-                  aria-hidden="true"
-                />
-              </span>
-              <input
+              <TextField
                 type="text"
                 value={this.state.email}
                 onChange={this.handleChangeEmail}
-                className="form-control"
-                placeholder="Email"
-                required autofocus
+                hintText="Email"
               />
             </div>
 
             {/*Input password*/}
             <div className="input-group input-login">
-              <span className="input-group-addon">
-                <span
-                  className="fa fa-asterisk"
-                  aria-hidden="true"
-                />
-              </span>
-              <input
+
+              <TextField
                 type="password"
                 value={this.state.password}
                 onChange={this.handleChangePassword}
-                className="form-control"
-                placeholder="Password"
-                required
+                hintText="Password"
+
+                
               />
             </div>
-
-              <input
-                type="submit"
-                value="Login"
-                className="btn btn-lg btn-primary sign-button sign-button-text"
+            <div>
+              <RaisedButton
+                type="Submit"
+                label="Login"
+                primary={true}
+                style={{width: 250, marginTop:40}}
+                
               />
-
+          </div>
           </form>
           <div>
+<br/>
             <Link to="/register">
-              <button type="submit" className="btn btn-lg btn-primary sign-button sign-button-text">
-                Register
-              </button>
+            <RaisedButton
+              type="Submit"
+              label="Register"
+              primary={true}
+              style={{width: 250}}
+              required
+            />
             </Link>
           </div>
         </div>
