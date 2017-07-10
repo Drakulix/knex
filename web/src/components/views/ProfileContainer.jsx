@@ -365,7 +365,8 @@ export default class ProfileContainer extends React.Component {
                 label="Your Projects" value="c">
 <div className="header-tab">Manage Projects</div>
                     <DataTable
-                      fetchURL = {"/api/projects/search/advanced/?q=(authors.name: "+this.state.email+")"}
+                      fetchURL = {"/api/projects"}
+                      
 
                       columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'bookmarked']}
 

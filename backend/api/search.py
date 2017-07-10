@@ -110,7 +110,7 @@ def search_avanced():
             projects = [hit['_source'] for hit in res['hits']['hits']]
             for project in projects:
                 project['is_bookmark'] = 'true' if project['_id']\
-                    in current_user['bookmarks'] else 'false'
+                    in str(current_user['bookmarks']) else 'false'
                 project['is_owner'] = 'true' if current_user['email']\
                     in [author['email'] for author in project['authors']]\
                     else 'false'
