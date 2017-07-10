@@ -192,6 +192,19 @@ def notification_func():
     g.notify_users = notify_users
 
 
+def users_with_bookmark(id):
+    users = []
+    for user in User.objects:
+        if id in user.bookmarks:
+            users.append(user['email'])
+    return users
+
+
+@app.before_request
+def users_with_bookmark_func():
+    g.users_with_bookmark = users_with_bookmark
+
+
 def save_search(user, title, query, count):
     search = SavedSearch(title=title, query=json.dumps(query), count=count)
     user.saved_searches.append(search)
