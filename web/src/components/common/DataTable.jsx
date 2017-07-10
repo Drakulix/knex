@@ -119,7 +119,7 @@ export default class BookmarksTable extends React.Component {
     fetchJson(url).then(function(data) {
 
       var datas =[]
-      //datas = data
+      datas = data
       var tmp = []
       if(this.state.isProfile == true){
         for (let projects of   datas){
