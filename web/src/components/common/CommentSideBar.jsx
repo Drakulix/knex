@@ -90,6 +90,7 @@ export default class CommentSideBar extends React.Component {
 
   fetchJson(fetchURL).then(function(data) {
     var filteredData = this.transformArray(data);
+    console.log(data);
     this.setState({
       comments: filteredData
     });
@@ -122,7 +123,7 @@ export default class CommentSideBar extends React.Component {
             <div>
               <Divider/>
               <ListItem primaryText={item.message}
-                        secondaryText={item.author.name + " " + item.datetime}
+                        secondaryText={item.author.email + " " + item.datetime}
               />
             </div>)
           }
