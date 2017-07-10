@@ -9,6 +9,8 @@ import CircularProgress from 'material-ui/CircularProgress';
 import {login, isLoggedIn, logout, getCookie, setCookie, isAdmin, getMyEmail, getUserInfo, changePassword, changeProfile} from '../common/Authentication.jsx';
 import { fetchJson } from '../common/Backend';
 import DataTable from '../common/DataTable';
+import styles from '../common/Styles.jsx';
+
 
 const FILTER_ATTRIBUTES = ['title', 'status', 'description', '_id'];
 
