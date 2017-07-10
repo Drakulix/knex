@@ -82,10 +82,14 @@ shortName :"",
       var query = this.state.query;
       query["searchString"] = value;
       var end = "/api/projects/search/"
-
-      this.setState({query : query,
-        fetchURL : end+"simple/?q="+query["searchString"]+"*"
-      })
+      if(value == ""){
+        this.setState({fetchURL : "/api/projects"})
+      }
+      else{
+        this.setState({query : query,
+          fetchURL : end+"simple/?q="+query["searchString"]+"*"
+        })
+      }
 
 
       //this.setState({fetchURL : "simple/?q="+this.state.searchString+"*"});
