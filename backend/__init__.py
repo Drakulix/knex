@@ -12,11 +12,13 @@ from pymongo import MongoClient, ReturnDocument
 from mongoengine.fields import (UUIDField, ListField, StringField, BooleanField,
                                 ObjectId, EmbeddedDocumentField, EmbeddedDocument,
                                 ListField, ObjectIdField)
+import json
+import time
 from werkzeug.routing import BaseConverter
 
 from api.projects import projects
 from api.users import users
-from api.search import search
+from api.search import search, prepare_es_results
 from api.helper.apiexception import ApiException
 from globals import ADMIN_PERMISSION
 
@@ -105,6 +107,28 @@ class Notification(DB.EmbeddedDocument):
     description = DB.StringField(max_length=255)
     link = DB.StringField(max_length=255)
 
+    def to_dict(self):
+        dic = {}
+        dic['id'] = str(self.notification_id)
+        dic['title'] = str(self.title)
+        dic['description'] = str(self.description)
+        dic['link'] = str(self.link)
+        return dic
+
+
+class SavedSearch(EmbeddedDocument):
+    saved_search_id = ObjectIdField(default=ObjectId)
+    title = DB.StringField(max_length=255)
+    query = DB.StringField(max_length=2048)
+    count = DB.LongField()
+
+    def to_dict(self):
+        dic = {}
+        dic['id'] = str(self.saved_search_id)
+        dic['title'] = str(self.title)
+        dic['count'] = self.count
+        return dic
+
 
 class User(DB.Document, UserMixin):
     email = DB.StringField(max_length=255, unique=True)
@@ -116,6 +140,7 @@ class User(DB.Document, UserMixin):
     bookmarks = DB.ListField(DB.UUIDField(), default=[])
     roles = DB.ListField(DB.ReferenceField(Role), default=[])
     notifications = DB.ListField(DB.EmbeddedDocumentField(Notification), default=[])
+    saved_searches = DB.ListField(DB.EmbeddedDocumentField(SavedSearch), default=[])
 
     # we must not override the method __iter__ because Document.save() stops working then
     def to_dict(self):
@@ -151,14 +176,51 @@ def notify_users(useremail_list, n_description, n_title, n_link):
         user = USER_DATASTORE.get_user(email)
         id = None
         if user:
-            user.notifications.append(n)
-            user.save()
+            for existing_n in user.notifications:
+                if str(existing_n.link) == n_link:
+                    break
+            else:
+                user.notifications.append(n)
+                if len(user.notifications) > 20:
+                    users.notifications.pop(0)
+                user.save()
     return str(n.notification_id)
 
 
 @app.before_request
 def notification_func():
     g.notify_users = notify_users
+
+
+def save_search(user, title, query, count):
+    search = SavedSearch(title=title, query=json.dumps(query), count=count)
+    user.saved_searches.append(search)
+    user.save()
+    return str(search.saved_search_id)
+
+
+@app.before_request
+def save_search_func():
+    g.save_search = save_search
+
+
+def rerun_saved_searches():
+    # This really is ugly but MongoConnector has to catch up for a valid count
+    time.sleep(1)
+    for user in User.objects:
+        for search in user.saved_searches:
+            projects = prepare_es_results(
+                ES.search(index="knexdb", body=json.loads(search['query'])))
+            if search['count'] != len(projects):
+                search['count'] = len(projects)
+                search.save()
+                notify_users([user['email']], 'Saved search changed', str(
+                    search.title) + ' updated', '/results/saved/' + str(search.saved_search_id))
+
+
+@app.before_request
+def rerun_saved_searches_func():
+    g.rerun_saved_searches = rerun_saved_searches
 
 
 @app.before_first_request
@@ -174,7 +236,7 @@ def initialize_users():
     # user_datastore.get_user might return None or throw an exception if the user does not exist
     except Exception:
         USER_DATASTORE.create_user(
-                email='user@knex.com', password=userpw, roles=[user_role])
+            email='user@knex.com', password=userpw, roles=[user_role])
     try:
         if not USER_DATASTORE.get_user('admin@knex.com'):
             USER_DATASTORE.create_user(
@@ -182,7 +244,7 @@ def initialize_users():
     # user_datastore.get_user might return None or throw an exception if the user does not exist
     except Exception:
         USER_DATASTORE.create_user(
-                email='admin@knex.com', password=adminpw, roles=[user_role, admin_role])
+            email='admin@knex.com', password=adminpw, roles=[user_role, admin_role])
 
 
 @app.errorhandler(ApiException)

@@ -48,6 +48,7 @@ def add_projects():
                 elif file.filename.endswith('.json5'):
                     manifestlist.append(json5.loads(file.read().decode('utf-8')))
             return_ids = uploader.save_manifest_to_db(manifestlist)
+            g.rerun_saved_searches()
             return jsonify(return_ids)
         except Exception as err:
             raise ApiException(str(err), 400)
@@ -64,6 +65,8 @@ def add_projects():
             else:
                 raise ApiException("Wrong content header" +
                                    "and no files attached", 400)
+
+            g.rerun_saved_searches()
             return jsonify(return_ids)
 
         except ApiException as e:
@@ -172,6 +175,7 @@ def delete_project(project_id):
     """
     if g.projects.delete_one({'_id': project_id}).deleted_count == 0:
         return make_response("Project could not be found", 404)
+    g.rerun_saved_searches()
     return make_response("Success")
 
 
@@ -205,6 +209,7 @@ def update_project(project_id):
                 manifest['_id'] = project_id
                 g.projects.find_one_and_replace({'_id': project_id}, manifest,
                                                 return_document=ReturnDocument.AFTER)
+                g.rerun_saved_searches()
                 return make_response("Success")
             elif not request.on_json_loading_failed():
                 raise ApiException("json could not be parsed",
