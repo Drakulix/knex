@@ -1,10 +1,6 @@
 import React from 'react';
 import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
-import ChipInput from 'material-ui-chip-input';
-import Chip from 'material-ui/Chip';
-import AutoComplete from 'material-ui/AutoComplete'
-import styles from '../common/Styles.jsx'
 import ChipInputList from '../common/ChipInputList.jsx'
 
 

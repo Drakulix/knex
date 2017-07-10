@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import DatePicker from 'material-ui/DatePicker';
@@ -18,7 +17,7 @@ const statusString = [
   {id: "3" , text :"No filter", value : ""}
 ];
 
-export default class Filters extends React.Component{
+export default class Filters extends Component{
 
   constructor(props){
     super(props);
@@ -240,7 +239,6 @@ export default class Filters extends React.Component{
                 <DropDownMenu
                   onChange={this.handleStatusChange}
                   value={this.state.value}
-                  hintText="Pick a status..."
                   labelStyle={{width: '100%', paddingLeft:0}}
                   underlineStyle={{width: '100%', marginLeft:0}}
                   autoWidth={false}

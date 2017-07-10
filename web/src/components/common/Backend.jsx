@@ -81,7 +81,7 @@ const PROJECT_URL = '/api/projects/'
     }
 
     render() {
-      fetchJson('/api/projects'),
+      fetchJson('/api/projects');
       sendJson('POST', '/api/projects/search', {
         "query": {
           "match_all": {}

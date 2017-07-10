@@ -52,7 +52,7 @@ export default class CommentSideBar extends React.Component {
         },
         body: this.state.comment
       }).then(function(response){
-        if(response.status==200){
+        if(response.status === 200){
           return true;
         }else{
           return false;

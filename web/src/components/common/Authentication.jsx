@@ -1,6 +1,3 @@
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import { Link } from "react-router-dom";
 import 'isomorphic-fetch';
 import 'babel-polyfill';
 import { Redirect } from 'react-router-dom';
@@ -24,7 +21,7 @@ export function isAdmin(){
           return response.json;
         }).then(function (response){
             myProfile = response;
-            return (myProfile && (myProfile.roles == 'admin'));
+            return (myProfile && (myProfile.roles === 'admin'));
         }).then(res => {return res});
 
 }
@@ -43,10 +40,10 @@ export function getCookie(cname) {
     var ca = document.cookie.split(';');
     for(var i = 0; i < ca.length; i++) {
         var c = ca[i];
-        while (c.charAt(0) == ' ') {
+        while (c.charAt(0) === ' ') {
             c = c.substring(1);
         }
-        if (c.indexOf(name) == 0) {
+        if (c.indexOf(name) === 0) {
             return c.substring(name.length, c.length);
         }
     }
@@ -72,7 +69,7 @@ export function changePassword(email, oldpw, newpw){
       },
       body: JSON.stringify(sbody)
    }).then(function(response){
-      if(response.status==200){
+      if(response.status===200){
         return true;
       }else{
         return false;
@@ -126,7 +123,7 @@ export function login(login_email, login_password){
       body: requestBody
     }).then( response => {
       setCookie('email', login_email);
-      if(response.status==200){
+      if(response.status===200){
         console.log("MYLOG status: " + response.status);
         myemail = login_email;
         loggedin = true;
@@ -148,7 +145,7 @@ export function logout(){
       credentials: 'include',
       method: 'GET'
     }).then(function(response){
-      if(response.status==200){
+      if(response.status===200){
         myemail = '';
         loggedin = false;
         return true;
@@ -170,7 +167,7 @@ export function register(reg_firstname, reg_lastname, reg_email, reg_password, r
     "roles" : reg_role
   };
 
-  if(reg_password != reg_password_confirm || reg_password == ''){
+  if(reg_password !== reg_password_confirm || reg_password === ''){
     alert('password does not match' );
     return false;
   }
@@ -186,7 +183,7 @@ export function register(reg_firstname, reg_lastname, reg_email, reg_password, r
       },
       body: JSON.stringify( payload )
     }).then(function(response){
-      if(response.status==200){
+      if(response.status===200){
         return true;
       }else{
         return false;

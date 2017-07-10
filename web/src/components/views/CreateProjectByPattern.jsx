@@ -1,18 +1,11 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import { Link } from 'react-router-dom';
-import { Redirect } from 'react-router-dom';
-import AutoComplete from 'material-ui/AutoComplete'
 import RaisedButton from 'material-ui/RaisedButton';
-import ChipInput from 'material-ui-chip-input';
 import DatePicker from 'material-ui/DatePicker';
 import TextField from 'material-ui/TextField';
-import Chip from 'material-ui/Chip';
 import Snackbar from 'material-ui/Snackbar';
 import DropDownMenu from 'material-ui/DropDownMenu'
 import MenuItem from 'material-ui/MenuItem';
 import CircularProgress from 'material-ui/CircularProgress';
-import styles from '../common/Styles.jsx';
 import ChipInputList from '../common/ChipInputList';
 import { sendJson } from '../common/Backend.jsx'
 
@@ -23,7 +16,7 @@ const statusString = [
 
   const log = (type) => console.log.bind(console, type);
 
-  export default class UploadByPattern extends React.Component {
+  export default class UploadByPattern extends Component {
 
 
     constructor(props) {
@@ -151,7 +144,6 @@ const statusString = [
         }
 
         fetchProjectInfo(uuid){
-          var res;
           return fetch('/api/projects/' + uuid, {
             method: 'GET',
             mode: 'no-cors',
@@ -253,7 +245,7 @@ const statusString = [
               <div className="container">
                 <div className="innerContainer">
                   <div className = "headerCreation" style={{width:"100%"}}>
-                    {(this.state.projectID != undefined) ? "Edit project" : "Add new project"}
+                    {(this.state.projectID !== undefined) ? "Edit project" : "Add new project"}
                   </div>
                   <form>
                     <div>

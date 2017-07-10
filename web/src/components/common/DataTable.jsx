@@ -119,56 +119,51 @@ export default class BookmarksTable extends React.Component {
     fetchJson(url).then(function(data) {
 
       var datas =[]
-    datas = data
+alert(data);
+      datas = data
 
-      var tmp = []
-      if(this.state.isProfile === true){
-        for (let projects of   datas){
-          var project = projects
+      //
+      // var tmp = []
+      // if(this.state.isProfile === true){
+      //   for (let projects of   datas){
+      //     var project = projects
+      //
+      //   if(project["is_bookmark"] === "true" || project["is_owner"] === "true"){
+      //     tmp.push(project)
+      //
+      //   }
+      //
+      // }
+      // datas = tmp
+      // }
+      // else if(this.state.bookmarksSite === true){
+      //   for (let projects of   datas){
+      //     var project = projects
+      //
+      //   if(project["is_bookmark"] === "true"){
+      //     tmp.push(project)
+      //
+      //   }
+      //
+      // }
+      // datas = tmp
+      // }
 
-        if(project["is_bookmark"] === "true" || project["is_owner"] === "true"){
-          tmp.push(project)
-
-        }
-
-      }
-      datas = tmp
-      }
-      else if(this.state.bookmarksSite === true){
-        for (let projects of   datas){
-          var project = projects
-
-        if(project["is_bookmark"] === "true"){
-          tmp.push(project)
-
-        }
-
-      }
-      datas = tmp
-      }
         var filteredDataArray = [];
         var dataArray = [];
-
         for(let dataObject of datas) {
-          var transformedObject= dataObject;
-
-
+          var transformedObject = dataObject;
           var t = new String(dataObject.tags);
           t = t.substring(0,t.length);
           var array = t.split(",");
           array.sort();
           transformedObject["tagString"] =array.join();
-
-
           var temp = [];
           for (var i in  dataObject.authors) {
             temp = temp.concat([dataObject.authors[i].name + " ##"+dataObject.authors[i].email] );
           }
           temp.sort();
           transformedObject["authorString"] = temp.join();
-
-
-
           filteredDataArray.push(transformedObject);
           dataArray.push(transformedObject);
 
@@ -179,13 +174,9 @@ export default class BookmarksTable extends React.Component {
           filteredTable : filteredDataArray
         });
 
-        this.filter(this.state.filters)
+        //this.filter(this.state.filters)
       }.bind(this));
     }
-
-
-
-
 
     handleFilterChange(key, value){
       var state = this.state.filters;
@@ -197,7 +188,6 @@ export default class BookmarksTable extends React.Component {
       }
       this.setState({filters : state});
       this.filter(state);
-
       if(this.props.handleFilter !== undefined)
         this.props.handleFilter(key,value);
     }
@@ -205,12 +195,8 @@ export default class BookmarksTable extends React.Component {
 
     filter(filters){
       var array = [];
-
-
       for(let dataObject of this.state.data) {
         var discard = false;
-
-
         for(let key of Object.keys(filters)){
           var value = filters[key];
           switch (key){

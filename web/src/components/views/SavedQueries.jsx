@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import {fetchJson, sendJson} from '../common/Backend';
 import SavedQuery from "../common/SavedQuery"
 

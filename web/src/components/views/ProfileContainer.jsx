@@ -12,8 +12,6 @@ import DataTable from '../common/DataTable';
 import styles from '../common/Styles.jsx';
 
 
-const FILTER_ATTRIBUTES = ['title', 'status', 'description', '_id'];
-
 export default class ProfileContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -95,36 +93,10 @@ export default class ProfileContainer extends React.Component {
   }
 
 
-  transformObj(dataObject)  {
-    var filteredDataObject = {};
-    for(let attr of FILTER_ATTRIBUTES ) {
-      if(attr == 'title') {
-        filteredDataObject['name'] = dataObject[attr];
-      } else {
-        filteredDataObject[attr] = dataObject[attr];
-      }
-    }
-    return filteredDataObject;
-  }
-
-  transformArray(dataArray) {
-    var filteredDataArray = [];
-    for(let dataObject of dataArray) {
-      filteredDataArray.push(this.transformObj(dataObject));
-    }
-    return filteredDataArray;
-  };
-
   componentWillMount(){
     this.loadProfileInf(this.state.email);
     this.loadMyProfileInf(getMyEmail());
 
-    fetchJson( '/api/projects/search/advanced/?q=(authors.name: ja*)').then(function(datas) {
-      var filteredData = this.transformArray(datas);
-      this.setState({
-        data: filteredData
-      });
-    });
 
     //TODO Fill topTenTags with data from endpoint / get_cur_user_tags(): respectively /api/users/<email:mail>/tags
   }
@@ -151,12 +123,13 @@ export default class ProfileContainer extends React.Component {
 
   loadMyProfileInf(e) {
     getUserInfo(e).then(data => {
-      this.setState({myProfileInf: data});
+      this.setState({profileInf: data});
       if(!data){
         this.setState({profile_exists: false});
       }else{
         var admin = (data.roles == 'admin');
         this.setState({is_admin: admin});
+        this.setState({first_name: data.first_name, last_name: data.last_name, bio: data.bio, bookmarks : data.bookmarks});
 
       }
       this.setState({site_loaded: true})
@@ -392,7 +365,8 @@ export default class ProfileContainer extends React.Component {
                 label="Your Projects" value="c">
 <div className="header-tab">Manage Projects</div>
                     <DataTable
-                      fetchURL = "/api/projects"
+                      fetchURL = {"/api/projects/search/advanced/?q=(authors.name: "+this.state.email+")"}
+
                       columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'bookmarked']}
 
                       isProfile = {true}

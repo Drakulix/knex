@@ -1,14 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import {fetchJson, sendJson} from '../common/Backend';
-import PropTypes from 'prop-types';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
-import DatePicker from 'material-ui/DatePicker';
-import DropDownMenu from 'material-ui/DropDownMenu'
-import MenuItem from 'material-ui/MenuItem';
 
-import ChipInputList from '../common/ChipInputList';
 import DataTable from '../common/DataTable';
 import Dialog from 'material-ui/Dialog';
 
@@ -86,13 +81,14 @@ shortName :"",
       const value = event.target.value;
       var query = this.state.query;
       query["searchString"] = value;
-      this.setState({query : query});
+      var end = "/api/projects/search/"
 
+      this.setState({query : query,
+        fetchURL : end+"simple/?q="+query["searchString"]+"*"
+      })
 
 
       //this.setState({fetchURL : "simple/?q="+this.state.searchString+"*"});
-      var end = "/api/projects/search/"
-      this.state.fetchURL = end+"simple/?q="+this.query["searchString"]+"*"
 
 
     }

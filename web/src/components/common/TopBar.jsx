@@ -7,8 +7,6 @@ import {
   withRouter
 } from 'react-router-dom';
 import { login, isLoggedIn, logout, getCookie, setCookie } from '../common/Authentication.jsx';
-import NotificationBadge from 'react-notification-badge';
-import { Effect } from 'react-notification-badge';
 
 import Badge from 'material-ui/Badge';
 import IconButton from 'material-ui/IconButton';
@@ -17,7 +15,6 @@ import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
 
-import Divider from 'material-ui/Divider';
 
 const styles = {
 

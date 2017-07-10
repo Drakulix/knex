@@ -1,14 +1,8 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import ReactTable from 'react-table';
-import 'react-table/react-table.css';
-import { fetchJson } from '../common/Backend'
 import DataTable from '../common/DataTable';
 
 
-const FILTER_ATTRIBUTES = ['title', 'status', 'tags', 'description', '_id', 'bookmarked'];
-
-export default class BookmarksTable extends React.Component {
+export default class BookmarksTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -27,7 +21,7 @@ render(){
 
         <DataTable columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'bookmarked']}
 
-fetchURL="/api/projects"
+fetchURL="/api/bookmarks"
 bookmarksSite = {"true"}
           ></DataTable>
 

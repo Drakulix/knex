@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-
 import ChipInput from 'material-ui-chip-input';
 import Chip from 'material-ui/Chip';
 import AutoComplete from 'material-ui/AutoComplete'
 import styles from '../common/Styles.jsx'
 
 
-export default class ChipInputList extends React.Component {
+export default class ChipInputList extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -47,7 +46,6 @@ export default class ChipInputList extends React.Component {
         onRequestDelete={(deletedChip) => this.handleRequestDelete(deletedChip)}
         errorText={this.props.errorText}
         hintText={this.props.hintText}
-        filtered = {this.props.filtered}
         fullWidth
         chipRenderer={({ value, isFocused, isDisabled, handleClick, handleRequestDelete }, key) => (
           <Chip
