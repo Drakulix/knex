@@ -120,7 +120,10 @@ export default class BookmarksTable extends React.Component {
 
       var datas =[]
 
-      datas = data
+
+if(data !== undefined)
+      datas = data;
+
 
       
        var tmp = []
