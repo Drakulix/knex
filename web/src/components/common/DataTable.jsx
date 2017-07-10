@@ -122,32 +122,32 @@ export default class BookmarksTable extends React.Component {
 
       datas = data
 
-      //
-      // var tmp = []
-      // if(this.state.isProfile === true){
-      //   for (let projects of   datas){
-      //     var project = projects
-      //
-      //   if(project["is_bookmark"] === "true" || project["is_owner"] === "true"){
-      //     tmp.push(project)
-      //
-      //   }
-      //
-      // }
-      // datas = tmp
-      // }
-      // else if(this.state.bookmarksSite === true){
-      //   for (let projects of   datas){
-      //     var project = projects
-      //
-      //   if(project["is_bookmark"] === "true"){
-      //     tmp.push(project)
-      //
-      //   }
-      //
-      // }
-      // datas = tmp
-      // }
+      
+       var tmp = []
+       if(this.state.isProfile === true){
+         for (let projects of   datas){
+           var project = projects
+
+         if(project["is_bookmark"] === "true" || project["is_owner"] === "true"){
+           tmp.push(project)
+
+         }
+
+      }
+      datas = tmp
+       }
+       else if(this.state.bookmarksSite === true){
+         for (let projects of   datas){
+           var project = projects
+
+         if(project["is_bookmark"] === "true"){
+           tmp.push(project)
+
+         }
+
+       }
+       datas = tmp
+       }
 
         var filteredDataArray = [];
         var dataArray = [];
