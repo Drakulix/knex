@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import Chip from 'material-ui/Chip'
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 import ReactTable from 'react-table';
@@ -30,7 +31,8 @@ export default class ProfileContainer extends React.Component {
       pw_new_confirm: '',
       is_admin: false,
       value: 'a',
-      bookmarks : ''
+      bookmarks : '',
+      topTenTags :[]
     };
     this.handlePwOldChange = this.handlePwOldChange.bind(this);
     this.handlePwNewChange = this.handlePwNewChange.bind(this);
@@ -273,6 +275,17 @@ export default class ProfileContainer extends React.Component {
                     <p className="profile-header">Biography:</p>
                     <p className="profile-info">
                       {this.getBio()}
+                    </p>
+                    <p>
+                      <div className="profile-header">Tags </div>
+                      <div style = {styles["wrapper"]}>
+                        { this.state.topTenTags.map(item =>
+                          <Chip style= {styles["chip"]}>
+                            <Link to={item} style= {styles["chipText"]} >{item}</Link></Chip>) }
+                            </div>
+                          </div>
+
+
                     </p>
                   </div>
                   <div className="col-3">
