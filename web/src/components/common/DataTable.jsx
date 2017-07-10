@@ -61,7 +61,7 @@ export default class BookmarksTable extends React.Component {
       .catch(ex => {
       console.error('parsing failed', ex)
     });
-
+this.fetchData(this.state.url)
   }
 
   handleAddBookmark(projectID){
@@ -103,7 +103,7 @@ export default class BookmarksTable extends React.Component {
 
   );
 
-
+this.fetchData(this.state.url)
   }
 
   handleRemoveBookmark(projectID){
@@ -140,7 +140,7 @@ export default class BookmarksTable extends React.Component {
             break;
           }
         }
-
+this.fetchData(this.state.url)
   }
 
 
