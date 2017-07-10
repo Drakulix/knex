@@ -1,7 +1,8 @@
 import React from 'react';
 import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
-import ChipInputList from '../common/ChipInputList.jsx'
+import ChipInputList from '../common/ChipInputList.jsx';
+import { fetchJson} from '../common/Backend.jsx';
 
 
 
@@ -45,7 +46,43 @@ export default class SharePane extends React.Component {
   }
 
   componentWillMount(){
-    this.loadAuthors();
+
+      var suggestedAuthors = [{id:"marko@knex.", name :"Marko"},
+      {id:"victor@knex", name :"Victor"},{id:"cedric@knex", name :"Cedric"}];
+
+      //loadSuggestedAuthors
+
+      var suggestedAuthorsArray = []
+      for (var i in suggestedAuthors) {
+        suggestedAuthorsArray = suggestedAuthorsArray.concat([suggestedAuthors[i].name + " ("+suggestedAuthors[i].id+ ")"]);
+      }
+      this.setState({suggestedAuthors: suggestedAuthorsArray});
+  }
+
+  componentDidMount() {
+    //tipp: if you fetch server side data, this is the place where it should happen :)
+
+    //gets all the exsiting tags from the backend
+    fetchJson('/api/projects/tags').then(function(tags) {
+      this.setState({
+        suggestedTags: tags
+      });
+    }.bind(this));
+
+    //gets all the authors from the backend
+    fetchJson('/api/projects/authors').then(function(authors) {
+      var suggestedAuthors = authors;
+      var suggestedAuthorsArray = []
+      for (var i in suggestedAuthors) {
+        suggestedAuthorsArray = suggestedAuthorsArray.concat([suggestedAuthors[i].name + " ("+suggestedAuthors[i].email+ ")"]);
+      }
+      console.log(suggestedAuthorsArray);
+      this.setState({
+        suggestedAuthors: suggestedAuthorsArray
+      });
+    }.bind(this));
+
+
   }
 
   componentWillReceiveProps(props){
@@ -53,18 +90,7 @@ export default class SharePane extends React.Component {
   }
 
 
-  loadAuthors() {
-    var suggestedAuthors = [{id:"marko@knex.", name :"Marko"},
-    {id:"victor@knex", name :"Victor"},{id:"cedric@knex", name :"Cedric"}];
 
-    //loadSuggestedAuthors
-
-    var suggestedAuthorsArray = []
-    for (var i in suggestedAuthors) {
-      suggestedAuthorsArray = suggestedAuthorsArray.concat([suggestedAuthors[i].name + " ("+suggestedAuthors[i].id+ ")"]);
-    }
-    this.setState({suggestedAuthors: suggestedAuthorsArray});
-  }
 
 
   handleAuthorChange(value) {

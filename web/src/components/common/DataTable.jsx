@@ -61,7 +61,7 @@ export default class BookmarksTable extends React.Component {
       .catch(ex => {
       console.error('parsing failed', ex)
     });
-
+this.fetchData(this.state.url)
   }
 
   handleAddBookmark(projectID){
@@ -103,7 +103,7 @@ export default class BookmarksTable extends React.Component {
 
   );
 
-
+this.fetchData(this.state.url)
   }
 
   handleRemoveBookmark(projectID){
@@ -140,7 +140,7 @@ export default class BookmarksTable extends React.Component {
             break;
           }
         }
-
+this.fetchData(this.state.url)
   }
 
 
@@ -156,6 +156,18 @@ export default class BookmarksTable extends React.Component {
     this.fetchData(this.props.fetchURL);
     this.state.url = this.props.fetchURL;
   }
+
+  componentWillReceiveProps(nextProps) {
+  // You don't have to do this check first, but it can help prevent an unneeded render
+  if(nextProps.isProfile !== undefined){
+    this.state.isProfile = true;
+  }
+  else if(nextProps.bookmarksSite !== undefined){
+    this.state.bookmarksSite = true;
+  }
+  this.fetchData(nextProps.fetchURL);
+  this.state.url = nextProps.fetchURL;
+}
 
   fetchData(url){
 
