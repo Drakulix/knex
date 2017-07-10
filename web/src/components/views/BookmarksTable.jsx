@@ -21,7 +21,7 @@ render(){
 
         <DataTable columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'bookmarked']}
 
-fetchURL="/api/bookmarks"
+fetchURL="/api/users/bookmarks"
 bookmarksSite = {"true"}
           ></DataTable>
 

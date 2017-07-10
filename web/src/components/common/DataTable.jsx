@@ -119,8 +119,11 @@ export default class BookmarksTable extends React.Component {
     fetchJson(url).then(function(data) {
 
       var datas =[]
-alert(data);
-      datas = data
+
+
+if(data !== undefined)
+      datas = data;
+
 
       //
       // var tmp = []
