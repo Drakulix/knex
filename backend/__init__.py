@@ -152,6 +152,8 @@ def notify_users(useremail_list, n_description, n_title, n_link):
         id = None
         if user:
             user.notifications.append(n)
+            if len(user.notifications) > 20:
+                users.notifications.pop(0)
             user.save()
     return str(n.notification_id)
 
