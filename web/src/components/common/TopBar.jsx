@@ -14,6 +14,7 @@ import Snackbar from 'material-ui/Snackbar';
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
+import NotificationPane from '../common/NotificationPane'
 
 
 const styles = {
@@ -24,7 +25,7 @@ const styles = {
 };
 
 
-class TopBar extends Component {
+export default class TopBar extends Component {
   constructor(props) {
     super(props);
 
@@ -35,7 +36,6 @@ class TopBar extends Component {
 
       snackbar: false,
       popover : false,
-      notifications: []
 
     };
     this.handleLogout = this.handleLogout.bind(this);
@@ -48,20 +48,17 @@ class TopBar extends Component {
     this.loadNotifications();
   }
 
-  componentWillReceiveProps(){
-    this.loadNotifications()
-  }
-
-  componentDidMount(){
-    this.loadNotifications();
-  }
 
 
   loadNotifications() {
-    var notifications = [{text : "New Update on" , projectID: "ID", title:"Title"},
-    {text : "New Project matching query" , projectID: "ID", title:"Title2"},
-    {text : "New Comment on " , projectID: "ID", title:"Title"}];
+    var notifications = [{description : "New Update on" , link: "/projects/da", title:"Title",
+id :"dsa"
+    },
+    {description : "New Project matching query" , link: "/projects/da", title:"Title2",
 
+    id :"dsa"},
+    {description : "New Comment on " , link: "/projects/da", title:"Title",
+    id :"dsa"}];
     this.setState({notifications: notifications});
   }
 
@@ -106,25 +103,15 @@ class TopBar extends Component {
               <Badge  badgeContent={this.state.notifications.length} primary={true}
                 badgeStyle={{top:-30, height:20, width: 20}} />
             </IconButton>
-            <Popover
-              height={200}
-              open={this.state.popover}
-              anchorEl={this.state.anchorEl}
-              anchorOrigin={{horizontal: 'middle', vertical: 'bottom'}}
-              targetOrigin={{horizontal: 'left', vertical: 'top'}}
-              canAutoPosition={true}
-              onRequestClose={this.handleRequestClose}>
-              <Menu>
-                {this.state.notifications.map(notification =>
-                  <MenuItem>
-                    <Link style={styles["linkStyle"]}
-                      to={"/projects/"+notification.projectID}>
-                      {notification.text} {notification.title}
-                    </Link>
-                  </MenuItem>)}
-                </Menu>
-              </Popover>
-            </div>
+
+            <NotificationPane value={this.state.popover}
+                              anchorEl={this.state.anchorEl}
+                              onRequestClose={this.handleRequestClose}
+                              notifications={this.state.notifications}
+              ></NotificationPane>
+
+
+                        </div>
 
             <div className="col-1" style={{marginTop:2}}>
               <IconButton tooltip="Log out" style={{color: 'white'}} onClick={this.handleLogout}>
@@ -141,5 +128,3 @@ class TopBar extends Component {
       );
     }
   }
-
-  export default TopBar;
