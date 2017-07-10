@@ -111,7 +111,7 @@ export default class BookmarksTable extends React.Component {
       this.state.bookmarksSite = true;
     }
     this.fetchData(this.props.fetchURL);
-
+    this.state.url = this.props.fetchURL;
   }
 
   fetchData(url){
@@ -401,7 +401,7 @@ if(data !== undefined)
                 style: {textAlign:"center"},
                 Cell: props =>{
                   return(
-                    (new String(props.value.is_bookmark) === "true") ?
+                    (new String(props.value.is_bookmark) == "true") ?
                       <IconButton onClick={()=>this.handleRemoveBookmark(props.value._id)}
                                   touch={true}
                                   style = {styles.largeIcon}
