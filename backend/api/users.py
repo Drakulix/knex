@@ -52,25 +52,19 @@ def create_user():
     try:
         user = request.get_json()
 
-        if user['roles'] == 'admin':
-            if current_user.has_role('admin'):
-                pass
-            else:
-                raise ApiException('Cannot create admin user', 403)
+        if 'roles' not in user:
+            raise ApiException("Passed json has no roles, please fix your request.", 400)
 
-        # still without json validation
-        # a new user does not have bookmarks
-        roles = g.user_datastore.find_or_create_role(user['roles'])
-        # if res is not None:
-        # return make_response('User already exists',500)
+        if user['roles'] == 'admin' and not current_user.has_role('admin'):
+            raise ApiException("Cannot create admin user. Insufficient permission.", 403)
 
-        g.user_datastore.create_user(first_name=user['first name'],
-                                     last_name=user['last name'],
-                                     email=user['email'],
-                                     password=encrypt_password(
-                                         user['password']),
-                                     bio=user['bio'],
-                                     roles=[roles])
+        role = g.user_datastore.find_or_create_role(user['roles'])
+
+        g.user_datastore.create_user(first_name=user["first_name"],
+                                     last_name=user["last_name"],
+                                     email=user["email"],
+                                     password=encrypt_password(user["password"]),
+                                     bio=user["bio"], roles=[role])
 
         return jsonify(g.user_datastore.get_user(user['email']))
 

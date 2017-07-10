@@ -4,13 +4,14 @@ from flask.helpers import make_response
 from flask_cors import CORS
 from flask_login import LoginManager
 from flask_mongoengine import MongoEngine
-from flask_security import Security, MongoEngineUserDatastore,\
-    UserMixin, RoleMixin
+from flask_security import Security, MongoEngineUserDatastore, UserMixin, RoleMixin
 from flask_security.utils import encrypt_password
 from flask_principal import PermissionDenied
 from jsonschema import FormatChecker, Draft4Validator
 from pymongo import MongoClient, ReturnDocument
-from mongoengine.fields import UUIDField, ListField, StringField, BooleanField
+from mongoengine.fields import (UUIDField, ListField, StringField, BooleanField,
+                                ObjectId, EmbeddedDocumentField, EmbeddedDocument,
+                                ListField, ObjectIdField)
 from werkzeug.routing import BaseConverter
 
 from api.projects import projects
@@ -98,6 +99,13 @@ class Role(DB.Document, RoleMixin):
     description = DB.StringField(max_length=255)
 
 
+class Notification(DB.EmbeddedDocument):
+    notification_id = DB.ObjectIdField(default=ObjectId)
+    title = DB.StringField(max_length=255)
+    description = DB.StringField(max_length=255)
+    link = DB.StringField(max_length=255)
+
+
 class User(DB.Document, UserMixin):
     email = DB.StringField(max_length=255, unique=True)
     first_name = DB.StringField(max_length=255)
@@ -107,6 +115,7 @@ class User(DB.Document, UserMixin):
     bio = DB.StringField(max_length=255)
     bookmarks = DB.ListField(DB.UUIDField(), default=[])
     roles = DB.ListField(DB.ReferenceField(Role), default=[])
+    notifications = DB.ListField(DB.EmbeddedDocumentField(Notification), default=[])
 
     # we must not override the method __iter__ because Document.save() stops working then
     def to_dict(self):
@@ -133,6 +142,23 @@ app.url_map.converters['email'] = EmailConverter
 
 USER_DATASTORE = MongoEngineUserDatastore(DB, User, Role)
 SECURITY = Security(app, USER_DATASTORE)
+
+
+# internal function to append notifications to the given userlist
+def notify_users(useremail_list, n_description, n_title, n_link):
+    n = Notification(description=n_description, title=n_title, link=n_link)
+    for email in useremail_list:
+        user = USER_DATASTORE.get_user(email)
+        id = None
+        if user:
+            user.notifications.append(n)
+            user.save()
+    return str(n.notification_id)
+
+
+@app.before_request
+def notification_func():
+    g.notify_users = notify_users
 
 
 @app.before_first_request
@@ -202,6 +228,7 @@ def index():
 app.register_blueprint(projects)
 app.register_blueprint(users)
 app.register_blueprint(search)
+
 
 if __name__ == "__main__":
     # remove debug for production

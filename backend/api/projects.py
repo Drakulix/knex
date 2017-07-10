@@ -444,3 +444,43 @@ def delete_comment(project_id, comment_id):
         raise error
     except Exception as err:
         raise ApiException(str(err), 500)
+
+
+@projects.route('/api/projects/<uuid:project_id>/share/<user_mail>', methods=['POST'])
+@login_required
+def share_via_email(project_id, user_mail):
+    """Creates and saves notification object
+
+        Returns:
+            res: Notification object as json
+    """
+    user = g.user_datastore.get_user(user_mail)
+    if not user:
+        return make_response("Unknown User with Email-address: " + user_mail, 404)
+    res = g.projects.find_one({'_id': project_id})
+    if not res:
+        raise ApiException("Project not found", 404)
+
+    description = res["title"] + "was shared with you."
+    link = "/projects/" + str(project_id)
+    title = "Project shared."
+    return g.notify_users([user_mail], description, title, link)
+
+
+@projects.route('/api/projects/<uuid:project_id>/share', methods=['POST'])
+@login_required
+def share_with_users(project_id):
+    """Creates and saves notification object
+
+        Returns:
+            res: Notification object as json
+    """
+    emails_list = request.get_json()
+    res = g.projects.find_one({'_id': project_id})
+    if not res:
+        raise ApiException("Project not found", 404)
+
+    description = res["title"] + "was shared with you"
+    link = "/projects/" + str(project_id)
+    title = "Project shared"
+    return g.notify_users(emails_list, description, title, link)
