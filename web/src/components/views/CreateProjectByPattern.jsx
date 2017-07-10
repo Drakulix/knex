@@ -7,7 +7,7 @@ import DropDownMenu from 'material-ui/DropDownMenu'
 import MenuItem from 'material-ui/MenuItem';
 import CircularProgress from 'material-ui/CircularProgress';
 import ChipInputList from '../common/ChipInputList';
-import { sendJson } from '../common/Backend.jsx'
+import { sendJson, fetchJson } from '../common/Backend.jsx'
 
 const statusString = [
   {id: "0" , text :"Done", value : "DONE"},
@@ -220,6 +220,28 @@ const statusString = [
            * This is a temporary workaround until the issue is resolved.
            * Please don't remove this unless you know how to fix it.
            */
+
+           fetchJson('/api/projects/tags').then(function(tags) {
+             this.setState({
+               suggestedTags: tags
+             });
+           }.bind(this));
+
+           //gets all the authors from the backend
+           fetchJson('/api/projects/authors').then(function(authors) {
+             var suggestedAuthors = authors;
+             var suggestedAuthorsArray = []
+             for (var i in suggestedAuthors) {
+               suggestedAuthorsArray = suggestedAuthorsArray.concat([suggestedAuthors[i].name + " ("+suggestedAuthors[i].email+ ")"]);
+             }
+             console.log(suggestedAuthorsArray);
+             this.setState({
+               suggestedAuthors: suggestedAuthorsArray
+             });
+           }.bind(this));
+
+
+
           if(this.props.fromURL&&(this.state.status!==this.props.status)){
             this.setState({status : this.props.status});
           }
