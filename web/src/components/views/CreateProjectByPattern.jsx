@@ -201,8 +201,22 @@ const statusString = [
       }
 
       submit(){
+        var data = JSON.stringify(this.state.projectInf);
 
-        sendJson("POST", "/api/projects", this.state.projectInf)
+        var xhr = new XMLHttpRequest();
+        xhr.withCredentials = true;
+
+        xhr.addEventListener("readystatechange", function () {
+          if (this.readyState === 4) {
+            console.log(this.responseText);
+          }
+        });
+
+        xhr.open("POST", "/api/projects");
+        xhr.setRequestHeader("content-type", "application/json");
+
+        xhr.send(data);
+        // sendJson("POST", "/api/projects", this.state.projectInf)
         this.setState({snackbar:true});
         }
 
