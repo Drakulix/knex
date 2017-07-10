@@ -1,6 +1,7 @@
 from flask import request, jsonify, make_response, g, Blueprint
 from flask_security import login_required, login_user, logout_user, current_user
 from flask_security.utils import verify_password, encrypt_password
+from mongoengine.fields import ObjectId
 
 from api.helper.apiexception import ApiException
 
@@ -245,3 +246,27 @@ def get_bookmarks():
 
     except KeyError as err:
         raise ApiException(str(err), 500)
+
+
+@users.route('/api/users/notifications', methods=['GET'])
+@login_required
+def get_notifications():
+    user = g.user_datastore.get_user(current_user['email'])
+    if not user:
+        raise ApiException("Couldn't find current_user in datastore", 500)
+    return jsonify([notification.to_dict() for notification in user.notifications])
+
+
+@users.route('/api/users/notifications/<id>', methods=['DELETE'])
+@login_required
+def delete_notification(id):
+    user = g.user_datastore.get_user(current_user['email'])
+    if not user:
+        raise ApiException("Couldn't find current_user in datastore", 500)
+
+    for notification in user.notifications:
+        if notification.notification_id == ObjectId(id):
+            user.notifications.remove(notification)
+            user.save()
+            return jsonify([notification.to_dict() for notification in user.notifications])
+    return make_response("No notification with the given id known", 404)
