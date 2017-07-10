@@ -123,6 +123,8 @@ export default class ProfileContainer extends React.Component {
         data: filteredData
       });
     });
+
+    //TODO Fill topTenTags with data from endpoint / get_cur_user_tags(): respectively /api/users/<email:mail>/tags
   }
 
   componentDidMount(){
@@ -283,7 +285,6 @@ export default class ProfileContainer extends React.Component {
                           <Chip style= {styles["chip"]}>
                             <Link to={item} style= {styles["chipText"]} >{item}</Link></Chip>) }
                             </div>
-                          </div>
 
 
                     </p>
