@@ -99,11 +99,11 @@ class Role(DB.Document, RoleMixin):
     description = DB.StringField(max_length=255)
 
 
-class Notification(EmbeddedDocument):
+class Notification(DB.EmbeddedDocument):
     notification_id = DB.ObjectIdField(default=ObjectId)
     title = DB.StringField(max_length=255)
     description = DB.StringField(max_length=255)
-    link = DB.URLField(verify_exists=False, url_regex=None, schemes=None)
+    link = DB.StringField(max_length=255)
 
 
 class User(DB.Document, UserMixin):
@@ -149,9 +149,11 @@ def notify_users(useremail_list, n_description, n_title, n_link):
     n = Notification(description=n_description, title=n_title, link=n_link)
     for email in useremail_list:
         user = USER_DATASTORE.get_user(email)
+        id = None
         if user:
             user.notifications.append(n)
             user.save()
+    return str(n.notification_id)
 
 
 @app.before_request
