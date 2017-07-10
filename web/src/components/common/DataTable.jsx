@@ -157,6 +157,18 @@ this.fetchData(this.state.url)
     this.state.url = this.props.fetchURL;
   }
 
+  componentWillReceiveProps(nextProps) {
+  // You don't have to do this check first, but it can help prevent an unneeded render
+  if(nextProps.isProfile !== undefined){
+    this.state.isProfile = true;
+  }
+  else if(nextProps.bookmarksSite !== undefined){
+    this.state.bookmarksSite = true;
+  }
+  this.fetchData(nextProps.fetchURL);
+  this.state.url = nextProps.fetchURL;
+}
+
   fetchData(url){
 
     fetchJson(url).then(function(data) {

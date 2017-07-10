@@ -87,7 +87,6 @@ shortName :"",
         fetchURL : end+"simple/?q="+query["searchString"]+"*"
       })
 
-
       //this.setState({fetchURL : "simple/?q="+this.state.searchString+"*"});
 
 
