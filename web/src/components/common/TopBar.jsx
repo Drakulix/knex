@@ -15,6 +15,7 @@ import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
 import NotificationPane from '../common/NotificationPane'
+import { fetchJson } from '../common/Backend';
 
 
 const styles = {
@@ -59,7 +60,24 @@ id :"dsa"
     id :"dsa"},
     {description : "New Comment on " , link: "/projects/da", title:"Title",
     id :"dsa"}];
-    this.setState({notifications: notifications});
+
+
+
+
+    var data = fetchJson("/api/users/notifications").then(function (data) {
+
+            this.setState({
+              notifications: data
+            });
+        },function(data){
+          this.setState({
+              notifications: []
+            });
+        }
+        .bind(this));
+
+
+   this.setState({notifications: []});
   }
 
 

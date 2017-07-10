@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 
 import { login, isLoggedIn, logout, getCookie, setCookie } from '../common/Authentication.jsx';
 
+
+import { fetchJson, fetchDelete,fetchNotification } from '../common/Backend';
+
 import Badge from 'material-ui/Badge';
 import IconButton from 'material-ui/IconButton';
 import Snackbar from 'material-ui/Snackbar';
@@ -26,19 +29,19 @@ export default class NotificationPane extends Component {
     this.state = {
       notifications: props.notifications
     };
-
     this.resolveNotification = this.resolveNotification.bind(this);
 
   }
 
 
   resolveNotification(notificationID){
-
-alert(notificationID);
+    fetchDelete("api/users/notifications/"+ notificationID);
   }
 
 
+componentWillReceiveProps(props){
 
+}
 
   render() {
         return (

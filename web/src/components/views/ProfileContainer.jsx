@@ -41,8 +41,13 @@ export default class ProfileContainer extends React.Component {
     this.handleFirstNameChange = this.handleFirstNameChange.bind(this);
     this.handleLastNameChange = this.handleLastNameChange.bind(this);
     this.handleBioChange = this.handleBioChange.bind(this);
-    this.handleProfileChangeSubmit = this.handleProfileChangeSubmit.bind(this)
+    this.handleProfileChangeSubmit = this.handleProfileChangeSubmit.bind(this);
+
+    this.loadMyProfileInf = this.loadMyProfileInf.bind(this);
+    this.loadProfileInf = this.loadProfileInf.bind(this);
+
   }
+
 
   handleChange = (value) => {
     this.setState({
@@ -98,12 +103,10 @@ export default class ProfileContainer extends React.Component {
     this.loadMyProfileInf(getMyEmail());
 
 
+
     //TODO Fill topTenTags with data from endpoint / get_cur_user_tags(): respectively /api/users/<email:mail>/tags
   }
 
-  componentDidMount(){
-
-  }
 
   loadProfileInf(e) {
     getUserInfo(e).then(data => {
@@ -119,7 +122,13 @@ export default class ProfileContainer extends React.Component {
       this.setState({site_loaded: true})
     });
 
-  }
+
+    fetchJson("/api/users/"+e+"/tags").then(data => {
+          this.setState({
+            topTenTags: data
+          });
+        });
+    }
 
   loadMyProfileInf(e) {
     getUserInfo(e).then(data => {
@@ -137,6 +146,12 @@ export default class ProfileContainer extends React.Component {
       this.setState({profile_exists: false});
       this.setState({site_loaded: true})
     });
+
+        fetchJson("/api/users/tags").then(data => {
+          this.setState({
+            topTenTags: data
+          });
+        });
 
   }
 
@@ -366,7 +381,7 @@ export default class ProfileContainer extends React.Component {
 <div className="header-tab">Manage Projects</div>
                     <DataTable
                       fetchURL = {"/api/projects"}
-                      
+
 
                       columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'bookmarked']}
 

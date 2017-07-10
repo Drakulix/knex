@@ -12,6 +12,41 @@ const PROJECT_URL = '/api/projects/'
 
   }
 
+
+  export function fetchDelete(url){
+    return fetch(url, {
+      method: "DELETE",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }).then(response => response.json())
+    // .then(json => console.dir(json))
+      .catch(ex => {
+      console.error('parsing failed', ex)
+    });
+  }
+
+
+
+
+    export function fetchNotification(){
+      var res;
+      return fetch('/api/notifications/', {
+        method: 'GET',
+        mode: 'no-cors',
+        credentials: 'include',
+        headers: {
+          "Accept": "application/json",
+        }
+      }).then(response => response.json()).catch(ex => {
+        console.error('parsing failes', ex);
+      });
+    }
+
+
+
+
   export function fetchProjectInfo(uuid){
     var res;
     return fetch('/api/projects/' + uuid, {
@@ -50,6 +85,9 @@ const PROJECT_URL = '/api/projects/'
       console.error('parsing failed', ex)
     });
   }
+
+
+
   export function sendJson(method, path, payload) {
     //use this function to make a POST requst
     const url = `${path}`
