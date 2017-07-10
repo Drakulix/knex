@@ -22,7 +22,7 @@ export default class SideBar extends Component {
     let isActive = (url) => { url === this.props.location };
     return (
         <div className="col-3 side-bar">
-            <img className="logo-banner" src={logo} />
+            <img className="logo-banner" src={logo} alt="logo banner"/>
             <ul className="list-group">
                 <SideBarEntry name={this.state.menu.discoverProjects} to="/discovery" active={isActive("/discovery")} />
                 <SideBarEntry name={this.state.menu.createProject} to="/createbylink" active={isActive("/createbylink")} />

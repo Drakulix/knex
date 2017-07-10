@@ -1,9 +1,5 @@
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import { Link } from "react-router-dom";
 import 'isomorphic-fetch';
 import 'babel-polyfill';
-import { Redirect } from 'react-router-dom';
 
 
 var loggedin = false;
@@ -35,10 +31,10 @@ export function getCookie(cname) {
     var ca = document.cookie.split(';');
     for(var i = 0; i < ca.length; i++) {
         var c = ca[i];
-        while (c.charAt(0) == ' ') {
+        while (c.charAt(0) === ' ') {
             c = c.substring(1);
         }
-        if (c.indexOf(name) == 0) {
+        if (c.indexOf(name) === 0) {
             return c.substring(name.length, c.length);
         }
     }
@@ -46,7 +42,6 @@ export function getCookie(cname) {
 }
 
 export function getUserInfo(e){
-  var res;
   fetch('/api/users/' + e, {
       method: 'GET',
       mode: 'no-cors',
@@ -55,7 +50,7 @@ export function getUserInfo(e){
         "Accept": "application/json",
       }
    }).then(function(response){
-      if(response.status==200){
+      if(response.status===200){
         console.log("getUserInfo status: " + response.status);
         return response.json();
       }else{
@@ -82,7 +77,7 @@ export function login(login_email, login_password){
       body: requestBody
     }).then( response => {
       setCookie('email', login_email);
-      if(response.status==200){
+      if(response.status===200){
         console.log("MYLOG status: " + response.status);
         getUserInfo(login_email);
         myemail = login_email;
@@ -101,7 +96,7 @@ export function logout(){
       credentials: 'include',
       method: 'GET'
     }).then(function(response){
-      if(response.status==200){
+      if(response.status===200){
         myemail = '';
         loggedin = false;
         return true;
@@ -123,7 +118,7 @@ export function register(reg_firstname, reg_lastname, reg_email, reg_password, r
     "role" : "user"
   };
 
-  if(reg_password != reg_password_confirm || reg_password == ''){
+  if(reg_password !== reg_password_confirm || reg_password === ''){
     alert('password does not match' );
     return false;
   }
@@ -138,7 +133,7 @@ export function register(reg_firstname, reg_lastname, reg_email, reg_password, r
       },
       body: JSON.stringify( payload )
     }).then(function(response){
-      if(response.status==200){
+      if(response.status===200){
         return true;
       }else{
         return false;

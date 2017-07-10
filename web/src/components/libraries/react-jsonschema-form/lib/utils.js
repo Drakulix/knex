@@ -1,5 +1,3 @@
-"use strict";
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -190,7 +188,10 @@ function computeDefaults(schema, parentDefaults) {
     case "array":
       if (schema.minItems) {
         return new Array(schema.minItems).fill(computeDefaults(schema.items, defaults, definitions));
-      }
+      };
+      break;
+    default:
+      //do nothing
   }
   return defaults;
 }

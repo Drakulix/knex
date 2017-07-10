@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import {fetchJson, sendJson} from '../common/Backend'
+import {fetchJson} from '../common/Backend'
 
 const defaultPageSize = 4;
 
@@ -20,7 +20,6 @@ export default class Table extends React.Component {
     };
 
     // Get Data from Elasticsearch and put it in this.state.results
-    var that = this;
     this.getData(this.state.searchString);
   }
 
@@ -117,7 +116,7 @@ and gets the data from the backend. Data is stored in state.results
 
   shuffleBookmarks() {
     var x = Math.floor((Math.random() * 2) + 1);
-    if (x == 1) {
+    if (x === 1) {
       return <i className="fa fa-bookmark" aria-hidden="true" />;
     }
     else {
@@ -200,7 +199,7 @@ and gets the data from the backend. Data is stored in state.results
   * at the beginning data is fetched and it is checked if the searchstring has changed to know if its necessary to fetch new data
   */
   renderTable(){
-    if(this.state.lastString != this.props.searchString){
+    if(this.state.lastString !== this.props.searchString){
         this.getData(this.props.searchString)
         this.setState({lastString: this.props.searchString})
 

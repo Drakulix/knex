@@ -6,6 +6,7 @@ import { fetchJson } from '../common/Backend'
 
 const FILTER_ATTRIBUTES = ['title', 'status', 'description', '_id'];
 
+
 export default class BookmarksTable extends React.Component {
   constructor(props) {
     super(props);

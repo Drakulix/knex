@@ -1,8 +1,6 @@
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import Form from "../libraries/react-jsonschema-form";
-import { Redirect } from 'react-router-dom';
 //import exampleJSON from "../../data/test_project.json";
 
 const schema = {
@@ -65,9 +63,6 @@ const schema = {
 };
 
 const uiSchema = {
-  url: {
-    "ui:placeholder": "http://"
-  },
   description: {
     "ui:widget": "textarea"
   },
@@ -75,9 +70,10 @@ const uiSchema = {
     "ui:help": "Add tags!"
   },
   url: {
-    "ui:help": "Add URLs!"
+    "ui:help": "Add URLs!",
+    "ui:placeholder": "http://"
   },
-  authors: {
+  authors: {
     "ui:help": "Add author!"
   },
   foo: {
@@ -114,7 +110,7 @@ export default class UploadByPattern extends React.Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(formData)
-    }),
+    })
     console.log(formData);
     alert("New Project added!");
   }
@@ -183,7 +179,6 @@ export default class UploadByPattern extends React.Component {
             status : data.status,
             statusSet : true,
             anySet: true,
-            anySet: true,
           })
         };
         if(data.tags!=null){
@@ -216,7 +211,7 @@ export default class UploadByPattern extends React.Component {
       }
     };
     if(this.state.url!=null){
-      for (var i = 0; i<this.state.url.length;i++){
+      for (i = 0; i<this.state.url.length;i++){
         urlArray.push(this.state.url[i]);
       }
     }

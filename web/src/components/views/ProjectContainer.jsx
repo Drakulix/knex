@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {fetchProjectDetails, fetchJson} from '../common/Backend'
+import {fetchProjectDetails} from '../common/Backend'
 import { Link } from 'react-router-dom';
 
 const update_url='/update/'

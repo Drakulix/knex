@@ -1,11 +1,8 @@
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import {fetchProjectDetails, fetchJson,updateProjectDetails} from '../common/Backend'
+import {fetchProjectDetails, updateProjectDetails} from '../common/Backend'
 import Form from "../libraries/react-jsonschema-form";
-import { Redirect } from 'react-router-dom';
 import 'isomorphic-fetch';
-import { connect } from 'react'
 
 const schema = {
   type: "object",
@@ -73,7 +70,7 @@ const uiSchema = {
   tags: {
     "ui:help": "Add tags!"
   },
-  authors: {
+  authors: {
     "ui:help": "Add author!"
   },
   foo: {
@@ -112,7 +109,9 @@ export default class UpdateProjectView extends React.Component {
 
     fetchProjectDetails(this.state.myid).then(data => {
 
-      this.state.formData=data;
+      this.setState({
+        formData: data,
+      });
       this.forceUpdate();
 
     });

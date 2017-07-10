@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import {fetchJson, sendJson} from '../common/Backend';
 import  Table from './SearchTable';
 import Chips, { Chip } from 'react-chips';
 import PropTypes from 'prop-types';
 
-const defaultPageSize = 4;
 const defaultSearchString = "advanced/?q=*";
 
 
@@ -88,7 +85,6 @@ class Searchbar extends Component {
     }
   }
   render() {
-    var searchString
     return(
       <div className="input-group">
         <input className="form-control" onKeyPress={this.onKeyPress} type="text" name="search" placeholder="Enter your query here..." ref='simplesearch' onChange={()=> this.props.getSearchString(this.refs.simplesearch.value)} />
@@ -347,7 +343,7 @@ export default class SearchPage extends Component {
       var searchstring="advanced/?q=";
       var filter_set = 0;
 
-      if(this.state.filter_project_name != ""){
+      if(this.state.filter_project_name !== ""){
         searchstring = searchstring.concat("(title: ", this.state.filter_project_name, "*)");
         filter_set++;
       }
@@ -361,7 +357,7 @@ export default class SearchPage extends Component {
         filter_set++;
       }
 
-      if(this.state.filter_author != ""){
+      if(this.state.filter_author !== ""){
         if(filter_set > 0){
           searchstring = searchstring.concat(" AND ");
           filter_set--;
@@ -389,7 +385,6 @@ export default class SearchPage extends Component {
         searchstring = searchstring.concat("(description: ", this.state.filter_description, "*)");
         filter_set++;
       }
-
       if(this.state.filter_tags != ""){
         if(filter_set > 0){
           searchstring = searchstring.concat(" AND ");
@@ -415,7 +410,7 @@ export default class SearchPage extends Component {
 
   //Sets Date to 1900-01-01 it date is empty to get filters working if one date field is set
   changeStateFrom(from){
-    if(from == ""){
+    if(from === ""){
       this.setState({filter_date_from: "1900-01-01" });
     }else{
       this.setState({filter_date_from: from });
@@ -424,7 +419,7 @@ export default class SearchPage extends Component {
 
   //Sets Date to 2050-06-06 it date is empty to get filters working if one date field is set
   changeStateTo(to){
-    if(to == ""){
+    if(to === ""){
       this.setState({filter_date_to: "2050-06-06" });
     }else{
       this.setState({filter_date_to: to });
@@ -477,12 +472,12 @@ export default class SearchPage extends Component {
 
     if(this.state.advanced){
       searchString = this.filter();
-      if(searchString == "advanced/?q="){
+      if(searchString === "advanced/?q="){
         searchString = defaultSearchString;
       }
     }else{
       searchString = this.simplesearch();
-      if(searchString == "simple/?q=*"){
+      if(searchString === "simple/?q=*"){
         searchString = defaultSearchString;
       }
     }

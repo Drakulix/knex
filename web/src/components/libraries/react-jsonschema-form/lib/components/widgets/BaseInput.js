@@ -1,5 +1,3 @@
-"use strict";
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -27,9 +25,6 @@ function BaseInput(props) {
       autofocus = props.autofocus,
       onBlur = props.onBlur,
       options = props.options,
-      schema = props.schema,
-      formContext = props.formContext,
-      registry = props.registry,
       inputProps = _objectWithoutProperties(props, ["value", "readonly", "disabled", "autofocus", "onBlur", "options", "schema", "formContext", "registry"]);
 
   var _onChange = function _onChange(_ref) {
