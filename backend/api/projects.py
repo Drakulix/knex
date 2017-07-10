@@ -103,16 +103,9 @@ def get_projects():
     else:
         return make_response('Invalid parameters', 400)
 
-    try:
-        res = [x for x in res[:]]
-        for project in res:
-            project['is_bookmark'] = 'true' if project['_id']\
-                in current_user['bookmarks'] else 'false'
-            project['is_owner'] = 'true' if current_user['email']\
-                in [author['email'] for author in project['authors']] else 'false'
-        return jsonify(res)
-    except KeyError as err:
-        raise ApiException(str(err), 400)
+    res = make_response(jsonify([x for x in res[:]]))
+    res.headers['Content-Type'] = 'application/json'
+    return res
 
 
 @projects.route('/api/projects/authors', methods=['GET'])
@@ -150,11 +143,11 @@ def get_project_by_id(project_id):
     if not res:
         return make_response("Project not found", 404)
     try:
-        res['is_bookmark'] = 'true' if project_id in current_user['bookmarks'] else 'false'
+        res['is_bookmark'] = 'true' if str(project_id) in current_user['bookmarks'] else 'false'
         res['is_owner'] = 'true' if current_user['email']\
             in [author['email'] for author in res['authors']] else 'false'
-    except KeyError as err:
-        raise ApiException(str(err), 500)
+    except KeyError:
+        pass
     return jsonify(res)
 
 
