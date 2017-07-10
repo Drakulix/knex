@@ -65,6 +65,28 @@ export default class BookmarksTable extends React.Component {
   }
 
   handleAddBookmark(projectID){
+
+
+
+    for(let dataObject of dataArray) {
+      var project = dataArrayObject
+      if(project._id === projectID){
+        project["is_bookmark"] = true;
+        break;
+      }
+    }
+
+    for(let dataObject of filteredDataArray) {
+      var project = dataArrayObject
+      if(project._id === projectID){
+        project["is_bookmark"] = true;
+        break;
+      }
+    }
+
+
+
+
     var url = "/api/users/bookmarks/"
     var status = fetch(url+projectID, {
       credentials: 'include',
@@ -97,7 +119,25 @@ export default class BookmarksTable extends React.Component {
       console.error('parsing failed', ex)
     }
     );
-    this.setState({ url : "/api/projects" });
+
+
+
+        for(let dataObject of dataArray) {
+          var project = dataArrayObject
+          if(project._id === projectID){
+            project["is_bookmark"] = false;
+            break;
+          }
+        }
+
+        for(let dataObject of filteredDataArray) {
+          var project = dataArrayObject
+          if(project._id === projectID){
+            project["is_bookmark"] = false;
+            break;
+          }
+        }
+
   }
 
 
