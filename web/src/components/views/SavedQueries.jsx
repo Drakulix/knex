@@ -6,7 +6,7 @@ class Headline extends Component {
   render() {
     return(
       <div className="headerCreation" id="headerSearch" style={{width:"100%"}}>
-        Your saved queries
+        Your Saved Queries
       </div>
     );
   }
