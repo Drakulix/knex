@@ -165,6 +165,7 @@ this.fetchData(this.state.url)
   else if(nextProps.bookmarksSite !== undefined){
     this.state.bookmarksSite = true;
   }
+
   this.fetchData(nextProps.fetchURL);
   this.state.url = nextProps.fetchURL;
 }
@@ -172,38 +173,31 @@ this.fetchData(this.state.url)
   fetchData(url){
 
     fetchJson(url).then(function(data) {
-
       var datas =[]
-
-
-if(data !== undefined)
-      datas = data;
-
-        var filteredDataArray = [];
-        var dataArray = [];
-        for(let dataObject of datas) {
-          var transformedObject = dataObject;
-          var t = new String(dataObject.tags);
-          t = t.substring(0,t.length);
-          var array = t.split(",");
-          array.sort();
-          transformedObject["tagString"] =array.join();
-          var temp = [];
-          for (var i in  dataObject.authors) {
-            temp = temp.concat([dataObject.authors[i].name + " ##"+dataObject.authors[i].email] );
-          }
-          temp.sort();
-          transformedObject["authorString"] = temp.join();
-          filteredDataArray.push(transformedObject);
-          dataArray.push(transformedObject);
-
+      if(data !== undefined)
+        datas = data;
+      var filteredDataArray = [];
+      var dataArray = [];
+      for(let dataObject of datas) {
+        var transformedObject = dataObject;
+        var t = new String(dataObject.tags);
+        t = t.substring(0,t.length);
+        var array = t.split(",");
+        array.sort();
+        transformedObject["tagString"] =array.join();
+        var temp = [];
+        for (var i in  dataObject.authors) {
+          temp = temp.concat([dataObject.authors[i].name + " ##"+dataObject.authors[i].email] );
         }
-
-        this.setState({
-          data: dataArray,
-          filteredTable : filteredDataArray
-        });
-
+        temp.sort();
+        transformedObject["authorString"] = temp.join();
+        filteredDataArray.push(transformedObject);
+        dataArray.push(transformedObject);
+      }
+      this.setState({
+        data: dataArray,
+        filteredTable : filteredDataArray
+      });
         //this.filter(this.state.filters)
       }.bind(this));
     }
@@ -251,7 +245,7 @@ if(data !== undefined)
                 var tag = value[i];
                 discard = temp.indexOf(tag.toLowerCase()) === -1;
                 if(discard)
-                break;
+                  break;
               }
               break;
             case "authors":
@@ -264,8 +258,9 @@ if(data !== undefined)
                 var author = value[i];
                 discard = temp.indexOf(author.toLowerCase()) === -1;
                 if(discard)
-                break;
-              }break;
+                  break;
+              }
+              break;
             default:
               break;
           }
@@ -287,39 +282,26 @@ if(data !== undefined)
         columns.push({
           Header: 'Project title',
           id: 'title',
-          width: 230,
+          width: 200,
           accessor: d => d,
           Cell: props =>{
-            var text = new String(props.value.title).split(" ");
-            var line = "";
-            var result = [];
-            var linebreak  = 32;
-            for(let word in text ){
-              if (line.length + text[word].length < linebreak){
-                line += text[word]+ " ";
-              }else{
-                result.push(line);
-                line =text[word] + " ";
-              }
-            }
-            result.push(line.trim());
+            var text = new String(props.value.title).substring(0,250).trim()
             return(
-              <div style={{width : 50}}>
+              <div style={{whiteSpace : "normal"}}>
                 <Link to={`project/${props.value._id}`}
                   className="table-link-text">
-                  {result.map(item =><span>{item}<br></br></span>) }
+                  {text}
                 </Link>
               </div>
-            )}
+            )
           }
-        );
+        });
       }
       if(this.props.columns.indexOf("status") !== -1){
         columns.push({
           Header: 'Status',
           accessor: 'status',
           style: {textAlign:"center"},
-
           width: 80,
           Cell: props =>
           {
@@ -360,11 +342,9 @@ if(data !== undefined)
             var t = new String(props.value);
             var array = t.split(",");
             return(
-
                 array.map(item =>
                   <Chip style= {styles["chip"]}>
                     <Link to={item} style= {styles["chipText"]} >{item}</Link></Chip>)
-
             );},
         });
       }
@@ -392,28 +372,10 @@ if(data !== undefined)
               style: {width: "100%"},
               accessor: d => d,
               Cell: props =>{
-                var text = new String(props.value.description).split(" ");
-                var line = "";
-                var result = [];
-                var linebreak  =36;
-                for(let word in text ){
-                  if(result.length > 5){
-                    line = "";
-                    result.push("...");
-                    break;
-                  }
-                  if (line.length + text[word].length < linebreak){
-                    line += text[word]+ " ";
-                  }else{
-                    result.push(line);
-                    line =text[word] + " ";
-                  }
-                }
-                result.push(line.trim());
+                var text = new String(props.value.description).substring(0,250).trim()+"..."
                 return(
-                  <div>
-                    {result.map(item =><span>{item}<br></br></span>) }
-
+                  <div style ={{whiteSpace : "normal"}}>
+                    {text}
                   </div>
                 )}
               });
@@ -437,8 +399,6 @@ if(data !== undefined)
                       </IconButton>
                         :
                       <IconButton onClick={()=>this.handleAddBookmark(props.value._id)}
-
-
                                   touch={true}
                                   style = {styles.largeIcon}
                                   iconStyle={{fontSize: '24px'}}
@@ -448,32 +408,30 @@ if(data !== undefined)
                         )}
                       });
                     }
-                    if(this.props.columns.indexOf("delete") !== -1){
-                      columns.push(
-                        {
-                          Header: 'Delete',
-                          accessor: d => d,
-                          id: 'delete',
-                          sortable:false,
-                          width: 60,
-                          style: {textAlign:"center"},
-                          Cell: props => <IconButton
-                          onClick={()=>this.handleDelete(props.value._id)}
-                          touch={true}
-                          style = {styles.largeIcon}
-                          iconStyle={{fontSize: '24px'}}
-                          value={props.value._id}
-                          >
-                          <i className="material-icons">delete</i>
-                        </IconButton>
-                      }
-                    );
-                  }
-                  return (
-                    <div>
-                      <Filters value={this.state.filters}
-                        onChange={this.handleFilterChange}></Filters>
-                      <ReactTable
+            if(this.props.columns.indexOf("delete") !== -1){
+              columns.push({
+                Header: 'Delete',
+                accessor: d => d,
+                id: 'delete',
+                sortable:false,
+                width: 60,
+                style: {textAlign:"center"},
+                Cell: props => <IconButton
+                      onClick={()=>this.handleDelete(props.value._id)}
+                      touch={true}
+                      style = {styles.largeIcon}
+                      iconStyle={{fontSize: '24px'}}
+                      value={props.value._id}
+                      >
+                        <i className="material-icons">delete</i>
+                      </IconButton>
+              });
+            }
+            return (
+              <div>
+                <Filters  value={this.state.filters}
+                          onChange={this.handleFilterChange}/>
+                  <ReactTable
                         data={this.state.filteredTable}
                         columns={columns}
                         defaultExpanded={{1: true}}
@@ -481,7 +439,7 @@ if(data !== undefined)
                         showPageSizeOptions={false}
                         defaultPageSize={10}
                         />
-                    </div>
-                  );
-                }
-              }
+                </div>
+            );
+          }
+        }
