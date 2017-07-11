@@ -87,6 +87,16 @@ export default class ProjectContainer extends Component {
       if(!data){
         this.setState({});
       }else{
+        var bookmarks_id = [];
+        var arrayLength = data.length;
+        for (var i = 0; i < arrayLength; i++){
+          bookmarks_id.push(data[i]._id)
+        }
+        if (bookmarks_id.indexOf(this.state.projectID) !== -1){
+          this.setState({bookmarked: true})
+        } else {
+          this.setState({bookmarked: false})
+        }
         this.setState({project_exists: true})
       }
       this.setState({site_loaded: true})
@@ -95,9 +105,6 @@ export default class ProjectContainer extends Component {
         this.setState({site_loaded: true})
     });
 
-
-
-  this.setState({bookmarked : true});
   this.setState({owner : true});
   }
 
@@ -117,11 +124,29 @@ export default class ProjectContainer extends Component {
 
   addBookmark(){
   return fetch('/api/users/bookmarks/' + this.state.projectID , {
-      method: 'PUT',
+      method: 'POST',
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json'
       },
+    }).then(function(response){
+      if(response.status===200){
+        return true;
+      }else{
+        return false;
+      }
+    });
+  }
+
+  removeBookmark(){
+    var url = "/api/users/bookmarks/"
+    return fetch(url+this.state.projectID, {
+      credentials: 'include',
+      method: "DELETE",
+      body: "",
+      headers: {
+
+      }
     }).then(function(response){
       if(response.status===200){
         return true;
@@ -137,9 +162,13 @@ export default class ProjectContainer extends Component {
     this.setState({sharePane:false});
 
 
-    if(this.state.bookmarked){
+    if(new String (this.state.bookmarked) == "true"){
       //deleteBookmark
-      this.setState({bookmarked : false});
+      this.removeBookmark().then(res => {
+        if(res){
+          this.setState({bookmarked : false});
+        }
+      });
     }else {
       this.addBookmark().then(res => {
         if(res){
@@ -272,7 +301,7 @@ export default class ProjectContainer extends Component {
                         iconStyle={{fontSize: '24px'}}
                         >
                         <i className="material-icons">
-                          {(this.state.bookmarked) ? "star_rate" : "star_border"}
+                          {(new String(this.state.bookmarked) == "true") ? "star_rate" : "star_border"}
                         </i>
                       </IconButton>
                       <IconButton
