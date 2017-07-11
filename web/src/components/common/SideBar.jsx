@@ -23,58 +23,6 @@ export default class SideBar extends Component {
     };
   }
 
-  isActive = (url) => { return url === this.props.location };
-
-
-    fetchUser(){
-      fetch("/api/users/"+this.state.myProfile,{credentials: 'include'})
-                  .then( (response) => {
-                      return response.json() })
-                          .then( (json) => {
-
-                              this.setState({data: json});
-                          });
-    };
-
-
-  returnAdminState(){
-
-    return this.state.isAdmin
-  }
-
-
-  isUserAdmin(){
-   if(this.state.data === " " || this.state.data["roles"] === undefined){
-     this.fetchUser()
-   }
-
-   var roles = this.state.data["roles"];
-   var admin = false
-   if (roles !== undefined){
-     for(let role of roles){
-       if(role === "admin"){
-         admin = true;
-         break;
-       }
-
-
-   }
-   this.setState({isAdmin : admin});
-   //this.state.isAdmin = false
- }
-   return this.returnAdminState()
-  //  alert(getMyEmail())
-    //return this.state.profileInf && (this.state.profileInf.roles == 'admin');
-  };
-
-  getAdminVisibility(){
-    if( !this.isUserAdmin() ){
-      return ({visibility: 'hidden'});
-    }else{
-      return ({});
-    }
-  }
-
   componentWillMount(){
     this.loadProfileInf(this.state.myProfile);
   }
@@ -85,13 +33,14 @@ export default class SideBar extends Component {
       if(!data){
         this.setState({profile_exists: false});
       }else{
-        this.setState({first_name: data.first_name, last_name: data.last_name, bio: data.bio});
+        this.setState({
+          first_name: data.first_name, last_name: data.last_name, bio: data.bio,
+          isAdmin : data.roles.indexOf("admin") !== -1
+        });
       }
-
     }).catch(ex => {
       this.setState({profile_exists: false});
     });
-
   }
 
   isActive = (url) => { return url === this.props.location };
@@ -110,7 +59,7 @@ export default class SideBar extends Component {
                 <SideBarEntry
                   name={this.state.menu.adminArea}
                   to="/admin" active={this.isActive("/admin")}
-                  style={this.getAdminVisibility()}
+                  style={{display:(this.state.isAdmin) ? "block" : "none"}}
                 />
             </ul>
         </div>
