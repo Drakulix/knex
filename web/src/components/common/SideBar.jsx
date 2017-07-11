@@ -17,16 +17,60 @@ export default class SideBar extends Component {
         profile: 'Profile',
         adminArea: 'Admin Area'
       },
-      myProfile: getMyEmail()
+      myProfile: getMyEmail(),
+      data : "",
+      isAdmin : false
     };
   }
 
   isActive = (url) => { return url === this.props.location };
 
-  isUserAdmin(){
 
-    return this.state.profileInf && (this.state.profileInf.roles == 'admin');
+    fetchUser(){
+      fetch("/api/users/"+this.state.myProfile,{credentials: 'include'})
+                  .then( (response) => {
+                      return response.json() })
+                          .then( (json) => {
+
+                              this.setState({data: json});
+                          });
+    };
+
+
+  returnAdminState(){
+    
+    return this.state.isAdmin
   }
+
+
+  isUserAdmin(){
+   if(this.state.data == " " || this.state.data["roles"] == undefined){
+     this.fetchUser()
+   }
+
+   var roles = this.state.data["roles"];
+   var flag = true
+   if (roles != undefined){
+
+     for(let role of roles){
+
+       if(role == "admin"){
+         flag = false
+          this.state.isAdmin = true
+
+       }
+
+
+   }
+   if(flag == true){
+     this.state.isAdmin = false
+   }
+   //this.state.isAdmin = false
+ }
+   return this.returnAdminState()
+  //  alert(getMyEmail())
+    //return this.state.profileInf && (this.state.profileInf.roles == 'admin');
+  };
 
   getAdminVisibility(){
     if( !this.isUserAdmin() ){
