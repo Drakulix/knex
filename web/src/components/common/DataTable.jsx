@@ -285,12 +285,11 @@ this.fetchData(this.state.url)
           width: 200,
           accessor: d => d,
           Cell: props =>{
-            var text = new String(props.value.title).substring(0,250).trim()
             return(
               <div style={{whiteSpace : "normal"}}>
                 <Link to={`project/${props.value._id}`}
                   className="table-link-text">
-                  {text}
+                  {props.value.title}
                 </Link>
               </div>
             )
@@ -329,7 +328,6 @@ this.fetchData(this.state.url)
           pivot: true,
           width:95,
           style: {textAlign:"center"},
-
         });
       }
       if(this.props.columns.indexOf("tags") !== -1){
