@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import 'react-table/react-table.css';
 import DataTable from '../common/DataTable';
-import { getMyEmail} from '../common/Authentication.jsx';
+import {getMyEmail} from '../common/Authentication.jsx';
 
 export default class UserProjects extends Component {
   constructor(props) {
@@ -10,25 +10,15 @@ export default class UserProjects extends Component {
     };
   }
 
-
-
 render(){
-
     return (
       <div className="container">
         <div className="header">Your Bookmarks</div>
-
-
-
-        <DataTable columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'bookmarked']}
-
-fetchURL={"/api/projects/search/advanced/?q=authors.email:"+getMyEmail()}
-bookmarksSite = {"true"}
+          <DataTable  columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'bookmarked']}
+                      fetchURL={"/api/projects/search/advanced/?q=authors.email:"+getMyEmail()}
+                      bookmarksSite = {"true"}
           ></DataTable>
-
-        <div className="footer" />
-
-  </div>
+      </div>
     );
   }
 }
