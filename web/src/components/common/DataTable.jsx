@@ -38,9 +38,7 @@ export default class BookmarksTable extends Component {
 
 
   handleDelete(projectID){
-    //event.preventDefault();
-    var url = "/api/projects/"
-    var status = fetch(url+projectID, {
+    fetch("/api/projects/"+projectID, {
       credentials: 'include',
       method: "DELETE",
       body: "",
@@ -48,7 +46,6 @@ export default class BookmarksTable extends Component {
 
       }
     }).then(response => response.status)
-    // .then(json => console.dir(json))
       .catch(ex => {
       console.error('parsing failed', ex)
     });
@@ -56,22 +53,19 @@ export default class BookmarksTable extends Component {
   }
 
   handleAddBookmark(projectID){
-    for(let dataObject of this.state.data) {
-      var project = dataObject;
+    for(let project of this.state.data) {
       if(project._id === projectID){
         project["is_bookmark"] = true;
         break;
       }
     }
-    for(let dataObject of this.state.filteredTable) {
-      var project = dataObject;
+    for(let project of this.state.filteredTable) {
       if(project._id === projectID){
         project["is_bookmark"] = true;
         break;
       }
     }
-    var url = "/api/users/bookmarks/"
-    var status = fetch(url+projectID, {
+    fetch("/api/users/bookmarks/"+projectID, {
       credentials: 'include',
       method: "POST",
       body: "",
@@ -87,7 +81,7 @@ export default class BookmarksTable extends Component {
 
   handleRemoveBookmark(projectID){
     var url = "/api/users/bookmarks/"
-    var status = fetch(url+projectID, {
+    fetch(url+projectID, {
       credentials: 'include',
       method: "DELETE",
       body: "",
@@ -98,15 +92,13 @@ export default class BookmarksTable extends Component {
       console.error('parsing failed', ex)
     }
     );
-    for(let dataObject of this.state.data) {
-      var project = dataObject;
+    for(let project of this.state.data) {
       if(project._id === projectID){
         project["is_bookmark"] = false;
         break;
       }
     }
-    for(let dataObject of this.state.filteredTable) {
-      var project = dataObject;
+    for(let project of this.state.filteredTable) {
       if(project._id === projectID){
         project["is_bookmark"] = false;
         break;
@@ -118,26 +110,25 @@ export default class BookmarksTable extends Component {
   componentWillMount() {
 
     if(this.props.isProfile !== undefined){
-      this.state.isProfile = true;
+      this.setState({isProfile :true});
     }
     else if(this.props.bookmarksSite !== undefined){
-      this.state.bookmarksSite = true;
+      this.setState({bookmarksSite :true});
     }
+    this.setState({url :this.props.fetchURL});
     this.fetchData(this.props.fetchURL);
-    this.state.url = this.props.fetchURL;
   }
 
   componentWillReceiveProps(nextProps) {
   // You don't have to do this check first, but it can help prevent an unneeded render
   if(nextProps.isProfile !== undefined){
-    this.state.isProfile = true;
+    this.setState({isProfile :true});
   }
   else if(nextProps.bookmarksSite !== undefined){
-    this.state.bookmarksSite = true;
+    this.setState({bookmarksSite :true});
   }
-
+  this.setState({url :nextProps.fetchURL});
   this.fetchData(nextProps.fetchURL);
-  this.state.url = nextProps.fetchURL;
 }
 
   fetchData(url){

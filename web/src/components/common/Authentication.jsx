@@ -157,8 +157,8 @@ export function logout(){
 export function register(reg_firstname, reg_lastname, reg_email, reg_password, reg_password_confirm, reg_role){
 
   var payload = {
-    "first name" : reg_firstname ,
-    "last name" : reg_lastname,
+    "first_name" : reg_firstname ,
+    "last_name" : reg_lastname,
     "email" : reg_email,
     "password" : reg_password,
     "bio" : "",
@@ -181,9 +181,11 @@ export function register(reg_firstname, reg_lastname, reg_email, reg_password, r
       },
       body: JSON.stringify( payload )
     }).then(function(response){
+
       if(response.status===200){
         return true;
       }else{
+          console.error(response.json())
         return false;
       }
     });

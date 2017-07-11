@@ -521,7 +521,7 @@ export default class AdminOverview extends Component {
 
                     <TextField
                       type="password"
-                      value={this.state.password_confirm}
+                      value={this.state.profileReg.password_confirm}
                       onChange={this.handleRegPasswordConfirmChange}
                       hintText="Confirm Password"
                       errorText={( this.state.profileReg.password !== this.state.profileReg.password_confirm ) ? "Passwords do not match" : "" }

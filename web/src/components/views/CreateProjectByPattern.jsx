@@ -132,7 +132,6 @@ const statusString = [
 
 
           if(this.state.projectID !== undefined){
-            alert(this.state.projectID)
                this.loadProjectInf(this.state.projectID);
           }
 
