@@ -1,6 +1,5 @@
 import React from 'react';
 import Drawer from 'material-ui/Drawer';
-import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
 import {List, ListItem} from 'material-ui/List';
 import Divider from 'material-ui/Divider';
@@ -31,7 +30,6 @@ export default class CommentSideBar extends React.Component {
 
 
   handleChange(event){
-    const name = event.target.name;
     const value = event.target.value;
     this.setState({
       comment: value});
@@ -39,11 +37,7 @@ export default class CommentSideBar extends React.Component {
 
 
   handleSubmit(event){
-    const name = event.target.name;
-    const value = event.target.value;
-
     var fetchURL ="/api/projects/"+this.props.uuid+"/comment";
-
     fetch(fetchURL, {
         method: 'POST',
         credentials: 'include',
@@ -78,23 +72,14 @@ export default class CommentSideBar extends React.Component {
 
 
   loadComments(){
-    var comments2 = [
-      {message : "Thats a comment" , author_name :"Marko", id:"21", datetime: "12.12.2012"},
-
-
-      {message : "Thats a comment" , author_name :"Marko", id:"21", datetime: "12.12.2012"}
-    ];
-
-
-  var fetchURL ="/api/projects/"+this.props.uuid+"/comment"; //GET
-
-  fetchJson(fetchURL).then(function(data) {
-    var filteredData = this.transformArray(data);
-    console.log(data);
-    this.setState({
-      comments: filteredData
-    });
-  }.bind(this));
+    var fetchURL ="/api/projects/"+this.props.uuid+"/comment";
+    fetchJson(fetchURL).then(function(data) {
+      var filteredData = this.transformArray(data);
+      console.log(data);
+      this.setState({
+        comments: filteredData
+      });
+    }.bind(this));
   }
 
   render() {

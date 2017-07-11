@@ -3,16 +3,16 @@ import { Link } from 'react-router-dom';
 import Chip from 'material-ui/Chip'
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
-import ReactTable from 'react-table';
+
 import {Tabs, Tab} from 'material-ui/Tabs';
 import CircularProgress from 'material-ui/CircularProgress';
-import {login, isLoggedIn, logout, getCookie, setCookie, isAdmin, getMyEmail, getUserInfo, changePassword, changeProfile} from '../common/Authentication.jsx';
+import {getMyEmail, getUserInfo, changePassword, changeProfile} from '../common/Authentication.jsx';
 import { fetchJson } from '../common/Backend';
 import DataTable from '../common/DataTable';
 import styles from '../common/Styles.jsx';
 
 
-export default class ProfileContainer extends React.Component {
+export default class ProfileContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -87,10 +87,6 @@ export default class ProfileContainer extends React.Component {
     this.setState({pw_new_confirm: event.target.value});
   }
 
-  handleBioChange(event) {
-    this.setState({bio: event.target.value});
-  }
-
   componentWillReceiveProps(nextProps){
     this.setState({email: nextProps.email});
     this.loadProfileInf(this.state.email);
@@ -136,7 +132,7 @@ export default class ProfileContainer extends React.Component {
       if(!data){
         this.setState({profile_exists: false});
       }else{
-        var admin = (data.roles == 'admin');
+        var admin = (data.roles === 'admin');
         this.setState({is_admin: admin});
         this.setState({first_name: data.first_name, last_name: data.last_name, bio: data.bio, bookmarks : data.bookmarks});
 
@@ -156,7 +152,7 @@ export default class ProfileContainer extends React.Component {
   }
 
   getMenuEditStyle(){
-    if(this.state.email != getMyEmail() && !this.isUserAdmin()){
+    if(this.state.email !== getMyEmail() && !this.isUserAdmin()){
       return ({visibility: 'hidden'});
     }else{
       return ({});
@@ -173,7 +169,7 @@ export default class ProfileContainer extends React.Component {
 
   handlePwChangeSubmit(event){
     event.preventDefault();
-    if(this.state.pw_new != this.state.pw_new_confirm){
+    if(this.state.pw_new !== this.state.pw_new_confirm){
       alert('New passwords do not match!');
       return ;
     }
@@ -214,22 +210,6 @@ export default class ProfileContainer extends React.Component {
 
 
     render() {
-
-    const columns = [{
-      Header: 'Project Name',
-      id: 'name',
-      accessor: d => d,
-      filterMethod: (filter, row) => (row[filter.id].name.includes(filter.value)),
-      Cell: props => <Link to={`project/${props.value._id}`}>{props.value.name}</Link>
-    }, {
-      Header: 'Status',
-      accessor: 'status',
-      width: 100
-    }, {
-      Header: 'Description',
-      accessor: 'description',
-      pivot: true
-    }]
 
 
 

@@ -1,16 +1,12 @@
 import React, { Component } from 'react';
 import {
-  BrowserRouter as Router,
-  Route,
   Link,
   Redirect,
-  withRouter
 } from 'react-router-dom';
-import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import logo from '../../style/img/black_logo_title_below.svg';
-import {login, isLoggedIn, logout, getCookie, setCookie} from '../common/Authentication.jsx';
+import {login, isLoggedIn, getCookie} from '../common/Authentication.jsx';
 
 export default class SignIn extends Component {
 
@@ -67,7 +63,7 @@ export default class SignIn extends Component {
       <section className="sign-container">
 
         {/*Information*/}
-        <img className="service-name" src={logo}/>
+        <img className="service-name" src={logo} alt="Logo"/>
         <h2 className="team-name">{teamName}</h2>
         <div className="rectangle-sign">
           <h3 className="sign-type-desc">Login</h3>
@@ -91,7 +87,7 @@ export default class SignIn extends Component {
                 onChange={this.handleChangePassword}
                 hintText="Password"
 
-                
+
               />
             </div>
             <div>
@@ -100,7 +96,7 @@ export default class SignIn extends Component {
                 label="Login"
                 primary={true}
                 style={{width: 250, marginTop:40}}
-                
+
               />
           </div>
           </form>

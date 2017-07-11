@@ -11,7 +11,7 @@ import styles from '../common/Styles.jsx';
 
 
 
-export default class BookmarksTable extends React.Component {
+export default class BookmarksTable extends Component {
   constructor(props) {
     super(props);
 
@@ -255,7 +255,7 @@ if(data !== undefined)
               }
               break;
             case "authors":
-              var temp = [];
+              temp = [];
               for (var i in  dataObject.authors) {
                 temp = temp.concat([dataObject.authors[i].name + " ("+dataObject.authors[i].email+ ")"]);
               }
@@ -265,7 +265,7 @@ if(data !== undefined)
                 discard = temp.indexOf(author.toLowerCase()) === -1;
                 if(discard)
                 break;
-              }
+              }break;
             default:
               break;
           }
@@ -428,7 +428,7 @@ if(data !== undefined)
                 style: {textAlign:"center"},
                 Cell: props =>{
                   return(
-                    (new String(props.value.is_bookmark) == "true") ?
+                    (new String(props.value.is_bookmark) === "true") ?
                       <IconButton onClick={()=>this.handleRemoveBookmark(props.value._id)}
                                   touch={true}
                                   style = {styles.largeIcon}

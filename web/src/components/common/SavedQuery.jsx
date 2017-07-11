@@ -13,28 +13,15 @@ import styles from '../common/Styles.jsx';
 
     constructor(props) {
       super(props);
-
-          this.deleteQuery = this.deleteQuery.bind(this);
-          this.runQuery = this.runQuery.bind(this);
-
-
+      this.deleteQuery = this.deleteQuery.bind(this);
+      this.runQuery = this.runQuery.bind(this);
     }
 
-
-
-               deleteQuery(){
-
-              }
+    deleteQuery(){
+    }
 
     runQuery(){
-
-
-
-
-
     }
-
-
 
     render() {
       return(

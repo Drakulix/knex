@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import ReactTable from 'react-table';
 import 'react-table/react-table.css';
-import { fetchJson } from '../common/Backend'
 import DataTable from '../common/DataTable';
-import {login, isLoggedIn, logout, getCookie, setCookie, isAdmin, getMyEmail, getUserInfo, changePassword, changeProfile} from '../common/Authentication.jsx';
+import { getMyEmail} from '../common/Authentication.jsx';
 
-export default class UserProjects extends React.Component {
+export default class UserProjects extends Component {
   constructor(props) {
     super(props);
     this.state = {

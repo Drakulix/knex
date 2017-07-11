@@ -7,14 +7,13 @@ import DropDownMenu from 'material-ui/DropDownMenu'
 import MenuItem from 'material-ui/MenuItem';
 import CircularProgress from 'material-ui/CircularProgress';
 import ChipInputList from '../common/ChipInputList';
-import { sendJson, fetchJson } from '../common/Backend.jsx'
+import {fetchJson } from '../common/Backend.jsx'
 
 const statusString = [
   {id: "0" , text :"Done", value : "DONE"},
   {id: "1" , text :"In review", value : "IN_REVIEW"},
   {id: "2" , text :"In progress", value : "IN_PROGRESS"}];
 
-  const log = (type) => console.log.bind(console, type);
 
   export default class UploadByPattern extends Component {
 

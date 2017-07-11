@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../../style/img/white_logo_title.svg';
-import {login, isLoggedIn, logout, getCookie, setCookie, isAdmin, getMyEmail, getUserInfo} from '../common/Authentication.jsx';
+import {getMyEmail, getUserInfo} from '../common/Authentication.jsx';
 
 export default class SideBar extends Component {
   constructor(props) {
@@ -38,33 +38,28 @@ export default class SideBar extends Component {
 
 
   returnAdminState(){
-    
+
     return this.state.isAdmin
   }
 
 
   isUserAdmin(){
-   if(this.state.data == " " || this.state.data["roles"] == undefined){
+   if(this.state.data === " " || this.state.data["roles"] === undefined){
      this.fetchUser()
    }
 
    var roles = this.state.data["roles"];
-   var flag = true
-   if (roles != undefined){
-
+   var admin = false
+   if (roles !== undefined){
      for(let role of roles){
-
-       if(role == "admin"){
-         flag = false
-          this.state.isAdmin = true
-
+       if(role === "admin"){
+         admin = true;
+         break;
        }
 
 
    }
-   if(flag == true){
-     this.state.isAdmin = false
-   }
+   this.setState({isAdmin : admin});
    //this.state.isAdmin = false
  }
    return this.returnAdminState()
@@ -104,7 +99,7 @@ export default class SideBar extends Component {
   render() {
     return (
         <div className="col-3 side-bar">
-            <img className="logo-banner" src={logo} />
+            <img className="logo-banner" src={logo} alt="logo"/>
             <ul className="list-group">
                 <SideBarEntry name={this.state.menu.discoverProjects} to="/discovery" active={this.isActive("/discovery")} />
                 <SideBarEntry name={this.state.menu.createProject} to="/createbylink" active={this.isActive("/createbylink")} />

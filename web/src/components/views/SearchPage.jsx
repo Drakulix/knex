@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import {fetchJson, sendJson} from '../common/Backend';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 
@@ -8,17 +6,6 @@ import DataTable from '../common/DataTable';
 import Dialog from 'material-ui/Dialog';
 
 
-
-import Filters from '../common/Filters';
-
-
-const defaultPageSize = 4;
-const defaultSearchString = "advanced/?q=*";
-
-const statusString = [
-  {id: "0" , text :"Done", value : "DONE"},
-  {id: "1" , text :"In review", value : "IN_REVIEW"},
-  {id: "2" , text :"In progress", value : "IN_PROGRESS"}];
 
 
 
@@ -56,8 +43,6 @@ const statusString = [
       if (this.props.match.params.qID !== undefined){
           //FETCH QUERY FROM DB with ID QID
           var query = {
-shortName :"",
-            authors : [],
             title : "Test",
             tags : ["DDSA"],
             value : "0",
@@ -82,7 +67,7 @@ shortName :"",
       var query = this.state.query;
       query["searchString"] = value;
       var end = "/api/projects/search/"
-      if(value == ""){
+      if(value === ""){
         this.setState({fetchURL : "/api/projects"})
       }
       else{

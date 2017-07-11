@@ -1,19 +1,18 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
-import {login, register, isLoggedIn, logout, getCookie, setCookie, isAdmin, getMyEmail, getUserInfo, changePassword, changeProfile} from '../common/Authentication.jsx';
+import {register, getMyEmail, getUserInfo, changePassword, changeProfile} from '../common/Authentication.jsx';
 import DataTable from '../common/DataTable';
 import 'react-table/react-table.css';
 import { fetchJson } from '../common/Backend'
 
 const FILTER_ATTRIBUTES = ['title', 'status', 'description', '_id'];
 
-export default class AdminOverview extends React.Component {
+export default class AdminOverview extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -169,16 +168,13 @@ export default class AdminOverview extends React.Component {
     this.setState({pw_new_confirm: event.target.value});
   }
 
-  handleBioChange(event) {
-    this.setState({bio: event.target.value});
-  }
   handleRegister(event){
     event.preventDefault();
-    if(this.state.password != this.state.password_confirm){
+    if(this.state.password !== this.state.password_confirm){
       alert("Passwords do not match");
       return;
     }
-    if(this.state.password == ""){
+    if(this.state.password === ""){
       alert("Password can not be empty")
     }
     register(this.state.profileReg.first_name, this.state.profileReg.last_name, this.state.profileReg.email, this.state.profileReg.password, this.state.profileReg.password_confirm, this.state.profileReg.role).then((success) => {
@@ -225,7 +221,7 @@ export default class AdminOverview extends React.Component {
       if(!data){
         this.setState({profile_exists: false});
       }else{
-        var admin = (data.roles == 'admin');
+        var admin = (data.roles === 'admin');
         this.setState({is_admin: admin});
       }
     }).catch(ex => {
@@ -235,7 +231,7 @@ export default class AdminOverview extends React.Component {
   }
 
   getMenuEditStyle(){
-    if(this.state.email != getMyEmail() && !this.isUserAdmin()){
+    if(this.state.email !== getMyEmail() && !this.isUserAdmin()){
       return ({visibility: 'hidden'});
     }else{
       return ({});
@@ -252,7 +248,7 @@ export default class AdminOverview extends React.Component {
 
   handlePwChangeSubmit(event){
     event.preventDefault();
-    if(this.state.pw_new != this.state.pw_new_confirm){
+    if(this.state.pw_new !== this.state.pw_new_confirm){
       alert('New passwords do not match!');
       return ;
     }
@@ -295,7 +291,7 @@ export default class AdminOverview extends React.Component {
       }
     }
     isValidEmailAddress(address) {
-      if(address != undefined){
+      if(address !== undefined){
         return !! address.match(/\S+@\S+\.\S+/);
       }
       return false
@@ -304,7 +300,7 @@ export default class AdminOverview extends React.Component {
     transformObj(dataObject)  {
       var filteredDataObject = {};
       for(let attr of FILTER_ATTRIBUTES ) {
-        if(attr == 'title') {
+        if(attr === 'title') {
           filteredDataObject['name'] = dataObject[attr];
         } else {
           filteredDataObject[attr] = dataObject[attr];
@@ -322,7 +318,6 @@ export default class AdminOverview extends React.Component {
     };
 
     componentDidMount() {
-      var self = this;
       fetchJson('/api/projects').then(function(datas) {
         var filteredData = this.transformArray(datas);
         this.setState({
@@ -482,7 +477,7 @@ export default class AdminOverview extends React.Component {
                       value={this.state.profileReg.first_name}
                       onChange={this.handleRegFirstNameChange}
                       hintText="First Name"
-                      errorText={(this.state.profileReg.firstname == "") ? "Field is requiered" : ""}
+                      errorText={(this.state.profileReg.firstname === "") ? "Field is requiered" : ""}
 
                     />
                   </div>
@@ -493,7 +488,7 @@ export default class AdminOverview extends React.Component {
                       value={this.state.profileReg.last_name}
                       onChange={this.handleRegLastNameChange}
                       hintText="Last Name"
-                      errorText={(this.state.profileReg.lastname == "") ? "Field is requiered" : ""}
+                      errorText={(this.state.profileReg.lastname === "") ? "Field is requiered" : ""}
 
                     />
                   </div>
@@ -516,7 +511,7 @@ export default class AdminOverview extends React.Component {
                       value={this.state.profileReg.password}
                       onChange={this.handleRegPasswordChange}
                       hintText="Password"
-                      errorText={(this.state.profileReg.password == "") ? "Field is requiered" : ""}
+                      errorText={(this.state.profileReg.password === "") ? "Field is requiered" : ""}
 
                     />
                   </div>
@@ -529,7 +524,7 @@ export default class AdminOverview extends React.Component {
                       value={this.state.password_confirm}
                       onChange={this.handleRegPasswordConfirmChange}
                       hintText="Confirm Password"
-                      errorText={( this.state.profileReg.password != this.state.profileReg.password_confirm ) ? "Passwords do not match" : "" }
+                      errorText={( this.state.profileReg.password !== this.state.profileReg.password_confirm ) ? "Passwords do not match" : "" }
 
                     />
                   </div>

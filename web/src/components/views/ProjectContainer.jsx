@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import {fetchProjectDetails, fetchJson} from '../common/Backend'
 import { Link } from 'react-router-dom';
 
 import Chip from 'material-ui/Chip'
@@ -11,7 +10,6 @@ import CircularProgress from 'material-ui/CircularProgress';
 import CommentSideBar from '../common/CommentSideBar.jsx'
 
 
-const update_url='/update/'
 export default class ProjectContainer extends Component {
   constructor(props) {
     super(props);
@@ -45,7 +43,6 @@ export default class ProjectContainer extends Component {
 
 
   fetchMyBookmarks(){
-    var res;
     return fetch('/api/users/bookmarks', {
       method: 'GET',
       mode: 'no-cors',
@@ -59,7 +56,6 @@ export default class ProjectContainer extends Component {
   }
 
   fetchProjectInfo(uuid){
-    var res;
     return fetch('/api/projects/' + uuid, {
       method: 'GET',
       mode: 'no-cors',
@@ -127,7 +123,7 @@ export default class ProjectContainer extends Component {
         'Content-Type': 'application/json'
       },
     }).then(function(response){
-      if(response.status==200){
+      if(response.status===200){
         return true;
       }else{
         return false;
@@ -183,11 +179,11 @@ export default class ProjectContainer extends Component {
       );
     }else{
     let status_badge = null;
-    if (this.state.projectInf.status == 'DONE'){
+    if (this.state.projectInf.status === 'DONE'){
       status_badge = <span className="badge badge-success">DONE</span>
-    } else if (this.state.projectInf.status == 'IN_PROGRESS') {
+    } else if (this.state.projectInf.status === 'IN_PROGRESS') {
       status_badge = <span className="badge badge-warning">IN_PROGRESS</span>
-    } else if (this.state.projectInf.status == 'IN_REVIEW') {
+    } else if (this.state.projectInf.status === 'IN_REVIEW') {
       status_badge = <span className="badge badge-info">IN_REVIEW</span>
     } else {
       status_badge = this.state.projectInf.status

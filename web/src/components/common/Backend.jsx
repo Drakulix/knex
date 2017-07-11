@@ -31,7 +31,6 @@ const PROJECT_URL = '/api/projects/'
 
 
     export function fetchNotification(){
-      var res;
       return fetch('/api/notifications/', {
         method: 'GET',
         mode: 'no-cors',
@@ -48,7 +47,6 @@ const PROJECT_URL = '/api/projects/'
 
 
   export function fetchProjectInfo(uuid){
-    var res;
     return fetch('/api/projects/' + uuid, {
       method: 'GET',
       mode: 'no-cors',
@@ -124,7 +122,7 @@ const PROJECT_URL = '/api/projects/'
         "query": {
           "match_all": {}
         }
-      }),
+      });
       sendJson('POST', '/api/projects/search', {
         "query": {
           "query_string": {

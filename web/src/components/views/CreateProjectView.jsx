@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { Redirect } from 'react-router'
-import history from '../common/history'
 import 'isomorphic-fetch';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
@@ -10,7 +8,7 @@ import styles from '../common/Styles.jsx';
 
 const JSON5 = require('json5');
 
-export default class UploadByLink extends React.Component {
+export default class UploadByLink extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -62,7 +60,7 @@ export default class UploadByLink extends React.Component {
         <div className="header">Create Project</div>
           <form onSubmit={this.submitForm}>
             <div>
-              <TextField value={this.state.title}
+              <TextField
                   ID="url"
                   name="title"
                   hintText="enter url here (e.g. “http://soundloud.com/stuff/manifest.json”)"
@@ -70,7 +68,7 @@ export default class UploadByLink extends React.Component {
                   onChange={event => this.setState({
                             sourceURL : event.target.value,
                            })}
-                            value={this.state.sourceURL}
+                  value={this.state.sourceURL}
                            />
             </div>
             <div >
@@ -85,7 +83,6 @@ export default class UploadByLink extends React.Component {
           <RaisedButton
                     label="Upload local json"
                     labelPosition="before"
-                    style={styles.uploadButton}
                     containerElement="label"
                     primary={true}
                     style={{width:'300px'}}>

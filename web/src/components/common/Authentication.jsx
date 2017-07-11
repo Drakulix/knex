@@ -1,6 +1,5 @@
 import 'isomorphic-fetch';
 import 'babel-polyfill';
-import { Redirect } from 'react-router-dom';
 
 
 var loggedin = false;
@@ -52,7 +51,6 @@ export function getCookie(cname) {
 
 export function changePassword(email, oldpw, newpw){
 
-  const requestBody = `email=${email}&old password=${oldpw}&new password=${newpw}`;
 
     const formData = new FormData();
     formData.append('email', email);
@@ -96,7 +94,7 @@ export function changeProfile(email, first_name, last_name, bio){
 }
 
 export function getUserInfo(e){
-  var res;
+
   return fetch('/api/users/' + e, {
       method: 'GET',
       mode: 'no-cors',
