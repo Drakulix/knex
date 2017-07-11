@@ -50,13 +50,14 @@ export default class SideBar extends Component {
         <div className="col-3 side-bar">
             <img className="logo-banner" src={logo} alt="logo"/>
             <ul className="list-group">
-                <SideBarEntry name={this.state.menu.discoverProjects} to="/discovery" active={this.isActive("/discovery")} />
-                <SideBarEntry name={this.state.menu.createProject} to="/createbylink" active={this.isActive("/createbylink")} />
-                <SideBarEntry name={this.state.menu.queries} to="/queries" active={this.isActive("/queries")} />
-                <SideBarEntry name={this.state.menu.bookmarks} to="/bookmarks" active={this.isActive("/bookmarks")} />
-                <SideBarEntry name={this.state.menu.userprojects} to="/yourprojects" active={this.isActive("/yourprojects")} />
-                <SideBarEntry name={this.state.menu.profile} to={'/profile/' + this.state.myProfile } active={this.isActive("/profile")} />
+                <SideBarEntry icon="fa fa-search" name={this.state.menu.discoverProjects} to="/discovery" active={this.isActive("/discovery")} />
+                <SideBarEntry icon="fa fa-plus-circle" name={this.state.menu.createProject} to="/createbylink" active={this.isActive("/createbylink")} />
+                <SideBarEntry icon="fa fa-archive" name={this.state.menu.queries} to="/queries" active={this.isActive("/queries")} />
+                <SideBarEntry icon="fa fa-star-half-o" name={this.state.menu.bookmarks} to="/bookmarks" active={this.isActive("/bookmarks")} />
+                <SideBarEntry icon="fa fa-briefcase" name={this.state.menu.userprojects} to="/yourprojects" active={this.isActive("/yourprojects")} />
+                <SideBarEntry icon="fa fa-user" name={this.state.menu.profile} to={'/profile/' + this.state.myProfile } active={this.isActive("/profile")} />
                 <SideBarEntry
+                  icon="fa fa-cogs"
                   name={this.state.menu.adminArea}
                   to="/admin" active={this.isActive("/admin")}
                   style={{display:(this.state.isAdmin) ? "block" : "none"}}
@@ -67,12 +68,12 @@ export default class SideBar extends Component {
   }
 }
 
-const SideBarEntry = ({to, name, active, style}) => {
+const SideBarEntry = ({to, icon, name, active, style}) => {
     return (
         <li className={"list-group-item " + (active ? "active" : "") } style={style}>
             {active && (<div className="menu-indicator" />)}
             <Link to={to}  >
-                {name}
+                <i className={icon} aria-hidden="true"></i>  {name}
             </Link>
         </li>
     )

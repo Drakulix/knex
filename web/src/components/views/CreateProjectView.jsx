@@ -73,6 +73,7 @@ export default class UploadByLink extends Component {
             </div>
             <div >
               <RaisedButton style={{width:'300px'}}
+                          icon={<i className="fa fa-link" style={{color: "#ffffff"}} aria-hidden="true"></i>}
                           label="Upload online json"
                           primary={true}
                           type="submit"/>
@@ -82,7 +83,7 @@ export default class UploadByLink extends Component {
         <div>
           <RaisedButton
                     label="Upload local json"
-                    labelPosition="before"
+                    icon={<i className="fa fa-upload" style={{color: "#ffffff"}} aria-hidden="true"></i>}
                     containerElement="label"
                     primary={true}
                     style={{width:'300px'}}>
@@ -92,6 +93,7 @@ export default class UploadByLink extends Component {
         <div className="text" >or</div>
         <div>
           <RaisedButton label="Use online formular"
+                      icon={<i className="fa fa-pencil-square-o" style={{color: "#ffffff"}} aria-hidden="true"></i>}
                       href="/createNew/"
                       primary={true}
                       style={{ width:'300px'}}

@@ -8,12 +8,10 @@ import { fetchJson } from '../common/Backend.jsx';
 
 import ChipInputList from '../common/ChipInputList';
 
-
-
 const statusString = [
-  {id: "0" , text :"Done", value : "DONE"},
-  {id: "1" , text :"In review", value : "IN_REVIEW"},
-  {id: "2" , text :"In progress", value : "IN_PROGRESS"},
+  {id: "0" , text :<span className="badge badge-success">DONE</span>, value : "DONE"},
+  {id: "1" , text :<span className="badge badge-info">IN_REVIEW</span>, value : "IN_REVIEW"},
+  {id: "2" , text :<span className="badge badge-warning">IN_PROGRESS</span>, value : "IN_PROGRESS"},
   {id: "3" , text :"No filter", value : ""}
 ];
 
@@ -159,7 +157,12 @@ export default class Filters extends Component{
         <div className="row" >
           <div className="col-10"></div>
           <div className="col-2" style={{textAlign:"center",marginTop: 0, marginBottom: 20}}>
-            <RaisedButton  style={{width:"100%"}} onClick={() => this.setState({expanded: true})} label="Show filters" primary={true}/>
+            <RaisedButton
+              icon={<i className="fa fa-caret-down" style={{color: "#ffffff"}} aria-hidden="true"></i>}
+              style={{width:"100%"}}
+              labelPosition="before"
+              onClick={() => this.setState({expanded: true})}
+              label="Show filters" primary={true}/>
           </div>
         </div>
       </div>
@@ -249,7 +252,13 @@ export default class Filters extends Component{
               </div>
               <div className="col-1"></div>
               <div className="col-2" style={{textAlign:"right",marginTop: 6, marginLeft: 39}}>
-                  <RaisedButton  style={{width:"100%"}} onClick={() => this.setState({expanded: false})} label= "Hide filters" primary={true}/>
+                  <RaisedButton
+                  style={{width:"100%"}}
+                  onClick={() => this.setState({expanded: false})}
+                  label= "Hide filters"
+                  labelPosition="before"
+                  icon={<i className="fa fa-caret-up" style={{color: "#ffffff"}} aria-hidden="true"></i>}
+                  primary={true}/>
               </div>
             </div>
           </div>

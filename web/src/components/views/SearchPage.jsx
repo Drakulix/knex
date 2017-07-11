@@ -181,7 +181,11 @@ import Dialog from 'material-ui/Dialog';
               </div>
               <div className="col-2">
                 <RaisedButton style={{width:"100%"}}
-                    label="Save search" onClick={this.handleOpen} primary={true}/>
+                    label="Save search"
+                    labelPosition="before"
+                    icon={<i className="fa fa-floppy-o" style={{color: "#ffffff"}} aria-hidden="true"></i>}
+                    onClick={this.handleOpen}
+                    primary={true}/>
               </div>
             </div>
             <div style={{marginTop:20}}>

@@ -270,7 +270,7 @@ export default class BookmarksTable extends Component {
               case "DONE":  status_badge = <span className="badge badge-success">DONE</span>
               break;
               case 'IN_PROGRESS':
-              status_badge = <span className="badge badge-success">DONE</span>
+              status_badge = <span className="badge badge-warning">IN_PROGRESS</span>
               break;
               case 'IN_REVIEW':
               status_badge = <span className="badge badge-info">IN_REVIEW</span>
