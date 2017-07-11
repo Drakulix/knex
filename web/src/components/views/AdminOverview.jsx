@@ -9,6 +9,8 @@ import {register, getMyEmail, getUserInfo, changePassword, changeProfile} from '
 import DataTable from '../common/DataTable';
 import 'react-table/react-table.css';
 import { fetchJson } from '../common/Backend'
+import Snackbar from 'material-ui/Snackbar'
+import ShowUsers from '../common/adminViews/ShowUsers'
 
 const FILTER_ATTRIBUTES = ['title', 'status', 'description', '_id'];
 
@@ -35,7 +37,7 @@ export default class AdminOverview extends Component {
       pw_new: '',
       pw_new_confirm: '',
       is_admin: false,
-      value: 'a',
+      value: '1',
       profileReg: {
         first_name : "",
         last_name : "",
@@ -171,20 +173,32 @@ export default class AdminOverview extends Component {
   handleRegister(event){
     event.preventDefault();
     if(this.state.password !== this.state.password_confirm){
-      alert("Passwords do not match");
-      return;
+      this.setState({
+        snackbar : true,
+        snackbarText :  'Passwords do not match'
+      });
+      return
+
     }
     if(this.state.password === ""){
-      alert("Password can not be empty")
+      this.setState({
+        snackbar : true,
+        snackbarText :  'Password can not be empty'
+      });
+      return
     }
     register(this.state.profileReg.first_name, this.state.profileReg.last_name, this.state.profileReg.email, this.state.profileReg.password, this.state.profileReg.password_confirm, this.state.profileReg.role).then((success) => {
 
       if(success){
-        alert("Registration successfull!");
-
+          this.setState({
+          snackbar : true,
+          snackbarText :  'Registration successfull!'
+        });
       }else{
-
-        alert("Registration failed!");
+        this.setState({
+          snackbar : true,
+          snackbarText :  'Registration failed!'
+        });
       }
     });
   }
@@ -249,15 +263,25 @@ export default class AdminOverview extends Component {
   handlePwChangeSubmit(event){
     event.preventDefault();
     if(this.state.pw_new !== this.state.pw_new_confirm){
-      alert('New passwords do not match!');
+      this.setState({
+        snackbar : true,
+        snackbarText :  'New passwords do not match!'
+      });
       return ;
     }
+
+
     changePassword(this.state.email, this.state.pw_old, this.state.pw_new).then((success) => {
       if(success){
-        alert("Password change success");
+        this.setState({
+          snackbar : true,
+          snackbarText :  'Password change success'
+        });
       }else{
-        this.setState({ error: 'Login failed' });
-        alert("Password change failed");
+        this.setState({
+          snackbar : true,
+          snackbarText :  'Password change failed'
+        });
       }
     });
   }
@@ -268,10 +292,16 @@ export default class AdminOverview extends Component {
 
       if(success){
         this.setState({profileInf: {bio: this.state.bio, first_name: this.state.first_name, last_name: this.state.last_name}});
-        alert("Profile changed!");
+        this.setState({
+          snackbar : true,
+          snackbarText :  'Profile changed!'
+        });
       }else{
         this.setState({ error: 'Login failed' });
-        alert("Profile change failed");
+        this.setState({
+          snackbar : true,
+          snackbarText :  'Profile change failed'
+        });
       }
     });
   }
@@ -332,6 +362,11 @@ export default class AdminOverview extends Component {
 
       return (
         <div className="container">
+          <Snackbar
+            open={this.state.snackbar}
+            message={this.state.snackbarText}
+            autoHideDuration={10000}
+            />
           <div className="header">Admin Area</div>
           <Tabs
             value={this.state.value}
@@ -356,7 +391,11 @@ export default class AdminOverview extends Component {
 
 
             </Tab>
-            <Tab label="Edit Profile" value="b">
+            <Tab label="List Users" value="2">
+              <ShowUsers/>
+            </Tab>
+
+            <Tab label="Edit Profile" value="3">
               <div className="row padding">
                 <div className="col-9">
               <div className="header-tab">Edit User</div>
@@ -464,7 +503,7 @@ export default class AdminOverview extends Component {
               </div>
             </div>
             </Tab>
-            <Tab label="Register User" value="c">
+            <Tab label="Register User" value="4">
               <div className="header-tab">Register User</div>
               <div className="row">
                 <div className="col-9">

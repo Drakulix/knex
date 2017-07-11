@@ -166,7 +166,6 @@ export function register(reg_firstname, reg_lastname, reg_email, reg_password, r
   };
 
   if(reg_password !== reg_password_confirm || reg_password === ''){
-    alert('password does not match' );
     return false;
   }
 

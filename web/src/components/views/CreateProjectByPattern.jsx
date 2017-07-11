@@ -240,11 +240,14 @@ const statusString = [
            }.bind(this));
 
            //gets all the authors from the backend
-           fetchJson('/api/projects/authors').then(function(authors) {
+           fetchJson('/api/users').then(function(authors) {
              var suggestedAuthors = authors;
              var suggestedAuthorsArray = []
              for (var i in suggestedAuthors) {
-               suggestedAuthorsArray = suggestedAuthorsArray.concat([suggestedAuthors[i].name + " ("+suggestedAuthors[i].email+ ")"]);
+               suggestedAuthorsArray = suggestedAuthorsArray.concat([
+                                          suggestedAuthors[i].first_name + " "
+                                          +suggestedAuthors[i].last_name +
+                                    + " ("+suggestedAuthors[i].email+ ")"]);
              }
              console.log(suggestedAuthorsArray);
              this.setState({
