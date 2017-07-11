@@ -388,7 +388,7 @@ this.fetchData(this.state.url)
                 style: {textAlign:"center"},
                 Cell: props =>{
                   return(
-                    (new String(props.value.is_bookmark) === "true") ?
+                    (new String(props.value.is_bookmark) == "true") ?
                       <IconButton onClick={()=>this.handleRemoveBookmark(props.value._id)}
                                   touch={true}
                                   style = {styles.largeIcon}
