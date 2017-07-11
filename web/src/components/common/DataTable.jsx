@@ -14,19 +14,10 @@ import styles from '../common/Styles.jsx';
 export default class BookmarksTable extends Component {
   constructor(props) {
     super(props);
-
     var filters = {};
     if(props.predefinedFilter !== undefined){
       filters = props.predefinedFilter;
-
-
-
-
-
     }
-
-
-
     this.state = {
       data: [{
       }],
@@ -61,14 +52,10 @@ export default class BookmarksTable extends Component {
       .catch(ex => {
       console.error('parsing failed', ex)
     });
-this.fetchData(this.state.url)
+    this.fetchData(this.state.url)
   }
 
   handleAddBookmark(projectID){
-
-
-
-
     for(let dataObject of this.state.data) {
       var project = dataObject;
       if(project._id === projectID){
@@ -76,7 +63,6 @@ this.fetchData(this.state.url)
         break;
       }
     }
-
     for(let dataObject of this.state.filteredTable) {
       var project = dataObject;
       if(project._id === projectID){
@@ -84,26 +70,19 @@ this.fetchData(this.state.url)
         break;
       }
     }
-
-
-
-
     var url = "/api/users/bookmarks/"
     var status = fetch(url+projectID, {
       credentials: 'include',
       method: "POST",
       body: "",
       headers: {
-
       }
     }).then(response => response.status)
       .catch(ex => {
       console.error('parsing failed', ex)
     }
-
   );
-
-this.fetchData(this.state.url)
+  this.fetchData(this.state.url)
   }
 
   handleRemoveBookmark(projectID){
@@ -113,37 +92,28 @@ this.fetchData(this.state.url)
       method: "DELETE",
       body: "",
       headers: {
-
       }
     }).then(response => response.status)
       .catch(ex => {
       console.error('parsing failed', ex)
     }
     );
-
-
-
-
-
-        for(let dataObject of this.state.data) {
-          var project = dataObject;
-          if(project._id === projectID){
-            project["is_bookmark"] = false;
-            break;
-          }
-        }
-
-        for(let dataObject of this.state.filteredTable) {
-          var project = dataObject;
-          if(project._id === projectID){
-            project["is_bookmark"] = false;
-            break;
-          }
-        }
-this.fetchData(this.state.url)
+    for(let dataObject of this.state.data) {
+      var project = dataObject;
+      if(project._id === projectID){
+        project["is_bookmark"] = false;
+        break;
+      }
+    }
+    for(let dataObject of this.state.filteredTable) {
+      var project = dataObject;
+      if(project._id === projectID){
+        project["is_bookmark"] = false;
+        break;
+      }
+    }
+    this.fetchData(this.state.url)
   }
-
-
 
   componentWillMount() {
 
