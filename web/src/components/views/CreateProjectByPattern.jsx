@@ -21,6 +21,7 @@ export default class UploadByPattern extends Component {
 
   constructor(props) {
     super(props)
+
     if(props.fromURL){
       this.state = {
         projectInf:props.projectInf,
@@ -36,15 +37,16 @@ export default class UploadByPattern extends Component {
     } else {
       this.state = {
         projectID: this.props.match.params.uuid,
+        authors : [],
         projectInf:{
           status: "IN_PROGRESS",
           title :"",
           description: "",
           date_creation: "2012-12-12",
           tags: [],
-          url: []
+          url: [],
+          authors: [],
         },
-        authors: [],
         invalid : true,
         snackbar : false,
         site_loaded: false,
@@ -63,7 +65,6 @@ export default class UploadByPattern extends Component {
 
 
   handleAuthorChange(value) {
-    this.setState({authors : value})
     var authors = []
     for (var i in value) {
       var string = value[i]
@@ -72,27 +73,41 @@ export default class UploadByPattern extends Component {
       authors.push({"name" : name, "email" :id})
     }
 
-    this.setState({projectInf: {authors : value}})
+    var projectInf = this.state.projectInf;
+    projectInf.authors = authors;
+    this.setState({
+      authors : value,
+      projectInf: projectInf});
   }
 
   handleTagChange(value) {
-    this.setState({projectInf: {tags:value}})
+    var projectInf = this.state.projectInf;
+    projectInf.tags = value;
+    this.setState({projectInf: projectInf});
   }
 
   handleURLChange(value) {
-    this.setState({projectInf: {url :value}})
+    var projectInf = this.state.projectInf;
+    projectInf.url = value;
+    this.setState({projectInf: projectInf});
   }
 
   handleTitleChange(event,value) {
-    this.setState({projectInf: {title:value}})
+    var projectInf = this.state.projectInf;
+    projectInf.title = value;
+    this.setState({projectInf: projectInf});
   }
 
   handleDescriptionChange(event,value) {
-    this.setState({projectInf: {description : value}})
+    var projectInf = this.state.projectInf;
+    projectInf.description = value;
+    this.setState({projectInf: projectInf});
   }
 
   handleStatusChange = (event, index, value) => {
-    this.setState({projectInf: {status:value}})
+    var projectInf = this.state.projectInf;
+    projectInf.status = value;
+    this.setState({projectInf: projectInf});
   }
 
   handleChangeDate = (event, date) => {
@@ -177,8 +192,8 @@ export default class UploadByPattern extends Component {
     return      this.state.projectInf.title === ''
     ||  this.state.projectInf.date_creation === ''
     ||  this.state.projectInf.description === ''
-//    ||  this.state.projectInf.authors.length === 0
-  //  ||  this.state.projectInf.url.length === 0
+    ||  this.state.authors.length === 0
+    ||  this.state.projectInf.url.length === 0
     ||  this.state.projectInf.status === 0
   }
 
@@ -292,9 +307,7 @@ export default class UploadByPattern extends Component {
                     <ChipInputList
                       value={this.state.projectInf.url}
                       onChange={this.handleURLChange}
-                      errorText={(
-true
-                      //  this.state.projectInf.url.length === 0
+                      errorText={(this.state.projectInf.url.length === 0
                       ) ? this.props.urlErrorText : ""}
                       hintText='Add Links...'/>
                   </div>
@@ -303,6 +316,7 @@ true
                     <div className="profile-info"> Tags</div>
                     <ChipInputList suggestions = {this.state.suggestedTags}
                       onChange={this.handleTagChange}
+                      name="tags"
                       value={this.state.projectInf.tags}
                       hintText={'Add tags...'}
                       />
