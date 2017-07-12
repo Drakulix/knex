@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import IconButton from 'material-ui/IconButton';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import DatePicker from 'material-ui/DatePicker';
@@ -235,10 +236,9 @@ export default class Filters extends Component{
                 onChange={this.handleChangeDateFrom}
                 />
             </div>
-            <div className="col-1 deleteDate" style={{marginTop:14}}>
-              <button onClick={()=> this.handleDateDelete('from')}>x</button>
-            </div>
-
+            <IconButton style={{color: 'gray', marginLeft:-30, display:(this.state.date_from != "") ? "block" : "none"}} onClick={()=> this.handleDateDelete('from')}>
+              <i className="material-icons">cancel</i>
+            </IconButton>
             <div className="col-1 filter-label" style={{textAlign: "left"}}>Till</div>
             <div className="col-1" style={{marginTop:2}}>
               <DatePicker hintText="Pick date"
@@ -251,9 +251,9 @@ export default class Filters extends Component{
                 onChange={this.handleChangeDateTill}
                 />
             </div>
-            <div className="col-1 deleteDate" style={{marginTop:14, marginLeft:-25}}>
-              <button onClick={() => this.handleDateDelete('until')}>x</button>
-            </div>
+            <IconButton style={{color: 'gray', marginLeft:-40, display:(this.state.date_to != "") ? "block" : "none"}} onClick={() => this.handleDateDelete('until')}>
+              <i className="material-icons" style={{color: 'gray', marginLeft:-30}}>cancel</i>
+            </IconButton>
             <div className="col-1 filter-label" style={{textAlign: "left", marginLeft:-16}} >Status</div>
             <div className="col-2" style={{marginTop:-3}}>
               <DropDownMenu
