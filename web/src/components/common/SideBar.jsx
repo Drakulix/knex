@@ -70,11 +70,13 @@ export default class SideBar extends Component {
 
 const SideBarEntry = ({to, icon, name, active, style}) => {
     return (
+        <Link to={to}  >
         <li className={"list-group-item " + (active ? "active" : "") } style={style}>
             {active && (<div className="menu-indicator" />)}
-            <Link to={to}  >
+
                 <i className={icon} aria-hidden="true"></i>  {name}
-            </Link>
+
         </li>
+        </Link>
     )
 };
