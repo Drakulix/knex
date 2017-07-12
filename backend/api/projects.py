@@ -283,7 +283,7 @@ def add_comment(project_id):
                     [comment['author']['email'] for comment in manifest['comments']]
                 )),
                 "New comment", author["name"] + " commented on " + manifest["title"],
-                '/projects/' + str(manifest['_id']))
+                '/project/' + str(manifest['_id']))
             return jsonify(comment['id'])
         else:
             raise ApiException(
