@@ -22,9 +22,10 @@ export default class BookmarksTable extends Component {
       data: [{
       }],
       filters : filters,
-      filteredTable : [{}],
+      filteredTable : [{
+      }],
       isProfile : "false",
-      url : "/ap/projects",
+      url : "/api/projects",
       bookmarksSite : "false"
     };
 
@@ -107,7 +108,7 @@ export default class BookmarksTable extends Component {
     this.fetchData(this.state.url)
   }
 
-  componentWillMount() {
+  componentDidMount() {
 
     if(this.props.isProfile !== undefined){
       this.setState({isProfile :true});
@@ -121,14 +122,14 @@ export default class BookmarksTable extends Component {
 
   componentWillReceiveProps(nextProps) {
   // You don't have to do this check first, but it can help prevent an unneeded render
-  if(nextProps.isProfile !== undefined){
-    this.setState({isProfile :true});
-  }
-  else if(nextProps.bookmarksSite !== undefined){
-    this.setState({bookmarksSite :true});
-  }
-  this.setState({url :nextProps.fetchURL});
-  this.fetchData(nextProps.fetchURL);
+  // if(nextProps.isProfile !== undefined){
+  //   this.setState({isProfile :true});
+  // }
+  // else if(nextProps.bookmarksSite !== undefined){
+  //   this.setState({bookmarksSite :true});
+  // }
+  // this.setState({url :nextProps.fetchURL});
+  // this.fetchData(nextProps.fetchURL);
 }
 
   fetchData(url){

@@ -3,16 +3,13 @@ import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import {Tabs, Tab} from 'material-ui/Tabs';
-import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import {register, getMyEmail, getUserInfo, changePassword, changeProfile} from '../common/Authentication.jsx';
 import DataTable from '../common/DataTable';
 import 'react-table/react-table.css';
-import { fetchJson } from '../common/Backend'
 import Snackbar from 'material-ui/Snackbar'
 import ShowUsers from '../common/adminViews/ShowUsers'
 
-const FILTER_ATTRIBUTES = ['title', 'status', 'description', '_id'];
 
 export default class AdminOverview extends Component {
   constructor(props) {
@@ -202,32 +199,15 @@ export default class AdminOverview extends Component {
       }
     });
   }
+
   componentWillReceiveProps(nextProps){
-    this.setState({email: nextProps.email});
-    this.loadProfileInf(this.state.email);
     this.loadMyProfileInf(getMyEmail());
   }
 
   componentWillMount(){
-    this.loadProfileInf(this.state.email);
     this.loadMyProfileInf(getMyEmail());
   }
 
-
-
-  loadProfileInf(e) {
-    getUserInfo(e).then(data => {
-      this.setState({profileInf: data});
-      if(!data){
-        this.setState({profile_exists: false});
-      }else{
-        this.setState({first_name: data.first_name, last_name: data.last_name, bio: data.bio});
-      }
-    }).catch(ex => {
-      this.setState({profile_exists: false});
-    });
-
-  }
 
   loadMyProfileInf(e) {
     getUserInfo(e).then(data => {
@@ -306,20 +286,7 @@ export default class AdminOverview extends Component {
     });
   }
 
-  getBio(){
-    if(this.state.bio){
-      return (this.state.bio.split('\n').map((item, key) => {return <span key={key}>{item}<br/></span>}));
-      }else{
-        return ' ';
-      }
-    }
-    getRoleStyle(){
-      if(!this.isUserAdmin()){
-        return {visibility: 'hidden', display: 'none'};
-      }else{
-        return {};
-      }
-    }
+
     isValidEmailAddress(address) {
       if(address !== undefined){
         return !! address.match(/\S+@\S+\.\S+/);
@@ -327,34 +294,6 @@ export default class AdminOverview extends Component {
       return false
     }
 
-    transformObj(dataObject)  {
-      var filteredDataObject = {};
-      for(let attr of FILTER_ATTRIBUTES ) {
-        if(attr === 'title') {
-          filteredDataObject['name'] = dataObject[attr];
-        } else {
-          filteredDataObject[attr] = dataObject[attr];
-        }
-      }
-      return filteredDataObject;
-    }
-
-    transformArray(dataArray) {
-      var filteredDataArray = [];
-      for(let dataObject of dataArray) {
-        filteredDataArray.push(this.transformObj(dataObject));
-      }
-      return filteredDataArray;
-    };
-
-    componentDidMount() {
-      fetchJson('/api/projects').then(function(datas) {
-        var filteredData = this.transformArray(datas);
-        this.setState({
-          data: filteredData
-        });
-      }.bind(this));
-    }
 
 
   render() {
@@ -407,7 +346,7 @@ export default class AdminOverview extends Component {
                       onChange={this.handleEmailChange}
                         />
 
-                        <FlatButton
+                      <RaisedButton
                             type="Submit"
                             label="Select User"
                             primary={true}
@@ -445,7 +384,7 @@ export default class AdminOverview extends Component {
                       multiLine={true}
                       value={this.state.bio}
                       /><br />
-                    <FlatButton
+                    <RaisedButton
                       type="Submit"
                       label="Change Profile"
                       primary={true}
@@ -492,7 +431,7 @@ export default class AdminOverview extends Component {
                   </div>
                   <div className="form-group row">
                     <div className="col-10">
-                      <FlatButton
+                      <RaisedButton
                         type="Submit"
                         label="Change Password"
                         primary={true}

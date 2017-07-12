@@ -94,7 +94,6 @@ export function changeProfile(email, first_name, last_name, bio){
 }
 
 export function getUserInfo(e){
-
   return fetch('/api/users/' + e, {
       method: 'GET',
       mode: 'no-cors',
