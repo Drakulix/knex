@@ -128,6 +128,21 @@ export default class Filters extends Component{
     this.props.onChange("filter_date_to", this.dateToString(date));
   };
 
+  handleDateDelete = (event) => {
+    if(event === "until"){
+      this.setState({
+        date_to: '',
+        filter_date_to:  ''
+      });
+      this.props.onChange("filter_date_to", '');
+    }else{
+      this.setState({
+        date_from: '',
+        filter_date_from:  ''
+      });
+      this.props.onChange("filter_date_from", '');
+    }
+  }
 
   handleStatusChange = (event, index, value) => {
     this.setState({value : value,
@@ -149,6 +164,7 @@ export default class Filters extends Component{
     this.setState({tags : value});
     this.props.onChange("tags" , value);
   }
+
 
 
   render(){
@@ -225,7 +241,7 @@ export default class Filters extends Component{
                   />
               </div>
               <div className="col-1 deleteDate" style={{marginTop:14}}>
-                <button onClick={()=> this.setState({date_from:''})}>x</button>
+                <button onClick={()=> this.handleDateDelete('from')}>x</button>
               </div>
 
               <div className="col-1 filter-label" style={{textAlign: "left"}}>Till</div>
@@ -241,7 +257,7 @@ export default class Filters extends Component{
                   />
               </div>
               <div className="col-1 deleteDate" style={{marginTop:14, marginLeft:-25}}>
-                <button onClick={()=> this.setState({date_to:''})}>x</button>
+                <button onClick={() => this.handleDateDelete('until')}>x</button>
               </div>
               <div className="col-1 filter-label" style={{textAlign: "left", marginLeft:-16}} >Status</div>
               <div className="col-2" style={{marginTop:-3}}>
