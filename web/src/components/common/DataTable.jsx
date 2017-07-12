@@ -128,7 +128,7 @@ export default class BookmarksTable extends Component {
   else if(nextProps.bookmarksSite !== undefined){
     this.setState({bookmarksSite :true});
   }
-  if (this.state.url != nextProps.fetchUrl){
+  if (this.state.fetchUrl != nextProps.fetchUrl){
     this.setState({url :nextProps.fetchURL});
     this.fetchData(nextProps.fetchURL);
   }
