@@ -28,38 +28,6 @@ export default class ShowUsers extends Component {
   }
 
 
-  handleEmailChange(event) {
-    this.setState({email: event.target.value})
-  }
-
-  handleFirstNameChange(event) {
-    this.setState({first_name: event.target.value});
-  }
-
-  handleLastNameChange(event) {
-    this.setState({last_name: event.target.value});
-  }
-
-  handleBioChange(event) {
-    this.setState({bio: event.target.value});
-  }
-
-  handlePwOldChange(event) {
-    this.setState({pw_old: event.target.value});
-  }
-
-  handlePwNewChange(event) {
-    this.setState({pw_new: event.target.value});
-  }
-
-  handlePwNewConfChange(event) {
-    this.setState({pw_new_confirm: event.target.value});
-  }
-
-
-
-
-
 render(){
   var columns =[];
   columns.push({
