@@ -1,6 +1,7 @@
 from flask import request, jsonify, make_response, g, Blueprint
 from flask_security import login_required, login_user, logout_user, current_user
-from flask_security.utils import verify_password, encrypt_password
+from flask_security.utils import verify_password, encrypt_password, hash_password
+from mongoengine import NotUniqueError
 from mongoengine.fields import ObjectId
 
 from api.helper.apiexception import ApiException
@@ -64,15 +65,18 @@ def create_user():
         g.user_datastore.create_user(first_name=user["first_name"],
                                      last_name=user["last_name"],
                                      email=user["email"],
-                                     password=encrypt_password(user["password"]),
+                                     password=hash_password(user["password"]),
                                      bio=user["bio"], roles=[role])
 
         return jsonify(g.user_datastore.get_user(user['email']))
 
+    except NotUniqueError as ue:
+        raise ApiException("duplicated user error", 409)
     except ApiException as e:
         raise e
     except Exception as err:
         raise ApiException(str(err), 500)
+
 
 
 @users.route('/api/users', methods=['PUT'])
@@ -113,7 +117,7 @@ def update_password():
 
     if current_user.has_role('admin') or verify_password(user["old_password"], res.password):
         new_password = user["new password"]
-        res.password = encrypt_password(new_password)
+        res.password = hash_password(new_password)
         res.save()
         return make_response("Password restored!", 200)
 
