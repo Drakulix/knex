@@ -84,9 +84,15 @@ def update_user():
         if not res:
             return make_response("Unknown User with Email-address: " +
                                  user['email'], 400)
-        res.first_name = user['first name']
-        res.last_name = user['last name']
+        if res.first_name != user['first name'] or res.last_name != user['last name']:
+            res.first_name = user['first name']
+            res.last_name = user['last name']
+            firstname = current_user['first_name'] if 'first_name' in current_user else ""
+            lastname = current_user['last_name'] if 'last_name' in current_user else ""
+            newname = firstname + " " if firstname else "" + lastname
+            g.projects.update_many({'authors.email': user['email']}, {'$set': {'authors.$.name': newname}})
         res.bio = user['bio']
+
         res.save()
 
         return make_response("User with email: " +
