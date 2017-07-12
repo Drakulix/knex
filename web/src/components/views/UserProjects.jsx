@@ -10,14 +10,14 @@ export default class UserProjects extends Component {
     };
   }
 
-render(){
+  render(){
     return (
       <div className="container">
         <div className="header">Your Projects</div>
-          <DataTable  columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'bookmarked']}
-                      fetchURL={"/api/projects/search/advanced/?q=authors.email:"+getMyEmail()}
-                      bookmarksSite = {"true"}
-          ></DataTable>
+        <DataTable
+          columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'bookmarked']}
+          fetchURL={"/api/projects/search/advanced/?q=authors.email:"+getMyEmail()}
+          bookmarksSite = {"true"} />
       </div>
     );
   }

@@ -62,62 +62,52 @@ export default class SharePane extends React.Component {
       var suggestedAuthorsArray = []
       for (var i in suggestedAuthors) {
         suggestedAuthorsArray = suggestedAuthorsArray.concat([
-                                   suggestedAuthors[i].first_name + " "
-                                   +suggestedAuthors[i].last_name +
-                             + " ("+suggestedAuthors[i].email+ ")"]);
-      }
-      console.log(suggestedAuthorsArray);
-      this.setState({
-        suggestedAuthors: suggestedAuthorsArray
-      });
-    }.bind(this));
+          suggestedAuthors[i].first_name + " "
+          +suggestedAuthors[i].last_name +
+          + " ("+suggestedAuthors[i].email+ ")"]);
+        }
+        console.log(suggestedAuthorsArray);
+        this.setState({
+          suggestedAuthors: suggestedAuthorsArray
+        });
+      }.bind(this));
+    }
 
+    componentWillReceiveProps(props){
+      this.setState({open: props.value});
+    }
 
+    handleAuthorChange(value) {
+      this.setState({authors : value});
+    }
+
+    render() {
+      const actions = [
+        <RaisedButton
+          label="Cancel"
+          primary={true}
+          onTouchTap={this.handleClose} />,
+        <RaisedButton
+          label="Share"
+          primary={true}
+          onTouchTap={this.shareProject}
+          style={{marginLeft:20}} />,
+      ];
+
+      return (
+        <Dialog
+          title="Share project with"
+          actions={actions}
+          modal={false}
+          open={this.state.open}
+          onRequestClose={this.handleClose}>
+          <ChipInputList
+            suggestions = {this.state.suggestedAuthors}
+            onChange={this.handleAuthorChange}
+            filtered ={true}
+            value={this.state.authors}
+            hintText={'Add authors...'}/>
+        </Dialog>
+      );
+    }
   }
-
-  componentWillReceiveProps(props){
-    this.setState({open: props.value});
-  }
-
-
-
-
-
-  handleAuthorChange(value) {
-    this.setState({authors : value});
-  }
-
-  render() {
-    const actions = [
-      <RaisedButton
-        label="Cancel"
-        primary={true}
-        onTouchTap={this.handleClose}
-        />,
-      <RaisedButton
-        label="Share"
-        primary={true}
-        onTouchTap={this.shareProject}
-        style={{marginLeft:20}}
-        />,
-    ];
-
-    return (
-      <Dialog
-        title="Share project with"
-        actions={actions}
-        modal={false}
-        open={this.state.open}
-        onRequestClose={this.handleClose}
-        >
-        <ChipInputList suggestions = {this.state.suggestedAuthors}
-          onChange={this.handleAuthorChange}
-          filtered ={true}
-          value={this.state.authors}
-          hintText={'Add authors...'}
-          />
-
-      </Dialog>
-    );
-  }
-}

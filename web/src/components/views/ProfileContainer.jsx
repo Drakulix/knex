@@ -1,13 +1,27 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import React, {
+  Component
+} from 'react';
+import {
+  Link
+} from 'react-router-dom';
 import Chip from 'material-ui/Chip'
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 
-import {Tabs, Tab} from 'material-ui/Tabs';
+import {
+  Tabs,
+  Tab
+} from 'material-ui/Tabs';
 import CircularProgress from 'material-ui/CircularProgress';
-import {getMyEmail, getUserInfo, changePassword, changeProfile} from '../common/Authentication.jsx';
-import { fetchJson } from '../common/Backend';
+import {
+  getMyEmail,
+  getUserInfo,
+  changePassword,
+  changeProfile
+} from '../common/Authentication.jsx';
+import {
+  fetchJson
+} from '../common/Backend';
 import DataTable from '../common/DataTable';
 import Snackbar from 'material-ui/Snackbar'
 import styles from '../common/Styles.jsx';
@@ -17,7 +31,7 @@ export default class ProfileContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      profile_exists : true,
+      profile_exists: true,
       site: 'info',
       site_loaded: false,
       error: '',
@@ -32,8 +46,8 @@ export default class ProfileContainer extends Component {
       pw_new_confirm: '',
       is_admin: false,
       value: 'a',
-      bookmarks : '',
-      topTenTags :[]
+      bookmarks: '',
+      topTenTags: []
     };
 
     this.handlePwChangeSubmit = this.handlePwChangeSubmit.bind(this);
@@ -51,119 +65,155 @@ export default class ProfileContainer extends Component {
     });
   };
 
-  isUserAdmin(){
+  isUserAdmin() {
     return (this.state.is_admin);
   }
 
 
   handleInputChange(event) {
     const target = event.target;
-    const value =  target.value;
+    const value = target.value;
     const name = target.name;
     this.setState({
       [name]: value,
-      snackbar : false
+      snackbar: false
     });
- }
-
-
-  handleSiteChange(value) {
-    this.setState({site: value})
   }
 
 
-  componentWillReceiveProps(nextProps){
-    this.setState({email: nextProps.email});
+  handleSiteChange(value) {
+    this.setState({
+      site: value
+    })
+  }
+
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      email: nextProps.email
+    });
     this.loadProfileInf(this.state.email);
   }
 
 
-  componentWillMount(){
+  componentWillMount() {
     this.loadProfileInf(this.state.email);
   }
 
 
   loadProfileInf(e) {
     getUserInfo(e).then(data => {
-      this.setState({profileInf: data});
-      if(!data){
-        this.setState({profile_exists: false});
-      }else{
+      this.setState({
+        profileInf: data
+      });
+      if (!data) {
+        this.setState({
+          profile_exists: false
+        });
+      } else {
         var admin = (data.roles === 'admin');
-        this.setState({is_admin: admin});
-        this.setState({first_name: data.first_name, last_name: data.last_name, bio: data.bio, bookmarks : data.bookmarks});
-        this.setState({site_loaded: true})
+        this.setState({
+          is_admin: admin
+        });
+        this.setState({
+          first_name: data.first_name,
+          last_name: data.last_name,
+          bio: data.bio,
+          bookmarks: data.bookmarks
+        });
+        this.setState({
+          site_loaded: true
+        })
       }
     }).catch(ex => {
-      this.setState({profile_exists: false});
-      this.setState({site_loaded: true})
+      this.setState({
+        profile_exists: false
+      });
+      this.setState({
+        site_loaded: true
+      })
     });
 
 
-    fetchJson("/api/users/"+e+"/tags").then(data => {
-          this.setState({
-            topTenTags: data
-          });
-        });
-    }
-
-
-  getMenuEditStyle(){
-    if(this.state.email !== getMyEmail() && !this.isUserAdmin()){
-      return ({visibility: 'hidden'});
-    }else{
-      return ({});
-    }
-  }
-
-  getEditSiteOldPasswordStyle(){
-    if(this.isUserAdmin()){
-      return ({visibility: 'hidden', display: 'none'});
-    }else{
-      return ({});
-    }
-  }
-
-  handlePwChangeSubmit(event){
-    event.preventDefault();
-    if(this.state.pw_new !== this.state.pw_new_confirm){
+    fetchJson("/api/users/" + e + "/tags").then(data => {
       this.setState({
-        snackbar : true,
-        snackbarText :  'New passwords do not match'
+        topTenTags: data
       });
-      return ;
+    });
+  }
+
+
+  getMenuEditStyle() {
+    if (this.state.email !== getMyEmail() && !this.isUserAdmin()) {
+      return ({
+        visibility: 'hidden'
+      });
+    } else {
+      return ({});
+    }
+  }
+
+  getEditSiteOldPasswordStyle() {
+    if (this.isUserAdmin()) {
+      return ({
+        visibility: 'hidden',
+        display: 'none'
+      });
+    } else {
+      return ({});
+    }
+  }
+
+  handlePwChangeSubmit(event) {
+    event.preventDefault();
+    if (this.state.pw_new !== this.state.pw_new_confirm) {
+      this.setState({
+        snackbar: true,
+        snackbarText: 'New passwords do not match'
+      });
+      return;
     }
     changePassword(this.state.email, this.state.pw_old, this.state.pw_new).then((success) => {
-      if(success){
+      if (success) {
         this.setState({
-          snackbar : true,
-          snackbarText :  'Password change success'
+          snackbar: true,
+          snackbarText: 'Password change success'
         });
-      }else{
-        this.setState({ error: 'Login failed' });
+      } else {
         this.setState({
-          snackbar : true,
-          snackbarText :  'Password change failed'
+          error: 'Login failed'
+        });
+        this.setState({
+          snackbar: true,
+          snackbarText: 'Password change failed'
         });
       }
     });
   }
 
-  handleProfileChangeSubmit(event){
+  handleProfileChangeSubmit(event) {
     event.preventDefault();
-    changeProfile(this.state.email, this.state.first_name, this.state.last_name, this.state.bio ).then((success) => {
+    changeProfile(this.state.email, this.state.first_name, this.state.last_name, this.state.bio).then((success) => {
 
-      if(success){
-        this.setState({profileInf: {bio: this.state.bio, first_name: this.state.first_name, last_name: this.state.last_name}});
+      if (success) {
         this.setState({
-          snackbar : true,
-          snackbarText :  'Profile changed'
+          profileInf: {
+            bio: this.state.bio,
+            first_name: this.state.first_name,
+            last_name: this.state.last_name
+          }
         });
-      }else{
-        this.setState({ error: 'Profile change failed' });
         this.setState({
-          snackbar : true,
-          snackbarText :  'Profile change failed'
+          snackbar: true,
+          snackbarText: 'Profile changed'
+        });
+      } else {
+        this.setState({
+          error: 'Profile change failed'
+        });
+        this.setState({
+          snackbar: true,
+          snackbarText: 'Profile change failed'
         });
       }
     });
@@ -171,50 +221,49 @@ export default class ProfileContainer extends Component {
 
 
   render() {
-      if(!this.state.site_loaded){
-        return (
-          <div className="container">
-            <div className="header"><CircularProgress size={80} thickness={5} /></div>
-          </div>
-        );
-      }
-      if( !this.state.profile_exists){
-        return (
-          <div className="container">
-            <div className="header">Profile Not Found</div>
-          </div>
-        );
-      }
-      else {
-        return (
-          <div className="container">
-            <div className="header">Profile Details</div>
-            <Tabs
-              value={this.state.value}
-              onChange={this.handleChange}
-              style={{marginBottom:"40px"}}
-              >
-              <Tab
-                label="Profile Info" value="a">
-                <div className="row padding">
-                  <div className="col-9">
-                    <div className="profile-header">Information:</div>
-                    <div className="profile-info">
-                      {this.state.profileInf.first_name} {this.state.profileInf.last_name}
-                    </div>
-                    <div className="profile-header">Biography:</div>
-                    <div className="profile-info" style={{width:"100%"}}>
-                      <table style={{tableLayout: "fixed", width: "80%" ,wordWrap: "break-word"}}><tr><td>
-                        {this.state.profileInf.bio}
-                      </td></tr></table>
-                    </div>
-                    <div>
-                      <div className="profile-header">Tags </div>
-                      <div style = {styles["wrapper"]}>
-                        { this.state.topTenTags.map(item =>
-                          <Chip style= {styles["chip"]}>
-                            <Link to={item} style= {styles["chipText"]} >{item}</Link></Chip>) }
-                            </div>
+    if (!this.state.site_loaded) {
+      return (
+        <div className="container">
+          <div className="header"><CircularProgress size={80} thickness={5} /></div>
+        </div>
+      );
+    }
+    if (!this.state.profile_exists) {
+      return (
+        <div className="container">
+          <div className="header">Profile Not Found</div>
+        </div>
+      );
+    } else {
+      return (
+        <div className="container">
+          <div className="header">Profile Details</div>
+          <Tabs
+            value={this.state.value}
+            onChange={this.handleChange}
+            style={{marginBottom:"40px"}} >
+            <Tab
+              label="Profile Info" value="a">
+              <div className="row padding">
+                <div className="col-9">
+                  <div className="profile-header">Information:</div>
+                  <div className="profile-info">
+                    {this.state.profileInf.first_name} {this.state.profileInf.last_name}
+                  </div>
+                  <div className="profile-header">Biography:</div>
+                  <div className="profile-info" style={{width:"100%"}}>
+                    <table style={{tableLayout: "fixed", width: "80%" ,wordWrap: "break-word"}}><tr><td>
+                      {this.state.profileInf.bio}
+                    </td></tr></table>
+                  </div>
+                  <div>
+                    <div className="profile-header">Tags </div>
+                    <div style = {styles["wrapper"]}>
+                      {this.state.topTenTags.map(item =>
+                        <Chip style= {styles["chip"]}>
+                          <Link to={item} style= {styles["chipText"]} >{item}</Link>
+                        </Chip>)}
+                      </div>
                     </div>
                   </div>
                   <div className="col-3">
@@ -320,11 +369,11 @@ export default class ProfileContainer extends Component {
               </Tab>
               <Tab    label="Your Projects" value="c">
                 <div  className="header-tab">Manage Projects</div>
-                    <DataTable
-                      fetchURL = {"/api/projects"}
-                      columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'bookmarked']}
-                      isProfile = {true}
-                    ></DataTable>
+                <DataTable
+                  fetchURL = {"/api/projects"}
+                  columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'bookmarked']}
+                  isProfile = {true}
+                  ></DataTable>
                 <div className="footer" />
               </Tab>
             </Tabs>
@@ -335,6 +384,7 @@ export default class ProfileContainer extends Component {
               autoHideDuration={10000}
               />
           </div>
-        )}
+        )
       }
     }
+  }
