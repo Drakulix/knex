@@ -35,6 +35,9 @@
           "$ref": "#/project/definitions/url"
         }
       },
+      "archived":{
+        "type": "boolean"
+      },
       "authors": {
         "type": "array",
         "minItems": 1,
