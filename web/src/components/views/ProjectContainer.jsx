@@ -130,7 +130,7 @@ export default class ProjectContainer extends Component {
         'Content-Type': 'application/json'
       },
     }).then(function(response){
-      if(response.status=200){
+      if(response.status===200){
         return true;
       }else{
         return false;
