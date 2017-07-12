@@ -8,16 +8,13 @@ function PageItem({label, active}){
   )
 }
 
-
 export default class Pagination extends Component {
   constructor(props) {
     super(props);
   };
 
-
   render() {
     const { currentPage } = this.props;
-
     return (
       <nav aria-label="Page navigation example">
         <ul className="pagination">

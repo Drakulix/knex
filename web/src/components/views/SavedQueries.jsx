@@ -1,10 +1,11 @@
-import React, { Component } from 'react';
+import React, {
+  Component
+} from 'react';
 import SavedQuery from "../common/SavedQuery"
-
 
 class Headline extends Component {
   render() {
-    return(
+    return (
       <div className="headerCreation" id="headerSearch" style={{width:"100%"}}>
         Your Saved Queries
       </div>
@@ -12,75 +13,84 @@ class Headline extends Component {
   }
 }
 
-
 export default class SavedQueries extends Component {
   constructor(props) {
     super(props);
-    this.state = {queries:{}
+    this.state = {
+      queries: {}
     };
   }
 
 
-  componentWillMount(){
+  componentWillMount() {
 
-//TODO LOAD
+    //TODO LOAD
 
-
-    var queries =  [
-        { _id :"FDAF",
-          authors : [{email:"marko@knex", name :"Marko"},
-          {email:"marko@knex", name :"Marko"}
+    var queries = [{
+        _id: "FDAF",
+        authors: [{
+            email: "marko@knex",
+            name: "Marko"
+          },
+          {
+            email: "marko@knex",
+            name: "Marko"
+          }
         ],
-        title : "Test",
-        tags : ["DDSA"],
-        value : "0",
-        status : "DONE",
-        filter_date_from :"2009-12-07",
-        filter_date_to:"2015-05-06",
-        description:"ttt",
-        searchString :"RE",
-        shortName : "TEST",
-        userID:"av"
+        title: "Test",
+        tags: ["DDSA"],
+        value: "0",
+        status: "DONE",
+        filter_date_from: "2009-12-07",
+        filter_date_to: "2015-05-06",
+        description: "ttt",
+        searchString: "RE",
+        shortName: "TEST",
+        userID: "av"
       },
-      { _id :"FDAF",
-        authors : [{email:"marko@knex", name :"Marko"},
-        {email:"marko@knex", name :"Marko"}
-      ],
-      title : "Test",
-      tags : ["DDSA"],
-      value : "0",
-      status : "DONE",
-      filter_date_from :"2012-12-12",
-      filter_date_to:"2011-05-11",
-      searchString :"RE",
-      shortName : "TEST",
-      description :"Fd",
-      userID:"av"
-    }];
+      {
+        _id: "FDAF",
+        authors: [{
+            email: "marko@knex",
+            name: "Marko"
+          },
+          {
+            email: "marko@knex",
+            name: "Marko"
+          }
+        ],
+        title: "Test",
+        tags: ["DDSA"],
+        value: "0",
+        status: "DONE",
+        filter_date_from: "2012-12-12",
+        filter_date_to: "2011-05-11",
+        searchString: "RE",
+        shortName: "TEST",
+        description: "Fd",
+        userID: "av"
+      }
+    ];
 
     this.setState({
-    queries : queries
+      queries: queries
     })
-}
+  }
 
-render() {
-  return(
-    <div className="container">
-      <div className="innerContainer">
-        <Headline />
-        <div>
-          {
-            this.state.queries.map(item =>
-              <div><SavedQuery value={item}></SavedQuery>
-              <hr></hr>
-            </div>
-            )
-          }
+  render() {
+    return (
+      <div className="container">
+        <div className="innerContainer">
+          <Headline />
+          <div>
+            {this.state.queries.map(item =>
+              <div>
+                <SavedQuery value={item}></SavedQuery>
+                <hr />
+              </div>)}
+          </div>
+        </div>
       </div>
-
-
-    </div>
-  </div>
-);
-}
+    );
+  }
 }

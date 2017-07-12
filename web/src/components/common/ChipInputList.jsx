@@ -4,7 +4,6 @@ import Chip from 'material-ui/Chip';
 import AutoComplete from 'material-ui/AutoComplete'
 import styles from '../common/Styles.jsx'
 
-
 export default class ChipInputList extends Component {
   constructor(props) {
     super(props);
@@ -15,7 +14,7 @@ export default class ChipInputList extends Component {
 
   handleRequestAdd (chip) {
     if(this.props.filtered && this.props.suggestions.indexOf(chip) === -1)
-      return;
+    return;
     var list = [...this.state.list, chip];
     this.setState({
       list: list
@@ -34,7 +33,6 @@ export default class ChipInputList extends Component {
   componentWillReceiveProps(props){
     this.props = props;
   }
-
 
   render(){
     return(

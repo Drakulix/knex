@@ -12,8 +12,6 @@ export default class SignIn extends Component {
 
   constructor(props) {
     super(props);
-
-    // set the initial component state
     this.state = {
       redirect: false,
       error: '',
@@ -54,14 +52,11 @@ export default class SignIn extends Component {
 
   render() {
     const { teamName } = this.props;
-
     if (this.state.redirect || isLoggedIn() ) {
       return <Redirect to='/discovery'/>;
     }
-
     return (
       <section className="sign-container">
-
         {/*Information*/}
         <img className="service-name" src={logo} alt="Logo"/>
         <h2 className="team-name">{teamName}</h2>
@@ -75,45 +70,38 @@ export default class SignIn extends Component {
                 value={this.state.email}
                 onChange={this.handleChangeEmail}
                 hintText="Email"
-              />
+                />
             </div>
 
             {/*Input password*/}
             <div className="input-group input-login">
-
               <TextField
                 type="password"
                 value={this.state.password}
                 onChange={this.handleChangePassword}
-                hintText="Password"
-
-
-              />
+                hintText="Password" />
             </div>
             <div>
               <RaisedButton
                 type="Submit"
                 label="Login"
                 primary={true}
-                style={{width: 250, marginTop:40}}
-
-              />
-          </div>
+                style={{width: 250, marginTop:40}} />
+            </div>
           </form>
           <div>
-<br/>
+            <br/>
             <Link to="/register">
-            <RaisedButton
-              type="Submit"
-              label="Register"
-              primary={true}
-              style={{width: 250}}
-              required
-            />
+              <RaisedButton
+                type="Submit"
+                label="Register"
+                primary={true}
+                style={{width: 250}}
+                required
+                />
             </Link>
           </div>
         </div>
-
       </section>
     );
   }
