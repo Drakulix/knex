@@ -1,48 +1,41 @@
-import React, { Component } from 'react';
-import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
-import DatePicker from 'material-ui/DatePicker';
+import React, { Component } from 'react'
+import TextField from 'material-ui/TextField'
+import RaisedButton from 'material-ui/RaisedButton'
+import DatePicker from 'material-ui/DatePicker'
 import DropDownMenu from 'material-ui/DropDownMenu'
-import MenuItem from 'material-ui/MenuItem';
-import {Card, CardHeader, CardTitle, CardText} from 'material-ui/Card';
-import { fetchJson } from '../common/Backend.jsx';
+import MenuItem from 'material-ui/MenuItem'
+import {Card, CardHeader, CardTitle, CardText} from 'material-ui/Card'
+import { fetchJson } from '../common/Backend.jsx'
 
-import ChipInputList from '../common/ChipInputList';
+import ChipInputList from '../common/ChipInputList'
 
 const statusString = [
-  {id: "0" , text :<span className="badge badge-success">DONE</span>, value : "DONE"},
-  {id: "1" , text :<span className="badge badge-info">IN_REVIEW</span>, value : "IN_REVIEW"},
-  {id: "2" , text :<span className="badge badge-warning">IN_PROGRESS</span>, value : "IN_PROGRESS"},
-  {id: "3" , text :"No filter", value : ""}
-];
+  {text :<span className="badge badge-success">DONE</span>, value : "DONE"},
+  {text :<span className="badge badge-info">IN_REVIEW</span>, value : "IN_REVIEW"},
+  {text :<span className="badge badge-warning">IN_PROGRESS</span>, value : "IN_PROGRESS"},
+  {text :"No filter", value : ""}
+]
 
 export default class Filters extends Component{
 
   constructor(props){
-    super(props);
-    var filters = (props.value === undefined) ? {} : props.value;
+    super(props)
+    var filters = (props.value === undefined) ? {} : props.value
     var date_from = (filters.filter_date_from !== undefined) ?
                               new Date( filters.filter_date_from.split("-")[0],
                                         filters.filter_date_from.split("-")[1]-1,
                                         filters.filter_date_from.split("-")[2],0,0,0,0)
-                          : "";
+                          : ""
     var date_to = (filters.filter_date_to !== undefined) ?
                               new Date( filters.filter_date_to.split("-")[0],
                                         filters.filter_date_to.split("-")[1]-1,
                                         filters.filter_date_to.split("-")[2],0,0,0,0)
-                          : "";
-    var stateValue = 3;
-    if(filters.status !== undefined){
-      stateValue =  statusString.filter(
-                          function(stateField){return filters.status === stateField.value }
-                          );
-      stateValue = stateValue[0].id;
-    }
-    var authors = [];
+                          : ""
+    var authors = []
     if(filters.authors !== undefined){
       var dataAuthors = filters.authors
       for (var i in dataAuthors) {
-        authors = authors.concat([dataAuthors[i].name + " ("+ dataAuthors[i].email+ ")"]);
+        authors = authors.concat([dataAuthors[i].name + " ("+ dataAuthors[i].email+ ")"])
       }
     }
 
@@ -51,7 +44,6 @@ export default class Filters extends Component{
       authors : authors,
       title : filters.title !== undefined ? filters.title : "",
       tags : filters.tags !== undefined ? filters.tags :[],
-      value : stateValue,
       status : filters.status !== undefined ? filters.status:"",
       date_from: date_from !== undefined ? date_from : '',
       date_to: date_to !== undefined ? date_to : '',
@@ -64,9 +56,9 @@ export default class Filters extends Component{
 
 
 
-    this.handleAuthorChange = this.handleAuthorChange.bind(this);
-    this.handleTagChange = this.handleTagChange.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+    this.handleAuthorChange = this.handleAuthorChange.bind(this)
+    this.handleTagChange = this.handleTagChange.bind(this)
+    this.handleChange = this.handleChange.bind(this)
   }
 
 
@@ -77,39 +69,39 @@ export default class Filters extends Component{
     fetchJson('/api/projects/tags').then(function(tags) {
       this.setState({
         suggestedTags: tags
-      });
-    }.bind(this));
+      })
+    }.bind(this))
 
     //gets all the authors from the backend
     fetchJson('/api/projects/authors').then(function(authors) {
-      var suggestedAuthors = authors;
+      var suggestedAuthors = authors
       var suggestedAuthorsArray = []
       for (var i in suggestedAuthors) {
-        suggestedAuthorsArray = suggestedAuthorsArray.concat([suggestedAuthors[i].name + " ("+suggestedAuthors[i].email+ ")"]);
+        suggestedAuthorsArray = suggestedAuthorsArray.concat([suggestedAuthors[i].name + " ("+suggestedAuthors[i].email+ ")"])
       }
-      console.log(suggestedAuthorsArray);
+      console.log(suggestedAuthorsArray)
       this.setState({
         suggestedAuthors: suggestedAuthorsArray
-      });
-    }.bind(this));
+      })
+    }.bind(this))
 
 
   }
 
   handleChange(event) {
-    const name = event.target.name;
-    const value = event.target.value;
-    this.setState({ [name]: value});
-    this.props.onChange( [name], value);
+    const name = event.target.name
+    const value = event.target.value
+    this.setState({ [name]: value})
+    this.props.onChange( [name], value)
 
   }
 
 
   dateToString(date){
-    var mm = date.getMonth()+1;
-    var dd = date.getDate();
+    var mm = date.getMonth()+1
+    var dd = date.getDate()
     return [date.getFullYear(),'-', ((mm > 9) ? '' :'0')+ mm, '-',
-    ((dd> 9) ? '':'0')+ dd].join('');
+    ((dd> 9) ? '':'0')+ dd].join('')
   }
 
   handleChangeDateFrom = (event, date) => {
@@ -117,53 +109,53 @@ export default class Filters extends Component{
       date_from: date,
       filter_date_from : this.dateToString(date)
 
-    });
-    this.props.onChange("filter_date_from",  this.dateToString(date));
-  };
+    })
+    this.props.onChange("filter_date_from",  this.dateToString(date))
+  }
 
   handleChangeDateTill = (event, date) => {
     this.setState({
       date_to: date,
       filter_date_to :  this.dateToString(date)
-    });
-    this.props.onChange("filter_date_to", this.dateToString(date));
-  };
+    })
+    this.props.onChange("filter_date_to", this.dateToString(date))
+  }
 
   handleDateDelete = (event) => {
     if(event === "until"){
       this.setState({
         date_to: '',
         filter_date_to:  ''
-      });
-      this.props.onChange("filter_date_to", '');
+      })
+      this.props.onChange("filter_date_to", '')
     }else{
       this.setState({
         date_from: '',
         filter_date_from:  ''
-      });
-      this.props.onChange("filter_date_from", '');
+      })
+      this.props.onChange("filter_date_from", '')
     }
   }
 
   handleStatusChange = (event, index, value) => {
-    this.setState({value : value,
-      status:  statusString[value].value}
-    );
+    this.setState({
+      status:  value}
+    )
 
-    this.props.onChange("status", statusString[value].value);
+    this.props.onChange("status", value)
   }
 
 
 
   handleAuthorChange(value) {
-    this.setState({authors : value});
-    this.props.onChange("authors" ,value);
+    this.setState({authors : value})
+    this.props.onChange("authors" ,value)
   }
 
 
   handleTagChange(value) {
-    this.setState({tags : value});
-    this.props.onChange("tags" , value);
+    this.setState({tags : value})
+    this.props.onChange("tags" , value)
   }
 
 
@@ -258,13 +250,13 @@ export default class Filters extends Component{
             <div className="col-2" style={{marginTop:-3}}>
               <DropDownMenu
                 onChange={this.handleStatusChange}
-                value={this.state.value}
+                value={this.state.status}
                 labelStyle={{width: '100%', paddingLeft:0}}
                 underlineStyle={{width: '100%', marginLeft:0}}
                 autoWidth={false}
                 style={{width: '100%'}}
                 >
-                {statusString.map(item =><MenuItem value={item.id} primaryText={item.text} />)}
+                {statusString.map(item =><MenuItem value={item.value} primaryText={item.text} />)}
               </DropDownMenu>
             </div>
             <div className="col-1"></div>
