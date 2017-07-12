@@ -192,7 +192,6 @@ export default class SignUp extends Component {
               onChange={this.handleChangeLastName}
               hintText="Last Name"
               errorText={(this.state.lastname === "") ? "Field is requiered" : ""}
-
             />
           </div>
           {/*Input Email*/}
@@ -203,10 +202,8 @@ export default class SignUp extends Component {
               onChange={this.handleChangeEmail}
               hintText="Email"
               errorText={this.state.email_error}
-               autofocus
             />
           </div>
-
           {/*Input password*/}
           <div className="input-group input-login">
             <TextField
@@ -215,20 +212,17 @@ export default class SignUp extends Component {
               onChange={this.handleChangePassword}
               hintText="Password"
               errorText={(this.state.password === "") ? "Field is requiered" : ""}
-
             />
           </div>
 
           {/*Input confirm password*/}
           <div className="input-group input-login">
-
             <TextField
               type="password"
               value={this.state.password_confirm}
               onChange={this.handleChangePasswordConfirm}
               hintText="Confirm Password"
               errorText={( this.state.password !== this.state.password_confirm ) ? "Passwords do not match" : "" }
-
             />
           </div>
           <div >
@@ -247,7 +241,6 @@ export default class SignUp extends Component {
               label="Register"
               primary={true}
               style={{width: 250}}
-              required
             />
         </form>
           </div>
