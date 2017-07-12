@@ -153,6 +153,7 @@ export default class UploadByPattern extends Component {
         authorArray = authorArray.concat([data.authors[i].name + " ("+ data.authors[i].email+ ")"])
       }
       this.setState({
+<<<<<<< HEAD
         projectInf: data,
         authors : authors,
         date: new Date( data.date_creation.split("-")[0],
@@ -219,6 +220,84 @@ export default class UploadByPattern extends Component {
           suggestedAuthors[i].first_name + " "
           +suggestedAuthors[i].last_name +
           " ("+suggestedAuthors[i].email+ ")"])
+=======
+        date: date,
+        projectInf: projectInf
+      });
+    };
+
+    componentWillMount(){
+
+          //TODO LOADAuthorsFromBackend
+
+          var suggestedAuthors = [{email:"marko@knex", name :"Marko"},
+                {email:"victor@knex", name :"Victor"},{email:"cedric@knex", name :"Cedric"}];
+          var suggestedAuthorsArray = []
+          for (var i in suggestedAuthors) {
+            suggestedAuthorsArray = suggestedAuthorsArray.concat([suggestedAuthors[i].name + " ("+suggestedAuthors[i].email+ ")"]);
+          }
+
+          //TODO LOADTagsFromBackend
+          var suggestedTags = ["your", "tags", "here"];
+
+
+          if(this.state.projectID !== undefined){
+               this.loadProjectInf(this.state.projectID);
+          }
+
+          this.setState({
+              suggestedAuthors: suggestedAuthorsArray,
+              suggestedTags : suggestedTags,
+          });
+        }
+
+        fetchProjectInfo(uuid){
+          return fetch('/api/projects/' + uuid, {
+            method: 'GET',
+            mode: 'no-cors',
+            credentials: 'include',
+            headers: {
+              "Accept": "application/json",
+            }
+          }).then(response => response.json()).catch(ex => {
+            console.error('parsing failes', ex);
+          });
+        }
+
+      loadProjectInf(uuid) {
+        // Load Project info into state
+        this.fetchProjectInfo(uuid).then(data => {
+          this.setState({projectInf: data});
+          if(!data){
+            this.setState({project_exists: false});
+          }else{
+            this.setState({project_exists: true})
+          }
+          var authorArray = []
+          var authors = data.authors
+          for (var i in data.authors) {
+            authorArray = authorArray.concat([data.authors[i].name + " ("+ data.authors[i].email+ ")"]);
+          }
+
+          var status = data.status;
+          var stateValue=  statusString.filter(
+          function(stateField){return status === stateField }
+          );
+
+          this.setState({
+            projectInf: data,
+            date: new Date( data.date_creation.split("-")[0],
+                            data.date_creation.split("-")[1]-1,
+                            data.date_creation.split("-")[2],0,0,0,0),
+            status : stateValue,
+            authors : authors
+
+          });
+
+          //this feature is disabled (see below in the rendermethod)
+          this.setState({site_loaded: true})
+
+>>>>>>> 00aa20e... Hasty Hotfix for edit projects
         }
         console.log(suggestedAuthorsArray)
         this.setState({
@@ -238,6 +317,7 @@ export default class UploadByPattern extends Component {
           </div>
         )
       }
+<<<<<<< HEAD
       if(!this.state.project_exists && this.state.projectID){
         return (
           <div className="container">
@@ -250,6 +330,89 @@ export default class UploadByPattern extends Component {
             <div className="innerContainer">
               <div className = "headerCreation" style={{width:"100%"}}>
                 {(this.state.projectID !== undefined) ? "Edit project" : "Add new project"}
+=======
+
+      submit(){
+        var data = JSON.stringify(this.state.projectInf);
+
+        var xhr = new XMLHttpRequest();
+        xhr.withCredentials = true;
+
+        xhr.addEventListener("readystatechange", function () {
+          if (this.readyState === 4) {
+            console.log(this.responseText);
+          }
+        });
+
+        xhr.open("POST", "/api/projects");
+        xhr.setRequestHeader("content-type", "application/json");
+
+        xhr.send(data);
+        // sendJson("POST", "/api/projects", this.state.projectInf)
+        this.setState({snackbar:true});
+        }
+
+        isInValid(){
+          return      this.state.projectInf["title"] === ''
+          ||  this.state.projectInf["date_creation"] === ''
+          ||  this.state.projectInf["description"] === ''
+          ||  this.state.authors.length === 0
+          ||  this.state.status.length === 0;
+        }
+
+        componentDidMount(){
+          /* Some bug resets this.state.status initialy to [].
+           * This happens inbetween the end of componentWillMount()
+           * and the beginning of the first time the component renders.
+           * This is a temporary workaround until the issue is resolved.
+           * Please don't remove this unless you know how to fix it.
+           */
+           if(this.props.fromURL&&(this.state.status!==this.props.status)){
+             this.setState({status : this.props.status});
+           }
+
+
+
+           fetchJson('/api/projects/tags').then(function(tags) {
+             this.setState({
+               suggestedTags: tags
+             });
+           }.bind(this));
+
+           //gets all the authors from the backend
+           fetchJson('/api/users').then(function(authors) {
+             var suggestedAuthors = authors;
+             var suggestedAuthorsArray = []
+             for (var i in suggestedAuthors) {
+               suggestedAuthorsArray = suggestedAuthorsArray.concat([
+                                          suggestedAuthors[i].first_name + " "
+                                          +suggestedAuthors[i].last_name +
+                                          " ("+suggestedAuthors[i].email+ ")"]);
+             }
+             console.log(suggestedAuthorsArray);
+             this.setState({
+               suggestedAuthors: suggestedAuthorsArray
+             });
+           }.bind(this));
+
+        }
+
+        render() {
+          /*
+           * using this.state.site_loaded here will crash the entire page.
+           * dont bring it back, before it no longer does that!
+          if(!this.state.site_loaded && this.state.projectID){
+            return (
+              <div className="container">
+                <div className="header"><CircularProgress size={80} thickness={5} /></div>
+              </div>
+            );
+          }*/
+          if(!this.state.project_exists && this.state.projectID){
+            return (
+              <div className="container">
+                <div className="header"><CircularProgress size={80} thickness={5} /></div>
+>>>>>>> 00aa20e... Hasty Hotfix for edit projects
               </div>
               <form>
                 <div>
