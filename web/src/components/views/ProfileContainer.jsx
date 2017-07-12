@@ -213,7 +213,7 @@ export default class ProfileContainer extends Component {
                       <div style = {styles["wrapper"]}>
                         { this.state.topTenTags.map(item =>
                           <Chip style= {styles["chip"]}>
-                            <Link to={item} style= {styles["chipText"]} >{item}</Link></Chip>) }
+                            <Link to={"/discovery?tag=" +item} style= {styles["chipText"]} >{item}</Link></Chip>) }
                             </div>
                     </div>
                   </div>
