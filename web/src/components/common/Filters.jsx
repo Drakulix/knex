@@ -1,7 +1,15 @@
+<<<<<<< HEAD
 import React, { Component } from 'react'
 import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
 import DatePicker from 'material-ui/DatePicker'
+=======
+import React, { Component } from 'react';
+import IconButton from 'material-ui/IconButton';
+import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
+import DatePicker from 'material-ui/DatePicker';
+>>>>>>> c906a10... Fixed minor BUG
 import DropDownMenu from 'material-ui/DropDownMenu'
 import MenuItem from 'material-ui/MenuItem'
 import {Card, CardHeader, CardTitle, CardText} from 'material-ui/Card'

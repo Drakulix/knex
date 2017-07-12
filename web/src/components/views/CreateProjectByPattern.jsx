@@ -153,7 +153,6 @@ export default class UploadByPattern extends Component {
         authorArray = authorArray.concat([data.authors[i].name + " ("+ data.authors[i].email+ ")"])
       }
       this.setState({
-<<<<<<< HEAD
         projectInf: data,
         authors : authors,
         date: new Date( data.date_creation.split("-")[0],
@@ -220,6 +219,7 @@ export default class UploadByPattern extends Component {
           suggestedAuthors[i].first_name + " "
           +suggestedAuthors[i].last_name +
           " ("+suggestedAuthors[i].email+ ")"])
+<<<<<<< HEAD
 =======
         date: date,
         projectInf: projectInf
@@ -298,6 +298,8 @@ export default class UploadByPattern extends Component {
           this.setState({site_loaded: true})
 
 >>>>>>> 00aa20e... Hasty Hotfix for edit projects
+=======
+>>>>>>> c906a10... Fixed minor BUG
         }
         console.log(suggestedAuthorsArray)
         this.setState({
@@ -317,7 +319,6 @@ export default class UploadByPattern extends Component {
           </div>
         )
       }
-<<<<<<< HEAD
       if(!this.state.project_exists && this.state.projectID){
         return (
           <div className="container">
@@ -330,6 +331,7 @@ export default class UploadByPattern extends Component {
             <div className="innerContainer">
               <div className = "headerCreation" style={{width:"100%"}}>
                 {(this.state.projectID !== undefined) ? "Edit project" : "Add new project"}
+<<<<<<< HEAD
 =======
 
       submit(){
@@ -413,6 +415,8 @@ export default class UploadByPattern extends Component {
               <div className="container">
                 <div className="header"><CircularProgress size={80} thickness={5} /></div>
 >>>>>>> 00aa20e... Hasty Hotfix for edit projects
+=======
+>>>>>>> c906a10... Fixed minor BUG
               </div>
               <form>
                 <div>
