@@ -131,10 +131,15 @@ def delete_user(mail):
     if not user:
         raise ApiException("user not found", 404)
     if is_permitted(current_user, user):
-        for usr in g.user_datestore.user_model.objects:
-            if usr.has_role('admin') and usr['email'] != user['email']:
-                g.user_datastore.delete_user(user)
-        raise ApiException("You are the last surviving admin, you cannot delete yourself", 9001)
+        if not user.has_role('admin'):
+            g.user_datastore.delete_user(user)
+            return make_response("deleted non admin", 200)
+        else:
+            for usr in g.user_datastore.user_model.objects:
+                if usr.has_role('admin') and usr['email'] != user['email']:
+                    g.user_datastore.delete_user(user)
+                    return make_response("deleted", 200)
+            raise ApiException("You are the last surviving admin, you cannot delete yourself", 9001)
 
     else:
         make_response("Permission denied!", 403)
