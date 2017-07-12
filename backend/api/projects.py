@@ -2,7 +2,6 @@
 Defines API points and starts the application
 """
 
-import sys
 import time
 import uuid
 import json
@@ -92,9 +91,8 @@ def get_projects():
     limit = request.args.get('limit', type=int)
     skip = request.args.get('skip', type=int)
     archived = request.args.get('archived', type=str, default='false')
-    print(request.query_string, file=sys.stderr)
-
-    print(archived, file=sys.stderr)
+    if archived not in ['true', 'false', 'mixed']:
+        return make_response('Invalid parameters', 400)
     argc = len(request.args)
 
     if g.projects.count() == 0:
@@ -104,18 +102,14 @@ def get_projects():
         query = {'archived': True}
     elif archived == 'false':
         query = {'archived': False}
-    elif archived == 'mixed':
-        query = {}
     if limit and skip:
         res = g.projects.find(query, limit=limit, skip=skip)
     elif limit:
         res = g.projects.find(query, limit=limit)
     elif skip:
         res = g.projects.find(query, skip=skip)
-    elif archived:
-        res = g.projects.find(query)
     else:
-        return make_response('Invalid parameters', 400)
+        res = g.projects.find(query)
 
     try:
         res = [x for x in res[:]]
@@ -160,7 +154,7 @@ def get_project_by_id(project_id):
     Returns:
         res (json): Project corresponding to the ID
     """
-    archived = request.args.get('archived', type=str, default="false")
+    archived = request.args.get('archived', type=str, default="mixed")
     if archived == 'true':
         res = g.projects.find_one({'_id': project_id, 'archived': True})
     elif archived == 'false':
@@ -168,7 +162,7 @@ def get_project_by_id(project_id):
     elif archived == 'mixed':
         res = g.projects.find_one({'_id': project_id})
     else:
-        res = None
+        return make_response('Invalid parameters', 400)
     if res is None:
         return make_response("Project not found", 404)
     try:
@@ -237,10 +231,6 @@ def update_project(project_id):
                     '/projects/' + str(manifest['_id']))
                 g.rerun_saved_searches()
                 return make_response("Success")
-            # remove this so a validation error is thrown
-            # elif not request.on_json_loading_failed:
-            #     raise ApiException("json could not be parsed",
-            #                        400, request.on_json_loading_failed())
             elif not is_permitted(current_user, manifest):
                 raise ApiException("You are not allowed to edit this project", 403)
             else:
