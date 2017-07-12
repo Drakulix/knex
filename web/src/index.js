@@ -43,13 +43,13 @@ const muiTheme = getMuiTheme(styles);
 
 
 
-const PageRoute = ({ component: Component, path, ...rest }) => (
+const PageRoute = ({ component: Component, path, site_path, ...rest }) => (
   <Route {...rest} path={path} render={props => (
     (
       <div className="inner-content">
         <TopBar />
         <div className="row">
-          <SideBar location={path} />
+          <SideBar location={site_path} />
           <div className="col-9 content">
             <Component {...props} />
           </div>
@@ -63,19 +63,19 @@ ReactDOM.render(
   <MuiThemeProvider  muiTheme={muiTheme}>
     <BrowserRouter history={history}>
       <div>
-        <PageRoute path="/discovery/:qID" component={SearchPage} />
-        <PageRoute path="/discovery/" component={SearchPage} />
-        <PageRoute path="/admin" component={AdminOverview} />
-        <PageRoute exact path="/createNew" component={CreateProjectByPattern} />
-        <PageRoute path="/createNew/:getURL" component={CreateProjectByURL} />
-        <PageRoute path="/create" component={CreateProject} />
-        <PageRoute path="/update/:uuid" component={CreateProjectByPattern} />
-        <PageRoute path="/createbylink" component={CreateProject} />
-        <PageRoute path="/project/:uuid" component={ProjectContainer} />
-        <PageRoute path="/bookmarks" component={BookmarksTable} />
-        <PageRoute path="/profile/:email" component={ProfileContainer} />
-        <PageRoute path="/yourprojects" component={UserProjects} />
-        <PageRoute path="/queries" component={SavedQueries} />
+        <PageRoute site_path="/discovery" path="/discovery/:qID" component={SearchPage} />
+        <PageRoute site_path="/discovery" path="/discovery/" component={SearchPage} />
+        <PageRoute site_path="/admin" path="/admin" component={AdminOverview} />
+        <PageRoute site_path="/createNew" exact path="/createNew" component={CreateProjectByPattern} />
+        <PageRoute site_path="/createNew" path="/createNew/:getURL" component={CreateProjectByURL} />
+        <PageRoute site_path="/create" path="/create" component={CreateProject} />
+        <PageRoute site_path="/update" path="/update/:uuid" component={CreateProjectByPattern} />
+        <PageRoute site_path="/createbylink" path="/createbylink" component={CreateProject} />
+        <PageRoute site_path="/project" path="/project/:uuid" component={ProjectContainer} />
+        <PageRoute site_path="/bookmarks" path="/bookmarks" component={BookmarksTable} />
+        <PageRoute site_path="/profile" path="/profile/:email" component={ProfileContainer} />
+        <PageRoute site_path="/yourprojects" path="/yourprojects" component={UserProjects} />
+        <PageRoute site_path="/queries" path="/queries" component={SavedQueries} />
         <Route path="/register" component={SignUp} />
         <Route exact path="/" component={SignIn} />
      </div>

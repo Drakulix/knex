@@ -2,9 +2,7 @@
 const mainColor ="#ff5000";
 
 export default {
-  uploadButton: {
-    verticalAlign: 'middle',
-  },
+  
   uploadInput: {
     cursor: 'pointer',
     position: 'absolute',

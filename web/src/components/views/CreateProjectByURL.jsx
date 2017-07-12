@@ -69,6 +69,8 @@ export default class UploadByURL extends React.Component {
                                                   break;
                             case "in progress" :  that.setState({ status : "2" });
                                                   break;
+                            default:
+                                                  break;
                           }
                           project["status"] = that.state.status;
                         };

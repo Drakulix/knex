@@ -9,25 +9,15 @@ export default class BookmarksTable extends Component {
     };
   }
 
-
-
 render(){
-
     return (
       <div className="container">
         <div className="header">Your Bookmarks</div>
-
-
-
-        <DataTable columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'bookmarked']}
-
-fetchURL="/api/users/bookmarks"
-bookmarksSite = {"true"}
-          ></DataTable>
-
-        <div className="footer" />
-
-  </div>
+        <DataTable  columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'bookmarked']}
+                    fetchURL="/api/users/bookmarks"
+                    bookmarksSite = {"true"}
+        ></DataTable>
+      </div>
     );
   }
 }

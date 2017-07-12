@@ -1,29 +1,15 @@
 import React, { Component } from 'react';
 import {
-  BrowserRouter as Router,
-  Route,
-  Link,
   Redirect,
-  withRouter
 } from 'react-router-dom';
-import { login, isLoggedIn, logout, getCookie, setCookie } from '../common/Authentication.jsx';
+import { logout } from '../common/Authentication.jsx';
 
 import Badge from 'material-ui/Badge';
 import IconButton from 'material-ui/IconButton';
 import Snackbar from 'material-ui/Snackbar';
-import Popover from 'material-ui/Popover';
-import Menu from 'material-ui/Menu';
-import MenuItem from 'material-ui/MenuItem';
 import NotificationPane from '../common/NotificationPane'
-import { fetchJson } from '../common/Backend';
+import { fetchJson, fetchDelete } from '../common/Backend';
 
-
-const styles = {
-
-  linkStyle:{
-    color :'#000000'
-  }
-};
 
 
 export default class TopBar extends Component {
@@ -34,7 +20,7 @@ export default class TopBar extends Component {
       redirect: false,
       popoverOpen: false,
       logo: 'Company Logo',
-
+      notifications :[],
       snackbar: false,
       popover : false,
 
@@ -42,6 +28,7 @@ export default class TopBar extends Component {
     this.handleLogout = this.handleLogout.bind(this);
     this.handleNotificationClick = this.handleNotificationClick.bind(this);
     this.handleRequestClose = this.handleRequestClose.bind(this);
+    this.resolveNotification = this.resolveNotification.bind(this);
 
   }
 
@@ -49,38 +36,19 @@ export default class TopBar extends Component {
     this.loadNotifications();
   }
 
-
-
   loadNotifications() {
-    var notifications = [{description : "New Update on" , link: "/projects/da", title:"Title",
-id :"dsa"
-    },
-    {description : "New Project matching query" , link: "/projects/da", title:"Title2",
-
-    id :"dsa"},
-    {description : "New Comment on " , link: "/projects/da", title:"Title",
-    id :"dsa"}];
-
-
-
-    //
-    // var data = fetchJson("/api/users/notifications").then(function (data) {
-    //
-    //         this.setState({
-    //           notifications: data
-    //         });
-    //     },function(data){
-    //       this.setState({
-    //           notifications: []
-    //         });
-    //     }
-    //     .bind(this));
-
-
-   this.setState({notifications: []});
+    fetchJson("/api/users/notifications").then(function (data) {
+      this.setState({
+          notifications: data
+          });
+      }.bind(this));
   }
 
-
+  resolveNotification(notificationID){
+    var list = this.state.notifications.filter((c) => c.id !== notificationID);
+    this.setState({notifications : list});
+    fetchDelete("api/users/notifications/"+ notificationID);
+  }
 
   handleNotificationClick(event){
     event.preventDefault();
@@ -126,6 +94,7 @@ id :"dsa"
                               anchorEl={this.state.anchorEl}
                               onRequestClose={this.handleRequestClose}
                               notifications={this.state.notifications}
+                              resolveNotification ={this.resolveNotification}
               ></NotificationPane>
 
 

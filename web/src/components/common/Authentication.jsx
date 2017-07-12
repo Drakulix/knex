@@ -1,6 +1,5 @@
 import 'isomorphic-fetch';
 import 'babel-polyfill';
-import { Redirect } from 'react-router-dom';
 
 
 var loggedin = false;
@@ -52,7 +51,6 @@ export function getCookie(cname) {
 
 export function changePassword(email, oldpw, newpw){
 
-  const requestBody = `email=${email}&old password=${oldpw}&new password=${newpw}`;
 
     const formData = new FormData();
     formData.append('email', email);
@@ -96,7 +94,6 @@ export function changeProfile(email, first_name, last_name, bio){
 }
 
 export function getUserInfo(e){
-  var res;
   return fetch('/api/users/' + e, {
       method: 'GET',
       mode: 'no-cors',
@@ -159,8 +156,8 @@ export function logout(){
 export function register(reg_firstname, reg_lastname, reg_email, reg_password, reg_password_confirm, reg_role){
 
   var payload = {
-    "first name" : reg_firstname ,
-    "last name" : reg_lastname,
+    "first_name" : reg_firstname ,
+    "last_name" : reg_lastname,
     "email" : reg_email,
     "password" : reg_password,
     "bio" : "",
@@ -168,7 +165,6 @@ export function register(reg_firstname, reg_lastname, reg_email, reg_password, r
   };
 
   if(reg_password !== reg_password_confirm || reg_password === ''){
-    alert('password does not match' );
     return false;
   }
 
@@ -183,9 +179,11 @@ export function register(reg_firstname, reg_lastname, reg_email, reg_password, r
       },
       body: JSON.stringify( payload )
     }).then(function(response){
+
       if(response.status===200){
         return true;
       }else{
+          console.error(response.json())
         return false;
       }
     });

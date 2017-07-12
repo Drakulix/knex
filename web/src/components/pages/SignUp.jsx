@@ -1,19 +1,15 @@
 
 import React, { Component } from 'react';
 import {
-  BrowserRouter as Router,
-  Route,
   Link,
   Redirect,
-  withRouter
 } from 'react-router-dom';
 import RaisedButton from 'material-ui/RaisedButton';
-import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import logo from '../../style/img/black_logo_title_below.svg';
-import {login, isLoggedIn, logout,register, isAdmin, getUserInfo, getMyEmail} from '../common/Authentication.jsx';
+import {register, getUserInfo, getMyEmail} from '../common/Authentication.jsx';
 
 
 export default class SignUp extends Component {
@@ -49,7 +45,7 @@ export default class SignUp extends Component {
   }
 
   handleChangeFirstName(event) {
-    if(event.target.value == ''){
+    if(event.target.value === ''){
       this.setState({firstname_error: 'Requiered'});
     }else{
       this.setState({firstname_error: ''});
@@ -58,7 +54,7 @@ export default class SignUp extends Component {
   }
 
   handleChangeLastName(event) {
-    if(event.target.value == ''){
+    if(event.target.value === ''){
       this.setState({lastname_error: 'Requiered'});
     }else{
       this.setState({lastname_error: ''});
@@ -67,7 +63,7 @@ export default class SignUp extends Component {
   }
 
   handleChangeEmail(event) {
-    if(event.target.value == '' || !this.isValidEmailAddress(event.target.value)){
+    if(event.target.value === '' || !this.isValidEmailAddress(event.target.value)){
       this.setState({email_error: 'Not a valid email'});
     }else{
       this.setState({email_error: ''});
@@ -76,7 +72,7 @@ export default class SignUp extends Component {
   }
 
   handleChangePassword(event) {
-    if(event.target.value == ''){
+    if(event.target.value === ''){
       this.setState({password_error: 'Can not be empty!'});
     }else{
       this.setState({password_error: ''});
@@ -90,7 +86,7 @@ export default class SignUp extends Component {
   }
 
   handleChangePasswordConfirm(event) {
-    if(event.target.value != this.state.password){
+    if(event.target.value !== this.state.password){
       this.setState({possword_confirm_error: 'Requiered'});
     }else{
       this.setState({password_confirm_error: ''});
@@ -100,7 +96,7 @@ export default class SignUp extends Component {
 
   handleSubmit(event){
     event.preventDefault();
-    if(this.state.firstname_error == '' && this.state.lastname_error == '' &&this.state.email_error == '' && this.state.password_error == '' &&  this.state.password_confirm_error == ''){
+    if(this.state.firstname_error === '' && this.state.lastname_error === '' &&this.state.email_error === '' && this.state.password_error === '' &&  this.state.password_confirm_error === ''){
     register(this.state.firstname, this.state.lastname, this.state.email, this.state.password, this.state.password_confirm, this.state.role).then((success) => {
 
       if(success){
@@ -137,7 +133,7 @@ export default class SignUp extends Component {
   }
 
   isUserAdmin(){
-    return this.state.profileInf && (this.state.profileInf.roles == 'admin');
+    return this.state.profileInf && (this.state.profileInf.roles === 'admin');
   }
 
   getRoleStyle(){
@@ -159,7 +155,7 @@ export default class SignUp extends Component {
       <section className="sign-container">
 
         {/*Information*/}
-        <img className="service-name" src={logo}/>
+        <img className="service-name" src={logo} alt="Logo"/>
         <h2 className="team-name">{teamName}</h2>
         <div className="rectangle-sign">
           <h3 className="sign-type-desc">Sign Up
@@ -173,8 +169,8 @@ export default class SignUp extends Component {
               value={this.state.firstname}
               onChange={this.handleChangeFirstName}
               hintText="First Name"
-              errorText={(this.state.firstname == "") ? "Field is requiered" : ""}
-              
+              errorText={(this.state.firstname === "") ? "Field is requiered" : ""}
+
             />
           </div>
           {/*Input Last Name*/}
@@ -184,8 +180,8 @@ export default class SignUp extends Component {
               value={this.state.lastname}
               onChange={this.handleChangeLastName}
               hintText="Last Name"
-              errorText={(this.state.lastname == "") ? "Field is requiered" : ""}
-              
+              errorText={(this.state.lastname === "") ? "Field is requiered" : ""}
+
             />
           </div>
           {/*Input Email*/}
@@ -207,8 +203,8 @@ export default class SignUp extends Component {
               value={this.state.password}
               onChange={this.handleChangePassword}
               hintText="Password"
-              errorText={(this.state.password == "") ? "Field is requiered" : ""}
-              
+              errorText={(this.state.password === "") ? "Field is requiered" : ""}
+
             />
           </div>
 
@@ -220,8 +216,8 @@ export default class SignUp extends Component {
               value={this.state.password_confirm}
               onChange={this.handleChangePasswordConfirm}
               hintText="Confirm Password"
-              errorText={( this.state.password != this.state.password_confirm ) ? "Passwords do not match" : "" }
-              
+              errorText={( this.state.password !== this.state.password_confirm ) ? "Passwords do not match" : "" }
+
             />
           </div>
           <div >

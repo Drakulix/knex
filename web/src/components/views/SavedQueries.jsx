@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import {fetchJson, sendJson} from '../common/Backend';
 import SavedQuery from "../common/SavedQuery"
 
 
@@ -7,7 +6,7 @@ class Headline extends Component {
   render() {
     return(
       <div className="headerCreation" id="headerSearch" style={{width:"100%"}}>
-        Your saved queries
+        Your Saved Queries
       </div>
     );
   }
@@ -18,8 +17,7 @@ export default class SavedQueries extends Component {
   constructor(props) {
     super(props);
     this.state = {queries:{}
-  };
-
+    };
   }
 
 
@@ -42,7 +40,6 @@ export default class SavedQueries extends Component {
         description:"ttt",
         searchString :"RE",
         shortName : "TEST",
-        description :"Fd",
         userID:"av"
       },
       { _id :"FDAF",
@@ -55,7 +52,6 @@ export default class SavedQueries extends Component {
       status : "DONE",
       filter_date_from :"2012-12-12",
       filter_date_to:"2011-05-11",
-      description:"ttt",
       searchString :"RE",
       shortName : "TEST",
       description :"Fd",

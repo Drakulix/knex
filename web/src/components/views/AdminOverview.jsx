@@ -1,19 +1,17 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import {Tabs, Tab} from 'material-ui/Tabs';
-import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
-import {login, register, isLoggedIn, logout, getCookie, setCookie, isAdmin, getMyEmail, getUserInfo, changePassword, changeProfile} from '../common/Authentication.jsx';
+import {register, getMyEmail, getUserInfo, changePassword, changeProfile} from '../common/Authentication.jsx';
 import DataTable from '../common/DataTable';
 import 'react-table/react-table.css';
-import { fetchJson } from '../common/Backend'
+import Snackbar from 'material-ui/Snackbar'
+import ShowUsers from '../common/adminViews/ShowUsers'
 
-const FILTER_ATTRIBUTES = ['title', 'status', 'description', '_id'];
 
-export default class AdminOverview extends React.Component {
+export default class AdminOverview extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -36,7 +34,7 @@ export default class AdminOverview extends React.Component {
       pw_new: '',
       pw_new_confirm: '',
       is_admin: false,
-      value: 'a',
+      value: '1',
       profileReg: {
         first_name : "",
         last_name : "",
@@ -169,55 +167,47 @@ export default class AdminOverview extends React.Component {
     this.setState({pw_new_confirm: event.target.value});
   }
 
-  handleBioChange(event) {
-    this.setState({bio: event.target.value});
-  }
   handleRegister(event){
     event.preventDefault();
-    if(this.state.password != this.state.password_confirm){
-      alert("Passwords do not match");
-      return;
+    if(this.state.password !== this.state.password_confirm){
+      this.setState({
+        snackbar : true,
+        snackbarText :  'Passwords do not match'
+      });
+      return
+
     }
-    if(this.state.password == ""){
-      alert("Password can not be empty")
+    if(this.state.password === ""){
+      this.setState({
+        snackbar : true,
+        snackbarText :  'Password can not be empty'
+      });
+      return
     }
     register(this.state.profileReg.first_name, this.state.profileReg.last_name, this.state.profileReg.email, this.state.profileReg.password, this.state.profileReg.password_confirm, this.state.profileReg.role).then((success) => {
 
       if(success){
-        alert("Registration successfull!");
-
+          this.setState({
+          snackbar : true,
+          snackbarText :  'Registration successfull!'
+        });
       }else{
-
-        alert("Registration failed!");
+        this.setState({
+          snackbar : true,
+          snackbarText :  'Registration failed!'
+        });
       }
     });
   }
+
   componentWillReceiveProps(nextProps){
-    this.setState({email: nextProps.email});
-    this.loadProfileInf(this.state.email);
     this.loadMyProfileInf(getMyEmail());
   }
 
   componentWillMount(){
-    this.loadProfileInf(this.state.email);
     this.loadMyProfileInf(getMyEmail());
   }
 
-
-
-  loadProfileInf(e) {
-    getUserInfo(e).then(data => {
-      this.setState({profileInf: data});
-      if(!data){
-        this.setState({profile_exists: false});
-      }else{
-        this.setState({first_name: data.first_name, last_name: data.last_name, bio: data.bio});
-      }
-    }).catch(ex => {
-      this.setState({profile_exists: false});
-    });
-
-  }
 
   loadMyProfileInf(e) {
     getUserInfo(e).then(data => {
@@ -225,7 +215,7 @@ export default class AdminOverview extends React.Component {
       if(!data){
         this.setState({profile_exists: false});
       }else{
-        var admin = (data.roles == 'admin');
+        var admin = (data.roles === 'admin');
         this.setState({is_admin: admin});
       }
     }).catch(ex => {
@@ -235,7 +225,7 @@ export default class AdminOverview extends React.Component {
   }
 
   getMenuEditStyle(){
-    if(this.state.email != getMyEmail() && !this.isUserAdmin()){
+    if(this.state.email !== getMyEmail() && !this.isUserAdmin()){
       return ({visibility: 'hidden'});
     }else{
       return ({});
@@ -252,16 +242,26 @@ export default class AdminOverview extends React.Component {
 
   handlePwChangeSubmit(event){
     event.preventDefault();
-    if(this.state.pw_new != this.state.pw_new_confirm){
-      alert('New passwords do not match!');
+    if(this.state.pw_new !== this.state.pw_new_confirm){
+      this.setState({
+        snackbar : true,
+        snackbarText :  'New passwords do not match!'
+      });
       return ;
     }
+
+
     changePassword(this.state.email, this.state.pw_old, this.state.pw_new).then((success) => {
       if(success){
-        alert("Password change success");
+        this.setState({
+          snackbar : true,
+          snackbarText :  'Password change success'
+        });
       }else{
-        this.setState({ error: 'Login failed' });
-        alert("Password change failed");
+        this.setState({
+          snackbar : true,
+          snackbarText :  'Password change failed'
+        });
       }
     });
   }
@@ -272,64 +272,28 @@ export default class AdminOverview extends React.Component {
 
       if(success){
         this.setState({profileInf: {bio: this.state.bio, first_name: this.state.first_name, last_name: this.state.last_name}});
-        alert("Profile changed!");
+        this.setState({
+          snackbar : true,
+          snackbarText :  'Profile changed!'
+        });
       }else{
         this.setState({ error: 'Login failed' });
-        alert("Profile change failed");
+        this.setState({
+          snackbar : true,
+          snackbarText :  'Profile change failed'
+        });
       }
     });
   }
 
-  getBio(){
-    if(this.state.bio){
-      return (this.state.bio.split('\n').map((item, key) => {return <span key={key}>{item}<br/></span>}));
-      }else{
-        return ' ';
-      }
-    }
-    getRoleStyle(){
-      if(!this.isUserAdmin()){
-        return {visibility: 'hidden', display: 'none'};
-      }else{
-        return {};
-      }
-    }
+
     isValidEmailAddress(address) {
-      if(address != undefined){
+      if(address !== undefined){
         return !! address.match(/\S+@\S+\.\S+/);
       }
       return false
     }
 
-    transformObj(dataObject)  {
-      var filteredDataObject = {};
-      for(let attr of FILTER_ATTRIBUTES ) {
-        if(attr == 'title') {
-          filteredDataObject['name'] = dataObject[attr];
-        } else {
-          filteredDataObject[attr] = dataObject[attr];
-        }
-      }
-      return filteredDataObject;
-    }
-
-    transformArray(dataArray) {
-      var filteredDataArray = [];
-      for(let dataObject of dataArray) {
-        filteredDataArray.push(this.transformObj(dataObject));
-      }
-      return filteredDataArray;
-    };
-
-    componentDidMount() {
-      var self = this;
-      fetchJson('/api/projects').then(function(datas) {
-        var filteredData = this.transformArray(datas);
-        this.setState({
-          data: filteredData
-        });
-      }.bind(this));
-    }
 
 
   render() {
@@ -337,7 +301,12 @@ export default class AdminOverview extends React.Component {
 
       return (
         <div className="container">
-          <div className="header">Admin Area</div>
+          <Snackbar
+            open={this.state.snackbar}
+            message={this.state.snackbarText}
+            autoHideDuration={10000}
+            />
+          <div className="header">Admin area</div>
           <Tabs
             value={this.state.value}
             onChange={this.handleChange}
@@ -346,7 +315,7 @@ export default class AdminOverview extends React.Component {
             <Tab label="Manage Projects" value="1">
 
 
-              <div className="header-tab">Manage Projects</div>
+              <div className="header-tab">Manage projects</div>
 
                   <DataTable columns= {['title', 'status', 'tags', 'authors', 'description', '_id',  'delete']}
 
@@ -361,10 +330,14 @@ export default class AdminOverview extends React.Component {
 
 
             </Tab>
-            <Tab label="Edit Profile" value="b">
+            <Tab label="List Users" value="2">
+              <ShowUsers/>
+            </Tab>
+
+            <Tab label="Edit Profile" value="3">
               <div className="row padding">
                 <div className="col-9">
-              <div className="header-tab">Edit User</div>
+              <div className="header-tab">Edit user</div>
 
                   <form onSubmit={this.handleChangeUser}>
 
@@ -373,7 +346,7 @@ export default class AdminOverview extends React.Component {
                       onChange={this.handleEmailChange}
                         />
 
-                        <FlatButton
+                      <RaisedButton
                             type="Submit"
                             label="Select User"
                             primary={true}
@@ -411,7 +384,7 @@ export default class AdminOverview extends React.Component {
                       multiLine={true}
                       value={this.state.bio}
                       /><br />
-                    <FlatButton
+                    <RaisedButton
                       type="Submit"
                       label="Change Profile"
                       primary={true}
@@ -421,7 +394,7 @@ export default class AdminOverview extends React.Component {
                 </div>
                 <div className="col-3">
                   <img src="http://www.freeiconspng.com/uploads/profile-icon-9.png" width="200px" height="200px" alt="..." className="rounded-circle profile-icon" />
-                  <p className="profile-icon-text">Change Avatar</p>
+                  <p className="profile-icon-text">Change avatar</p>
                 </div>
               </div>
 
@@ -458,7 +431,7 @@ export default class AdminOverview extends React.Component {
                   </div>
                   <div className="form-group row">
                     <div className="col-10">
-                      <FlatButton
+                      <RaisedButton
                         type="Submit"
                         label="Change Password"
                         primary={true}
@@ -469,8 +442,8 @@ export default class AdminOverview extends React.Component {
               </div>
             </div>
             </Tab>
-            <Tab label="Register User" value="c">
-              <div className="header-tab">Register User</div>
+            <Tab label="Register User" value="4">
+              <div className="header-tab">Register user</div>
               <div className="row">
                 <div className="col-9">
                   <form onSubmit={this.handleRegister}>
@@ -481,8 +454,8 @@ export default class AdminOverview extends React.Component {
                       type="text"
                       value={this.state.profileReg.first_name}
                       onChange={this.handleRegFirstNameChange}
-                      hintText="First Name"
-                      errorText={(this.state.profileReg.firstname == "") ? "Field is requiered" : ""}
+                      hintText="Enter the first name..."
+                      errorText={(this.state.profileReg.firstname === "") ? "Field is required" : ""}
 
                     />
                   </div>
@@ -492,8 +465,8 @@ export default class AdminOverview extends React.Component {
                       type="text"
                       value={this.state.profileReg.last_name}
                       onChange={this.handleRegLastNameChange}
-                      hintText="Last Name"
-                      errorText={(this.state.profileReg.lastname == "") ? "Field is requiered" : ""}
+                      hintText="Enter the given name..."
+                      errorText={(this.state.profileReg.lastname === "") ? "Field is required" : ""}
 
                     />
                   </div>
@@ -516,7 +489,7 @@ export default class AdminOverview extends React.Component {
                       value={this.state.profileReg.password}
                       onChange={this.handleRegPasswordChange}
                       hintText="Password"
-                      errorText={(this.state.profileReg.password == "") ? "Field is requiered" : ""}
+                      errorText={(this.state.profileReg.password === "") ? "Field is required" : ""}
 
                     />
                   </div>
@@ -526,10 +499,10 @@ export default class AdminOverview extends React.Component {
 
                     <TextField
                       type="password"
-                      value={this.state.password_confirm}
+                      value={this.state.profileReg.password_confirm}
                       onChange={this.handleRegPasswordConfirmChange}
-                      hintText="Confirm Password"
-                      errorText={( this.state.profileReg.password != this.state.profileReg.password_confirm ) ? "Passwords do not match" : "" }
+                      hintText="Confirm password"
+                      errorText={( this.state.profileReg.password !== this.state.profileReg.password_confirm ) ? "Passwords do not match" : "" }
 
                     />
                   </div>

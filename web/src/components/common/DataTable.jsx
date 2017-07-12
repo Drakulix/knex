@@ -11,29 +11,21 @@ import styles from '../common/Styles.jsx';
 
 
 
-export default class BookmarksTable extends React.Component {
+export default class BookmarksTable extends Component {
   constructor(props) {
     super(props);
-
     var filters = {};
     if(props.predefinedFilter !== undefined){
       filters = props.predefinedFilter;
-
-
-
-
-
     }
-
-
-
     this.state = {
       data: [{
       }],
       filters : filters,
-      filteredTable : [{}],
+      filteredTable : [{
+      }],
       isProfile : "false",
-      url : "/ap/projects",
+      url : "/api/projects",
       bookmarksSite : "false"
     };
 
@@ -47,9 +39,7 @@ export default class BookmarksTable extends React.Component {
 
 
   handleDelete(projectID){
-    //event.preventDefault();
-    var url = "/api/projects/"
-    var status = fetch(url+projectID, {
+    fetch("/api/projects/"+projectID, {
       credentials: 'include',
       method: "DELETE",
       body: "",
@@ -57,153 +47,121 @@ export default class BookmarksTable extends React.Component {
 
       }
     }).then(response => response.status)
-    // .then(json => console.dir(json))
       .catch(ex => {
       console.error('parsing failed', ex)
     });
-this.fetchData(this.state.url)
+    this.fetchData(this.state.url)
   }
 
   handleAddBookmark(projectID){
-
-
-
-
-    for(let dataObject of this.state.data) {
-      var project = dataObject;
+    for(let project of this.state.data) {
       if(project._id === projectID){
         project["is_bookmark"] = true;
         break;
       }
     }
-
-    for(let dataObject of this.state.filteredTable) {
-      var project = dataObject;
+    for(let project of this.state.filteredTable) {
       if(project._id === projectID){
         project["is_bookmark"] = true;
         break;
       }
     }
-
-
-
-
-    var url = "/api/users/bookmarks/"
-    var status = fetch(url+projectID, {
+    fetch("/api/users/bookmarks/"+projectID, {
       credentials: 'include',
       method: "POST",
       body: "",
       headers: {
-
       }
     }).then(response => response.status)
       .catch(ex => {
       console.error('parsing failed', ex)
     }
-
   );
-
-this.fetchData(this.state.url)
+  this.fetchData(this.state.url)
   }
 
   handleRemoveBookmark(projectID){
     var url = "/api/users/bookmarks/"
-    var status = fetch(url+projectID, {
+    fetch(url+projectID, {
       credentials: 'include',
       method: "DELETE",
       body: "",
       headers: {
-
       }
     }).then(response => response.status)
       .catch(ex => {
       console.error('parsing failed', ex)
     }
     );
-
-
-
-
-
-        for(let dataObject of this.state.data) {
-          var project = dataObject;
-          if(project._id === projectID){
-            project["is_bookmark"] = false;
-            break;
-          }
-        }
-
-        for(let dataObject of this.state.filteredTable) {
-          var project = dataObject;
-          if(project._id === projectID){
-            project["is_bookmark"] = false;
-            break;
-          }
-        }
-this.fetchData(this.state.url)
+    for(let project of this.state.data) {
+      if(project._id === projectID){
+        project["is_bookmark"] = false;
+        break;
+      }
+    }
+    for(let project of this.state.filteredTable) {
+      if(project._id === projectID){
+        project["is_bookmark"] = false;
+        break;
+      }
+    }
+    this.fetchData(this.state.url)
   }
 
-
-
-  componentWillMount() {
+  componentDidMount() {
 
     if(this.props.isProfile !== undefined){
-      this.state.isProfile = true;
+      this.setState({isProfile :true});
     }
     else if(this.props.bookmarksSite !== undefined){
-      this.state.bookmarksSite = true;
+      this.setState({bookmarksSite :true});
     }
+    this.setState({url :this.props.fetchURL});
     this.fetchData(this.props.fetchURL);
-    this.state.url = this.props.fetchURL;
   }
 
   componentWillReceiveProps(nextProps) {
   // You don't have to do this check first, but it can help prevent an unneeded render
   if(nextProps.isProfile !== undefined){
-    this.state.isProfile = true;
+    this.setState({isProfile :true});
   }
   else if(nextProps.bookmarksSite !== undefined){
-    this.state.bookmarksSite = true;
+    this.setState({bookmarksSite :true});
   }
-  this.fetchData(nextProps.fetchURL);
-  this.state.url = nextProps.fetchURL;
+  if (this.state.fetchUrl != nextProps.fetchUrl){
+    this.setState({url :nextProps.fetchURL});
+    this.fetchData(nextProps.fetchURL);
+  }
 }
 
   fetchData(url){
 
     fetchJson(url).then(function(data) {
-
       var datas =[]
-
-
-if(data !== undefined)
-      datas = data;
-
-        var filteredDataArray = [];
-        var dataArray = [];
-        for(let dataObject of datas) {
-          var transformedObject = dataObject;
-          var t = new String(dataObject.tags);
-          t = t.substring(0,t.length);
-          var array = t.split(",");
-          array.sort();
-          transformedObject["tagString"] =array.join();
-          var temp = [];
-          for (var i in  dataObject.authors) {
-            temp = temp.concat([dataObject.authors[i].name + " ##"+dataObject.authors[i].email] );
-          }
-          temp.sort();
-          transformedObject["authorString"] = temp.join();
-          filteredDataArray.push(transformedObject);
-          dataArray.push(transformedObject);
-
+      if(data !== undefined)
+        datas = data;
+      var filteredDataArray = [];
+      var dataArray = [];
+      for(let dataObject of datas) {
+        var transformedObject = dataObject;
+        var t = new String(dataObject.tags);
+        t = t.substring(0,t.length);
+        var array = t.split(",");
+        array.sort();
+        transformedObject["tagString"] =array.join();
+        var temp = [];
+        for (var i in  dataObject.authors) {
+          temp = temp.concat([dataObject.authors[i].name + " ##"+dataObject.authors[i].email] );
         }
-
-        this.setState({
-          data: dataArray,
-          filteredTable : filteredDataArray
-        });
-
+        temp.sort();
+        transformedObject["authorString"] = temp.join();
+        filteredDataArray.push(transformedObject);
+        dataArray.push(transformedObject);
+      }
+      this.setState({
+        data: dataArray,
+        filteredTable : filteredDataArray
+      });
         //this.filter(this.state.filters)
       }.bind(this));
     }
@@ -251,11 +209,11 @@ if(data !== undefined)
                 var tag = value[i];
                 discard = temp.indexOf(tag.toLowerCase()) === -1;
                 if(discard)
-                break;
+                  break;
               }
               break;
             case "authors":
-              var temp = [];
+              temp = [];
               for (var i in  dataObject.authors) {
                 temp = temp.concat([dataObject.authors[i].name + " ("+dataObject.authors[i].email+ ")"]);
               }
@@ -264,8 +222,9 @@ if(data !== undefined)
                 var author = value[i];
                 discard = temp.indexOf(author.toLowerCase()) === -1;
                 if(discard)
-                break;
+                  break;
               }
+              break;
             default:
               break;
           }
@@ -287,39 +246,25 @@ if(data !== undefined)
         columns.push({
           Header: 'Project title',
           id: 'title',
-          width: 230,
+          width: 200,
           accessor: d => d,
           Cell: props =>{
-            var text = new String(props.value.title).split(" ");
-            var line = "";
-            var result = [];
-            var linebreak  = 32;
-            for(let word in text ){
-              if (line.length + text[word].length < linebreak){
-                line += text[word]+ " ";
-              }else{
-                result.push(line);
-                line =text[word] + " ";
-              }
-            }
-            result.push(line.trim());
             return(
-              <div style={{width : 50}}>
+              <div style={{whiteSpace : "normal"}}>
                 <Link to={`project/${props.value._id}`}
                   className="table-link-text">
-                  {result.map(item =><span>{item}<br></br></span>) }
+                  {props.value.title}
                 </Link>
               </div>
-            )}
+            )
           }
-        );
+        });
       }
       if(this.props.columns.indexOf("status") !== -1){
         columns.push({
           Header: 'Status',
           accessor: 'status',
           style: {textAlign:"center"},
-
           width: 80,
           Cell: props =>
           {
@@ -328,7 +273,7 @@ if(data !== undefined)
               case "DONE":  status_badge = <span className="badge badge-success">DONE</span>
               break;
               case 'IN_PROGRESS':
-              status_badge = <span className="badge badge-success">DONE</span>
+              status_badge = <span className="badge badge-warning">IN_PROGRESS</span>
               break;
               case 'IN_REVIEW':
               status_badge = <span className="badge badge-info">IN_REVIEW</span>
@@ -347,7 +292,6 @@ if(data !== undefined)
           pivot: true,
           width:95,
           style: {textAlign:"center"},
-
         });
       }
       if(this.props.columns.indexOf("tags") !== -1){
@@ -360,11 +304,9 @@ if(data !== undefined)
             var t = new String(props.value);
             var array = t.split(",");
             return(
-
                 array.map(item =>
                   <Chip style= {styles["chip"]}>
                     <Link to={item} style= {styles["chipText"]} >{item}</Link></Chip>)
-
             );},
         });
       }
@@ -392,28 +334,10 @@ if(data !== undefined)
               style: {width: "100%"},
               accessor: d => d,
               Cell: props =>{
-                var text = new String(props.value.description).split(" ");
-                var line = "";
-                var result = [];
-                var linebreak  =36;
-                for(let word in text ){
-                  if(result.length > 5){
-                    line = "";
-                    result.push("...");
-                    break;
-                  }
-                  if (line.length + text[word].length < linebreak){
-                    line += text[word]+ " ";
-                  }else{
-                    result.push(line);
-                    line =text[word] + " ";
-                  }
-                }
-                result.push(line.trim());
+                var text = new String(props.value.description).substring(0,250).trim()+"..."
                 return(
-                  <div>
-                    {result.map(item =><span>{item}<br></br></span>) }
-
+                  <div style ={{whiteSpace : "normal"}}>
+                    {text}
                   </div>
                 )}
               });
@@ -437,8 +361,6 @@ if(data !== undefined)
                       </IconButton>
                         :
                       <IconButton onClick={()=>this.handleAddBookmark(props.value._id)}
-
-
                                   touch={true}
                                   style = {styles.largeIcon}
                                   iconStyle={{fontSize: '24px'}}
@@ -448,32 +370,30 @@ if(data !== undefined)
                         )}
                       });
                     }
-                    if(this.props.columns.indexOf("delete") !== -1){
-                      columns.push(
-                        {
-                          Header: 'Delete',
-                          accessor: d => d,
-                          id: 'delete',
-                          sortable:false,
-                          width: 60,
-                          style: {textAlign:"center"},
-                          Cell: props => <IconButton
-                          onClick={()=>this.handleDelete(props.value._id)}
-                          touch={true}
-                          style = {styles.largeIcon}
-                          iconStyle={{fontSize: '24px'}}
-                          value={props.value._id}
-                          >
-                          <i className="material-icons">delete</i>
-                        </IconButton>
-                      }
-                    );
-                  }
-                  return (
-                    <div>
-                      <Filters value={this.state.filters}
-                        onChange={this.handleFilterChange}></Filters>
-                      <ReactTable
+            if(this.props.columns.indexOf("delete") !== -1){
+              columns.push({
+                Header: 'Delete',
+                accessor: d => d,
+                id: 'delete',
+                sortable:false,
+                width: 60,
+                style: {textAlign:"center"},
+                Cell: props => <IconButton
+                      onClick={()=>this.handleDelete(props.value._id)}
+                      touch={true}
+                      style = {styles.largeIcon}
+                      iconStyle={{fontSize: '24px'}}
+                      value={props.value._id}
+                      >
+                        <i className="material-icons">delete</i>
+                      </IconButton>
+              });
+            }
+            return (
+              <div>
+                <Filters  value={this.state.filters}
+                          onChange={this.handleFilterChange}/>
+                  <ReactTable
                         data={this.state.filteredTable}
                         columns={columns}
                         defaultExpanded={{1: true}}
@@ -481,7 +401,7 @@ if(data !== undefined)
                         showPageSizeOptions={false}
                         defaultPageSize={10}
                         />
-                    </div>
-                  );
-                }
-              }
+                </div>
+            );
+          }
+        }
