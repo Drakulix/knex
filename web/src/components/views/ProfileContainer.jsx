@@ -319,7 +319,7 @@ export default class ProfileContainer extends Component {
               <Tab    label="Your Projects" value="c">
                 <div  className="header-tab">Manage Projects</div>
                     <DataTable
-                      fetchURL = {"/api/projects"}
+                      fetchURL = {"/api/projects/search/advanced/?q=(authors.email: " + this.state.email + ")"}
                       columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'bookmarked']}
                       isProfile = {true}
                     ></DataTable>

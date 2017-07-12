@@ -35,6 +35,11 @@ export default class AdminOverview extends Component {
       pw_new_confirm: '',
       is_admin: false,
       value: '1',
+      firstname_error : 'Requiered',
+      lastname_error : 'Requiered',
+      email_error : 'Requiered',
+      password_error : '',
+      password_confirm_error : ''
     };
     this.handlePwOldChange = this.handlePwOldChange.bind(this);
     this.handlePwNewChange = this.handlePwNewChange.bind(this);
@@ -72,7 +77,6 @@ export default class AdminOverview extends Component {
     this.setState({email: event.target.value})
   }
 
-
   handleFirstNameChange(event) {
     this.setState({first_name: event.target.value});
   }
@@ -98,22 +102,17 @@ export default class AdminOverview extends Component {
   }
 
   handleRegister(event){
+
     event.preventDefault();
-    if(this.state.password !== this.state.password_confirm){
-      this.setState({
-        snackbar : true,
-        snackbarText :  'Passwords do not match'
-      });
+    if(this.state.profileReg.password !== this.state.profileReg.password_confirm || this.state.profileReg.password == 0
+    || this.state.profileReg.first_name == "" || this.state.profileReg.last_name == "" || this.state.profileReg.password == ""
+    || this.state.profileReg.role == ""
+  ){
+
       return
 
     }
-    if(this.state.password === ""){
-      this.setState({
-        snackbar : true,
-        snackbarText :  'Password can not be empty'
-      });
-      return
-    }
+
 
     register(this.state.profileReg.first_name, this.state.profileReg.last_name, this.state.profileReg.email, this.state.profileReg.password, this.state.profileReg.password_confirm, this.state.profileReg.role).then((success) => {
 

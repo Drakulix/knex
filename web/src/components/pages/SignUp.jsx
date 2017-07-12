@@ -74,8 +74,11 @@ export default class SignUp extends Component {
   handleChangePassword(event) {
     if(event.target.value === ''){
       this.setState({password_error: 'Can not be empty!'});
+    }else if(this.state.password !== this.state.password_confirm){
+      this.setState({password_confirm_error: 'Password do not match!'});
     }else{
       this.setState({password_error: ''});
+      this.setState({password_confirm_error: ''});
     }
     this.setState({password: event.target.value});
   }
@@ -87,7 +90,9 @@ export default class SignUp extends Component {
 
   handleChangePasswordConfirm(event) {
     if(event.target.value !== this.state.password){
-      this.setState({possword_confirm_error: 'Requiered'});
+      this.setState({password_confirm_error: 'Requiered'});
+    }else if(this.state.password !== this.state.password_confirm){
+      this.setState({password_confirm_error: 'Password do not match!'});
     }else{
       this.setState({password_confirm_error: ''});
     }
@@ -96,6 +101,12 @@ export default class SignUp extends Component {
 
   handleSubmit(event){
     event.preventDefault();
+    if(this.state.password !== this.state.password_confirm){
+      this.setState({password_confirm_error: 'Password do not match!'});
+    }else{
+      this.setState({password_confirm_error: ''});
+    }
+
     if(this.state.firstname_error === '' && this.state.lastname_error === '' &&this.state.email_error === '' && this.state.password_error === '' &&  this.state.password_confirm_error === ''){
     register(this.state.firstname, this.state.lastname, this.state.email, this.state.password, this.state.password_confirm, this.state.role).then((success) => {
 
@@ -181,7 +192,6 @@ export default class SignUp extends Component {
               onChange={this.handleChangeLastName}
               hintText="Last Name"
               errorText={(this.state.lastname === "") ? "Field is requiered" : ""}
-
             />
           </div>
           {/*Input Email*/}
@@ -192,10 +202,8 @@ export default class SignUp extends Component {
               onChange={this.handleChangeEmail}
               hintText="Email"
               errorText={this.state.email_error}
-               autofocus
             />
           </div>
-
           {/*Input password*/}
           <div className="input-group input-login">
             <TextField
@@ -204,20 +212,17 @@ export default class SignUp extends Component {
               onChange={this.handleChangePassword}
               hintText="Password"
               errorText={(this.state.password === "") ? "Field is requiered" : ""}
-
             />
           </div>
 
           {/*Input confirm password*/}
           <div className="input-group input-login">
-
             <TextField
               type="password"
               value={this.state.password_confirm}
               onChange={this.handleChangePasswordConfirm}
               hintText="Confirm Password"
               errorText={( this.state.password !== this.state.password_confirm ) ? "Passwords do not match" : "" }
-
             />
           </div>
           <div >
@@ -236,7 +241,6 @@ export default class SignUp extends Component {
               label="Register"
               primary={true}
               style={{width: 250}}
-              required
             />
         </form>
           </div>
