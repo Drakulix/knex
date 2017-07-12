@@ -139,7 +139,6 @@ export default class BookmarksTable extends Component {
 }
 
   fetchData(url){
-
     fetchJson(url).then(function(data) {
       var datas =[]
       if(data !== undefined)
