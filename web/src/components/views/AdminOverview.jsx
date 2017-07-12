@@ -9,7 +9,7 @@ import DataTable from '../common/DataTable';
 import 'react-table/react-table.css';
 import Snackbar from 'material-ui/Snackbar'
 import ShowUsers from '../common/adminViews/ShowUsers'
-
+import RegisterUser from '../common/adminViews/RegisterUser'
 
 export default class AdminOverview extends Component {
   constructor(props) {
@@ -35,14 +35,6 @@ export default class AdminOverview extends Component {
       pw_new_confirm: '',
       is_admin: false,
       value: '1',
-      profileReg: {
-        first_name : "",
-        last_name : "",
-        email : "",
-        password : "",
-        password_confirm : "",
-        role : ""
-      }
     };
     this.handlePwOldChange = this.handlePwOldChange.bind(this);
     this.handlePwNewChange = this.handlePwNewChange.bind(this);
@@ -54,12 +46,6 @@ export default class AdminOverview extends Component {
     this.handleEmailChange = this.handleEmailChange.bind(this);
     this.handleProfileChangeSubmit = this.handleProfileChangeSubmit.bind(this)
     this.handleChangeUser = this.handleChangeUser.bind(this)
-    this.handleRegEmailChange = this.handleRegEmailChange.bind(this)
-    this.handleRegFirstNameChange = this.handleRegFirstNameChange.bind(this)
-    this.handleRegLastNameChange = this.handleRegLastNameChange.bind(this)
-    this.handleRegPasswordChange = this.handleRegPasswordChange.bind(this)
-    this.handleRegPasswordConfirmChange = this.handleRegPasswordConfirmChange.bind(this)
-    this.handleRegRoleChange = this.handleRegRoleChange.bind(this)
     this.handleRegister = this.handleRegister.bind(this )
   }
 
@@ -86,62 +72,6 @@ export default class AdminOverview extends Component {
     this.setState({email: event.target.value})
   }
 
-  handleRegEmailChange(event){
-
-    this.setState({profileReg : {email : event.target.value,
-       last_name : this.state.profileReg.last_name,
-       first_name : this.state.profileReg.first_name,
-       password : this.state.profileReg.password,
-       password_confirm : this.state.profileReg.password_confirm,
-       role : this.state.profileReg.role
-     }})
-  }
-  handleRegFirstNameChange(event){
-    this.setState({profileReg : {email : this.state.profileReg.email,
-       last_name : this.state.profileReg.last_name,
-       first_name : event.target.value,
-       password : this.state.profileReg.password,
-       password_confirm : this.state.profileReg.password_confirm,
-       role : this.state.profileReg.role
-     }})
-
-  }
-  handleRegLastNameChange(event){
-    this.setState({profileReg : {email : this.state.profileReg.email,
-       last_name : event.target.value,
-       first_name : this.state.profileReg.first_name,
-       password : this.state.profileReg.password,
-       password_confirm : this.state.profileReg.password_confirm,
-       role : this.state.profileReg.role
-     }})
-  }
-  handleRegPasswordChange(event){
-    this.setState({profileReg : {email : this.state.profileReg.email,
-       last_name : this.state.profileReg.last_name,
-       first_name : this.state.profileReg.first_name,
-       password : event.target.value,
-       password_confirm : this.state.profileReg.password_confirm,
-       role : this.state.profileReg.role
-     }})
-  }
-  handleRegPasswordConfirmChange(event){
-    this.setState({profileReg : {email : this.state.profileReg.email,
-       last_name : this.state.profileReg.last_name,
-       first_name : this.state.profileReg.first_name,
-       password : this.state.profileReg.password,
-       password_confirm : event.target.value,
-       role : this.state.profileReg.role
-     }})
-  }
-  handleRegRoleChange(event, index, value){
-    this.setState({profileReg : {email : this.state.profileReg.email,
-       last_name : this.state.profileReg.last_name,
-       first_name : this.state.profileReg.first_name,
-       password : this.state.profileReg.password,
-       password_confirm : this.state.profileReg.password_confirm,
-       'role' : value
-     }})
-  }
 
   handleFirstNameChange(event) {
     this.setState({first_name: event.target.value});
@@ -184,6 +114,7 @@ export default class AdminOverview extends Component {
       });
       return
     }
+
     register(this.state.profileReg.first_name, this.state.profileReg.last_name, this.state.profileReg.email, this.state.profileReg.password, this.state.profileReg.password_confirm, this.state.profileReg.role).then((success) => {
 
       if(success){
@@ -240,6 +171,15 @@ export default class AdminOverview extends Component {
     }
   }
 
+  isValidEmailAddress(address) {
+    if(address !== undefined){
+      return !! address.match(/\S+@\S+\.\S+/);
+    }
+    return false
+  }
+
+
+
   handlePwChangeSubmit(event){
     event.preventDefault();
     if(this.state.pw_new !== this.state.pw_new_confirm){
@@ -287,13 +227,6 @@ export default class AdminOverview extends Component {
   }
 
 
-    isValidEmailAddress(address) {
-      if(address !== undefined){
-        return !! address.match(/\S+@\S+\.\S+/);
-      }
-      return false
-    }
-
 
 
   render() {
@@ -313,72 +246,50 @@ export default class AdminOverview extends Component {
             style={{marginBottom:"40px"}}
             >
             <Tab label="Manage Projects" value="1">
-
-
               <div className="header-tab">Manage projects</div>
-
                   <DataTable columns= {['title', 'status', 'tags', 'authors', 'description', '_id',  'delete']}
-
-          fetchURL="/api/projects"
-
-                    ></DataTable>
-
+                              fetchURL="/api/projects"/>
                   <div className="footer" />
-
-
-
-
-
             </Tab>
             <Tab label="List Users" value="2">
               <ShowUsers/>
             </Tab>
-
             <Tab label="Edit Profile" value="3">
               <div className="row padding">
                 <div className="col-9">
-              <div className="header-tab">Edit user</div>
-
+                  <div className="header-tab">Edit user</div>
                   <form onSubmit={this.handleChangeUser}>
-
                       <TextField
                         hintText="Select an Email-address"
                       onChange={this.handleEmailChange}
                         />
-
                       <RaisedButton
                             type="Submit"
                             label="Select User"
                             primary={true}
                             style={{width: 250, marginTop:40}}
-
-
                           />
                   </form >
-
-                    <form onSubmit={this.handleProfileChangeSubmit}>
-                    <p className="profile-info_2">Information:</p>
-                      <div className="form-group row">
-
-                        <div className="col-10">
-
-                        </div>
+                  <form onSubmit={this.handleProfileChangeSubmit}>
+                  <p className="profile-info_2">Information:</p>
+                    <div className="form-group row">
+                      <div className="col-10">
                       </div>
-                    <p >
-                      <TextField
-                        hintText="First name"
-                        onChange={this.handleFirstNameChange}
-                        value={this.state.first_name}
-                        />
-                      <br />
-                      <TextField
-                        hintText="Last name "
-                        onChange={this.handleLastNameChange}
-                        value={this.state.last_name}
-                        />
-                    </p>
-
+                    </div>
+                  <p >
                     <TextField
+                      hintText="First name"
+                      onChange={this.handleFirstNameChange}
+                      value={this.state.first_name}
+                      />
+                    <br />
+                    <TextField
+                      hintText="Last name "
+                      onChange={this.handleLastNameChange}
+                      value={this.state.last_name}
+                      />
+                  </p>
+                  <TextField
                       hintText="Please tell us some about you!"
                       onChange={this.handleBioChange}
                       multiLine={true}
@@ -389,7 +300,6 @@ export default class AdminOverview extends Component {
                       label="Change Profile"
                       primary={true}
                       />
-
                   </form>
                 </div>
                 <div className="col-3">
@@ -397,20 +307,15 @@ export default class AdminOverview extends Component {
                   <p className="profile-icon-text">Change avatar</p>
                 </div>
               </div>
-
               <div className="row padding">
                 <div className="col-9">
                 <form onSubmit={this.handlePwChangeSubmit}>
-<p className="profile-info_2">Password:</p>
+                  <p className="profile-info_2">Password:</p>
                   <div className="form-group row">
-
                     <div className="col-10">
-
                     </div>
                   </div>
-
                   <div className="form-group row">
-
                     <div className="col-4">
                       <TextField
                         type="password"
@@ -420,7 +325,6 @@ export default class AdminOverview extends Component {
                     </div>
                   </div>
                   <div className="form-group row">
-
                     <div className="col-4">
                       <TextField
                         type="password"
@@ -442,93 +346,8 @@ export default class AdminOverview extends Component {
               </div>
             </div>
             </Tab>
-            <Tab label="Register User" value="4">
-              <div className="header-tab">Register user</div>
-              <div className="row">
-                <div className="col-9">
-                  <form onSubmit={this.handleRegister}>
-                  {/*Input First Name*/}
-                  <div >
-
-                    <TextField
-                      type="text"
-                      value={this.state.profileReg.first_name}
-                      onChange={this.handleRegFirstNameChange}
-                      hintText="Enter the first name..."
-                      errorText={(this.state.profileReg.firstname === "") ? "Field is required" : ""}
-
-                    />
-                  </div>
-                  {/*Input Last Name*/}
-                  <div >
-                    <TextField
-                      type="text"
-                      value={this.state.profileReg.last_name}
-                      onChange={this.handleRegLastNameChange}
-                      hintText="Enter the given name..."
-                      errorText={(this.state.profileReg.lastname === "") ? "Field is required" : ""}
-
-                    />
-                  </div>
-                  {/*Input Email*/}
-                  <div>
-                    <TextField
-                      type="email"
-                      value={this.state.profileReg.email}
-                      onChange={this.handleRegEmailChange}
-                      hintText="Email"
-                      errorText={(!this.isValidEmailAddress(this.state.profileReg.email)) ? "Needs to be a valid email" : ""}
-
-                    />
-                  </div>
-
-                  {/*Input password*/}
-                  <div >
-                    <TextField
-                      type="password"
-                      value={this.state.profileReg.password}
-                      onChange={this.handleRegPasswordChange}
-                      hintText="Password"
-                      errorText={(this.state.profileReg.password === "") ? "Field is required" : ""}
-
-                    />
-                  </div>
-
-                  {/*Input confirm password*/}
-                  <div >
-
-                    <TextField
-                      type="password"
-                      value={this.state.profileReg.password_confirm}
-                      onChange={this.handleRegPasswordConfirmChange}
-                      hintText="Confirm password"
-                      errorText={( this.state.profileReg.password !== this.state.profileReg.password_confirm ) ? "Passwords do not match" : "" }
-
-                    />
-                  </div>
-
-                  <div >
-                    <SelectField
-
-                      floatingLabelText="Role"
-                      value={this.state.profileReg.role}
-                      onChange={this.handleRegRoleChange}
-                    >
-                      <MenuItem value={'user'} primaryText="User" />
-                      <MenuItem value={'admin'} primaryText="Admin" />
-                    </SelectField>
-                  </div>
-
-                    <RaisedButton
-                      type="Submit"
-                      label="Register"
-                      primary={true}
-                      style={{width: 250}}
-                      required
-                    />
-                </form>
-              </div>
-            </div>
+            <Tab label="Register user" value="4">
+              <RegisterUser></RegisterUser>
             </Tab>
           </Tabs>
         </div>
