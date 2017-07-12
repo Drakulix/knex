@@ -117,6 +117,7 @@ export default class BookmarksTable extends Component {
       this.setState({bookmarksSite :true});
     }
     this.setState({url :this.props.fetchURL});
+
     this.fetchData(this.props.fetchURL);
   }
 
@@ -128,14 +129,16 @@ export default class BookmarksTable extends Component {
   else if(nextProps.bookmarksSite !== undefined){
     this.setState({bookmarksSite :true});
   }
-  if (this.state.fetchUrl != nextProps.fetchUrl){
+
+
+  if (this.state.url != nextProps.fetchURL){
     this.setState({url :nextProps.fetchURL});
     this.fetchData(nextProps.fetchURL);
   }
+
 }
 
   fetchData(url){
-
     fetchJson(url).then(function(data) {
       var datas =[]
       if(data !== undefined)

@@ -62,32 +62,23 @@ import Dialog from 'material-ui/Dialog';
     }
 
     handleChange(event) {
-
       const value = event.target.value;
-      var query = this.state.query;
-      query["searchString"] = value;
-      var end = "/api/projects/search/"
+      var vquery = this.state.query;
+      vquery["searchString"] = value;
+      var end = "/api/projects/search/";
       if(value === ""){
         this.setState({fetchURL : "/api/projects"})
       }
       else{
-        this.setState({query : query,
-          fetchURL : end+"simple/?q="+query["searchString"]+"*"
-        })
+        this.setState({query : vquery});
+        this.setState({fetchURL : end+"simple/?q=" + vquery["searchString"] + "*"});
       }
-
-
-      //this.setState({fetchURL : "simple/?q="+this.state.searchString+"*"});
-
-
     }
 
     handleFilterChange(key, value){
       var query = this.state.query;
       query[key] = value;
-
       this.setState({query : query});
-
     }
 
     saveSearch(){
@@ -105,8 +96,6 @@ import Dialog from 'material-ui/Dialog';
     }
 
     handleClose = () => {
-
-
       this.setState({open: false});
     };
 
@@ -114,22 +103,14 @@ import Dialog from 'material-ui/Dialog';
       this.setState({open: true});
     };
 
-
-
     handleCommentChange(event){
-
       const value = event.target.value;
-
       var query = this.state.query;
       query["shortName"] = value;
       this.setState({query : query});
-
     }
 
     render() {
-
-
-
 
       const actions = [
         <RaisedButton
@@ -173,7 +154,7 @@ import Dialog from 'material-ui/Dialog';
             <div className="row" style={{textAlign:"center"}}>
               <div className="col-10">
                 <TextField  style={{width:"100%"}}
-                  onKeyPress={this.onKeyPress}
+
                   name="searchString"
                   value={this.state.query.searchString}
                   placeholder="Enter your query here..."

@@ -7,7 +7,7 @@ export default class UserProjects extends Component {
   constructor(props) {
     super(props);
     this.state = {
-    };
+    }
   }
 
 render(){
@@ -19,6 +19,6 @@ render(){
                       bookmarksSite = {"true"}
           ></DataTable>
       </div>
-    );
+    )
   }
 }

@@ -11,9 +11,9 @@ import {fetchJson } from '../common/Backend.jsx'
 
 
 const statusString = [
-  {id: "0" , text :<span className="badge badge-success">DONE</span>, value : "DONE"},
-  {id: "1" , text :<span className="badge badge-info">IN_REVIEW</span>, value : "IN_REVIEW"},
-  {id: "2" , text :<span className="badge badge-warning">IN_PROGRESS</span>, value : "IN_PROGRESS"},
+  {id: 0 , text :<span className="badge badge-success">DONE</span>, value : "DONE"},
+  {id: 1 , text :<span className="badge badge-info">IN_REVIEW</span>, value : "IN_REVIEW"},
+  {id: 2 , text :<span className="badge badge-warning">IN_PROGRESS</span>, value : "IN_PROGRESS"},
 ];
 
   export default class UploadByPattern extends Component {
@@ -36,13 +36,14 @@ const statusString = [
         this.state = {
           projectID: this.props.match.params.uuid,
           projectInf:{
+            status: "IN_PROGRESS",
             title :"",
             description: "",
             date_creation: "2012-12-12",
             tags: [],
             url: []
           },
-          status : "2",
+          status : 2,
           authors: [],
           invalid : true,
           snackbar : false,
@@ -96,12 +97,13 @@ const statusString = [
     handleDescriptionChange(event,value) {
       var projectInf = this.state.projectInf;
       projectInf.description = value;
-      this.setState({title: projectInf});
+      this.setState({projectInf: projectInf});
     }
 
     handleStatusChange = (event, index, value) => {
       var projectInf = this.state.projectInf;
-      projectInf.status = statusString[0].value;
+      projectInf.status = statusString[index].value;
+      console.log(projectInf.status)
       this.setState({ status : value,
                       projectInf: projectInf}
       );
@@ -111,9 +113,11 @@ const statusString = [
       var mm = date.getMonth()+1;
       var dd = date.getDate();
       var dateString =  [date.getFullYear(),'-', ((mm > 9) ? '' :'0')+ mm, '-', ((dd> 9) ? '':'0')+ dd].join('');
+      var projectInf = this.state.projectInf;
+      projectInf.date_creation = dateString;
       this.setState({
         date: date,
-        projectInf: {date_creation : dateString}
+        projectInf: projectInf
       });
     };
 
@@ -223,7 +227,8 @@ const statusString = [
           return      this.state.projectInf["title"] === ''
           ||  this.state.projectInf["date_creation"] === ''
           ||  this.state.projectInf["description"] === ''
-          ||  this.state.authors.length === 0;
+          ||  this.state.authors.length === 0
+          ||  this.state.status.length === 0;
         }
 
         componentDidMount(){
@@ -248,7 +253,7 @@ const statusString = [
                suggestedAuthorsArray = suggestedAuthorsArray.concat([
                                           suggestedAuthors[i].first_name + " "
                                           +suggestedAuthors[i].last_name +
-                                    + " ("+suggestedAuthors[i].email+ ")"]);
+                                          " ("+suggestedAuthors[i].email+ ")"]);
              }
              console.log(suggestedAuthorsArray);
              this.setState({
@@ -264,7 +269,6 @@ const statusString = [
         }
 
         render() {
-          console.log(this.state);
           if(!this.state.site_loaded && this.state.projectID){
             return (
               <div className="container">
@@ -322,6 +326,7 @@ const statusString = [
                                 underlineStyle={{width: '100%', marginLeft:0}}
                                 autoWidth={false}
                                 style={{width: '100%'}}
+                                errorText={(this.state.status.length==="") ? this.props.statusErrorText : ""}
                                 >
                                 {statusString.map(item =><MenuItem value={item.id} primaryText={item.text} />)}
                               </DropDownMenu>
@@ -389,4 +394,5 @@ const statusString = [
         titleErrorText: 'Please provide a title',
         dateErrorText: 'Please provide a creation date',
         descriptionErrorText: 'Please provide a description',
+        statusErrorText: 'Please provide a status',
       }

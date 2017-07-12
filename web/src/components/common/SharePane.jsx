@@ -17,9 +17,6 @@ export default class SharePane extends React.Component {
     this.handleAuthorChange = this.handleAuthorChange.bind(this);
   }
 
-  handleOpen = () => {
-    this.setState({open: true});
-  };
 
   handleClose = () => {
     this.setState({open: false});
