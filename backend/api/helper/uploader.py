@@ -35,6 +35,8 @@ def save_manifest_to_db(manifest):
             for entry in manifestlist:
                 entry['date_last_updated'] = time.strftime("%Y-%m-%d")
                 entry['_id'] = uuid.uuid4()
+                if 'archived' not in manifest:
+                    entry['archived'] = False
                 g.projects.insert(entry)
 
                 ids.append(entry['_id'])

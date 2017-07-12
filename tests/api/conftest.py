@@ -72,7 +72,7 @@ def run_around_tests(mongo_client):
 
 
 @pytest.yield_fixture()
-def enter_data_using_post(pytestconfig, flask_api_url, session):
+def enter_data_using_post(pytestconfig, session):
     test_manifest = os.path.join(
         str(pytestconfig.rootdir),
         'tests',
@@ -81,7 +81,41 @@ def enter_data_using_post(pytestconfig, flask_api_url, session):
     )
     with open(test_manifest, 'r', encoding='utf-8') as tf:
         data = str(tf.read().replace('\n', ''))
+    response = session.post(flask_api_url() + "/api/projects", data=data.encode('utf-8'),
+                            headers={'Content-Type': 'application/json5'})
+    print(response.text)
+    yield response
+
+
+@pytest.yield_fixture()
+def enter_archived_using_post(pytestconfig, flask_api_url, session):
+    test_manifest = os.path.join(
+     str(pytestconfig.rootdir),
+     'tests',
+     'testmanifests',
+     'validexample0_archived.json5'
+    )
+    with open(test_manifest, 'r', encoding='utf-8') as tf:
+        data = str(tf.read().replace('\n', ''))
     response = session.post(flask_api_url + "/api/projects", data=data.encode('utf-8'),
                             headers={'Content-Type': 'application/json5'})
     print(response.text)
     yield response
+
+@pytest.yield_fixture()
+def enter_users(pytestconfig, session):
+    user = {'email': 'dr.dagobert.duck@rich.com',
+            'first_name': 'Dagobert',
+            'last_name': 'Duck',
+            'bio': 'super rich guy',
+            'roles': 'user',
+            'password': 'Mooooooooney'}
+    add_user_response = session.post(flask_api_url() + "/api/users", json=user)
+    print(add_user_response.text)
+    assert add_user_response.status_code == 200
+    yield add_user_response
+
+    delete_user_response = session.delete(flask_api_url() + '/api/users/' +
+                                          add_user_response.json()['email'])
+    print(delete_user_response.text)
+    assert delete_user_response.status_code == 200
