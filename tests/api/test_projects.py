@@ -332,7 +332,7 @@ class TestGET(object):
         project_id = enter_archived_using_post.json()
         print(project_id)
         time.sleep(1)
-        get_response = session.get(flask_api_url + "/api/projects/" + project_id.pop(0))
+        get_response = session.get(flask_api_url + "/api/projects/" + project_id.pop(0) + "?archived=false")
         print(get_response.text)
 
         assert get_response.status_code == 404
@@ -444,6 +444,7 @@ class TestPUT(object):
         del manifest_json['is_owner']
         get_put_response = session.put(flask_api_url + "/api/projects/" +
                                        project_id_not_archived[0], json=manifest_json)
+        print(get_put_response.text)
         time.sleep(2)
         get_again_response = session.get(flask_api_url + "/api/projects/" +
                                          project_id_not_archived[0] + "?archived=true")
