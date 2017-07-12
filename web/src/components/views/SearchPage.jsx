@@ -80,7 +80,6 @@ import Dialog from 'material-ui/Dialog';
       query[key] = value;
 
       this.setState({query : query});
-
     }
 
     saveSearch(){
