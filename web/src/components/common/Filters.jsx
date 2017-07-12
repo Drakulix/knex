@@ -213,8 +213,8 @@ export default class Filters extends Component{
             </div>
             <div className="row">
               <div className="col-1 filter-label" style={{textAlign: "left" , marginLeft:2}}>From</div>
-              <div className="col-2" style={{marginTop:2}}>
-                <DatePicker hintText="Pick date from... "
+              <div className="col-1" style={{marginTop:2}}>
+                <DatePicker hintText="Pick date"
                   mode="landscape"
                   name ="date_from"
                   style={{marginLeft:-40}}
@@ -224,10 +224,13 @@ export default class Filters extends Component{
                   onChange={this.handleChangeDateFrom}
                   />
               </div>
+              <div className="col-1 deleteDate" style={{marginTop:14}}>
+                <button onClick={()=> this.setState({date_from:''})}>x</button>
+              </div>
 
               <div className="col-1 filter-label" style={{textAlign: "left"}}>Till</div>
-              <div className="col-2" style={{marginTop:2}}>
-                <DatePicker hintText="Pick date until..."
+              <div className="col-1" style={{marginTop:2}}>
+                <DatePicker hintText="Pick date"
                   mode="landscape"
                   style={{marginLeft:-50}}
                   name ="date_to"
@@ -237,7 +240,10 @@ export default class Filters extends Component{
                   onChange={this.handleChangeDateTill}
                   />
               </div>
-              <div className="col-1 filter-label" style={{textAlign: "left", marginLeft:-41}} >Status</div>
+              <div className="col-1 deleteDate" style={{marginTop:14, marginLeft:-25}}>
+                <button onClick={()=> this.setState({date_to:''})}>x</button>
+              </div>
+              <div className="col-1 filter-label" style={{textAlign: "left", marginLeft:-16}} >Status</div>
               <div className="col-2" style={{marginTop:-3}}>
                 <DropDownMenu
                   onChange={this.handleStatusChange}
