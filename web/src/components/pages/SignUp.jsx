@@ -91,6 +91,8 @@ export default class SignUp extends Component {
     }else{
       this.setState({password_confirm_error: ''});
     }
+    if(this.state.password != this.state.password_confirm)
+      this.setState({password_confirm_error: 'Password do not match!'});
     this.setState({password_confirm: event.target.value});
   }
 

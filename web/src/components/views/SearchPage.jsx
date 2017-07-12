@@ -62,24 +62,19 @@ import Dialog from 'material-ui/Dialog';
     }
 
     handleChange(event) {
-
       const value = event.target.value;
-      var query = this.state.query;
-      query["searchString"] = value;
-      var end = "/api/projects/search/"
+      var vquery = this.state.query;
+      vquery["searchString"] = value;
+      var end = "/api/projects/search/";
       if(value === ""){
+
         this.setState({fetchURL : "/api/projects"})
       }
       else{
-        this.setState({query : query,
-          fetchURL : end+"simple/?q="+query["searchString"]+"*"
-        })
+        this.setState({query : vquery});
+        this.setState({fetchURL : end+"simple/?q=" + vquery["searchString"] + "*"});
       }
-
-
-      //this.setState({fetchURL : "simple/?q="+this.state.searchString+"*"});
-
-
+    alert(JSON.stringify(this.state));
     }
 
     handleFilterChange(key, value){
@@ -173,7 +168,7 @@ import Dialog from 'material-ui/Dialog';
             <div className="row" style={{textAlign:"center"}}>
               <div className="col-10">
                 <TextField  style={{width:"100%"}}
-                  onKeyPress={this.onKeyPress}
+
                   name="searchString"
                   value={this.state.query.searchString}
                   placeholder="Enter your query here..."
