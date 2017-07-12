@@ -71,51 +71,37 @@ export default class UploadByPattern extends Component {
       var id = string.substring(string.lastIndexOf("(")+1, string.length-1)
       authors.push({"name" : name, "email" :id})
     }
-    var projectInf = this.state.projectInf
-    projectInf.authors = authors
-    this.setState({projectInf: projectInf})
+
+    this.setState({projectInf: {authors : value}})
   }
 
   handleTagChange(value) {
-    var projectInf = this.state.projectInf
-    projectInf.tags = value
-    this.setState({projectInf: projectInf})
+    this.setState({projectInf: {tags:value}})
   }
 
   handleURLChange(value) {
-    var projectInf = this.state.projectInf
-    projectInf.url = value
-    this.setState({projectInf: projectInf})
+    this.setState({projectInf: {url :value}})
   }
 
   handleTitleChange(event,value) {
-    var projectInf = this.state.projectInf
-    projectInf.title = value
-    this.setState({projectInf: projectInf})
+    this.setState({projectInf: {title:value}})
   }
 
   handleDescriptionChange(event,value) {
-    var projectInf = this.state.projectInf
-    projectInf.description = value
-    this.setState({projectInf: projectInf})
+    this.setState({projectInf: {description : value}})
   }
 
   handleStatusChange = (event, index, value) => {
-    var projectInf = this.state.projectInf
-    projectInf.status = value
-    this.setState({projectInf: projectInf}
-    )
+    this.setState({projectInf: {status:value}})
   }
 
   handleChangeDate = (event, date) => {
     var mm = date.getMonth()+1
     var dd = date.getDate()
     var dateString =  [date.getFullYear(),'-', ((mm > 9) ? '' :'0')+ mm, '-', ((dd> 9) ? '':'0')+ dd].join('')
-    var projectInf = this.state.projectInf
-    projectInf.date_creation = dateString
     this.setState({
       date: date,
-      projectInf: projectInf
+      projectInf: {date_creation:dateString}
     })
   }
 
@@ -191,9 +177,9 @@ export default class UploadByPattern extends Component {
     return      this.state.projectInf.title === ''
     ||  this.state.projectInf.date_creation === ''
     ||  this.state.projectInf.description === ''
-    ||  this.state.projectInf.authors.length === 0
-    ||  this.state.projectInf.url.length === 0
-    ||  this.state.projectInf.status === ""
+//    ||  this.state.projectInf.authors.length === 0
+  //  ||  this.state.projectInf.url.length === 0
+    ||  this.state.projectInf.status === 0
   }
 
   componentDidMount(){
@@ -304,10 +290,12 @@ export default class UploadByPattern extends Component {
                       />
                     <div className="profile-info">Links</div>
                     <ChipInputList
-                      defaultValue={this.state.projectInf.url}
                       value={this.state.projectInf.url}
                       onChange={this.handleURLChange}
-                      errorText={(this.state.projectInf.url.length === 0) ? this.props.urlErrorText : ""}
+                      errorText={(
+true
+                      //  this.state.projectInf.url.length === 0
+                      ) ? this.props.urlErrorText : ""}
                       hintText='Add Links...'/>
                   </div>
                   <div className="col-1"></div>
