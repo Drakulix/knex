@@ -332,7 +332,7 @@ class TestGET(object):
         project_id = enter_archived_using_post.json()
         print(project_id)
         time.sleep(1)
-        get_response = session.get(flask_api_url + "/api/projects/" + project_id.pop(0) + 
+        get_response = session.get(flask_api_url + "/api/projects/" + project_id.pop(0) +
                                    "?archived=false")
         print(get_response.text)
 
