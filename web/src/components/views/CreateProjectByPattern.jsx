@@ -179,7 +179,6 @@ const statusString = [
           function(stateField){return status === stateField }
           );
 
-
           this.setState({
             projectInf: data,
             date: new Date( data.date_creation.split("-")[0],
@@ -189,7 +188,10 @@ const statusString = [
             authors : authors
 
           });
+
+          //this feature is disabled (see below in the rendermethod)
           this.setState({site_loaded: true})
+
         }
         ).catch(ex => {
           this.setState({project_exists: false});
@@ -238,6 +240,11 @@ const statusString = [
            * This is a temporary workaround until the issue is resolved.
            * Please don't remove this unless you know how to fix it.
            */
+           if(this.props.fromURL&&(this.state.status!==this.props.status)){
+             this.setState({status : this.props.status});
+           }
+
+
 
            fetchJson('/api/projects/tags').then(function(tags) {
              this.setState({
@@ -261,25 +268,23 @@ const statusString = [
              });
            }.bind(this));
 
-
-
-          if(this.props.fromURL&&(this.state.status!==this.props.status)){
-            this.setState({status : this.props.status});
-          }
         }
 
         render() {
+          /*
+           * using this.state.site_loaded here will crash the entire page.
+           * dont bring it back, before it no longer does that!
           if(!this.state.site_loaded && this.state.projectID){
             return (
               <div className="container">
                 <div className="header"><CircularProgress size={80} thickness={5} /></div>
               </div>
             );
-          }
+          }*/
           if(!this.state.project_exists && this.state.projectID){
             return (
               <div className="container">
-                <div className="header">Project Not Found</div>
+                <div className="header"><CircularProgress size={80} thickness={5} /></div>
               </div>
             );
           }else{
