@@ -1,7 +1,6 @@
 import 'isomorphic-fetch';
 import 'babel-polyfill';
 
-
 var loggedin = false;
 var myemail = '';
 var myProfile;
@@ -17,7 +16,7 @@ export function getMyEmail(){
 export function isAdmin(){
   return getUserInfo(getMyEmail()).then(function(response) {
     return response.json;
-  }).then(function (response){
+  }).then(function (response) {
     myProfile = response;
     return (myProfile && (myProfile.roles === 'admin'));
   }).then(res => {return res});
@@ -33,7 +32,7 @@ export function setCookie(cname, cvalue, exdays) {
 export function getCookie(cname) {
   var name = cname + "=";
   var ca = document.cookie.split(';');
-  for(var i = 0; i < ca.length; i++) {
+  for (var i = 0; i < ca.length; i++) {
     var c = ca[i];
     while (c.charAt(0) === ' ') {
       c = c.substring(1);
@@ -60,10 +59,10 @@ export function changePassword(email, oldpw, newpw){
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(sbody)
-  }).then(function(response){
-    if(response.status===200){
+  }).then(function(response) {
+    if (response.status === 200) {
       return true;
-    }else{
+    } else {
       return false;
     }
   });
@@ -75,11 +74,10 @@ export function changeProfile(email, first_name, last_name, bio){
     method: 'PUT',
     credentials: 'include',
     headers: {
-      //        'Accept': 'application/json',
+      //'Accept': 'application/json',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(sbody)
-
   }).then(response => response.status).catch(ex => {
     console.error('parsing failes', ex);
   });
@@ -112,41 +110,39 @@ export function login(login_email, login_password){
     body: requestBody
   }).then( response => {
     setCookie('email', login_email);
-    if(response.status===200){
+    if (response.status === 200) {
       console.log("MYLOG status: " + response.status);
       myemail = login_email;
       loggedin = true;
       return true;
-    }else{
+    } else {
       console.log("MYLOG status: " + response.status);
       return false;
     }
   });
   getUserInfo(myemail).then((success) => {
     myProfile = success;
-  });;
+  });
   return res;
 }
 
-export function logout(){
+export function logout() {
   return fetch('/api/users/logout', {
     mode: 'no-cors',
     credentials: 'include',
     method: 'GET'
-  }).then(function(response){
-    if(response.status===200){
+  }).then(function(response) {
+    if (response.status === 200) {
       myemail = '';
       loggedin = false;
       return true;
-    }else{
+    } else {
       return false;
     }
   });
-
 }
 
-export function register(reg_firstname, reg_lastname, reg_email, reg_password, reg_password_confirm, reg_role){
-
+export function register(reg_firstname, reg_lastname, reg_email, reg_password, reg_password_confirm, reg_role) {
   var payload = {
     "first_name" : reg_firstname ,
     "last_name" : reg_lastname,
@@ -156,7 +152,7 @@ export function register(reg_firstname, reg_lastname, reg_email, reg_password, r
     "roles" : reg_role
   };
 
-  if(reg_password !== reg_password_confirm || reg_password === ''){
+  if (reg_password !== reg_password_confirm || reg_password === '') {
     return false;
   }
 
@@ -169,11 +165,10 @@ export function register(reg_firstname, reg_lastname, reg_email, reg_password, r
       'Content-Type': 'application/json'
     },
     body: JSON.stringify( payload )
-  }).then(function(response){
-
-    if(response.status===200){
+  }).then(function(response) {
+    if(response.status === 200) {
       return true;
-    }else{
+    } else {
       console.error(response.json())
       return false;
     }
