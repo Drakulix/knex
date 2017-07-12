@@ -225,7 +225,7 @@ def update_project(project_id):
                 g.notify_users(
                     list(set(
                         [author['email'] for author in manifest['authors']
-                            if author['email'] != current_user['email']] +
+                         if author['email'] != current_user['email']] +
                         g.users_with_bookmark(str(manifest['_id']))
                     )), "Project was updated", manifest['title'],
                     '/projects/' + str(manifest['_id']))

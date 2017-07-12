@@ -1,6 +1,7 @@
 from flask import request, jsonify, make_response, g, Blueprint
 from flask_security import login_required, login_user, logout_user, current_user
-from flask_security.utils import verify_password, encrypt_password
+from flask_security.utils import verify_password, hash_password
+from mongoengine import NotUniqueError
 from mongoengine.fields import ObjectId
 
 from api.helper.apiexception import ApiException
@@ -64,11 +65,13 @@ def create_user():
         g.user_datastore.create_user(first_name=user["first_name"],
                                      last_name=user["last_name"],
                                      email=user["email"],
-                                     password=encrypt_password(user["password"]),
+                                     password=hash_password(user["password"]),
                                      bio=user["bio"], roles=[role])
 
         return jsonify(g.user_datastore.get_user(user['email']))
 
+    except NotUniqueError as ue:
+        raise ApiException("duplicated user error", 409)
     except ApiException as e:
         raise e
     except Exception as err:
@@ -84,9 +87,16 @@ def update_user():
         if not res:
             return make_response("Unknown User with Email-address: " +
                                  user['email'], 400)
-        res.first_name = user['first name']
-        res.last_name = user['last name']
+        if res.first_name != user['first_name'] or res.last_name != user['last_name']:
+            res.first_name = user['first_name']
+            res.last_name = user['last_name']
+            firstname = current_user['first_name'] if 'first_name' in current_user else ""
+            lastname = current_user['last_name'] if 'last_name' in current_user else ""
+            newname = firstname + " " if firstname else "" + lastname
+            g.projects.update_many({'authors.email': user['email']},
+                                   {'$set': {'authors.$.name': newname}})
         res.bio = user['bio']
+
         res.save()
 
         return make_response("User with email: " +
@@ -107,11 +117,33 @@ def update_password():
 
     if current_user.has_role('admin') or verify_password(user["old_password"], res.password):
         new_password = user["new password"]
-        res.password = encrypt_password(new_password)
+        res.password = hash_password(new_password)
         res.save()
         return make_response("Password restored!", 200)
 
     return make_response("You don't have permission to edit this user", 400)
+
+
+@users.route('/api/users/<email:mail>', methods=['DELETE'])
+@login_required
+def delete_user(mail):
+    user = g.user_datastore.get_user(mail)
+    if not user:
+        raise ApiException("user not found", 404)
+    if is_permitted(current_user, user):
+        if not user.has_role('admin'):
+            g.user_datastore.delete_user(user)
+            return make_response("deleted non admin", 200)
+        else:
+            for usr in g.user_datastore.user_model.objects:
+                if usr.has_role('admin') and usr['email'] != user['email']:
+                    g.user_datastore.delete_user(user)
+                    return make_response("deleted", 200)
+            raise ApiException("You are the last surviving admin, "
+                               "you cannot delete yourself", 9001)
+
+    else:
+        make_response("Permission denied!", 403)
 
 
 @users.route('/api/users/<email:mail>', methods=['GET'])
@@ -189,13 +221,15 @@ def add_bookmarks(id):
         return make_response("Project is already bookmarked.", 400)
     user.bookmarks.append(id)
     user.save()
-    projects = [g.projects.find_one({'_id': project_id}) for project_id in user['bookmarks']]
+    projects = [g.projects.find_one({'_id': project_id})
+                for project_id in user['bookmarks']]
 
     try:
         for project in projects:
             project['is_bookmark'] = 'true'
-            project['is_owner'] = 'true' if current_user['email']\
-                in [author['email'] for author in project['authors']] else 'false'
+            project['is_owner'] = 'true' \
+                if current_user['email'] in [author['email']
+                                             for author in project['authors']] else 'false'
 
         return jsonify(projects)
 
@@ -217,7 +251,7 @@ def delete_bookmarks(id):
         try:
             for project in projects:
                 project['is_bookmark'] = 'true'
-                project['is_owner'] = 'true' if current_user['email']\
+                project['is_owner'] = 'true' if current_user['email'] \
                     in [author['email'] for author in project['authors']] else 'false'
 
             return jsonify(projects)
@@ -238,8 +272,9 @@ def get_bookmarks():
     try:
         for project in projects:
             project['is_bookmark'] = 'true'
-            project['is_owner'] = 'true' if current_user['email']\
-                in [author['email'] for author in project['authors']] else 'false'
+            project['is_owner'] = 'true' \
+                if current_user['email'] in [author['email']
+                                             for author in project['authors']] else 'false'
 
         return jsonify(projects)
 
