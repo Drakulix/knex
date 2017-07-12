@@ -7,7 +7,7 @@ import styles from '../common/Styles.jsx';
 
 
 
-  export default class SavedQuery extends Component {
+export default class SavedQuery extends Component {
 
 
 

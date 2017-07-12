@@ -38,9 +38,7 @@ export default class ProfileContainer extends Component {
 
     this.handlePwChangeSubmit = this.handlePwChangeSubmit.bind(this);
     this.handleProfileChangeSubmit = this.handleProfileChangeSubmit.bind(this);
-
     this.loadProfileInf = this.loadProfileInf.bind(this);
-
     this.handleInputChange = this.handleInputChange.bind(this);
   }
 
