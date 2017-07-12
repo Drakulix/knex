@@ -167,6 +167,14 @@ export default class ProfileContainer extends Component {
     });
   }
 
+  getBio(){
+    if(this.state.profileInf.bio){
+      return (this.state.profileInf.bio.split('\n').map((item, key) => {return <span key={key}>{item}<br/></span>}));
+      }else{
+        return ' ';
+      }
+    }
+
 
   render() {
       if(!this.state.site_loaded){
@@ -203,7 +211,7 @@ export default class ProfileContainer extends Component {
                     <div className="profile-header">Biography:</div>
                     <div className="profile-info" style={{width:"100%"}}>
                       <table style={{tableLayout: "fixed", width: "80%" ,wordWrap: "break-word"}}><tr><td>
-                        {this.state.profileInf.bio}
+                        {this.getBio()}
                       </td></tr></table>
                     </div>
                     <div>
@@ -211,7 +219,7 @@ export default class ProfileContainer extends Component {
                       <div style = {styles["wrapper"]}>
                         { this.state.topTenTags.map(item =>
                           <Chip style= {styles["chip"]}>
-                            <Link to={item} style= {styles["chipText"]} >{item}</Link></Chip>) }
+                            <Link to={"/discovery?tag=" +item} style= {styles["chipText"]} >{item}</Link></Chip>) }
                             </div>
                     </div>
                   </div>

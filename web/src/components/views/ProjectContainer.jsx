@@ -272,7 +272,7 @@ export default class ProjectContainer extends Component {
                     <div style = {styles["wrapper"]}>
                       { this.state.projectInf.tags.map(item =>
                         <Chip style= {styles["chip"]}>
-                          <Link to={item} style= {styles["chipText"]} >{item}</Link></Chip>) }
+                          <Link to={"/discovery?tag=" +item} style= {styles["chipText"]} >{item}</Link></Chip>) }
                           </div>
                         </div>
                         <div style={{marginTop:30}}>
