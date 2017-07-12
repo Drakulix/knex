@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
-import DatePicker from 'material-ui/DatePicker';
-import TextField from 'material-ui/TextField';
-import Snackbar from 'material-ui/Snackbar';
+import React, { Component } from 'react'
+import RaisedButton from 'material-ui/RaisedButton'
+import DatePicker from 'material-ui/DatePicker'
+import TextField from 'material-ui/TextField'
+import Snackbar from 'material-ui/Snackbar'
 import DropDownMenu from 'material-ui/DropDownMenu'
-import MenuItem from 'material-ui/MenuItem';
-import CircularProgress from 'material-ui/CircularProgress';
-import ChipInputList from '../common/ChipInputList';
+import MenuItem from 'material-ui/MenuItem'
+import CircularProgress from 'material-ui/CircularProgress'
+import ChipInputList from '../common/ChipInputList'
 import {fetchJson } from '../common/Backend.jsx'
 
 
@@ -114,9 +114,6 @@ export default class UploadByPattern extends Component {
         authors.push({"name" : name, "email" :id});
 >>>>>>> 39546c0... revert to old state from CreateProjectPattern.
       }
-      var projectInf = this.state.projectInf;
-      projectInf.authors = authors;
-      this.setState({projectInf: projectInf});
     }
 
 <<<<<<< HEAD
@@ -287,6 +284,7 @@ export default class UploadByPattern extends Component {
           +suggestedAuthors[i].last_name +
           " ("+suggestedAuthors[i].email+ ")"])
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
     handleTagChange(value) {
@@ -445,19 +443,31 @@ export default class UploadByPattern extends Component {
 
           });
           this.setState({site_loaded: true})
+=======
+>>>>>>> 92de99a... Minor bugfix
         }
-        ).catch(ex => {
-          this.setState({project_exists: false});
-          this.setState({site_loaded: true})
-        });
+        console.log(suggestedAuthorsArray)
+        this.setState({
+          suggestedAuthors: suggestedAuthorsArray
+        })
+      }.bind(this))
+      if(this.props.fromURL&&(this.state.status!==this.props.status)){
+        this.setState({status : this.props.status})
       }
+    }
 
-      handleUpload(event){
-        event.preventDefault();
-        console.log(event);
-        this.submit();
+    render() {
+      if(!this.state.site_loaded && this.state.projectID){
+        return (
+          <div className="container">
+            <div className="header"><CircularProgress size={80} thickness={5} /></div>
+          </div>
+        )
       }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 92de99a... Minor bugfix
       if(!this.state.project_exists && this.state.projectID){
         return (
           <div className="container">
@@ -470,6 +480,7 @@ export default class UploadByPattern extends Component {
             <div className="innerContainer">
               <div className = "headerCreation" style={{width:"100%"}}>
                 {(this.state.projectID !== undefined) ? "Edit project" : "Add new project"}
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 =======
@@ -582,103 +593,56 @@ export default class UploadByPattern extends Component {
             return (
               <div className="container">
                 <div className="header">Project Not Found</div>
+=======
+>>>>>>> 92de99a... Minor bugfix
               </div>
-            );
-          }else{
-            return(
-              <div className="container">
-                <div className="innerContainer">
-                  <div className = "headerCreation" style={{width:"100%"}}>
-                    {(this.state.projectID !== undefined) ? "Edit project" : "Add new project"}
-                  </div>
-                  <form>
-                    <div>
-                      <div className="profile-info">Title</div>
-                      <TextField  value={this.state.projectInf.title}
-                        onChange={this.handleTitleChange}
-                        hintText="Add title..."
-                        style={{width:'100%'}}
-                        errorText={(this.state.projectInf.title==="") ? this.props.titleErrorText : ""}
-                        />
-                    </div>
+              <form>
+                <div>
+                  <div className="profile-info">Title</div>
+                  <TextField  value={this.state.projectInf.title}
+                    onChange={this.handleTitleChange}
+                    hintText="Add title..."
+                    style={{width:'100%'}}
+                    errorText={(this.state.projectInf.title==="") ? this.props.titleErrorText : ""}
+                    />
+                </div>
+                <div className="row">
+                  <div className="col-4">
                     <div className="row">
-                      <div className="col-4">
-                        <div className="row">
-                          <div className="col-6">
-                            <div className="profile-info">Creation date</div>
-                            <div>
-                              <DatePicker hintText="Pick a creation Date..."
-                                value={this.state.date}
-                                mode="landscape"
-                                onChange={this.handleChangeDate}
-                                style={{display: "inline"}}
-                                textFieldStyle={{width: '100%', marginTop:8}}
-                                errorText={(this.state.date==="") ? this.props.dateErrorText : ""}
-                                />
-                            </div>
-                          </div>
-                          <div className="col-6">
-                            <div className="profile-info">Status</div>
-                            <div>
-                              <DropDownMenu
-                                defaultValue={this.state.status}
-                                value={this.state.status}
-                                onChange={this.handleStatusChange}
-                                labelStyle={{width: '100%', paddingLeft:0}}
-                                underlineStyle={{width: '100%', marginLeft:0}}
-                                autoWidth={false}
-                                style={{width: '100%'}}
-                                errorText={(this.state.status.length==="") ? this.props.statusErrorText : ""}
-                                >
-                                {statusString.map(item =><MenuItem value={item.id} primaryText={item.text} />)}
-                              </DropDownMenu>
-                            </div>
-                          </div>
+                      <div className="col-6">
+                        <div className="profile-info">Creation date</div>
+                        <div>
+                          <DatePicker hintText="Pick a creation Date..."
+                            value={this.state.date}
+                            mode="landscape"
+                            onChange={this.handleChangeDate}
+                            style={{display: "inline"}}
+                            textFieldStyle={{width: '100%', marginTop:8}}
+                            errorText={(this.state.date==="") ? this.props.dateErrorText : ""}
+                            />
                         </div>
-                        <div className="profile-info">Authors</div>
-                        <ChipInputList suggestions = {this.state.suggestedAuthors}
-                          onChange={this.handleAuthorChange}
-                          filtered ={true}
-                          value={this.state.authors}
-                          hintText={'Add authors...'}
-                          errorText={(this.state.authors.length === 0) ? this.props.authorsErrorText : ""}
-                          />
-                        <div className="profile-info">Links</div>
-                        <ChipInputList
-                          defaultValue={this.state.projectInf.url}
-                          value={this.state.projectInf.url}
-                          onChange={this.handleURLChange}
-                          hintText='Add Links...'/>
                       </div>
-                      <div className="col-1"></div>
-                      <div className="col-7">
-                        <div className="profile-info"> Tags</div>
-                        <ChipInputList suggestions = {this.state.suggestedTags}
-                          onChange={this.handleTagChange}
-                          filtered ={true}
-                          value={this.state.projectInf.tags}
-                          hintText={'Add tags...'}
-                          />
-                        <div className="profile-info">Description</div>
-                        <TextField  value={this.state.projectInf.description}
-                          onChange={this.handleDescriptionChange}
-                          hintText="Add description..."
-                          style={{width:'100%'}}
-                          multiLine={true}
-                          errorText={(this.state.projectInf.description==="") ? this.props.descriptionErrorText : ""}
-                          />
-                        <div className="row" style={{marginTop:100}}>
-                          <div className="col-10"></div>
-                          <div className="col-1" >
-                            <RaisedButton label="Submit"
-                              disabled={this.isInValid()}
-                              onClick={this.handleUpload}
-                              primary={true}/>
-                          </div>
+                      <div className="col-6">
+                        <div className="profile-info">Status</div>
+                        <div>
+                          <DropDownMenu
+                            value={this.state.projectInf.status}
+                            onChange={this.handleStatusChange}
+                            labelStyle={{width: '100%', paddingLeft:0}}
+                            underlineStyle={{width: '100%', marginLeft:0}}
+                            autoWidth={false}
+                            style={{width: '100%'}}
+                            errorText={(this.state.projectInf.status==="") ? this.props.statusErrorText : ""}
+                            >
+                            {statusString.map(item =><MenuItem value={item.value} primaryText={item.text} />)}
+                          </DropDownMenu>
                         </div>
                       </div>
                     </div>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 92de99a... Minor bugfix
                     <div className="profile-info">Authors</div>
                     <ChipInputList suggestions = {this.state.suggestedAuthors}
                       onChange={this.handleAuthorChange}
@@ -722,25 +686,31 @@ export default class UploadByPattern extends Component {
                       </div>
                     </div>
                   </div>
+<<<<<<< HEAD
 =======
                   </form>
 >>>>>>> 39546c0... revert to old state from CreateProjectPattern.
+=======
+>>>>>>> 92de99a... Minor bugfix
                 </div>
-                <Snackbar
-                  open={this.state.snackbar}
-                  message="New project added!"
-                  autoHideDuration={10000}
-                  />
-              </div>
-            )
-          }
-        }
+              </form>
+            </div>
+            <Snackbar
+              open={this.state.snackbar}
+              message="New project added!"
+              autoHideDuration={10000}
+              />
+          </div>
+        )
       }
+    }
+  }
 
-      UploadByPattern.defaultProps = {
-        authorsErrorText: 'Please provide an author',
-        titleErrorText: 'Please provide a title',
-        dateErrorText: 'Please provide a creation date',
-        descriptionErrorText: 'Please provide a description',
-        statusErrorText: 'Please provide a status',
-      }
+  UploadByPattern.defaultProps = {
+    authorsErrorText: 'Please provide at least one author',
+    titleErrorText: 'Please provide a title',
+    dateErrorText: 'Please provide a creation date',
+    descriptionErrorText: 'Please provide a description',
+    statusErrorText: 'Please provide a status',
+    urlErrorText: 'Please provide at least one url'
+  }
