@@ -78,7 +78,6 @@ def create_user():
         raise ApiException(str(err), 500)
 
 
-
 @users.route('/api/users', methods=['PUT'])
 @login_required
 def update_user():
@@ -88,13 +87,14 @@ def update_user():
         if not res:
             return make_response("Unknown User with Email-address: " +
                                  user['email'], 400)
-        if res.first_name != user['first name'] or res.last_name != user['last name']:
-            res.first_name = user['first name']
-            res.last_name = user['last name']
+        if res.first_name != user['first_name'] or res.last_name != user['last_name']:
+            res.first_name = user['first_name']
+            res.last_name = user['last_name']
             firstname = current_user['first_name'] if 'first_name' in current_user else ""
             lastname = current_user['last_name'] if 'last_name' in current_user else ""
             newname = firstname + " " if firstname else "" + lastname
-            g.projects.update_many({'authors.email': user['email']}, {'$set': {'authors.$.name': newname}})
+            g.projects.update_many({'authors.email': user['email']},
+                                   {'$set': {'authors.$.name': newname}})
         res.bio = user['bio']
 
         res.save()
@@ -139,7 +139,8 @@ def delete_user(mail):
                 if usr.has_role('admin') and usr['email'] != user['email']:
                     g.user_datastore.delete_user(user)
                     return make_response("deleted", 200)
-            raise ApiException("You are the last surviving admin, you cannot delete yourself", 9001)
+            raise ApiException("You are the last surviving admin, "
+                               "you cannot delete yourself", 9001)
 
     else:
         make_response("Permission denied!", 403)
@@ -220,13 +221,15 @@ def add_bookmarks(id):
         return make_response("Project is already bookmarked.", 400)
     user.bookmarks.append(id)
     user.save()
-    projects = [g.projects.find_one({'_id': project_id}) for project_id in user['bookmarks']]
+    projects = [g.projects.find_one({'_id': project_id})
+                for project_id in user['bookmarks']]
 
     try:
         for project in projects:
             project['is_bookmark'] = 'true'
-            project['is_owner'] = 'true' if current_user['email']\
-                in [author['email'] for author in project['authors']] else 'false'
+            project['is_owner'] = 'true' \
+                if current_user['email'] in [author['email']
+                                             for author in project['authors']] else 'false'
 
         return jsonify(projects)
 
@@ -248,7 +251,7 @@ def delete_bookmarks(id):
         try:
             for project in projects:
                 project['is_bookmark'] = 'true'
-                project['is_owner'] = 'true' if current_user['email']\
+                project['is_owner'] = 'true' if current_user['email'] \
                     in [author['email'] for author in project['authors']] else 'false'
 
             return jsonify(projects)
@@ -269,8 +272,9 @@ def get_bookmarks():
     try:
         for project in projects:
             project['is_bookmark'] = 'true'
-            project['is_owner'] = 'true' if current_user['email']\
-                in [author['email'] for author in project['authors']] else 'false'
+            project['is_owner'] = 'true' \
+                if current_user['email'] in [author['email']
+                                             for author in project['authors']] else 'false'
 
         return jsonify(projects)
 

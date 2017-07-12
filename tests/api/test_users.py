@@ -15,7 +15,8 @@ class TestUsers(object):
         print(put_project_response.text)
         assert put_project_response.status_code == 200
         user['fist_name'] = "Dr. Dagobert"
-        put_user_response = session.put(flask_api_url + "/api/users/" + user['email'], json=user)
+        put_user_response = session.put(flask_api_url + "/api/users", json=user)
+        print(put_user_response.text)
         assert put_user_response.status_code == 200
         get_project_response = session.get(flask_api_url + "/api/projects/" + str(document["_id"]))
         print(get_project_response.text)

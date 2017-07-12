@@ -115,6 +115,7 @@ def enter_users(pytestconfig, session):
     assert add_user_response.status_code == 200
     yield add_user_response
 
-    delete_user_response = session.delete(flask_api_url() + '/api/users/' + add_user_response.json()['email'])
+    delete_user_response = session.delete(flask_api_url() + '/api/users/' +
+                                          add_user_response.json()['email'])
     print(delete_user_response.text)
     assert delete_user_response.status_code == 200
