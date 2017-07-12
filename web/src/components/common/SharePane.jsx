@@ -1,32 +1,27 @@
-import React from 'react';
-import Dialog from 'material-ui/Dialog';
-import RaisedButton from 'material-ui/RaisedButton';
-import ChipInputList from '../common/ChipInputList.jsx';
-import { fetchJson} from '../common/Backend.jsx';
-
-
+import React from 'react'
+import Dialog from 'material-ui/Dialog'
+import RaisedButton from 'material-ui/RaisedButton'
+import ChipInputList from '../common/ChipInputList.jsx'
+import { fetchJson} from '../common/Backend.jsx'
 
 export default class SharePane extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       open: false,
       authors:[]
-    };
-
-    this.handleAuthorChange = this.handleAuthorChange.bind(this);
+    }
+    this.handleAuthorChange = this.handleAuthorChange.bind(this)
   }
 
-
   handleClose = () => {
-    this.setState({open: false});
-  };
-
+    this.setState({open: false})
+  }
 
   shareProject =() =>{
     for (var i in this.state.authors) {
-      var string = this.state.authors[i];
-      var id = string.substring(string.lastIndexOf("(")+1, string.length-1);
+      var string = this.state.authors[i]
+      var id = string.substring(string.lastIndexOf("(")+1, string.length-1)
       var shareURL =  "/api/projects/"+this.props.uuid+"/share/"+id
       fetch(shareURL, {
         method: 'POST',
@@ -36,10 +31,10 @@ export default class SharePane extends React.Component {
           "Accept": "application/json",
         }
       }).then(response => response.json()).catch(ex => {
-        console.error('parsing failes', ex);
-      });
+        console.error('parsing failes', ex)
+      })
     }
-    this.setState({open: false});
+    this.setState({open: false})
   }
 
 
@@ -50,38 +45,34 @@ export default class SharePane extends React.Component {
     fetchJson('/api/projects/tags').then(function(tags) {
       this.setState({
         suggestedTags: tags
-      });
-    }.bind(this));
+      })
+    }.bind(this))
 
     //gets all the authors from the backend
     fetchJson('/api/users').then(function(authors) {
-      var suggestedAuthors = authors;
+      var suggestedAuthors = authors
       var suggestedAuthorsArray = []
       for (var i in suggestedAuthors) {
         suggestedAuthorsArray = suggestedAuthorsArray.concat([
                                    suggestedAuthors[i].first_name + " "
                                    +suggestedAuthors[i].last_name +
-                             + " ("+suggestedAuthors[i].email+ ")"]);
+                             + " ("+suggestedAuthors[i].email+ ")"])
       }
-      console.log(suggestedAuthorsArray);
+      console.log(suggestedAuthorsArray)
       this.setState({
         suggestedAuthors: suggestedAuthorsArray
-      });
-    }.bind(this));
+      })
+    }.bind(this))
 
 
   }
 
   componentWillReceiveProps(props){
-    this.setState({open: props.value});
+    this.setState({open: props.value})
   }
 
-
-
-
-
   handleAuthorChange(value) {
-    this.setState({authors : value});
+    this.setState({authors : value})
   }
 
   render() {
@@ -97,7 +88,7 @@ export default class SharePane extends React.Component {
         onTouchTap={this.shareProject}
         style={{marginLeft:20}}
         />,
-    ];
+    ]
 
     return (
       <Dialog
@@ -113,8 +104,7 @@ export default class SharePane extends React.Component {
           value={this.state.authors}
           hintText={'Add authors...'}
           />
-
       </Dialog>
-    );
+    )
   }
 }

@@ -1,26 +1,26 @@
-import React, { Component } from 'react';
-import ChipInput from 'material-ui-chip-input';
-import Chip from 'material-ui/Chip';
+import React, { Component } from 'react'
+import ChipInput from 'material-ui-chip-input'
+import Chip from 'material-ui/Chip'
 import AutoComplete from 'material-ui/AutoComplete'
 import styles from '../common/Styles.jsx'
 
 
 export default class ChipInputList extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       list:this.props.value
-    };
+    }
   }
 
   handleRequestAdd (chip) {
     if(this.props.filtered && this.props.suggestions.indexOf(chip) === -1)
-      return;
-    var list = [...this.state.list, chip];
+      return
+    var list = [...this.state.list, chip]
     this.setState({
       list: list
     })
-    this.props.onChange(list);
+    this.props.onChange(list)
   }
 
   handleRequestDelete (deletedChip) {
@@ -28,13 +28,12 @@ export default class ChipInputList extends Component {
     this.setState({
       list: list
     })
-    this.props.onChange(list);
+    this.props.onChange(list)
   }
 
   componentWillReceiveProps(props){
-    this.props = props;
+    this.props = props
   }
-
 
   render(){
     return(
@@ -57,6 +56,6 @@ export default class ChipInputList extends Component {
             <span style={styles["chipText"]}> {value} </span>
           </Chip>
         )}/>
-      );
+      )
     }
   }

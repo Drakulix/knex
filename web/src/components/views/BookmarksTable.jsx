@@ -6,7 +6,7 @@ export default class BookmarksTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
-    };
+    }
   }
 
 render(){
@@ -18,6 +18,6 @@ render(){
                     bookmarksSite = {"true"}
         ></DataTable>
       </div>
-    );
+    )
   }
 }

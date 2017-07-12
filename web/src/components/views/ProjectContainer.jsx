@@ -1,18 +1,18 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 
 import Chip from 'material-ui/Chip'
-import styles from '../common/Styles.jsx';
+import styles from '../common/Styles.jsx'
 
-import IconButton from 'material-ui/IconButton';
-import SharePane from '../common/SharePane';
-import CircularProgress from 'material-ui/CircularProgress';
+import IconButton from 'material-ui/IconButton'
+import SharePane from '../common/SharePane'
+import CircularProgress from 'material-ui/CircularProgress'
 import CommentSideBar from '../common/CommentSideBar.jsx'
 
 
 export default class ProjectContainer extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       projectID : this.props.match.params.uuid,
@@ -23,21 +23,21 @@ export default class ProjectContainer extends Component {
       sharePane: false,
       commentBar: false,
       project_exists: false
-    };
+    }
 
-    this.handleEdit = this.handleEdit.bind(this);
-    this.handleComment = this.handleComment.bind(this);
-    this.handleBookmark = this.handleBookmark.bind(this);
-    this.handleShare = this.handleShare.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
+    this.handleEdit = this.handleEdit.bind(this)
+    this.handleComment = this.handleComment.bind(this)
+    this.handleBookmark = this.handleBookmark.bind(this)
+    this.handleShare = this.handleShare.bind(this)
+    this.handleDelete = this.handleDelete.bind(this)
   }
 
   componentWillMount(){
-    this.loadSiteInf(this.state.projectID);
+    this.loadSiteInf(this.state.projectID)
   }
 
   componentWillReceiveProps(nextProps){
-    this.setState({projectID: nextProps.uuid});
+    this.setState({projectID: nextProps.uuid})
     this.loadSiteInf(this.state.projectID)
   }
 
@@ -51,8 +51,8 @@ export default class ProjectContainer extends Component {
         "Accept": "application/json",
       }
     }).then(response => response.json()).catch(ex => {
-      console.error('parsing failes', ex);
-    });
+      console.error('parsing failes', ex)
+    })
   }
 
   fetchProjectInfo(uuid){
@@ -64,31 +64,31 @@ export default class ProjectContainer extends Component {
         "Accept": "application/json",
       }
     }).then(response => response.json()).catch(ex => {
-      console.error('parsing failes', ex);
-    });
+      console.error('parsing failes', ex)
+    })
   }
 
   loadSiteInf(uuid) {
     this.fetchProjectInfo(uuid).then(data => {
-      this.setState({projectInf: data});
+      this.setState({projectInf: data})
       if(!data){
-        this.setState({project_exists: false});
+        this.setState({project_exists: false})
       }else{
         this.setState({project_exists: true})
       }
       this.setState({site_loaded: true})
     }).catch(ex => {
-      this.setState({project_exists: false});
-        this.setState({site_loaded: true})
-    });
+      this.setState({project_exists: false})
+      this.setState({site_loaded: true})
+    })
 
     this.fetchMyBookmarks().then(data => {
-      this.setState({myBookmarks: data});
+      this.setState({myBookmarks: data})
       if(!data){
-        this.setState({});
+        this.setState({})
       }else{
-        var bookmarks_id = [];
-        var arrayLength = data.length;
+        var bookmarks_id = []
+        var arrayLength = data.length
         for (var i = 0; i < arrayLength; i++){
           bookmarks_id.push(data[i]._id)
         }
@@ -101,29 +101,27 @@ export default class ProjectContainer extends Component {
       }
       this.setState({site_loaded: true})
     }).catch(ex => {
-      this.setState({project_exists: false});
-        this.setState({site_loaded: true})
-    });
-
-  this.setState({owner : true});
+      this.setState({project_exists: false})
+      this.setState({site_loaded: true})
+    })
+    this.setState({owner : true})
   }
 
   handleComment(event){
-    event.preventDefault();
-  //  window.location = '/comment/'+  this.state.projectID;
-    this.setState({sharePane:false});
-    this.setState({commentBar:true});
+    event.preventDefault()
+    this.setState({sharePane:false})
+    this.setState({commentBar:true})
   }
 
   handleShare(event){
-    event.preventDefault();
-    //window.location = '/share/'+  this.state.projectID;
-    this.setState({commentBar:false});
-    this.setState({sharePane:true});
+    event.preventDefault()
+
+    this.setState({commentBar:false})
+    this.setState({sharePane:true})
   }
 
   addBookmark(){
-  return fetch('/api/users/bookmarks/' + this.state.projectID , {
+    return fetch('/api/users/bookmarks/' + this.state.projectID , {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -131,11 +129,11 @@ export default class ProjectContainer extends Component {
       },
     }).then(function(response){
       if(response.status=200){
-        return true;
+        return true
       }else{
-        return false;
+        return false
       }
-    });
+    })
   }
 
   removeBookmark(){
@@ -149,47 +147,41 @@ export default class ProjectContainer extends Component {
       }
     }).then(function(response){
       if(response.status===200){
-        return true;
+        return true
       }else{
-        return false;
+        return false
       }
-    });
+    })
   }
 
   handleBookmark(event){
-    event.preventDefault();
-    this.setState({commentBar:false});
-    this.setState({sharePane:false});
-
-
+    event.preventDefault()
+    this.setState({commentBar:false})
+    this.setState({sharePane:false})
     if(new String (this.state.bookmarked) == "true"){
       //deleteBookmark
       this.removeBookmark().then(res => {
         if(res){
-          this.setState({bookmarked : false});
+          this.setState({bookmarked : false})
         }
-      });
+      })
     }else {
       this.addBookmark().then(res => {
         if(res){
-          this.setState({bookmarked : true});
+          this.setState({bookmarked : true})
         }
-      });
-
+      })
     }
   }
 
-
-
   handleEdit(event){
-    event.preventDefault();
-    window.location = '/update/'+  this.state.projectID;
+    event.preventDefault()
+    window.location = '/update/'+  this.state.projectID
   }
 
-
   handleDelete(event){
-    event.preventDefault();
-    window.location = '/delete/'+  this.state.projectID;
+    event.preventDefault()
+    window.location = '/delete/'+  this.state.projectID
   }
 
   render(){
@@ -198,63 +190,63 @@ export default class ProjectContainer extends Component {
         <div className="container">
           <div className="header"><CircularProgress size={80} thickness={5} /></div>
         </div>
-      );
+      )
     }
     if(!this.state.project_exists){
       return (
         <div className="container">
           <div className="header">Project Not Found</div>
         </div>
-      );
+      )
     }else{
-    let status_badge = null;
-    if (this.state.projectInf.status === 'DONE'){
-      status_badge = <span className="badge badge-success">DONE</span>
-    } else if (this.state.projectInf.status === 'IN_PROGRESS') {
-      status_badge = <span className="badge badge-warning">IN_PROGRESS</span>
-    } else if (this.state.projectInf.status === 'IN_REVIEW') {
-      status_badge = <span className="badge badge-info">IN_REVIEW</span>
-    } else {
-      status_badge = this.state.projectInf.status
-    }
-    return(
+      let status_badge = null
+      if (this.state.projectInf.status === 'DONE'){
+        status_badge = <span className="badge badge-success">DONE</span>
+      } else if (this.state.projectInf.status === 'IN_PROGRESS') {
+        status_badge = <span className="badge badge-warning">IN_PROGRESS</span>
+      } else if (this.state.projectInf.status === 'IN_REVIEW') {
+        status_badge = <span className="badge badge-info">IN_REVIEW</span>
+      } else {
+        status_badge = this.state.projectInf.status
+      }
+      return(
 
-      <div className="container">
-        <div className="innerContainer">
-          <SharePane value={this.state.sharePane} uuid={this.state.projectID}></SharePane>
-          <CommentSideBar value={this.state.commentBar} uuid={this.state.projectID}></CommentSideBar>
-          <div className = "row headerCreation" style={{width:"100%"}}>
-            <div className="col-12">
-              <div>Project</div>
-              <div style={{fontSize: '20px'}}> {this.state.projectInf.title}</div>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-5">
-              <div className="row">
-                <div className="col-4">
-                  <div className="profile-info">Status</div>
-                  <div>{status_badge}</div>
-                </div>
-                <div className="col-4">
-                  <div className="profile-info">Creation date</div>
-                  <div>{this.state.projectInf.date_creation}</div>
-                </div>
-                <div className="col-4">
-                  <div className="profile-info">Last update </div>
-                  <div> {this.state.projectInf.date_last_updated}</div>
-                </div>
+        <div className="container">
+          <div className="innerContainer">
+            <SharePane value={this.state.sharePane} uuid={this.state.projectID}></SharePane>
+            <CommentSideBar value={this.state.commentBar} uuid={this.state.projectID}></CommentSideBar>
+            <div className = "row headerCreation" style={{width:"100%"}}>
+              <div className="col-12">
+                <div>Project</div>
+                <div style={{fontSize: '20px'}}> {this.state.projectInf.title}</div>
               </div>
-              <div style={{marginTop:30}}>
-                <div className="profile-info">Authors</div>
-                <div style = {styles["wrapper"]}>
-                  {
-                    this.state.projectInf.authors.map(item =>
-                      <Chip style= {styles["chip"]}>
-                        <Link to={"/profile/"+item.email} style= {styles["chipText"]}>{item.name}</Link>
-                      </Chip>
-                    )
-                  }
+            </div>
+            <div className="row">
+              <div className="col-5">
+                <div className="row">
+                  <div className="col-4">
+                    <div className="profile-info">Status</div>
+                    <div>{status_badge}</div>
+                  </div>
+                  <div className="col-4">
+                    <div className="profile-info">Creation date</div>
+                    <div>{this.state.projectInf.date_creation}</div>
+                  </div>
+                  <div className="col-4">
+                    <div className="profile-info">Last update </div>
+                    <div> {this.state.projectInf.date_last_updated}</div>
+                  </div>
+                </div>
+                <div style={{marginTop:30}}>
+                  <div className="profile-info">Authors</div>
+                  <div style = {styles["wrapper"]}>
+                    {
+                      this.state.projectInf.authors.map(item =>
+                        <Chip style= {styles["chip"]}>
+                          <Link to={"/profile/"+item.email} style= {styles["chipText"]}>{item.name}</Link>
+                        </Chip>
+                      )
+                    }
                   </div>
                 </div>
                 <div style={{marginTop:30}}>
@@ -315,17 +307,17 @@ export default class ProjectContainer extends Component {
                         <i className="material-icons">share</i>
                       </IconButton>
                       <Link to={"/update/" + this.state.projectID}  >
-                      <IconButton
+                        <IconButton
 
-                        touch={true}
-                        style = {styles.largeIcon}
-                        disabled={!this.state.owner}
-                        tooltipPosition="top-center"
-                        tooltip="Edit project"
-                        iconStyle={{fontSize: '24px'}}
-                        >
-                        <i className="material-icons">mode_edit</i>
-                      </IconButton>
+                          touch={true}
+                          style = {styles.largeIcon}
+                          disabled={!this.state.owner}
+                          tooltipPosition="top-center"
+                          tooltip="Edit project"
+                          iconStyle={{fontSize: '24px'}}
+                          >
+                          <i className="material-icons">mode_edit</i>
+                        </IconButton>
                       </Link>
                       <IconButton
                         onClick={this.handleDelete}
@@ -341,7 +333,7 @@ export default class ProjectContainer extends Component {
                     </div>
                   </div>
                 </div>
-    );
-  }
-  }
-}
+              )
+            }
+          }
+        }

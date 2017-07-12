@@ -1,20 +1,20 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import {
   Redirect,
-} from 'react-router-dom';
-import { logout } from '../common/Authentication.jsx';
+} from 'react-router-dom'
+import { logout } from '../common/Authentication.jsx'
 
-import Badge from 'material-ui/Badge';
-import IconButton from 'material-ui/IconButton';
-import Snackbar from 'material-ui/Snackbar';
+import Badge from 'material-ui/Badge'
+import IconButton from 'material-ui/IconButton'
+import Snackbar from 'material-ui/Snackbar'
 import NotificationPane from '../common/NotificationPane'
-import { fetchJson, fetchDelete } from '../common/Backend';
+import { fetchJson, fetchDelete } from '../common/Backend'
 
 
 
 export default class TopBar extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       redirect: false,
@@ -24,59 +24,59 @@ export default class TopBar extends Component {
       snackbar: false,
       popover : false,
 
-    };
-    this.handleLogout = this.handleLogout.bind(this);
-    this.handleNotificationClick = this.handleNotificationClick.bind(this);
-    this.handleRequestClose = this.handleRequestClose.bind(this);
-    this.resolveNotification = this.resolveNotification.bind(this);
+    }
+    this.handleLogout = this.handleLogout.bind(this)
+    this.handleNotificationClick = this.handleNotificationClick.bind(this)
+    this.handleRequestClose = this.handleRequestClose.bind(this)
+    this.resolveNotification = this.resolveNotification.bind(this)
 
   }
 
   componentWillMount(){
-    this.loadNotifications();
+    this.loadNotifications()
   }
 
   loadNotifications() {
     fetchJson("/api/users/notifications").then(function (data) {
       this.setState({
           notifications: data
-          });
-      }.bind(this));
+          })
+      }.bind(this))
   }
 
   resolveNotification(notificationID){
-    var list = this.state.notifications.filter((c) => c.id !== notificationID);
-    this.setState({notifications : list});
-    fetchDelete("api/users/notifications/"+ notificationID);
+    var list = this.state.notifications.filter((c) => c.id !== notificationID)
+    this.setState({notifications : list})
+    fetchDelete("api/users/notifications/"+ notificationID)
   }
 
   handleNotificationClick(event){
-    event.preventDefault();
+    event.preventDefault()
     this.setState({
       popover: true,
       anchorEl: event.currentTarget,
-    });
+    })
   }
 
   handleRequestClose(){
-    this.setState({popover:false});
+    this.setState({popover:false})
   }
 
   handleLogout(event){
-    event.preventDefault();
+    event.preventDefault()
     logout().then((success) => {
       if(success){
-        this.setState({ redirect: true });
+        this.setState({ redirect: true })
       }else{
-        this.setState({ redirect: false});
+        this.setState({ redirect: false})
         this.setState({snackbar:true})
       }
-    });
+    })
   }
 
   render() {
     if (this.state.redirect) {
-      return <Redirect to='/'/>;
+      return <Redirect to='/'/>
     }
     return (
       <div className="container-fluid topbar">
@@ -112,6 +112,6 @@ export default class TopBar extends Component {
             autoHideDuration={10000}
           />
         </div>
-      );
+      )
     }
   }
