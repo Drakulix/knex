@@ -2,7 +2,7 @@
 const mainColor ="#ff5000";
 
 export default {
-  
+
   uploadInput: {
     cursor: 'pointer',
     position: 'absolute',
@@ -45,4 +45,4 @@ export default {
       pickerHeaderColor: mainColor,
 
   }
-};
+}

@@ -1,33 +1,33 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import { Redirect } from 'react-router'
-import 'isomorphic-fetch';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
-import styles from '../common/Styles.jsx';
+import 'isomorphic-fetch'
+import RaisedButton from 'material-ui/RaisedButton'
+import TextField from 'material-ui/TextField'
+import styles from '../common/Styles.jsx'
 
 
-const JSON5 = require('json5');
+const JSON5 = require('json5')
 
 export default class UploadByLink extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
      sourceURL : "",
      redirect : false,
-    };
-    this.submitForm = this.submitForm.bind(this);
+    }
+    this.submitForm = this.submitForm.bind(this)
   }
 
   submitForm(e){
-      e.preventDefault();
+      e.preventDefault()
       var request = new Request(this.state.sourceURL,{
         method:'GET',
         mode: 'cors',
         header:{
         'Access-Control-Allow-Origin':'*'
         },
-      });
-      var that = this;
+      })
+      var that = this
       fetch(request)
       .then(
         function(response){
@@ -35,25 +35,25 @@ export default class UploadByLink extends Component {
             response.text().then(
               function(text){
                 try{
-                  JSON5.parse(text);
+                  JSON5.parse(text)
                   that.setState({
                     redirect : true,
-                  });
+                  })
                 } catch (error) {
-                  alert(error);
+                  alert(error)
                 }
               }
-            );
+            )
           } else {
-            alert("Connection Error.\n Unable to find anything at the given URL");
+            alert("Connection Error.\n Unable to find anything at the given URL")
           }
         }
       )
-  };
+  }
 
   render() {
     if (this.state.redirect){
-      return <Redirect to={'/createNew/'+encodeURIComponent(this.state.sourceURL)}/>;
+      return <Redirect to={'/createNew/'+encodeURIComponent(this.state.sourceURL)}/>
     }
     return (
       <div className="container"style={{textAlign : 'center'}} >
@@ -100,6 +100,6 @@ export default class UploadByLink extends Component {
                         />
         </div>
       </div>
-    );
+    )
   }
 }

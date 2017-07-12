@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import logo from '../../style/img/white_logo_title.svg';
-import {getMyEmail, getUserInfo} from '../common/Authentication.jsx';
+import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
+import logo from '../../style/img/white_logo_title.svg'
+import {getMyEmail, getUserInfo} from '../common/Authentication.jsx'
 
 export default class SideBar extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       menu: {
@@ -20,30 +20,30 @@ export default class SideBar extends Component {
       myProfile: getMyEmail(),
       data : "",
       isAdmin : false
-    };
+    }
   }
 
   componentWillMount(){
-    this.loadProfileInf(this.state.myProfile);
+    this.loadProfileInf(this.state.myProfile)
   }
 
   loadProfileInf(e) {
     getUserInfo(e).then(data => {
-      this.setState({profileInf: data});
+      this.setState({profileInf: data})
       if(!data){
-        this.setState({profile_exists: false});
+        this.setState({profile_exists: false})
       }else{
         this.setState({
           first_name: data.first_name, last_name: data.last_name, bio: data.bio,
           isAdmin : data.roles.indexOf("admin") !== -1
-        });
+        })
       }
     }).catch(ex => {
-      this.setState({profile_exists: false});
-    });
+      this.setState({profile_exists: false})
+    })
   }
 
-  isActive = (url) => { return url === this.props.location };
+  isActive = (url) => { return url === this.props.location }
 
   render() {
     return (
@@ -64,7 +64,7 @@ export default class SideBar extends Component {
                 />
             </ul>
         </div>
-    );
+    )
   }
 }
 
@@ -73,10 +73,8 @@ const SideBarEntry = ({to, icon, name, active, style}) => {
         <Link to={to}  >
         <li className={"list-group-item " + (active ? "active" : "") } style={style}>
             {active && (<div className="menu-indicator" />)}
-
                 <i className={icon} aria-hidden="true"></i>  {name}
-
         </li>
         </Link>
     )
-};
+}
