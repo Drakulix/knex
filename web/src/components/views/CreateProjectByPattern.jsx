@@ -253,7 +253,7 @@ const statusString = [
                suggestedAuthorsArray = suggestedAuthorsArray.concat([
                                           suggestedAuthors[i].first_name + " "
                                           +suggestedAuthors[i].last_name +
-                                    + " ("+suggestedAuthors[i].email+ ")"]);
+                                          " ("+suggestedAuthors[i].email+ ")"]);
              }
              console.log(suggestedAuthorsArray);
              this.setState({
