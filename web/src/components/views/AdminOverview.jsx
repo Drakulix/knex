@@ -42,7 +42,12 @@ export default class AdminOverview extends Component {
         password : "",
         password_confirm : "",
         role : ""
-      }
+      },
+      firstname_error : 'Requiered',
+      lastname_error : 'Requiered',
+      email_error : 'Requiered',
+      password_error : '',
+      password_confirm_error : ''
     };
     this.handlePwOldChange = this.handlePwOldChange.bind(this);
     this.handlePwNewChange = this.handlePwNewChange.bind(this);
@@ -97,6 +102,11 @@ export default class AdminOverview extends Component {
      }})
   }
   handleRegFirstNameChange(event){
+    if(event.target.value === ''){
+      this.setState({lastname_error: 'Requiered'});
+    }else{
+      this.setState({lastname_error: ''});
+    }
     this.setState({profileReg : {email : this.state.profileReg.email,
        last_name : this.state.profileReg.last_name,
        first_name : event.target.value,
@@ -107,6 +117,11 @@ export default class AdminOverview extends Component {
 
   }
   handleRegLastNameChange(event){
+    if(event.target.value === ''){
+      this.setState({lastname_error: 'Requiered'});
+    }else{
+      this.setState({lastname_error: ''});
+    }
     this.setState({profileReg : {email : this.state.profileReg.email,
        last_name : event.target.value,
        first_name : this.state.profileReg.first_name,
@@ -116,6 +131,11 @@ export default class AdminOverview extends Component {
      }})
   }
   handleRegPasswordChange(event){
+    if(event.target.value === ''){
+      this.setState({password_error: 'Can not be empty!'});
+    }else{
+      this.setState({password_error: ''});
+    }
     this.setState({profileReg : {email : this.state.profileReg.email,
        last_name : this.state.profileReg.last_name,
        first_name : this.state.profileReg.first_name,
@@ -125,6 +145,12 @@ export default class AdminOverview extends Component {
      }})
   }
   handleRegPasswordConfirmChange(event){
+    if(event.target.value !== this.state.profileReg.password){
+      this.setState({possword_confirm_error: 'Requiered'});
+    }else{
+      this.setState({password_confirm_error: ''});
+    }
+
     this.setState({profileReg : {email : this.state.profileReg.email,
        last_name : this.state.profileReg.last_name,
        first_name : this.state.profileReg.first_name,
@@ -168,22 +194,18 @@ export default class AdminOverview extends Component {
   }
 
   handleRegister(event){
+
     event.preventDefault();
-    if(this.state.password !== this.state.password_confirm){
-      this.setState({
-        snackbar : true,
-        snackbarText :  'Passwords do not match'
-      });
+    if(this.state.profileReg.password !== this.state.profileReg.password_confirm || this.state.profileReg.password == 0
+    || this.state.profileReg.first_name == "" || this.state.profileReg.last_name == "" || this.state.profileReg.password == ""
+    || this.state.profileReg.role == ""
+  ){
+
       return
 
     }
-    if(this.state.password === ""){
-      this.setState({
-        snackbar : true,
-        snackbarText :  'Password can not be empty'
-      });
-      return
-    }
+
+
     register(this.state.profileReg.first_name, this.state.profileReg.last_name, this.state.profileReg.email, this.state.profileReg.password, this.state.profileReg.password_confirm, this.state.profileReg.role).then((success) => {
 
       if(success){
@@ -455,7 +477,7 @@ export default class AdminOverview extends Component {
                       value={this.state.profileReg.first_name}
                       onChange={this.handleRegFirstNameChange}
                       hintText="Enter the first name..."
-                      errorText={(this.state.profileReg.firstname === "") ? "Field is required" : ""}
+                      errorText={(this.state.profileReg.first_name == "") ? "Field is required" : ""}
 
                     />
                   </div>
@@ -466,7 +488,7 @@ export default class AdminOverview extends Component {
                       value={this.state.profileReg.last_name}
                       onChange={this.handleRegLastNameChange}
                       hintText="Enter the given name..."
-                      errorText={(this.state.profileReg.lastname === "") ? "Field is required" : ""}
+                      errorText={(this.state.profileReg.last_name === "") ? "Field is required" : ""}
 
                     />
                   </div>
@@ -489,7 +511,7 @@ export default class AdminOverview extends Component {
                       value={this.state.profileReg.password}
                       onChange={this.handleRegPasswordChange}
                       hintText="Password"
-                      errorText={(this.state.profileReg.password === "") ? "Field is required" : ""}
+                      errorText={(this.state.profileReg.password == "") ? "Field is required" : ""}
 
                     />
                   </div>
