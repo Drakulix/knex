@@ -74,8 +74,11 @@ export default class SignUp extends Component {
   handleChangePassword(event) {
     if(event.target.value === ''){
       this.setState({password_error: 'Can not be empty!'});
+    }else if(this.state.password !== this.state.password_confirm){
+      this.setState({password_confirm_error: 'Password do not match!'});
     }else{
       this.setState({password_error: ''});
+      this.setState({password_confirm_error: ''});
     }
     this.setState({password: event.target.value});
   }
@@ -87,17 +90,23 @@ export default class SignUp extends Component {
 
   handleChangePasswordConfirm(event) {
     if(event.target.value !== this.state.password){
-      this.setState({possword_confirm_error: 'Requiered'});
+      this.setState({password_confirm_error: 'Requiered'});
+    }else if(this.state.password !== this.state.password_confirm){
+      this.setState({password_confirm_error: 'Password do not match!'});
     }else{
       this.setState({password_confirm_error: ''});
     }
-    if(this.state.password != this.state.password_confirm)
-      this.setState({password_confirm_error: 'Password do not match!'});
     this.setState({password_confirm: event.target.value});
   }
 
   handleSubmit(event){
     event.preventDefault();
+    if(this.state.password !== this.state.password_confirm){
+      this.setState({password_confirm_error: 'Password do not match!'});
+    }else{
+      this.setState({password_confirm_error: ''});
+    }
+
     if(this.state.firstname_error === '' && this.state.lastname_error === '' &&this.state.email_error === '' && this.state.password_error === '' &&  this.state.password_confirm_error === ''){
     register(this.state.firstname, this.state.lastname, this.state.email, this.state.password, this.state.password_confirm, this.state.role).then((success) => {
 
