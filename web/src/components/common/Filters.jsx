@@ -176,7 +176,7 @@ export default class Filters extends Component{
                   name ="title"
                   value={this.state.title}
                   onChange={this.handleChange}
-                  type="text" placeholder="Enter exact  title..."
+                  type="text" placeholder="Enter exact title..."
                   />
               </div>
               <div className="col-1 filter-label" style={{textAlign: "left"}}>Description</div>
@@ -186,7 +186,7 @@ export default class Filters extends Component{
                   name ="description"
                   value={this.state.description}
                   onChange={this.handleChange}
-                  type="text" placeholder="Enter exact  description..."
+                  type="text" placeholder="Enter exact description..."
                   />
               </div>
             </div>

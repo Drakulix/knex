@@ -306,7 +306,7 @@ export default class AdminOverview extends Component {
             message={this.state.snackbarText}
             autoHideDuration={10000}
             />
-          <div className="header">Admin Area</div>
+          <div className="header">Admin area</div>
           <Tabs
             value={this.state.value}
             onChange={this.handleChange}
@@ -315,7 +315,7 @@ export default class AdminOverview extends Component {
             <Tab label="Manage Projects" value="1">
 
 
-              <div className="header-tab">Manage Projects</div>
+              <div className="header-tab">Manage projects</div>
 
                   <DataTable columns= {['title', 'status', 'tags', 'authors', 'description', '_id',  'delete']}
 
@@ -337,7 +337,7 @@ export default class AdminOverview extends Component {
             <Tab label="Edit Profile" value="3">
               <div className="row padding">
                 <div className="col-9">
-              <div className="header-tab">Edit User</div>
+              <div className="header-tab">Edit user</div>
 
                   <form onSubmit={this.handleChangeUser}>
 
@@ -394,7 +394,7 @@ export default class AdminOverview extends Component {
                 </div>
                 <div className="col-3">
                   <img src="http://www.freeiconspng.com/uploads/profile-icon-9.png" width="200px" height="200px" alt="..." className="rounded-circle profile-icon" />
-                  <p className="profile-icon-text">Change Avatar</p>
+                  <p className="profile-icon-text">Change avatar</p>
                 </div>
               </div>
 
@@ -443,7 +443,7 @@ export default class AdminOverview extends Component {
             </div>
             </Tab>
             <Tab label="Register User" value="4">
-              <div className="header-tab">Register User</div>
+              <div className="header-tab">Register user</div>
               <div className="row">
                 <div className="col-9">
                   <form onSubmit={this.handleRegister}>
@@ -454,8 +454,8 @@ export default class AdminOverview extends Component {
                       type="text"
                       value={this.state.profileReg.first_name}
                       onChange={this.handleRegFirstNameChange}
-                      hintText="First Name"
-                      errorText={(this.state.profileReg.firstname === "") ? "Field is requiered" : ""}
+                      hintText="Enter the first name..."
+                      errorText={(this.state.profileReg.firstname === "") ? "Field is required" : ""}
 
                     />
                   </div>
@@ -465,8 +465,8 @@ export default class AdminOverview extends Component {
                       type="text"
                       value={this.state.profileReg.last_name}
                       onChange={this.handleRegLastNameChange}
-                      hintText="Last Name"
-                      errorText={(this.state.profileReg.lastname === "") ? "Field is requiered" : ""}
+                      hintText="Enter the given name..."
+                      errorText={(this.state.profileReg.lastname === "") ? "Field is required" : ""}
 
                     />
                   </div>
@@ -489,7 +489,7 @@ export default class AdminOverview extends Component {
                       value={this.state.profileReg.password}
                       onChange={this.handleRegPasswordChange}
                       hintText="Password"
-                      errorText={(this.state.profileReg.password === "") ? "Field is requiered" : ""}
+                      errorText={(this.state.profileReg.password === "") ? "Field is required" : ""}
 
                     />
                   </div>
@@ -501,7 +501,7 @@ export default class AdminOverview extends Component {
                       type="password"
                       value={this.state.profileReg.password_confirm}
                       onChange={this.handleRegPasswordConfirmChange}
-                      hintText="Confirm Password"
+                      hintText="Confirm password"
                       errorText={( this.state.profileReg.password !== this.state.profileReg.password_confirm ) ? "Passwords do not match" : "" }
 
                     />

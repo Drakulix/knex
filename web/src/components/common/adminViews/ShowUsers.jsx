@@ -111,7 +111,9 @@ render(){
     });
 
  return (
-  <div className="padding row" style= {{ marginTop:30}}>
+  <div className="padding row">
+    <div className="header-tab">List  users</div>
+
     <div className="col-1"></div>
     <div className="col-10">
       <ReactTable style = {{width : "100%"}}
