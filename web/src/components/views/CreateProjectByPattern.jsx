@@ -1,26 +1,26 @@
-import React, { Component } from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
-import DatePicker from 'material-ui/DatePicker';
-import TextField from 'material-ui/TextField';
-import Snackbar from 'material-ui/Snackbar';
+import React, { Component } from 'react'
+import RaisedButton from 'material-ui/RaisedButton'
+import DatePicker from 'material-ui/DatePicker'
+import TextField from 'material-ui/TextField'
+import Snackbar from 'material-ui/Snackbar'
 import DropDownMenu from 'material-ui/DropDownMenu'
-import MenuItem from 'material-ui/MenuItem';
-import CircularProgress from 'material-ui/CircularProgress';
-import ChipInputList from '../common/ChipInputList';
+import MenuItem from 'material-ui/MenuItem'
+import CircularProgress from 'material-ui/CircularProgress'
+import ChipInputList from '../common/ChipInputList'
 import {fetchJson } from '../common/Backend.jsx'
 
 
 const statusString = [
-  {id: 0 , text :<span className="badge badge-success">DONE</span>, value : "DONE"},
-  {id: 1 , text :<span className="badge badge-info">IN_REVIEW</span>, value : "IN_REVIEW"},
-  {id: 2 , text :<span className="badge badge-warning">IN_PROGRESS</span>, value : "IN_PROGRESS"},
-];
+  {text :<span className="badge badge-success">DONE</span>, value : "DONE"},
+  {text :<span className="badge badge-info">IN_REVIEW</span>, value : "IN_REVIEW"},
+  {text :<span className="badge badge-warning">IN_PROGRESS</span>, value : "IN_PROGRESS"},
+]
 
   export default class UploadByPattern extends Component {
 
 
     constructor(props) {
-      super(props);
+      super(props)
       if(props.fromURL){
         this.state = {
           projectInf:props.projectInf,
@@ -31,7 +31,7 @@ const statusString = [
           snackbar : false,
           site_loaded: false,
           project_exists: false,
-        };
+        }
       } else {
         this.state = {
           projectID: this.props.match.params.uuid,
@@ -43,107 +43,104 @@ const statusString = [
             tags: [],
             url: []
           },
-          status : 2,
           authors: [],
           invalid : true,
           snackbar : false,
           site_loaded: false,
           project_exists: false,
-        };
+        }
       }
 
-      this.handleUpload = this.handleUpload.bind(this);
-      this.handleURLChange = this.handleURLChange.bind(this);
-      this.handleAuthorChange = this.handleAuthorChange.bind(this);
-      this.handleTagChange = this.handleTagChange.bind(this);
-      this.handleTitleChange = this.handleTitleChange.bind(this);
-      this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
-      this.handleStatusChange = this.handleStatusChange.bind(this);
+      this.handleUpload = this.handleUpload.bind(this)
+      this.handleURLChange = this.handleURLChange.bind(this)
+      this.handleAuthorChange = this.handleAuthorChange.bind(this)
+      this.handleTagChange = this.handleTagChange.bind(this)
+      this.handleTitleChange = this.handleTitleChange.bind(this)
+      this.handleDescriptionChange = this.handleDescriptionChange.bind(this)
+      this.handleStatusChange = this.handleStatusChange.bind(this)
     }
 
 
     handleAuthorChange(value) {
-      this.setState({authors : value});
-      var authors = [];
+      this.setState({authors : value})
+      var authors = []
       for (var i in value) {
-        var string = value[i];
-        var name = string.substring(0, string.lastIndexOf("(")-1);
-        var id = string.substring(string.lastIndexOf("(")+1, string.length-1);
-        authors.push({"name" : name, "email" :id});
+        var string = value[i]
+        var name = string.substring(0, string.lastIndexOf("(")-1)
+        var id = string.substring(string.lastIndexOf("(")+1, string.length-1)
+        authors.push({"name" : name, "email" :id})
       }
-      var projectInf = this.state.projectInf;
-      projectInf.authors = authors;
-      this.setState({projectInf: projectInf});
+      var projectInf = this.state.projectInf
+      projectInf.authors = authors
+      this.setState({projectInf: projectInf})
     }
 
     handleTagChange(value) {
-        var projectInf = this.state.projectInf;
-        projectInf.tags = value;
-        this.setState({projectInf: projectInf});
+        var projectInf = this.state.projectInf
+        projectInf.tags = value
+        this.setState({projectInf: projectInf})
     }
 
     handleURLChange(value) {
-      var projectInf = this.state.projectInf;
-      projectInf.url = value;
-      this.setState({projectInf: projectInf});
+      var projectInf = this.state.projectInf
+      projectInf.url = value
+      this.setState({projectInf: projectInf})
     }
 
     handleTitleChange(event,value) {
-        var projectInf = this.state.projectInf;
-        projectInf.title = value;
-        this.setState({projectInf: projectInf});
+        var projectInf = this.state.projectInf
+        projectInf.title = value
+        this.setState({projectInf: projectInf})
     }
 
     handleDescriptionChange(event,value) {
-      var projectInf = this.state.projectInf;
-      projectInf.description = value;
-      this.setState({projectInf: projectInf});
+      var projectInf = this.state.projectInf
+      projectInf.description = value
+      this.setState({projectInf: projectInf})
     }
 
     handleStatusChange = (event, index, value) => {
-      var projectInf = this.state.projectInf;
-      projectInf.status = statusString[index].value;
-      console.log(projectInf.status)
-      this.setState({ status : value,
-                      projectInf: projectInf}
-      );
+      var projectInf = this.state.projectInf
+      projectInf.status = value
+      this.setState({projectInf: projectInf}
+      )
     }
 
     handleChangeDate = (event, date) => {
-      var mm = date.getMonth()+1;
-      var dd = date.getDate();
-      var dateString =  [date.getFullYear(),'-', ((mm > 9) ? '' :'0')+ mm, '-', ((dd> 9) ? '':'0')+ dd].join('');
-      var projectInf = this.state.projectInf;
-      projectInf.date_creation = dateString;
+      var mm = date.getMonth()+1
+      var dd = date.getDate()
+      var dateString =  [date.getFullYear(),'-', ((mm > 9) ? '' :'0')+ mm, '-', ((dd> 9) ? '':'0')+ dd].join('')
+      var projectInf = this.state.projectInf
+      projectInf.date_creation = dateString
       this.setState({
         date: date,
         projectInf: projectInf
-      });
-    };
+      })
+    }
 
     componentWillMount(){
 
           //TODO LOADAuthorsFromBackend
 
           var suggestedAuthors = [{email:"marko@knex", name :"Marko"},
-                {email:"victor@knex", name :"Victor"},{email:"cedric@knex", name :"Cedric"}];
+                {email:"victor@knex", name :"Victor"},{email:"cedric@knex", name :"Cedric"}]
           var suggestedAuthorsArray = []
           for (var i in suggestedAuthors) {
-            suggestedAuthorsArray = suggestedAuthorsArray.concat([suggestedAuthors[i].name + " ("+suggestedAuthors[i].email+ ")"]);
+            suggestedAuthorsArray = suggestedAuthorsArray.concat([suggestedAuthors[i].name + " ("+suggestedAuthors[i].email+ ")"])
           }
 
           //TODO LOADTagsFromBackend
-          var suggestedTags = ["your", "tags", "here"];
+          var suggestedTags = ["your", "tags", "here"]
 
 
           if(this.state.projectID !== undefined){
-               this.loadProjectInf(this.state.projectID);
+               this.loadProjectInf(this.state.projectID)
           }
 
           this.setState({
               suggestedAuthors: suggestedAuthorsArray,
               suggestedTags : suggestedTags,
-          });
+          })
         }
 
         fetchProjectInfo(uuid){
@@ -155,80 +152,72 @@ const statusString = [
               "Accept": "application/json",
             }
           }).then(response => response.json()).catch(ex => {
-            console.error('parsing failes', ex);
-          });
+            console.error('parsing failes', ex)
+          })
         }
 
       loadProjectInf(uuid) {
         // Load Project info into state
         this.fetchProjectInfo(uuid).then(data => {
-          this.setState({projectInf: data});
+          this.setState({projectInf: data})
           if(!data){
-            this.setState({project_exists: false});
+            this.setState({project_exists: false})
           }else{
             this.setState({project_exists: true})
           }
           var authorArray = []
           var authors = data.authors
           for (var i in data.authors) {
-            authorArray = authorArray.concat([data.authors[i].name + " ("+ data.authors[i].email+ ")"]);
+            authorArray = authorArray.concat([data.authors[i].name + " ("+ data.authors[i].email+ ")"])
           }
-
-          var status = data.status;
-          var stateValue=  statusString.filter(
-          function(stateField){return status === stateField }
-          );
-
 
           this.setState({
             projectInf: data,
             date: new Date( data.date_creation.split("-")[0],
                             data.date_creation.split("-")[1]-1,
                             data.date_creation.split("-")[2],0,0,0,0),
-            status : stateValue,
             authors : authors
 
-          });
+          })
           this.setState({site_loaded: true})
         }
         ).catch(ex => {
-          this.setState({project_exists: false});
+          this.setState({project_exists: false})
           this.setState({site_loaded: true})
-        });
+        })
       }
 
       handleUpload(event){
-        event.preventDefault();
-        console.log(event);
-        this.submit();
+        event.preventDefault()
+        console.log(event)
+        this.submit()
       }
 
       submit(){
-        var data = JSON.stringify(this.state.projectInf);
-
-        var xhr = new XMLHttpRequest();
-        xhr.withCredentials = true;
+        var data = JSON.stringify(this.state.projectInf)
+        var xhr = new XMLHttpRequest()
+        xhr.withCredentials = true
 
         xhr.addEventListener("readystatechange", function () {
           if (this.readyState === 4) {
-            console.log(this.responseText);
+            console.log(this.responseText)
           }
-        });
+        })
 
-        xhr.open("POST", "/api/projects");
-        xhr.setRequestHeader("content-type", "application/json");
+        xhr.open("POST", "/api/projects")
+        xhr.setRequestHeader("content-type", "application/json")
 
-        xhr.send(data);
+        xhr.send(data)
         // sendJson("POST", "/api/projects", this.state.projectInf)
-        this.setState({snackbar:true});
+        this.setState({snackbar:true})
         }
 
         isInValid(){
-          return      this.state.projectInf["title"] === ''
-          ||  this.state.projectInf["date_creation"] === ''
-          ||  this.state.projectInf["description"] === ''
+          return      this.state.projectInf.title === ''
+          ||  this.state.projectInf.date_creation === ''
+          ||  this.state.projectInf.description === ''
           ||  this.state.authors.length === 0
-          ||  this.state.status.length === 0;
+          ||  this.state.authors.status === ""
         }
 
         componentDidMount(){
@@ -242,29 +231,29 @@ const statusString = [
            fetchJson('/api/projects/tags').then(function(tags) {
              this.setState({
                suggestedTags: tags
-             });
-           }.bind(this));
+             })
+           }.bind(this))
 
            //gets all the authors from the backend
            fetchJson('/api/users').then(function(authors) {
-             var suggestedAuthors = authors;
+             var suggestedAuthors = authors
              var suggestedAuthorsArray = []
              for (var i in suggestedAuthors) {
                suggestedAuthorsArray = suggestedAuthorsArray.concat([
                                           suggestedAuthors[i].first_name + " "
                                           +suggestedAuthors[i].last_name +
-                                          " ("+suggestedAuthors[i].email+ ")"]);
+                                          " ("+suggestedAuthors[i].email+ ")"])
              }
-             console.log(suggestedAuthorsArray);
+             console.log(suggestedAuthorsArray)
              this.setState({
                suggestedAuthors: suggestedAuthorsArray
-             });
-           }.bind(this));
+             })
+           }.bind(this))
 
 
 
           if(this.props.fromURL&&(this.state.status!==this.props.status)){
-            this.setState({status : this.props.status});
+            this.setState({status : this.props.status})
           }
         }
 
@@ -274,14 +263,14 @@ const statusString = [
               <div className="container">
                 <div className="header"><CircularProgress size={80} thickness={5} /></div>
               </div>
-            );
+            )
           }
           if(!this.state.project_exists && this.state.projectID){
             return (
               <div className="container">
                 <div className="header">Project Not Found</div>
               </div>
-            );
+            )
           }else{
             return(
               <div className="container">
@@ -319,16 +308,15 @@ const statusString = [
                             <div className="profile-info">Status</div>
                             <div>
                               <DropDownMenu
-                                defaultValue={this.state.status}
-                                value={this.state.status}
+                                value={this.state.projectInf.status}
                                 onChange={this.handleStatusChange}
                                 labelStyle={{width: '100%', paddingLeft:0}}
                                 underlineStyle={{width: '100%', marginLeft:0}}
                                 autoWidth={false}
                                 style={{width: '100%'}}
-                                errorText={(this.state.status.length==="") ? this.props.statusErrorText : ""}
+                                errorText={(this.state.projectInf.status==="") ? this.props.statusErrorText : ""}
                                 >
-                                {statusString.map(item =><MenuItem value={item.id} primaryText={item.text} />)}
+                                {statusString.map(item =><MenuItem value={item.value} primaryText={item.text} />)}
                               </DropDownMenu>
                             </div>
                           </div>
@@ -353,7 +341,6 @@ const statusString = [
                         <div className="profile-info"> Tags</div>
                         <ChipInputList suggestions = {this.state.suggestedTags}
                           onChange={this.handleTagChange}
-                          filtered ={true}
                           value={this.state.projectInf.tags}
                           hintText={'Add tags...'}
                           />
