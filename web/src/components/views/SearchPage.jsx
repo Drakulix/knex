@@ -78,7 +78,6 @@ import Dialog from 'material-ui/Dialog';
     handleFilterChange(key, value){
       var query = this.state.query;
       query[key] = value;
-
       this.setState({query : query});
     }
 
@@ -97,8 +96,6 @@ import Dialog from 'material-ui/Dialog';
     }
 
     handleClose = () => {
-
-
       this.setState({open: false});
     };
 
@@ -106,22 +103,14 @@ import Dialog from 'material-ui/Dialog';
       this.setState({open: true});
     };
 
-
-
     handleCommentChange(event){
-
       const value = event.target.value;
-
       var query = this.state.query;
       query["shortName"] = value;
       this.setState({query : query});
-
     }
 
     render() {
-
-
-
 
       const actions = [
         <RaisedButton
