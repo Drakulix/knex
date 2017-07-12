@@ -67,14 +67,12 @@ import Dialog from 'material-ui/Dialog';
       vquery["searchString"] = value;
       var end = "/api/projects/search/";
       if(value === ""){
-
         this.setState({fetchURL : "/api/projects"})
       }
       else{
         this.setState({query : vquery});
         this.setState({fetchURL : end+"simple/?q=" + vquery["searchString"] + "*"});
       }
-    alert(JSON.stringify(this.state));
     }
 
     handleFilterChange(key, value){
