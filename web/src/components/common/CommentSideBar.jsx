@@ -1,43 +1,43 @@
-import React from 'react';
-import Drawer from 'material-ui/Drawer';
-import RaisedButton from 'material-ui/RaisedButton';
-import {List, ListItem} from 'material-ui/List';
-import Divider from 'material-ui/Divider';
+import React from 'react'
+import Drawer from 'material-ui/Drawer'
+import RaisedButton from 'material-ui/RaisedButton'
+import {List, ListItem} from 'material-ui/List'
+import Divider from 'material-ui/Divider'
 import {fetchJson} from './Backend'
-import TextField from 'material-ui/TextField';
+import TextField from 'material-ui/TextField'
 
 
 
 export default class CommentSideBar extends React.Component {
 
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {showCommentBar: false,
     comment:"",
-    comments: []};
+    comments: []}
 
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   transformArray(dataArray) {
-    var filteredDataArray = [];
+    var filteredDataArray = []
     for(let dataObject of dataArray) {
-      filteredDataArray.push(dataObject);
+      filteredDataArray.push(dataObject)
     }
-    return filteredDataArray;
-  };
+    return filteredDataArray
+  }
 
 
   handleChange(event){
-    const value = event.target.value;
+    const value = event.target.value
     this.setState({
-      comment: value});
+      comment: value})
   }
 
 
   handleSubmit(event){
-    var fetchURL ="/api/projects/"+this.props.uuid+"/comment";
+    var fetchURL ="/api/projects/"+this.props.uuid+"/comment"
     fetch(fetchURL, {
         method: 'POST',
         credentials: 'include',
@@ -47,39 +47,39 @@ export default class CommentSideBar extends React.Component {
         body: this.state.comment
       }).then(function(response){
         if(response.status === 200){
-          return true;
+          return true
         }else{
-          return false;
+          return false
         }
-      });
+      })
     this.setState({
-      comment: ""});
+      comment: ""})
 
-    this.loadComments();
+    this.loadComments()
   }
 
 
 
-  handleToggle = () => this.setState({showCommentBar: !this.state.showCommentBar});
+  handleToggle = () => this.setState({showCommentBar: !this.state.showCommentBar})
 
   componentWillReceiveProps(props){
-    this.setState({showCommentBar: props.value});
+    this.setState({showCommentBar: props.value})
   }
 
   componentWillMount(){
-    this.loadComments();
+    this.loadComments()
   }
 
 
   loadComments(){
-    var fetchURL ="/api/projects/"+this.props.uuid+"/comment";
+    var fetchURL ="/api/projects/"+this.props.uuid+"/comment"
     fetchJson(fetchURL).then(function(data) {
-      var filteredData = this.transformArray(data);
-      console.log(data);
+      var filteredData = this.transformArray(data)
+      console.log(data)
       this.setState({
         comments: filteredData
-      });
-    }.bind(this));
+      })
+    }.bind(this))
   }
 
   render() {
@@ -114,6 +114,6 @@ export default class CommentSideBar extends React.Component {
           }
         </List>
       </Drawer>
-    );
+    )
   }
 }
