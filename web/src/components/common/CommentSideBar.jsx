@@ -108,7 +108,7 @@ export default class CommentSideBar extends React.Component {
             <div>
               <Divider/>
               <ListItem primaryText={item.message}
-                        secondaryText={item.author.email + " " + item.datetime}
+                        secondaryText={<div><span style={{float: "left"}}>{item.author.email}</span><span style={{float: "right"}}> {item.datetime}</span></div>}
               />
             </div>)
           }
