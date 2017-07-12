@@ -104,7 +104,7 @@ def enter_archived_using_post(pytestconfig, flask_api_url, session):
 
 @pytest.yield_fixture()
 def enter_users(pytestconfig, session):
-    user = {'email': 'd.dagobert.duck@rich.com',
+    user = {'email': 'dr.dagobert.duck@rich.com',
             'first_name': 'Dagobert',
             'last_name': 'Duck',
             'bio': 'super rich guy',
