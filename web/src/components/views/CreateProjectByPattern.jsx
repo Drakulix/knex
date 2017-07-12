@@ -191,8 +191,9 @@ export default class UploadByPattern extends Component {
     return      this.state.projectInf.title === ''
     ||  this.state.projectInf.date_creation === ''
     ||  this.state.projectInf.description === ''
-    ||  this.state.authors.length === 0
-    ||  this.state.authors.status === ""
+    ||  this.state.projectInf.authors.length === 0
+    ||  this.state.projectInf.url.length === 0
+    ||  this.state.projectInf.status === ""
   }
 
   componentDidMount(){
@@ -306,6 +307,7 @@ export default class UploadByPattern extends Component {
                       defaultValue={this.state.projectInf.url}
                       value={this.state.projectInf.url}
                       onChange={this.handleURLChange}
+                      errorText={(this.state.projectInf.url.length === 0) ? this.props.urlErrorText : ""}
                       hintText='Add Links...'/>
                   </div>
                   <div className="col-1"></div>
@@ -349,9 +351,10 @@ export default class UploadByPattern extends Component {
   }
 
   UploadByPattern.defaultProps = {
-    authorsErrorText: 'Please provide an author',
+    authorsErrorText: 'Please provide at least one author',
     titleErrorText: 'Please provide a title',
     dateErrorText: 'Please provide a creation date',
     descriptionErrorText: 'Please provide a description',
     statusErrorText: 'Please provide a status',
+    urlErrorText: 'Please provide at least one url'
   }
