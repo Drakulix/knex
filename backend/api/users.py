@@ -181,7 +181,7 @@ def get_cur_user_tags():
 
 @users.route('/api/users/bookmarks/<uuid:id>', methods=['POST'])
 @login_required
-def insert_bookmarks(id):
+def add_bookmarks(id):
     user = g.user_datastore.get_user(current_user['email'])
     if not user:
         raise ApiException("Couldn't find current_user in datastore", 500)
@@ -201,7 +201,6 @@ def insert_bookmarks(id):
 
     except KeyError as err:
         raise ApiException(str(err), 500)
-    return jsonify(user['bookmarks'])
 
 
 @users.route('/api/users/bookmarks/<uuid:id>', methods=['DELETE'])
