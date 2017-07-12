@@ -114,6 +114,18 @@ def update_password():
     return make_response("You don't have permission to edit this user", 400)
 
 
+@users.route('/api/users/<email:mail>', methods=['DELETE'])
+@login_required
+def delete_user(mail):
+    user = g.user_datastore.get_user(mail)
+    if not user:
+        raise ApiException("user not found", 404)
+    if is_permitted(current_user, user):
+        g.user_datastore.delete_user(user)
+    else:
+        make_response("Permission denied!", 403)
+
+
 @users.route('/api/users/<email:mail>', methods=['GET'])
 @login_required
 def get_user(mail):
