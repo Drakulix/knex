@@ -30,9 +30,6 @@ export default class RegisterUser extends Component {
     this.setState({role : value})
   }
 
-
-
-
   handleInputChange(event) {
     const target = event.target;
     const value =  target.value;
@@ -43,7 +40,6 @@ export default class RegisterUser extends Component {
     });
   }
 
-
   isValidEmailAddress() {
     var address = (this.state.email);
     if(address === "")
@@ -53,7 +49,6 @@ export default class RegisterUser extends Component {
     }
     return false
   }
-
 
   isInValidInput(){
     return !this.isValidEmailAddress()
@@ -82,7 +77,6 @@ export default class RegisterUser extends Component {
     }
 
     register(this.state.first_name, this.state.last_name, this.state.email, this.state.password, this.state.password_confirm, this.state.role).then((success) => {
-
       if(success){
         this.setState({
           snackbar : true,

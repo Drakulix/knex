@@ -15,7 +15,6 @@ export default class ShowUsers extends Component {
     this.handleDelete = this.handleDelete.bind(this);
   }
 
-
   componentWillMount(){
     fetchJson("/api/users").then(function(data) {
       this.setState({
@@ -27,6 +26,38 @@ export default class ShowUsers extends Component {
   handleDelete(userID){
 
   }
+
+
+  handleEmailChange(event) {
+    this.setState({email: event.target.value})
+  }
+
+  handleFirstNameChange(event) {
+    this.setState({first_name: event.target.value});
+  }
+
+  handleLastNameChange(event) {
+    this.setState({last_name: event.target.value});
+  }
+
+  handleBioChange(event) {
+    this.setState({bio: event.target.value});
+  }
+
+  handlePwOldChange(event) {
+    this.setState({pw_old: event.target.value});
+  }
+
+  handlePwNewChange(event) {
+    this.setState({pw_new: event.target.value});
+  }
+
+  handlePwNewConfChange(event) {
+    this.setState({pw_new_confirm: event.target.value});
+  }
+
+
+
 
 
 render(){
@@ -113,7 +144,6 @@ render(){
  return (
   <div className="padding row">
     <div className="header-tab">List  users</div>
-
     <div className="col-1"></div>
     <div className="col-10">
       <ReactTable style = {{width : "100%"}}
