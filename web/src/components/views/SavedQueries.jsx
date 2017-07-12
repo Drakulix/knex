@@ -8,7 +8,7 @@ class Headline extends Component {
       <div className="headerCreation" id="headerSearch" style={{width:"100%"}}>
         Your Saved Queries
       </div>
-    );
+    )
   }
 }
 
@@ -16,8 +16,9 @@ class Headline extends Component {
 export default class SavedQueries extends Component {
   constructor(props) {
     super(props);
-    this.state = {queries:{}
-    };
+    this.state = {
+      queries:{}
+    }
   }
 
 
@@ -61,26 +62,24 @@ export default class SavedQueries extends Component {
     this.setState({
     queries : queries
     })
-}
+  }
 
-render() {
-  return(
-    <div className="container">
-      <div className="innerContainer">
-        <Headline />
-        <div>
-          {
-            this.state.queries.map(item =>
-              <div><SavedQuery value={item}></SavedQuery>
-              <hr></hr>
-            </div>
-            )
-          }
+  render() {
+    return(
+      <div className="container">
+        <div className="innerContainer">
+          <Headline />
+          <div>
+            {
+              this.state.queries.map(item =>
+                <div><SavedQuery value={item}></SavedQuery>
+                <hr></hr>
+                </div>
+              )
+            }
+          </div>
+        </div>
       </div>
-
-
-    </div>
-  </div>
-);
-}
+    )
+  }
 }

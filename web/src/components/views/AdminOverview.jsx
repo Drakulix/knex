@@ -1,24 +1,26 @@
-import React, { Component } from 'react';
-import {Tabs, Tab} from 'material-ui/Tabs';
-import DataTable from '../common/DataTable';
+import React, { Component } from 'react'
+import {Tabs, Tab} from 'material-ui/Tabs'
+import DataTable from '../common/DataTable'
 import ShowUsers from '../common/adminViews/ShowUsers'
 import RegisterUser from '../common/adminViews/RegisterUser'
 
 export default class AdminOverview extends Component {
+
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       value: 1,
-    };
+    }
   }
 
   handleChange = (value) => {
     this.setState({
       value: value,
-    });
-  };
+    })
+  }
 
   render() {
+    //TODO Chenge table to archived projects
       return (
         <div className="container">
           <div className="header">Admin area</div>
