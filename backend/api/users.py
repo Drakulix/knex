@@ -1,6 +1,6 @@
 from flask import request, jsonify, make_response, g, Blueprint
 from flask_security import login_required, login_user, logout_user, current_user
-from flask_security.utils import verify_password, encrypt_password, hash_password
+from flask_security.utils import verify_password, hash_password
 from mongoengine import NotUniqueError
 from mongoengine.fields import ObjectId
 
