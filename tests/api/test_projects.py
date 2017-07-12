@@ -445,11 +445,12 @@ class TestPUT(object):
         get_put_response = session.put(flask_api_url + "/api/projects/" +
                                        project_id_not_archived[0], json=manifest_json)
         print(get_put_response.text)
+        assert get_put_response.status_code == 200
         time.sleep(2)
         get_again_response = session.get(flask_api_url + "/api/projects/" +
                                          project_id_not_archived[0] + "?archived=true")
         after_put_json = get_again_response.json()
-        assert get_put_response.status_code == 200
+
         assert get_response.status_code == 200
         assert after_put_json["archived"]
 
