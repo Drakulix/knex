@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import 'isomorphic-fetch';
+import React, {Component} from 'react'
+import 'isomorphic-fetch'
 const PROJECT_URL = '/api/projects/'
 
   export function fetchJson(path) {
@@ -7,8 +7,8 @@ const PROJECT_URL = '/api/projects/'
     const url = `${path}`
 
     return fetch(url,{credentials: 'include',}).then(response => response.json()).catch(ex => {
-      console.error('parsing failes', ex);
-    });
+      console.error('parsing failes', ex)
+    })
 
   }
 
@@ -24,7 +24,7 @@ const PROJECT_URL = '/api/projects/'
     // .then(json => console.dir(json))
       .catch(ex => {
       console.error('parsing failed', ex)
-    });
+    })
   }
 
 
@@ -39,8 +39,8 @@ const PROJECT_URL = '/api/projects/'
           "Accept": "application/json",
         }
       }).then(response => response.json()).catch(ex => {
-        console.error('parsing failes', ex);
-      });
+        console.error('parsing failes', ex)
+      })
     }
 
 
@@ -55,8 +55,8 @@ const PROJECT_URL = '/api/projects/'
         "Accept": "application/json",
       }
     }).then(response => response.json()).catch(ex => {
-      console.error('parsing failes', ex);
-    });
+      console.error('parsing failes', ex)
+    })
   }
 
 
@@ -65,8 +65,8 @@ const PROJECT_URL = '/api/projects/'
     const url = `${PROJECT_URL}${uuid}`
 
     return fetch(url).then(response => response.json()).catch(ex => {
-      console.error('parsing failes', ex);
-    });
+      console.error('parsing failes', ex)
+    })
   }
   export function updateProjectDetails(method, payload, uuid){
     const url = `${PROJECT_URL}${uuid}`
@@ -81,7 +81,7 @@ const PROJECT_URL = '/api/projects/'
     // .then(json => console.dir(json))
       .catch(ex => {
       console.error('parsing failed', ex)
-    });
+    })
   }
 
 
@@ -102,27 +102,27 @@ const PROJECT_URL = '/api/projects/'
     // .then(json => console.dir(json))
       .catch(ex => {
       console.error('parsing failed', ex)
-    });
+    })
   }
 
   // TODO(gitmirgut): remove later
   export default class BackendTest extends Component {
     //This Component is just for testing
     constructor(props) {
-      super(props);
+      super(props)
 
       this.state = {
         state: null
-      };
+      }
     }
 
     render() {
-      fetchJson('/api/projects');
+      fetchJson('/api/projects')
       sendJson('POST', '/api/projects/search', {
         "query": {
           "match_all": {}
         }
-      });
+      })
       sendJson('POST', '/api/projects/search', {
         "query": {
           "query_string": {
@@ -133,6 +133,6 @@ const PROJECT_URL = '/api/projects/'
       })
       return (
         <div></div>
-      );
+      )
     }
 }

@@ -1,27 +1,27 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
-import Popover from 'material-ui/Popover';
-import Menu from 'material-ui/Menu';
-import MenuItem from 'material-ui/MenuItem';
-import { Link } from 'react-router-dom';
+import Popover from 'material-ui/Popover'
+import Menu from 'material-ui/Menu'
+import MenuItem from 'material-ui/MenuItem'
+import { Link } from 'react-router-dom'
 
 
 const styles = {
   linkStyle:{
     color :'#000000',
   }
-};
+}
 
 
 export default class NotificationPane extends Component {
   constructor(props) {
-    super(props);
-    this.resolveNotification = this.resolveNotification.bind(this);
+    super(props)
+    this.resolveNotification = this.resolveNotification.bind(this)
   }
 
 
   resolveNotification(notificationID){
-    this.props.resolveNotification(notificationID);
+    this.props.resolveNotification(notificationID)
   }
 
   render() {
@@ -46,6 +46,6 @@ export default class NotificationPane extends Component {
                   </MenuItem>)}
               </Menu>
             </Popover>
-      );
+      )
     }
   }

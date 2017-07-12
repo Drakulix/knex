@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import DataTable from '../common/DataTable';
+import React, { Component } from 'react'
+import DataTable from '../common/DataTable'
 
 
 export default class BookmarksTable extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
     }
   }
