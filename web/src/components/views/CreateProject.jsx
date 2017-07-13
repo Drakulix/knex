@@ -17,7 +17,7 @@ const statusString = [
   {text :<span className="badge badge-warning">IN_PROGRESS</span>, value : "IN_PROGRESS"},
 ]
 
-export default class UploadByPattern extends Component {
+export default class CreateProject extends Component {
 
 
   constructor(props) {
@@ -706,7 +706,7 @@ export default class UploadByPattern extends Component {
     }
   }
 
-  UploadByPattern.defaultProps = {
+  CreateProject.defaultProps = {
     authorsErrorText: 'Please provide at least one author',
     titleErrorText: 'Please provide a title',
     dateErrorText: 'Please provide a creation date',

@@ -17,9 +17,9 @@ import SignIn from './components/pages/SignIn.jsx';
 import SignUp from './components/pages/SignUp.jsx';
 
 import AdminOverview from './components/views/AdminOverview';
-import CreateProjectByPattern from './components/views/CreateProjectByPattern';
+import CreateProject from './components/views/CreateProject';
 import CreateProjectByURL from './components/views/CreateProjectByURL';
-import CreateProject from './components/views/CreateProjectView.jsx';
+import CreateProjectChoice from './components/views/CreateProjectChoice.jsx';
 import ProfileContainer from './components/views/ProfileContainer.jsx';
 import ProjectContainer from './components/views/ProjectContainer';
 import SearchPage from './components/views/SearchPage';
@@ -66,11 +66,11 @@ ReactDOM.render(
         <PageRoute site_path="/discovery" path="/discovery/:qID" component={SearchPage} />
         <PageRoute site_path="/discovery" path="/discovery/" component={SearchPage} />
         <PageRoute site_path="/admin" path="/admin" component={AdminOverview} />
-        <PageRoute site_path="/createNew" exact path="/createNew" component={CreateProjectByPattern} />
+        <PageRoute site_path="/createNew" exact path="/createNew" component={CreateProject} />
         <PageRoute site_path="/createNew" path="/createNew/:getURL" component={CreateProjectByURL} />
         <PageRoute site_path="/create" path="/create" component={CreateProject} />
-        <PageRoute site_path="/update" path="/update/:uuid" component={CreateProjectByPattern} />
-        <PageRoute site_path="/createbylink" path="/createbylink" component={CreateProject} />
+        <PageRoute site_path="/update" path="/update/:uuid" component={CreateProject} />
+        <PageRoute site_path="/createbylink" path="/createbylink" component={CreateProjectChoice} />
         <PageRoute site_path="/project" path="/project/:uuid" component={ProjectContainer} />
         <PageRoute site_path="/bookmarks" path="/bookmarks" component={BookmarksTable} />
         <PageRoute site_path="/profile" path="/profile/:email" component={ProfileContainer} />

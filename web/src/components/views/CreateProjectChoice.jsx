@@ -8,7 +8,7 @@ import styles from '../common/Styles.jsx'
 
 const JSON5 = require('json5')
 
-export default class UploadByLink extends Component {
+export default class CreateProjectChoice extends Component {
   constructor(props) {
     super(props)
     this.state = {
