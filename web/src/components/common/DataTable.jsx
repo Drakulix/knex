@@ -254,6 +254,7 @@ export default class BookmarksTable extends Component {
       columns.push({
         Header: 'Status',
         accessor: 'status',
+        id:'status',
         style: {textAlign:"center"},
         width: 100,
         Cell: props =>{
@@ -289,6 +290,7 @@ export default class BookmarksTable extends Component {
       columns.push({
         Header: 'Tags',
         accessor: "tagString",
+        id : 'tagString',
         width: 220,
         style: {textAlign:"center"},
         Cell: props =>{
@@ -306,6 +308,7 @@ export default class BookmarksTable extends Component {
         Header: 'Authors',
         accessor: "authorString",
         width: 150,
+        id : 'authorString',
         Cell: props =>{
           var array = props.value === undefined ? [] : new String(props.value).split(",")
           return(

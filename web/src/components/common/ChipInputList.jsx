@@ -31,7 +31,8 @@ export default class ChipInputList extends Component {
   }
 
   componentWillReceiveProps(props){
-    this.props = props
+    this.setState({list : props.value});
+
   }
 
   render(){

@@ -25,12 +25,12 @@ export default class Filters extends Component{
                               new Date( filters.filter_date_from.split("-")[0],
                                         filters.filter_date_from.split("-")[1]-1,
                                         filters.filter_date_from.split("-")[2],0,0,0,0)
-                          : ""
+                          : null
     var date_to = (filters.filter_date_to !== undefined) ?
                               new Date( filters.filter_date_to.split("-")[0],
                                         filters.filter_date_to.split("-")[1]-1,
                                         filters.filter_date_to.split("-")[2],0,0,0,0)
-                          : ""
+                          : null
     var authors = []
     if(filters.authors !== undefined){
       var dataAuthors = filters.authors
@@ -45,17 +45,13 @@ export default class Filters extends Component{
       title : filters.title !== undefined ? filters.title : "",
       tags : filters.tags !== undefined ? filters.tags :[],
       status : filters.status !== undefined ? filters.status:"",
-      date_from: date_from !== undefined ? date_from : '',
-      date_to: date_to !== undefined ? date_to : '',
-      filter_date_from :(filters.filter_date_from !== undefined) ? filters.filter_date_from:"",
-      filter_date_to: (filters.filter_date_to !== undefined) ?filters.filter_date_to:"",
+      date_from:  date_from,
+      date_to:  date_to,
+      filter_date_from :(filters.filter_date_from !== undefined) ? filters.filter_date_from:null,
+      filter_date_to: (filters.filter_date_to !== undefined) ?filters.filter_date_to:null,
       description: filters.description !== undefined ? filters.description : "",
       searchString : filters.searchString !== undefined ? filters.searchString :"",
     }
-
-
-
-
     this.handleAuthorChange = this.handleAuthorChange.bind(this)
     this.handleTagChange = this.handleTagChange.bind(this)
     this.handleChange = this.handleChange.bind(this)
