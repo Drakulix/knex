@@ -207,26 +207,24 @@ export default class CreateProject extends Component {
     this.fetchProjectInfo(uuid).then(data => {
       this.setState({projectInf: data})
       if(!data){
-        this.setState({project_exists: false})
+        this.setState({ project_exists: false,
+                        site_loaded: true,})
       }else{
-        this.setState({project_exists: true})
+        var authorArray = []
+        var authors = data.authors
+        for (var i in authors) {
+          authorArray = authorArray.concat([authors[i].name + " ("+ authors[i].email+ ")"])
+        }
+        this.setState({
+          project_exists: true,
+          site_loaded: true,
+          projectInf: data,
+          authors : authorArray,
+          date: new Date( data.date_creation.split("-")[0],
+                          data.date_creation.split("-")[1]-1,
+                          data.date_creation.split("-")[2],0,0,0,0)
+        })
       }
-      var authorArray = []
-      var authors = data.authors
-      for (var i in data.authors) {
-        authorArray = authorArray.concat([data.authors[i].name + " ("+ data.authors[i].email+ ")"])
-      }
-      this.setState({
-        projectInf: data,
-        authors : authors,
-        date: new Date( data.date_creation.split("-")[0],
-        data.date_creation.split("-")[1]-1,
-        data.date_creation.split("-")[2],0,0,0,0)
-      })
-      this.setState({site_loaded: true})
-    }).catch(ex => {
-      this.setState({project_exists: false})
-      this.setState({site_loaded: true})
     })
   }
 
@@ -238,6 +236,8 @@ export default class CreateProject extends Component {
 
   submit(){
     var data = JSON.stringify(this.state.projectInf)
+
+
     var xhr = new XMLHttpRequest()
     xhr.withCredentials = true
     xhr.addEventListener("readystatechange", function () {
@@ -245,7 +245,14 @@ export default class CreateProject extends Component {
         console.log(this.responseText)
       }
     })
-    xhr.open("POST", "/api/projects")
+
+    if( this.state.projectID === undefined){
+      xhr.open("POST", "/api/projects")
+    }
+    else{
+      xhr.open("PUT", "/api/projects/"+this.state.projectID)
+    }
+
     xhr.setRequestHeader("content-type", "application/json")
     xhr.send(data)
     this.setState({snackbar:true})
