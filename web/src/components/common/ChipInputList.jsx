@@ -4,7 +4,6 @@ import Chip from 'material-ui/Chip'
 import AutoComplete from 'material-ui/AutoComplete'
 import styles from '../common/Styles.jsx'
 
-
 export default class ChipInputList extends Component {
   constructor(props) {
     super(props)

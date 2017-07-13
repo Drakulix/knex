@@ -65,11 +65,8 @@ export default class CreateProjectChoice extends Component {
                   name="title"
                   hintText="enter url here (e.g. “http://soundloud.com/stuff/manifest.json”)"
                   style={{width:'460px',}}
-                  onChange={event => this.setState({
-                            sourceURL : event.target.value,
-                           })}
-                  value={this.state.sourceURL}
-                           />
+                  onChange={event => this.setState({sourceURL : event.target.value})}
+                  value={this.state.sourceURL}/>
             </div>
             <div >
               <RaisedButton style={{width:'300px'}}
@@ -96,8 +93,7 @@ export default class CreateProjectChoice extends Component {
                       icon={<i className="fa fa-pencil-square-o" style={{color: "#ffffff"}} aria-hidden="true"></i>}
                       href="/createNew/"
                       primary={true}
-                      style={{ width:'300px'}}
-                        />
+                      style={{ width:'300px'}}/>
         </div>
       </div>
     )

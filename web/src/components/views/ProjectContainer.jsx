@@ -122,8 +122,7 @@ export default class ProjectContainer extends Component {
     event.preventDefault()
     this.setState({commentBar:false})
     this.setState({sharePane:false})
-    if(new String (this.state.projectInf.is_bookmark) == "true"){
-      //deleteBookmark
+    if(this.state.projectInf.is_bookmark){
       this.removeBookmark().then(res => {
         if(res){
           var projectInf = this.state.projectInf;
@@ -131,7 +130,7 @@ export default class ProjectContainer extends Component {
           this.setState({projectInf: projectInf})
         }
       })
-    }else {
+    } else {
       this.addBookmark().then(res => {
         if(res){
           var projectInf = this.state.projectInf;

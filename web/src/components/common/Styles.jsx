@@ -1,4 +1,3 @@
-
 const mainColor ="#ff5000";
 
 export default {
@@ -18,7 +17,6 @@ export default {
     float: 'left',
     background: mainColor,
     color: '#ffffff',
-
   },
   wrapper: {
     display: 'flex',
@@ -34,7 +32,7 @@ export default {
   },
   chipText:{
     background: mainColor,
-    
+
   },
   datePicker: {
       selectColor: mainColor
