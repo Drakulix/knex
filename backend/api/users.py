@@ -1,10 +1,14 @@
-from flask import request, jsonify, make_response, g, Blueprint
+import io
+
+from flask import request, jsonify, make_response, g, Blueprint, send_file
 from flask_security import login_required, login_user, logout_user, current_user
 from flask_security.utils import verify_password, hash_password
 from mongoengine import NotUniqueError
 from mongoengine.fields import ObjectId
+from werkzeug.utils import secure_filename
 
 from api.helper.apiexception import ApiException
+
 
 users = Blueprint('api_users', __name__)
 
@@ -62,16 +66,21 @@ def create_user():
 
         role = g.user_datastore.find_or_create_role(user['roles'])
 
-        g.user_datastore.create_user(first_name=user["first_name"],
-                                     last_name=user["last_name"],
-                                     email=user["email"],
-                                     password=hash_password(user["password"]),
-                                     bio=user["bio"], roles=[role])
+        g.user_datastore.create_user(first_name=user['first_name'],
+                                     last_name=user['last_name'],
+                                     email=user['email'],
+                                     password=hash_password(user['password']),
+                                     bio=user['bio'], roles=[role],
+                                     avatar_name='default_avatar.png')
 
-        return jsonify(g.user_datastore.get_user(user['email']))
+        usr = g.user_datastore.get_user(user['email'])
+        usr.avatar.put(open("default_avatar.png", 'rb'), content_type='image/png')
+        usr.avatar.save()
 
-    except NotUniqueError as ue:
-        raise ApiException("duplicated user error", 409)
+        return jsonify(usr.to_dict())
+
+    except NotUniqueError:
+        raise ApiException("Duplicated user error", 409)
     except ApiException as e:
         raise e
     except Exception as err:
@@ -156,11 +165,51 @@ def get_user(mail):
     """
     user = g.user_datastore.get_user(mail)
     if not user:
-        return make_response("Unknown User with Email-address: " + str(mail), 400)
+        return make_response("Unknown User with Email-address: " + str(mail), 404)
 
     res = user.to_dict()
     res['roles'] = [role for role in ['admin', 'user'] if user.has_role(role)]
     return jsonify(res)
+
+
+@users.route('/api/users/<email:mail>/avatar', methods=['GET'])
+@login_required
+def get_user_avatar(mail):
+    user = g.user_datastore.get_user(mail)
+    if not user:
+        raise ApiException("Unknown User with Email-address: " + str(mail), 404)
+    filedata = io.BytesIO(user.avatar.read())
+    filename = user.avatar_name
+    mimetype = user.avatar.content_type
+    return send_file(filedata, attachment_filename=filename, mimetype=mimetype)
+
+
+@users.route('/api/users/<email:mail>/avatar', methods=['PUT'])
+@login_required
+def set_user_avatar(mail):
+    user = g.user_datastore.get_user(mail)
+    if not user:
+        raise ApiException("Unknown User with Email-address: " + str(mail), 404)
+    if 'image' not in request.files:
+        raise ApiException("request.files contains no image", 400)
+    if 'image/' not in request.content_type:
+        raise ApiException("Content-Type must be set to 'image/<filetype>'")
+    file = request.files['image']
+    user.avatar_name = secure_filename(file.filename)
+    user.avatar.replace(file, request.content_type)
+    user.save()
+    return make_response("Avatar successfully replaced.", 200)
+
+
+@users.route('/api/users/<email:mail>/avatar', methods=['DELETE'])
+@login_required
+def reset_user_avatar(mail):
+    user = g.user_datastore.get_user(mail)
+    if not user:
+        raise ApiException("Unknown User with Email-address: " + str(mail), 404)
+    user.avatar_name = "default_avatar.png"
+    user.avatar.put(open("default_avatar.png", 'rb'), content_type='image/png')
+    user.avatar.save()
 
 
 @users.route('/api/users/<email:mail>/tags', methods=['GET'])
