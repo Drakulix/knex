@@ -6,8 +6,6 @@ import Divider from 'material-ui/Divider'
 import {fetchJson} from './Backend'
 import TextField from 'material-ui/TextField'
 
-
-
 export default class CommentSideBar extends React.Component {
 
   constructor(props) {
@@ -15,7 +13,6 @@ export default class CommentSideBar extends React.Component {
     this.state = {showCommentBar: false,
     comment:"",
     comments: []}
-
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
   }
@@ -28,13 +25,11 @@ export default class CommentSideBar extends React.Component {
     return filteredDataArray
   }
 
-
   handleChange(event){
     const value = event.target.value
     this.setState({
       comment: value})
   }
-
 
   handleSubmit(event){
     var fetchURL ="/api/projects/"+this.props.uuid+"/comment"
@@ -58,8 +53,6 @@ export default class CommentSideBar extends React.Component {
     this.loadComments()
   }
 
-
-
   handleToggle = () => this.setState({showCommentBar: !this.state.showCommentBar})
 
   componentWillReceiveProps(props){
@@ -69,7 +62,6 @@ export default class CommentSideBar extends React.Component {
   componentWillMount(){
     this.loadComments()
   }
-
 
   loadComments(){
     var fetchURL ="/api/projects/"+this.props.uuid+"/comment"
@@ -84,36 +76,36 @@ export default class CommentSideBar extends React.Component {
 
   render() {
     return (
-        <Drawer
-          docked={false}
-          width={600}
-          open={this.state.showCommentBar}
-          onRequestChange={(showCommentBar) => this.setState({showCommentBar})}>
-          <List>
-            <div style={{padding:20}}>
-            <TextField  value={this.state.comment}
-                        onChange={this.handleChange}
-                        hintText="Add a comment"
-                        style={{width:'100%'}}
-                        multiLine={2}
-            />
-            <div style={{textAlign:"center", marginBottom:25}}>
-              <RaisedButton label="Comment"
-                            disabled={this.state.comment === ""}
-                            onClick={this.handleSubmit}
-                            primary={true}/>
-            </div>
+      <Drawer
+        docked={false}
+        width={600}
+        open={this.state.showCommentBar}
+        onRequestChange={(showCommentBar) => this.setState({showCommentBar})}>
+        <List>
+          <div style={{padding:20}}>
+          <TextField  value={this.state.comment}
+                      onChange={this.handleChange}
+                      hintText="Add a comment"
+                      style={{width:'100%'}}
+                      multiLine={2}
+          />
+          <div style={{textAlign:"center", marginBottom:25}}>
+            <RaisedButton label="Comment"
+                          disabled={this.state.comment === ""}
+                          onClick={this.handleSubmit}
+                          primary={true}/>
           </div>
-          {this.state.comments.map(item =>
-            <div>
-              <Divider/>
-              <ListItem primaryText={item.message}
-                        secondaryText={<div><span style={{float: "left"}}>{item.author.email}</span><span style={{float: "right"}}> {item.datetime}</span></div>}
-              />
-            </div>)
-          }
-        </List>
-      </Drawer>
+        </div>
+        {this.state.comments.map(item =>
+          <div>
+            <Divider/>
+            <ListItem primaryText={item.message}
+                      secondaryText={<div><span style={{float: "left"}}>{item.author.email}</span><span style={{float: "right"}}> {item.datetime}</span></div>}
+            />
+          </div>)
+        }
+      </List>
+    </Drawer>
     )
   }
 }

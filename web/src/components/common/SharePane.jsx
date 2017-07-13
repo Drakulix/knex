@@ -63,8 +63,6 @@ export default class SharePane extends React.Component {
         suggestedAuthors: suggestedAuthorsArray
       })
     }.bind(this))
-
-
   }
 
   componentWillReceiveProps(props){
@@ -89,7 +87,6 @@ export default class SharePane extends React.Component {
         style={{marginLeft:20}}
         />,
     ]
-
     return (
       <Dialog
         title="Share project with"

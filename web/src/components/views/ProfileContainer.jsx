@@ -85,61 +85,61 @@ export default class ProfileContainer extends Component {
       })
     }
 
-    handleProfileChange(snackbarText){
-      this.setState({value : "a",
-          snackbar : true,
-          snackbarText: snackbarText
-      })
-      this.loadProfileInf(this.state.email)
-    }
+  handleProfileChange(snackbarText){
+    this.setState({value : "a",
+        snackbar : true,
+        snackbarText: snackbarText
+    })
+    this.loadProfileInf(this.state.email)
+  }
 
-    render() {
-      if(!this.state.site_loaded){
-        return (
-          <div className="container">
-            <div className="header"><CircularProgress size={80} thickness={5} /></div>
-          </div>
-        )
-      }
-      if( !this.state.profile_exists){
-        return (
-          <div className="container">
-            <div className="header">Profile not found</div>
-          </div>
-        )
-      }
-      else {
-        return (
-          <div className="container">
-            <div className="header">Profile details</div>
-            <Tabs
-              value={this.state.value}
-              onChange={this.handleChange}
-              style={{marginBottom:"40px"}}
-              >
-              <Tab
-                label="Profile Info" value="a">
-                <ProfileView profileInf={this.state.profileInf}
-                            topTenTags={this.state.topTenTags}/>
-              </Tab>
-              {(this.state.isAdmin || this.state.isMe)?
+  render() {
+    if(!this.state.site_loaded){
+      return (
+        <div className="container">
+          <div className="header"><CircularProgress size={80} thickness={5} /></div>
+        </div>
+      )
+    }
+    if( !this.state.profile_exists){
+      return (
+        <div className="container">
+          <div className="header">Profile not found</div>
+        </div>
+      )
+    }
+    else {
+      return (
+        <div className="container">
+          <div className="header">Profile details</div>
+          <Tabs
+            value={this.state.value}
+            onChange={this.handleChange}
+            style={{marginBottom:"40px"}}>
+            <Tab
+              label="Profile Info" value="a">
+              <ProfileView profileInf={this.state.profileInf}
+                          topTenTags={this.state.topTenTags}/>
+            </Tab>
+            {(this.state.isAdmin || this.state.isMe)?
               <Tab label="Edit Profile" value="b">
                 <ProfileEditor email={this.state.email}
                   profileInf = {this.state.profileInf}
                   profileChangeHandler = {this.handleProfileChange}/>
-              </Tab> : "" }
-              <Tab label="Projects" value="c">
-                <ProfileProjects profileInf={this.state.profileInf}
-                  isMe={this.state.isMe}
-                  isAdmin={this.state.isAdmin}/>
-              </Tab>
-            </Tabs>
-            <Snackbar
-              open={this.state.snackbar}
-              message={this.state.snackbarText}
-              autoHideDuration={10000}
-            />
-          </div>
-        )}
-      }
+              </Tab> : ""
+            }
+            <Tab label="Projects" value="c">
+              <ProfileProjects profileInf={this.state.profileInf}
+                isMe={this.state.isMe}
+                isAdmin={this.state.isAdmin}/>
+            </Tab>
+          </Tabs>
+          <Snackbar
+            open={this.state.snackbar}
+            message={this.state.snackbarText}
+            autoHideDuration={10000}/>
+        </div>
+      )
     }
+  }
+}

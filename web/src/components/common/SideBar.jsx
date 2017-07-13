@@ -6,7 +6,6 @@ import {getMyEmail, getUserInfo} from '../common/Authentication.jsx'
 export default class SideBar extends Component {
   constructor(props) {
     super(props)
-
     this.state = {
       menu: {
         discoverProjects: 'Discover Projects',
