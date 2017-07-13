@@ -34,7 +34,7 @@ export default {
   },
   chipText:{
     background: mainColor,
-    fontWeight: 'bold'
+    
   },
   datePicker: {
       selectColor: mainColor
