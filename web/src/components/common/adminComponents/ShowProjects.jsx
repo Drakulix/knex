@@ -4,10 +4,6 @@ import DataTable from '../../common/DataTable'
 
 export default class ShowProjects extends Component {
 
-  constructor(props) {
-    super(props);
-  }
-
   render(){
     return (
       <div>
