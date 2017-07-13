@@ -132,11 +132,11 @@ export default class SearchPage extends Component {
                 placeholder="Enter your query here..."
                 onChange={this.handleChange} />
             </div>
-            <div className="col-2">
-              <RaisedButton style={{width:"100%"}}
+            <div className = "col-2">
+              <RaisedButton style = {{width:"100%"}}
                 label="Save search"
                 labelPosition="before"
-                icon={<i className="fa fa-floppy-o" style={{color: "#ffffff"}} aria-hidden="true"></i>}
+                icon={<i className="material-icons" style={{color: "#ffffff", marginTop:-3}}>save</i>}
                 onClick={this.handleOpen}
                 primary={true}/>
             </div>
