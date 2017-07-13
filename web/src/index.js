@@ -1,9 +1,9 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import registerServiceWorker from './registerServiceWorker';
-import './style/style.css';
-import './style/fonts/font-awesome/css/font-awesome.css';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import registerServiceWorker from './registerServiceWorker'
+import './style/style.css'
+import './style/fonts/font-awesome/css/font-awesome.css'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 
 
 import {
@@ -13,32 +13,32 @@ import {
 
 import history from './components/common/history'
 
-import SignIn from './components/pages/SignIn.jsx';
-import SignUp from './components/pages/SignUp.jsx';
+import SignIn from './components/pages/SignIn.jsx'
+import SignUp from './components/pages/SignUp.jsx'
 
-import AdminOverview from './components/views/AdminOverview';
-import CreateProject from './components/views/CreateProject';
-import CreateProjectByURL from './components/views/CreateProjectByURL';
-import CreateProjectChoice from './components/views/CreateProjectChoice.jsx';
-import ProfileContainer from './components/views/ProfileContainer.jsx';
-import ProjectContainer from './components/views/ProjectContainer';
-import SearchPage from './components/views/SearchPage';
-import BookmarksTable from './components/views/BookmarksTable';
-import UserProjects from './components/views/UserProjects.jsx';
+import AdminOverview from './components/views/AdminOverview'
+import CreateProject from './components/views/CreateProject'
+import CreateProjectByURL from './components/views/CreateProjectByURL'
+import CreateProjectChoice from './components/views/CreateProjectChoice.jsx'
+import ProfileContainer from './components/views/ProfileContainer.jsx'
+import ProjectContainer from './components/views/ProjectContainer'
+import SearchPage from './components/views/SearchPage'
+import BookmarksTable from './components/views/BookmarksTable'
+import UserProjects from './components/views/UserProjects.jsx'
 import SavedQueries from './components/views/SavedQueries.jsx'
 
-import TopBar from './components/common/TopBar';
-import SideBar from './components/common/SideBar';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import styles from './components/common/Styles.jsx';
+import TopBar from './components/common/TopBar'
+import SideBar from './components/common/SideBar'
+import getMuiTheme from 'material-ui/styles/getMuiTheme'
+import styles from './components/common/Styles.jsx'
 
 
-var injectTapEventPlugin = require("react-tap-event-plugin");
-injectTapEventPlugin();
+var injectTapEventPlugin = require("react-tap-event-plugin")
+injectTapEventPlugin()
 
 
 
-const muiTheme = getMuiTheme(styles);
+const muiTheme = getMuiTheme(styles)
 
 
 
@@ -80,5 +80,5 @@ ReactDOM.render(
      </div>
     </BrowserRouter>
   </MuiThemeProvider>
-, document.getElementById('root'));
-registerServiceWorker();
+, document.getElementById('root'))
+registerServiceWorker()

@@ -40,8 +40,9 @@ export default class ProjectContainer extends Component {
     this.loadSiteInf(this.state.projectID)
   }
 
+//TODO CHECK IF you are OWNER IN REAL
   isOwner(){
-    return true;
+    return true
   }
 
   fetchProjectInfo(uuid){
@@ -125,7 +126,7 @@ export default class ProjectContainer extends Component {
     if(this.state.projectInf.is_bookmark){
       this.removeBookmark().then(res => {
         if(res){
-          var projectInf = this.state.projectInf;
+          var projectInf = this.state.projectInf
           projectInf.is_bookmark = false
           this.setState({projectInf: projectInf})
         }
@@ -133,7 +134,7 @@ export default class ProjectContainer extends Component {
     } else {
       this.addBookmark().then(res => {
         if(res){
-          var projectInf = this.state.projectInf;
+          var projectInf = this.state.projectInf
           projectInf.is_bookmark = true
           this.setState({projectInf: projectInf})
         }

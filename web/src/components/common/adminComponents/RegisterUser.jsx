@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import Snackbar from "material-ui/Snackbar"
 import TextField from "material-ui/TextField"
 import RaisedButton from "material-ui/RaisedButton"
@@ -9,7 +9,7 @@ import {register} from '../../common/Authentication.jsx'
 
 export default class RegisterUser extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       first_name : "",
       last_name : "",
@@ -57,7 +57,7 @@ export default class RegisterUser extends Component {
   }
 
   handleRegister(event){
-    event.preventDefault();
+    event.preventDefault()
     register(this.state.first_name, this.state.last_name, this.state.email, this.state.password, this.state.password_confirm, this.state.role).then((success) => {
       if(success){
         this.setState({

@@ -19,7 +19,6 @@ const statusString = [
 
 export default class CreateProject extends Component {
 
-
   constructor(props) {
     super(props)
 
@@ -136,41 +135,41 @@ export default class CreateProject extends Component {
       authors.push({"name" : name, "email" :id})
     }
 
-    var projectInf = this.state.projectInf;
-    projectInf.authors = authors;
+    var projectInf = this.state.projectInf
+    projectInf.authors = authors
     this.setState({
       authors : value,
-      projectInf: projectInf});
+      projectInf: projectInf})
   }
 
   handleTagChange(value) {
-    var projectInf = this.state.projectInf;
-    projectInf.tags = value;
-    this.setState({projectInf: projectInf});
+    var projectInf = this.state.projectInf
+    projectInf.tags = value
+    this.setState({projectInf: projectInf})
   }
 
   handleURLChange(value) {
-    var projectInf = this.state.projectInf;
-    projectInf.url = value;
-    this.setState({projectInf: projectInf});
+    var projectInf = this.state.projectInf
+    projectInf.url = value
+    this.setState({projectInf: projectInf})
   }
 
   handleTitleChange(event,value) {
-    var projectInf = this.state.projectInf;
-    projectInf.title = value;
-    this.setState({projectInf: projectInf});
+    var projectInf = this.state.projectInf
+    projectInf.title = value
+    this.setState({projectInf: projectInf})
   }
 
   handleDescriptionChange(event,value) {
-    var projectInf = this.state.projectInf;
-    projectInf.description = value;
-    this.setState({projectInf: projectInf});
+    var projectInf = this.state.projectInf
+    projectInf.description = value
+    this.setState({projectInf: projectInf})
   }
 
   handleStatusChange = (event, index, value) => {
-    var projectInf = this.state.projectInf;
-    projectInf.status = value;
-    this.setState({projectInf: projectInf});
+    var projectInf = this.state.projectInf
+    projectInf.status = value
+    this.setState({projectInf: projectInf})
   }
 
   handleChangeDate = (event, date) => {

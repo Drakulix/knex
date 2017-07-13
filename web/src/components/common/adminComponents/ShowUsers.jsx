@@ -12,8 +12,8 @@ export default class ShowUsers extends Component {
     super(props)
     this.state = {
       data : [{}],
-    };
-    this.handleDelete = this.handleDelete.bind(this);
+    }
+    this.handleDelete = this.handleDelete.bind(this)
   }
 
   componentWillMount(){
@@ -153,8 +153,6 @@ export default class ShowUsers extends Component {
   }
 }
 
-
-
 class ConfirmationPane extends Component {
   constructor(props) {
     super(props)
@@ -167,13 +165,12 @@ class ConfirmationPane extends Component {
     this.setState({open: false})
   }
 
-
   handleDelete = () =>{
     this.setState({open : false})
   }
 
   componentWillReceiveProps(props){
-    this.setState({open: props.open});
+    this.setState({open: props.open})
   }
 
   render() {
