@@ -58,21 +58,6 @@ export default class RegisterUser extends Component {
 
   handleRegister(event){
     event.preventDefault();
-    if(this.state.password !== this.state.password_confirm){
-      this.setState({
-        snackbar : true,
-        snackbarText :  'Passwords do not match'
-      })
-      return
-    }
-    if(this.state.password === ""){
-      this.setState({
-        snackbar : true,
-        snackbarText :  'Password can not be empty'
-      })
-      return
-    }
-
     register(this.state.first_name, this.state.last_name, this.state.email, this.state.password, this.state.password_confirm, this.state.role).then((success) => {
       if(success){
         this.setState({

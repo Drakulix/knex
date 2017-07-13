@@ -20,7 +20,6 @@ export default class ProfileContainer extends Component {
       profile_exists : true,
       site: 'info',
       site_loaded: false,
-      error: '',
       profileInf: {},
       myProfileInf: {},
       email: this.props.match.params.email,
@@ -131,7 +130,6 @@ export default class ProfileContainer extends Component {
           snackbarText :  'Password change success'
         })
       }else{
-        this.setState({ error: 'Login failed' })
         this.setState({
           snackbar : true,
           snackbarText :  'Password change failed'
@@ -151,7 +149,6 @@ export default class ProfileContainer extends Component {
           snackbarText :  'Profile changed'
         })
       }else{
-        this.setState({ error: 'Profile change failed' })
         this.setState({
           snackbar : true,
           snackbarText :  'Profile change failed'
