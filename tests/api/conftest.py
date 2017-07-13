@@ -112,7 +112,8 @@ def enter_users(pytestconfig, session):
             'roles': 'user',
             'password': 'Mooooooooney'}
     add_user_response = session.post(flask_api_url() + "/api/users", json=user)
-    print(add_user_response.text)
+    for x in add_user_response:
+        print(str(x))
     assert add_user_response.status_code == 200
     yield add_user_response
 

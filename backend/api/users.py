@@ -6,7 +6,7 @@ from flask import request, jsonify, make_response, g, Blueprint, send_file
 from flask_security import login_required, login_user, logout_user, current_user
 from flask_security.utils import verify_password, hash_password
 from mongoengine import NotUniqueError
-from mongoengine.fields import ObjectId
+from mongoengine.fields import ObjectId, ImageField
 from werkzeug.utils import secure_filename
 
 from api.helper.apiexception import ApiException
@@ -75,10 +75,14 @@ def create_user():
                                      bio=user['bio'], roles=[role])
 
         usr = g.user_datastore.get_user(user['email'])
-        usr.avatar.put(open(os.path.join(sys.path[0], "resources/default_avatar.png"), 'rb'),
-                       content_type='image/png', name="default_avatar.png")
-        usr.avatar.save()
 
+        try:
+            imgfile = open(os.path.join(sys.path[0], "default_avatar.png"), 'rb')
+            usr.avatar.put(imgfile, content_type='image/png')
+            usr.avatar.save()
+            imgfile.close()
+        except Exception as e:
+            raise ApiException(str(e), 499)
         return jsonify(usr.to_dict())
 
     except NotUniqueError:
@@ -209,11 +213,7 @@ def reset_user_avatar(mail):
     user = g.user_datastore.get_user(mail)
     if not user:
         raise ApiException("Unknown User with Email-address: " + str(mail), 404)
-<<<<<<< HEAD
-    user.avatar.put(open(os.path.join(sys.path[0], "resources/default_avatar.png"), 'rb'),
-=======
     user.avatar.put(open(os.path.join(sys.path[0], "default_avatar.png"), 'rb'),
->>>>>>> 9615fbb... changed path to default avatar
                     content_type='image/png', name="default_avatar.png")
     user.avatar.save()
 
