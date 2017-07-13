@@ -1,15 +1,16 @@
 import React, { Component } from 'react'
 import {Tabs, Tab} from 'material-ui/Tabs'
-import DataTable from '../common/DataTable'
 import ShowUsers from '../common/adminComponents/ShowUsers'
 import RegisterUser from '../common/adminComponents/RegisterUser'
+import ShowProjects from '../common/adminComponents/ShowProjects'
+
 
 export default class AdminOverview extends Component {
 
   constructor(props) {
     super(props)
     this.state = {
-      value: 1,
+      value: "1",
     }
   }
 
@@ -30,16 +31,13 @@ export default class AdminOverview extends Component {
             style={{marginBottom:"40px"}}
             >
             <Tab label="Manage Projects" value="1">
-              <div className="header-tab">Manage projects</div>
-                  <DataTable columns= {['title', 'status', 'tags', 'authors', 'description', '_id',  'delete']}
-                              fetchURL="/api/projects"/>
-                  <div className="footer" />
+              <ShowProjects/>
             </Tab>
             <Tab label="List Users" value="2">
               <ShowUsers/>
             </Tab>
             <Tab label="Register user" value="3">
-              <RegisterUser></RegisterUser>
+              <RegisterUser/>
             </Tab>
           </Tabs>
         </div>
