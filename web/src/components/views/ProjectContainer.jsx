@@ -109,7 +109,6 @@ export default class ProjectContainer extends Component {
       method: "DELETE",
       body: "",
       headers: {
-
       }
     }).then(function(response){
       if(response.status===200){
