@@ -1,10 +1,10 @@
 import React from 'react';
 
-import CreateProjectByPattern from './CreateProjectByPattern.jsx';
+import CreateProject from './CreateProject.jsx';
 
 const JSON5 = require('json5');
 
-export default class UploadByURL extends React.Component {
+export default class CreateProjectByURL extends React.Component {
 
       constructor(props) {
         super(props);
@@ -102,7 +102,7 @@ export default class UploadByURL extends React.Component {
       render() {
         if(this.state.done){
           return(
-            <CreateProjectByPattern
+            <CreateProject
             authors={this.state.authors}
             projectInf={this.state.projectInf}
             status={this.state.status}
