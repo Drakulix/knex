@@ -68,7 +68,6 @@ ReactDOM.render(
         <PageRoute site_path="/admin" path="/admin" component={AdminOverview} />
         <PageRoute site_path="/createNew" exact path="/createNew" component={CreateProject} />
         <PageRoute site_path="/createNew" path="/createNew/:getURL" component={CreateProjectByURL} />
-        <PageRoute site_path="/create" path="/create" component={CreateProject} />
         <PageRoute site_path="/update" path="/update/:uuid" component={CreateProject} />
         <PageRoute site_path="/createbylink" path="/createbylink" component={CreateProjectChoice} />
         <PageRoute site_path="/project" path="/project/:uuid" component={ProjectContainer} />
