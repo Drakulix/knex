@@ -1,13 +1,8 @@
 import requests
-import unittest
 import os
 
 
 class Testsecurity(object):
-    def setup(self):
-        # app['TESTING'] = True
-        # self.app = app.test_client()
-        pass
 
     def test_main_page(self, flask_api_url):
         response = requests.get(flask_api_url + '/')
