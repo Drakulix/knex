@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import DataTable from '../common/DataTable'
-import ShowUsers from '../common/adminViews/ShowUsers'
-import RegisterUser from '../common/adminViews/RegisterUser'
+import ShowUsers from '../common/adminComponents/ShowUsers'
+import RegisterUser from '../common/adminComponents/RegisterUser'
 
 export default class AdminOverview extends Component {
 

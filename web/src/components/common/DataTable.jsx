@@ -309,7 +309,7 @@ export default class BookmarksTable extends Component {
             return(
                 array.map(item =>
                   <Chip style= {styles["chip"]}>
-                    <Link to={item} style= {styles["chipText"]} >{item}</Link></Chip>)
+                    <Link to={"/discovery?tag=" +item} style= {styles["chipText"]} >{item}</Link></Chip>)
             );},
         });
       }
