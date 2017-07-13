@@ -5,9 +5,10 @@ from flask_cors import CORS
 from flask_login import LoginManager
 from flask_mongoengine import MongoEngine
 from flask_security import Security, MongoEngineUserDatastore, UserMixin, RoleMixin
-from flask_security.utils import encrypt_password
+from flask_security.utils import hash_password
 from flask_principal import PermissionDenied
 from jsonschema import FormatChecker, Draft4Validator
+from mongoengine import NotUniqueError
 from pymongo import MongoClient, ReturnDocument
 from mongoengine.fields import (UUIDField, ListField, StringField, BooleanField,
                                 ObjectId, EmbeddedDocumentField, EmbeddedDocument,
@@ -240,24 +241,19 @@ def rerun_saved_searches_func():
 def initialize_users():
     user_role = USER_DATASTORE.find_or_create_role('user')
     admin_role = USER_DATASTORE.find_or_create_role('admin')
-    userpw = encrypt_password("user")
-    adminpw = encrypt_password("admin")
+    userpw = hash_password("user")
+    adminpw = hash_password("admin")
     try:
-        if not USER_DATASTORE.get_user('user@knex.com'):
-            USER_DATASTORE.create_user(
-                email='user@knex.com', password=userpw, roles=[user_role])
-    # user_datastore.get_user might return None or throw an exception if the user does not exist
-    except Exception:
         USER_DATASTORE.create_user(
             email='user@knex.com', password=userpw, roles=[user_role])
+    except NotUniqueError:
+        pass
     try:
-        if not USER_DATASTORE.get_user('admin@knex.com'):
-            USER_DATASTORE.create_user(
-                email='admin@knex.com', password=adminpw, roles=[user_role, admin_role])
-    # user_datastore.get_user might return None or throw an exception if the user does not exist
-    except Exception:
         USER_DATASTORE.create_user(
             email='admin@knex.com', password=adminpw, roles=[user_role, admin_role])
+    # user_datastore.get_user might return None or throw an exception if the user does not exist
+    except NotUniqueError:
+        pass
 
 
 @app.errorhandler(ApiException)
