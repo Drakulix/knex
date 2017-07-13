@@ -38,8 +38,9 @@ export default class TopBar extends Component {
 
   resolveNotification(notificationID){
     var list = this.state.notifications.filter((c) => c.id !== notificationID)
-    this.setState({notifications : list})
-    fetchDelete("api/users/notifications/"+ notificationID)
+    this.setState({notifications : list,
+                  popover:false})
+    fetchDelete("/api/users/notifications/"+ notificationID)
   }
 
   handleNotificationClick(event){

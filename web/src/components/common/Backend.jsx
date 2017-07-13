@@ -16,6 +16,7 @@ const PROJECT_URL = '/api/projects/'
   export function fetchDelete(url){
     return fetch(url, {
       method: "DELETE",
+      credentials : "include",
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'

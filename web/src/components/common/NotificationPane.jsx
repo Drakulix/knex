@@ -21,6 +21,8 @@ export default class NotificationPane extends Component {
     this.props.resolveNotification(notificationID)
   }
 
+
+
   render() {
     return (
       <Popover
