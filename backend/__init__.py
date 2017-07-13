@@ -1,3 +1,6 @@
+import json
+import time
+
 from elasticsearch import Elasticsearch
 from flask import Flask, g, jsonify, request
 from flask.helpers import make_response
@@ -13,8 +16,6 @@ from pymongo import MongoClient, ReturnDocument
 from mongoengine.fields import (UUIDField, ListField, StringField, BooleanField,
                                 ObjectId, EmbeddedDocumentField, EmbeddedDocument,
                                 ListField, ObjectIdField, ImageField)
-import json
-import time
 from werkzeug.routing import BaseConverter
 
 from api.projects import projects
@@ -142,7 +143,6 @@ class User(DB.Document, UserMixin):
     roles = DB.ListField(DB.ReferenceField(Role), default=[])
     notifications = DB.ListField(DB.EmbeddedDocumentField(Notification), default=[])
     saved_searches = DB.ListField(DB.EmbeddedDocumentField(SavedSearch), default=[])
-    avatar_name = DB.StringField(default='default_avatar.png')
     avatar = DB.ImageField(size=(400, 400, True))
 
     # we must not override the method __iter__ because Document.save() stops working then

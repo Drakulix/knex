@@ -8,4 +8,4 @@ flask-cors
 flask_security
 flask_mongoengine
 passlib
-
+Pillow

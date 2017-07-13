@@ -70,11 +70,11 @@ def create_user():
                                      last_name=user['last_name'],
                                      email=user['email'],
                                      password=hash_password(user['password']),
-                                     bio=user['bio'], roles=[role],
-                                     avatar_name='default_avatar.png')
+                                     bio=user['bio'], roles=[role])
 
         usr = g.user_datastore.get_user(user['email'])
-        usr.avatar.put(open("default_avatar.png", 'rb'), content_type='image/png')
+        usr.avatar.put(open("default_avatar.png", 'rb'), content_type='image/png',
+                       name="default_avatar.png")
         usr.avatar.save()
 
         return jsonify(usr.to_dict())
@@ -179,7 +179,7 @@ def get_user_avatar(mail):
     if not user:
         raise ApiException("Unknown User with Email-address: " + str(mail), 404)
     filedata = io.BytesIO(user.avatar.read())
-    filename = user.avatar_name
+    filename = user.avatar.name
     mimetype = user.avatar.content_type
     return send_file(filedata, attachment_filename=filename, mimetype=mimetype)
 
@@ -193,10 +193,10 @@ def set_user_avatar(mail):
     if 'image' not in request.files:
         raise ApiException("request.files contains no image", 400)
     if 'image/' not in request.content_type:
-        raise ApiException("Content-Type must be set to 'image/<filetype>'")
+        raise ApiException("Content-Type must be set to 'image/<filetype>'", 400)
     file = request.files['image']
-    user.avatar_name = secure_filename(file.filename)
-    user.avatar.replace(file, request.content_type)
+    user.avatar.replace(file, content_type=request.content_type,
+                        name=secure_filename(file.filename))
     user.save()
     return make_response("Avatar successfully replaced.", 200)
 
@@ -207,8 +207,8 @@ def reset_user_avatar(mail):
     user = g.user_datastore.get_user(mail)
     if not user:
         raise ApiException("Unknown User with Email-address: " + str(mail), 404)
-    user.avatar_name = "default_avatar.png"
-    user.avatar.put(open("default_avatar.png", 'rb'), content_type='image/png')
+    user.avatar.put(open("default_avatar.png", 'rb'), content_type='image/png',
+                    name="default_avatar.png")
     user.avatar.save()
 
 
