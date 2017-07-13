@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import 'react-table/react-table.css';
-import DataTable from '../common/DataTable';
-import {getMyEmail} from '../common/Authentication.jsx';
+import React, { Component } from 'react'
+import 'react-table/react-table.css'
+import DataTable from '../common/DataTable'
+import {getMyEmail} from '../common/Authentication.jsx'
 
 export default class UserProjects extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
     }
   }
