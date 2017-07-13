@@ -292,8 +292,7 @@ export default class BookmarksTable extends Component {
         width: 220,
         style: {textAlign:"center"},
         Cell: props =>{
-          var t = new String(props.value)
-          var array = t.split(",")
+          var array = props.value === undefined ? [] : new String(props.value).split(",")
           return(
               array.map(item =>
                 <Chip style= {styles["chip"]}>
@@ -308,8 +307,7 @@ export default class BookmarksTable extends Component {
         accessor: "authorString",
         width: 150,
         Cell: props =>{
-          var t = new String(props.value)
-          var array = t.split(",")
+          var array = props.value === undefined ? [] : new String(props.value).split(",")
           return(
             <div>
             {array.map(item =>
