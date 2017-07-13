@@ -1,4 +1,6 @@
 import io
+import os
+import sys
 
 from flask import request, jsonify, make_response, g, Blueprint, send_file
 from flask_security import login_required, login_user, logout_user, current_user
@@ -73,8 +75,8 @@ def create_user():
                                      bio=user['bio'], roles=[role])
 
         usr = g.user_datastore.get_user(user['email'])
-        usr.avatar.put(open("default_avatar.png", 'rb'), content_type='image/png',
-                       name="default_avatar.png")
+        usr.avatar.put(open(os.path.join(sys.path[0], "resources/default_avatar.png"), 'rb'),
+                       content_type='image/png', name="default_avatar.png")
         usr.avatar.save()
 
         return jsonify(usr.to_dict())
@@ -207,8 +209,12 @@ def reset_user_avatar(mail):
     user = g.user_datastore.get_user(mail)
     if not user:
         raise ApiException("Unknown User with Email-address: " + str(mail), 404)
-    user.avatar.put(open("default_avatar.png", 'rb'), content_type='image/png',
-                    name="default_avatar.png")
+<<<<<<< HEAD
+    user.avatar.put(open(os.path.join(sys.path[0], "resources/default_avatar.png"), 'rb'),
+=======
+    user.avatar.put(open(os.path.join(sys.path[0], "default_avatar.png"), 'rb'),
+>>>>>>> 9615fbb... changed path to default avatar
+                    content_type='image/png', name="default_avatar.png")
     user.avatar.save()
 
 
