@@ -235,8 +235,10 @@ export default class CreateProject extends Component {
   }
 
   submit(){
-    var data = JSON.stringify(this.state.projectInf)
-
+    var projectInf = this.state.projectInf
+    delete projectInf.is_bookmark
+    delete projectInf.is_owner
+    var data = JSON.stringify(projectInf)
 
     var xhr = new XMLHttpRequest()
     xhr.withCredentials = true
@@ -250,6 +252,7 @@ export default class CreateProject extends Component {
       xhr.open("POST", "/api/projects")
     }
     else{
+      /*Some strange bug with missing email here */
       xhr.open("PUT", "/api/projects/"+this.state.projectID)
     }
 
