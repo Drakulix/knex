@@ -120,7 +120,7 @@ export default class ProfileContainer extends Component {
     if(this.state.pw_new !== this.state.pw_new_confirm){
       this.setState({
         snackbar : true,
-        snackbarText :  'New passwords do not match'
+        snackbarText :  'Passwords do not match'
       })
       return
     }
@@ -171,14 +171,14 @@ export default class ProfileContainer extends Component {
     if( !this.state.profile_exists){
       return (
         <div className="container">
-          <div className="header">Profile Not Found</div>
+          <div className="header">Profile not found</div>
         </div>
       )
     }
     else {
       return (
         <div className="container">
-          <div className="header">Profile Details</div>
+          <div className="header">Profile details</div>
           <Tabs
             value={this.state.value}
             onChange={this.handleChange}
@@ -218,14 +218,14 @@ export default class ProfileContainer extends Component {
                         <form onSubmit={this.handleProfileChangeSubmit}>
                           <div className="profile-header">Information:</div>
                           <div className="profile-info">
-                            First Name:
+                            First name:
                             <TextField
                               name="first_name"
                               onChange={this.handleInputChange}
                               defaultValue={this.state.profileInf.first_name}
                               />
                             <br />
-                            Last Name:
+                            Last name:
                             <TextField
                               name="last_name"
                               onChange={this.handleInputChange}
@@ -252,7 +252,7 @@ export default class ProfileContainer extends Component {
                       </div>
                       <div className="col-3">
                         <img src="http://www.freeiconspng.com/uploads/profile-icon-9.png" width="200px" height="200px" alt="..." className="rounded-circle profile-icon" />
-                        <div className="profile-icon-text">Change Avatar</div>
+                        <div className="profile-icon-text">Change avatar</div>
                       </div>
                     </div>
                     <div className="change-password">
@@ -269,7 +269,7 @@ export default class ProfileContainer extends Component {
                             <TextField
                               type="password"
                               name="pw_old"
-                              hintText="Your Old Password"
+                              hintText="Your old password"
                               onChange={this.handleInputChange}
                               />
                           </div>
@@ -280,20 +280,20 @@ export default class ProfileContainer extends Component {
                             <TextField
                               type="password"
                               name="pw_new"
-                              hintText="Your New Password"
+                              hintText="Your new password"
                               onChange={this.handleInputChange}
                               />
                           </div>
                         </div>
                         <div className="form-group row">
-                          <label for="inputPassword" className="col-2 col-form-label">Confirm Password</label>
+                          <label for="inputPassword" className="col-2 col-form-label">Confirm password</label>
                           <div className="col-4">
                             <TextField
                               type="password"
                               name="pw_new_confirm"
-                              hintText="Your New Password Again"
+                              hintText="Confirm password"
                               onChange={this.handleInputChange}
-                              errorText ={this.state.pw_new !== this.state.pw_new_confirm ? "Passwords not matching" :""}                          />
+                              errorText ={this.state.pw_new !== this.state.pw_new_confirm ? "Passwords do not match" :""} />
                           </div>
                         </div>
                         <div className="form-group row">
@@ -309,7 +309,7 @@ export default class ProfileContainer extends Component {
                     </div>
                   </Tab>
                   <Tab    label="Your Projects" value="c">
-                    <div  className="header-tab">Manage Projects</div>
+                    <div  className="header-tab">Manage projects</div>
                     <DataTable
                       fetchURL = {"/api/projects/search/advanced/?q=(authors.email: " + this.state.email + ")"}
                       columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'bookmarked']}

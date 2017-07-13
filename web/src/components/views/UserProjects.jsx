@@ -13,7 +13,7 @@ export default class UserProjects extends Component {
 render(){
     return (
       <div className="container">
-        <div className="header">Your Projects</div>
+        <div className="header">Your projects</div>
           <DataTable  columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'bookmarked']}
                       fetchURL={"/api/projects/search/advanced/?q=authors.email:"+getMyEmail()}
                       bookmarksSite = {"true"}
