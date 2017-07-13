@@ -1,12 +1,8 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
 import DataTable from '../../common/DataTable'
 
 export default class ProfileProjects extends Component {
-  constructor(props) {
-    super(props)
-  }
-
+  
   render(){
     return (
       <div>
