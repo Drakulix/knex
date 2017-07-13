@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
+import IconButton from 'material-ui/IconButton'
 import TextField from 'material-ui/TextField'
-import RaisedButton from 'material-ui/RaisedButton'
 import DatePicker from 'material-ui/DatePicker'
 import DropDownMenu from 'material-ui/DropDownMenu'
 import MenuItem from 'material-ui/MenuItem'
@@ -137,6 +137,7 @@ export default class Filters extends Component{
     }
   }
 
+
   handleStatusChange = (event, index, value) => {
     this.setState({
       status:  value}
@@ -182,6 +183,9 @@ export default class Filters extends Component{
                 type="text" placeholder="Enter exact title..."
                 />
             </div>
+            <IconButton style={{color: 'gray', marginLeft:-30, visibility:(this.state.title != '') ? "visible" : "hidden"}} onClick={()=> this.setState({title: ''})}>
+              <i className="material-icons">cancel</i>
+            </IconButton>
             <div className="col-1 filter-label" style={{textAlign: "left"}}>Description</div>
             <div className="col-5">
               <TextField
@@ -192,6 +196,9 @@ export default class Filters extends Component{
                 type="text" placeholder="Enter exact description..."
                 />
             </div>
+            <IconButton style={{color: 'gray', marginLeft:-30, visibility:(this.state.description != "") ? "visible" : "hidden"}} onClick={()=> this.setState({description: ''})}>
+              <i className="material-icons">cancel</i>
+            </IconButton>
           </div>
           <div className="row">
             <div className="col-1 filter-label">Tags</div>
@@ -203,6 +210,9 @@ export default class Filters extends Component{
                 hintText={'Add tags...'}
                 />
             </div>
+            <IconButton style={{color: 'gray', marginLeft:-30, visibility:(this.state.tags.length != 0) ? "visible" : "hidden"}} onClick={()=> this.setState({tags: []})}>
+              <i className="material-icons">cancel</i>
+            </IconButton>
             <div className="col-1 filter-label"> Authors</div>
             <div  className="col-5">
               <ChipInputList suggestions = {this.state.suggestedAuthors}
@@ -211,12 +221,14 @@ export default class Filters extends Component{
                 value={this.state.authors}
                 hintText={'Add authors...'}
                 />
-
             </div>
+            <IconButton style={{color: 'gray', marginLeft:-30, visibility:(this.state.authors.length != 0) ? "visible" : "hidden"}} onClick={()=> this.setState({authors: []})}>
+              <i className="material-icons">cancel</i>
+            </IconButton>
           </div>
           <div className="row">
             <div className="col-1 filter-label" style={{textAlign: "left" , marginLeft:2}}>From</div>
-            <div className="col-1" style={{marginTop:2}}>
+            <div className="col-2" style={{marginTop:2}}>
               <DatePicker hintText="Pick date"
                 mode="landscape"
                 name ="date_from"
@@ -227,11 +239,11 @@ export default class Filters extends Component{
                 onChange={this.handleChangeDateFrom}
                 />
             </div>
-            <IconButton style={{color: 'gray', marginLeft:-30, display:(this.state.date_from != "") ? "block" : "none"}} onClick={()=> this.handleDateDelete('from')}>
+            <IconButton style={{color: 'gray', marginLeft:-30, visibility:(this.state.date_from != "") ? "visible" : "hidden"}} onClick={()=> this.handleDateDelete('from')}>
               <i className="material-icons">cancel</i>
             </IconButton>
-            <div className="col-1 filter-label" style={{textAlign: "left"}}>Till</div>
-            <div className="col-1" style={{marginTop:2}}>
+            <div className="col-1 filter-label" style={{textAlign: "left", marginLeft: -20}}>Till</div>
+            <div className="col-2" style={{marginTop:2}}>
               <DatePicker hintText="Pick date"
                 mode="landscape"
                 style={{marginLeft:-50}}
@@ -242,10 +254,10 @@ export default class Filters extends Component{
                 onChange={this.handleChangeDateTill}
                 />
             </div>
-            <IconButton style={{color: 'gray', marginLeft:-40, display:(this.state.date_to != "") ? "block" : "none"}} onClick={() => this.handleDateDelete('until')}>
+            <IconButton style={{color: 'gray', marginLeft:-60, visibility:(this.state.date_to != "") ? "visible" : "hidden"}} onClick={() => this.handleDateDelete('until')}>
               <i className="material-icons" style={{color: 'gray', marginLeft:-30}}>cancel</i>
             </IconButton>
-            <div className="col-1 filter-label" style={{textAlign: "left", marginLeft:-16}} >Status</div>
+            <div className="col-1 filter-label" style={{textAlign: "left", marginLeft:-8}} >Status</div>
             <div className="col-2" style={{marginTop:-3}}>
               <DropDownMenu
                 onChange={this.handleStatusChange}
