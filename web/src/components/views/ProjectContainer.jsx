@@ -17,12 +17,10 @@ export default class ProjectContainer extends Component {
     this.state = {
       projectID : this.props.match.params.uuid,
       projectInf:{},
-      myBookmarks: {},
-      bookmarked:false,
-      owner : false,
       sharePane: false,
       commentBar: false,
-      project_exists: false
+      owner: true,
+      project_exists: false,
     }
 
     this.handleEdit = this.handleEdit.bind(this)
@@ -30,6 +28,7 @@ export default class ProjectContainer extends Component {
     this.handleBookmark = this.handleBookmark.bind(this)
     this.handleShare = this.handleShare.bind(this)
     this.handleDelete = this.handleDelete.bind(this)
+    this.isOwner = this.isOwner.bind(this)
   }
 
   componentWillMount(){
@@ -41,19 +40,10 @@ export default class ProjectContainer extends Component {
     this.loadSiteInf(this.state.projectID)
   }
 
-
-  fetchMyBookmarks(){
-    return fetch('/api/users/bookmarks', {
-      method: 'GET',
-      mode: 'no-cors',
-      credentials: 'include',
-      headers: {
-        "Accept": "application/json",
-      }
-    }).then(response => response.json()).catch(ex => {
-      console.error('parsing failes', ex)
-    })
+  isOwner(){
+    return true;
   }
+
 
   fetchProjectInfo(uuid){
     return fetch('/api/projects/' + uuid, {
@@ -81,30 +71,6 @@ export default class ProjectContainer extends Component {
       this.setState({project_exists: false})
       this.setState({site_loaded: true})
     })
-
-    this.fetchMyBookmarks().then(data => {
-      this.setState({myBookmarks: data})
-      if(!data){
-        this.setState({})
-      }else{
-        var bookmarks_id = []
-        var arrayLength = data.length
-        for (var i = 0; i < arrayLength; i++){
-          bookmarks_id.push(data[i]._id)
-        }
-        if (bookmarks_id.indexOf(this.state.projectID) !== -1){
-          this.setState({bookmarked: true})
-        } else {
-          this.setState({bookmarked: false})
-        }
-        this.setState({project_exists: true})
-      }
-      this.setState({site_loaded: true})
-    }).catch(ex => {
-      this.setState({project_exists: false})
-      this.setState({site_loaded: true})
-    })
-    this.setState({owner : true})
   }
 
   handleComment(event){
@@ -158,17 +124,21 @@ export default class ProjectContainer extends Component {
     event.preventDefault()
     this.setState({commentBar:false})
     this.setState({sharePane:false})
-    if(new String (this.state.bookmarked) == "true"){
+    if(new String (this.state.projectInf.is_bookmark) == "true"){
       //deleteBookmark
       this.removeBookmark().then(res => {
         if(res){
-          this.setState({bookmarked : false})
+          var projectInf = this.state.projectInf;
+          projectInf.is_bookmark = false
+          this.setState({projectInf: projectInf})
         }
       })
     }else {
       this.addBookmark().then(res => {
         if(res){
-          this.setState({bookmarked : true})
+          var projectInf = this.state.projectInf;
+          projectInf.is_bookmark = true
+          this.setState({projectInf: projectInf})
         }
       })
     }
@@ -293,7 +263,7 @@ export default class ProjectContainer extends Component {
                         iconStyle={{fontSize: '24px'}}
                         >
                         <i className="material-icons">
-                          {(new String(this.state.bookmarked) == "true") ? "star_rate" : "star_border"}
+                          {(new String(this.state.projectInf.is_bookmark) == "true") ? "star_rate" : "star_border"}
                         </i>
                       </IconButton>
                       <IconButton
@@ -311,7 +281,7 @@ export default class ProjectContainer extends Component {
 
                           touch={true}
                           style = {styles.largeIcon}
-                          disabled={!this.state.owner}
+                          disabled={!this.isOwner}
                           tooltipPosition="top-center"
                           tooltip="Edit project"
                           iconStyle={{fontSize: '24px'}}
@@ -323,7 +293,7 @@ export default class ProjectContainer extends Component {
                         onClick={this.handleDelete}
                         touch={true}
                         style = {styles.largeIcon}
-                        disabled={!this.state.owner}
+                        disabled={!this.isOwner}
                         tooltipPosition="top-center"
                         tooltip="Delete project"
                         iconStyle={{fontSize: '24px'}}

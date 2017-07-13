@@ -268,7 +268,7 @@ export default class BookmarksTable extends Component {
           Header: 'Status',
           accessor: 'status',
           style: {textAlign:"center"},
-          width: 80,
+          width: 100,
           Cell: props =>
           {
             var status_badge = props.value;
