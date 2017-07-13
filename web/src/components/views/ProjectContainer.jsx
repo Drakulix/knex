@@ -44,7 +44,6 @@ export default class ProjectContainer extends Component {
     return true;
   }
 
-
   fetchProjectInfo(uuid){
     return fetch('/api/projects/' + uuid, {
       method: 'GET',
@@ -179,7 +178,6 @@ export default class ProjectContainer extends Component {
         status_badge = this.state.projectInf.status
       }
       return(
-
         <div className="container">
           <div className="innerContainer">
             <SharePane value={this.state.sharePane} uuid={this.state.projectID}></SharePane>
@@ -207,43 +205,43 @@ export default class ProjectContainer extends Component {
                   </div>
                 </div>
                 <div style={{marginTop:30}}>
-                  <div className="profile-info">Authors</div>
+                <div className="profile-info">Authors</div>
+                <div style = {styles["wrapper"]}>
+                  {
+                    this.state.projectInf.authors.map(item =>
+                      <Chip style= {styles["chip"]}>
+                        <Link to={"/profile/"+item.email} style= {styles["chipText"]}>{item.name}</Link>
+                      </Chip>
+                    )
+                  }
+                </div>
+              </div>
+              <div style={{marginTop:30}}>
+                <div className="profile-info">Links</div>
+                <div style = {styles["wrapper"]}>
+                  { this.state.projectInf.url.map(item => <Chip style= {styles["chip"]}>
+                  <a href={item} style= {styles["chipText"]}>{item}</a></Chip>) }
+                  </div>
+                </div>
+              </div>
+              <div className="col-1"></div>
+              <div className="col-6">
+                <div style={{marginTop:10}}>
+                  <div className="profile-info">Tags </div>
                   <div style = {styles["wrapper"]}>
-                    {
-                      this.state.projectInf.authors.map(item =>
-                        <Chip style= {styles["chip"]}>
-                          <Link to={"/profile/"+item.email} style= {styles["chipText"]}>{item.name}</Link>
-                        </Chip>
-                      )
-                    }
+                    { this.state.projectInf.tags.map(item =>
+                      <Chip style= {styles["chip"]}>
+                        <Link to={"/discovery?tag=" +item} style= {styles["chipText"]} >{item}</Link></Chip>) }
                   </div>
                 </div>
                 <div style={{marginTop:30}}>
-                  <div className="profile-info">Links</div>
-                  <div style = {styles["wrapper"]}>
-                    { this.state.projectInf.url.map(item => <Chip style= {styles["chip"]}>
-                    <a href={item} style= {styles["chipText"]}>{item}</a></Chip>) }
-                    </div>
-                  </div>
+                  <div className="profile-info">Description</div>
+                  <div><a>{this.state.projectInf.description}</a></div>
                 </div>
-                <div className="col-1"></div>
-                <div className="col-6">
-                  <div style={{marginTop:10}}>
-                    <div className="profile-info">Tags </div>
-                    <div style = {styles["wrapper"]}>
-                      { this.state.projectInf.tags.map(item =>
-                        <Chip style= {styles["chip"]}>
-                          <Link to={"/discovery?tag=" +item} style= {styles["chipText"]} >{item}</Link></Chip>) }
-                          </div>
-                        </div>
-                        <div style={{marginTop:30}}>
-                          <div className="profile-info">Description</div>
-                          <div><a>{this.state.projectInf.description}</a></div>
-                        </div>
-                      </div>
-                    </div>
-                    <div style={{textAlign:"center", marginTop:75}} >
-                      <IconButton
+              </div>
+            </div>
+            <div style={{textAlign:"center", marginTop:75}} >
+              <IconButton
                         onClick={this.handleComment}
                         touch={true}
                         style = {styles.largeIcon}
@@ -252,8 +250,8 @@ export default class ProjectContainer extends Component {
                         iconStyle={{fontSize: '24px'}}
                         >
                         <i className="material-icons">comment</i>
-                      </IconButton>
-                      <IconButton
+              </IconButton>
+              <IconButton
                         onClick={this.handleBookmark}
                         touch={true}
                         style = {styles.largeIcon}
@@ -264,8 +262,8 @@ export default class ProjectContainer extends Component {
                         <i className="material-icons">
                           {(new String(this.state.projectInf.is_bookmark) == "true") ? "star_rate" : "star_border"}
                         </i>
-                      </IconButton>
-                      <IconButton
+              </IconButton>
+              <IconButton
                         onClick={this.handleShare}
                         touch={true}
                         style = {styles.largeIcon}
@@ -274,10 +272,9 @@ export default class ProjectContainer extends Component {
                         iconStyle={{fontSize: '24px'}}
                         >
                         <i className="material-icons">share</i>
-                      </IconButton>
-                      <Link to={"/update/" + this.state.projectID}  >
-                        <IconButton
-
+              </IconButton>
+              <Link to={"/update/" + this.state.projectID}  >
+                <IconButton
                           touch={true}
                           style = {styles.largeIcon}
                           disabled={!this.isOwner}
@@ -286,9 +283,9 @@ export default class ProjectContainer extends Component {
                           iconStyle={{fontSize: '24px'}}
                           >
                           <i className="material-icons">mode_edit</i>
-                        </IconButton>
-                      </Link>
-                      <IconButton
+                </IconButton>
+              </Link>
+              <IconButton
                         onClick={this.handleDelete}
                         touch={true}
                         style = {styles.largeIcon}
@@ -298,11 +295,11 @@ export default class ProjectContainer extends Component {
                         iconStyle={{fontSize: '24px'}}
                         >
                         <i className="material-icons">delete</i>
-                      </IconButton>
-                    </div>
-                  </div>
-                </div>
-              )
-            }
-          }
-        }
+              </IconButton>
+            </div>
+          </div>
+        </div>
+      )
+    }
+  }
+}

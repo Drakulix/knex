@@ -1,6 +1,4 @@
 import React, { Component } from 'react'
-import TextField from 'material-ui/TextField'
-
 import {Tabs, Tab} from 'material-ui/Tabs'
 import CircularProgress from 'material-ui/CircularProgress'
 import {getMyEmail, getUserInfo} from '../common/Authentication.jsx'
@@ -36,7 +34,6 @@ export default class ProfileContainer extends Component {
     })
   }
 
-
   isUserAdmin(){
     return (this.state.isAdmin)
   }
@@ -46,12 +43,9 @@ export default class ProfileContainer extends Component {
     this.loadProfileInf(this.state.email)
   }
 
-
   componentWillMount(){
     this.loadProfileInf(this.state.email)
   }
-
-
 
   loadMyAdmin() {
     getUserInfo(getMyEmail()).then(data => {
@@ -63,10 +57,6 @@ export default class ProfileContainer extends Component {
       }
     })
   }
-
-
-
-
 
   loadProfileInf(e) {
     getUserInfo(e).then(data => {

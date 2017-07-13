@@ -83,7 +83,7 @@ export default class ShowUsers extends Component {
       Cell: props =>{
         return(<div></div>)
       }
-    }),
+    })
 
     columns.push({
       Header: 'Edit',

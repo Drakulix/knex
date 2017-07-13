@@ -5,9 +5,6 @@ import styles from '../../common/Styles.jsx'
 
 
 export default class ProfileView extends Component {
-  constructor(props) {
-    super(props)
-  }
 
   render(){
     return (
