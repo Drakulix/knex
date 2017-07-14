@@ -4,7 +4,7 @@ import 'isomorphic-fetch'
 import RaisedButton from 'material-ui/RaisedButton'
 import TextField from 'material-ui/TextField'
 import styles from '../common/Styles.jsx'
-
+import Snackbar from 'material-ui/Snackbar'
 
 const JSON5 = require('json5')
 
@@ -14,9 +14,69 @@ export default class CreateProjectChoice extends Component {
     this.state = {
      sourceURL : "",
      redirect : false,
+     snackbar : false,
+     snackbarText : "",
     }
     this.submitForm = this.submitForm.bind(this)
+    this.handleFile = this.handleFile.bind(this)
   }
+
+  handleFile(event){
+    var file = event.target.files[0]
+    let reader = new FileReader();
+    switch (file.name.substring(file.name.lastIndexOf(".")+1)){
+      case "json":
+        reader.onload = () => {
+        try {
+              var json = JSON.parse(reader.result);
+              this.setState({
+                snackbar : true,
+                snackbarText : "File uploaded"
+              })
+           } catch(e) {
+             alert(e)
+             this.setState({
+               snackbar : true,
+               snackbarText : "File is not a valid JSON file"
+             })
+           }
+         }
+        reader.readAsText(file);
+        break
+      case "json5":
+        reader.onload = () => {
+        try {
+              var json5 = JSON5.parse(reader.result);
+              this.setState({
+                snackbar : true,
+                snackbarText : "File uploaded"
+              })
+           } catch(e) {
+             this.setState({
+               snackbar : true,
+               snackbarText : "File is not a valid JSON5 file"
+             })
+           }
+         }
+         reader.readAsText(file);
+        break
+      default:
+        this.setState({
+          snackbar : true,
+          snackbarText : "File is not a JSON file"
+        })
+        reader.onload = () => {
+          try {
+                JSON.parse(reader.result);
+             } catch(e) {
+             }
+           }
+        reader.readAsText(file);
+        break
+    }
+  }
+
+
 
   submitForm(e){
       e.preventDefault()
@@ -57,11 +117,15 @@ export default class CreateProjectChoice extends Component {
     }
     return (
       <div className="container"style={{textAlign : 'center'}} >
+        <Snackbar
+          open={this.state.snackbar}
+          message={this.state.snackbarText}
+          autoHideDuration={10000}
+          />
         <div className="header">Create Project</div>
           <form onSubmit={this.submitForm}>
             <div>
               <TextField
-                  ID="url"
                   name="title"
                   hintText="enter url here (e.g. “http://soundloud.com/stuff/manifest.json”)"
                   style={{width:'460px',}}
@@ -84,7 +148,7 @@ export default class CreateProjectChoice extends Component {
                     containerElement="label"
                     primary={true}
                     style={{width:'300px'}}>
-                  <input type="file" style={styles.uploadInput} />
+                  <input type="file" style={styles.uploadInput} onChange={this.handleFile}/>
           </RaisedButton>
         </div>
         <div className="text" >or</div>
@@ -98,4 +162,3 @@ export default class CreateProjectChoice extends Component {
       </div>
     )
   }
-}
