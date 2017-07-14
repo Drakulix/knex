@@ -2,7 +2,7 @@ import React from 'react'
 import Dialog from 'material-ui/Dialog'
 import RaisedButton from 'material-ui/RaisedButton'
 import ChipInputList from '../common/ChipInputList.jsx'
-import { fetchJson} from '../common/Backend.jsx'
+import {get} from '../common/Backend.jsx'
 
 export default class SharePane extends React.Component {
   constructor(props) {
@@ -27,10 +27,9 @@ export default class SharePane extends React.Component {
         method : 'POST',
         mode : 'no-cors',
         credentials : 'include',
-        headers : {
-          "Accept" : "application/json",
-        }
-      }).then(response => response.json()).catch(ex => {
+        body: JSON.stringify({}),
+
+      }).then(response => response).catch(ex => {
         console.error('parsing failes', ex)
       })
     }
@@ -41,21 +40,14 @@ export default class SharePane extends React.Component {
   componentDidMount() {
     //tipp : if you fetch server side data, this is the place where it should happen :)
 
-    //gets all the exsiting tags from the backend
-    fetchJson('/api/projects/tags').then(function(tags) {
-      this.setState({
-        suggestedTags :  tags
-      })
-    }.bind(this))
-
     //gets all the authors from the backend
-    fetchJson('/api/users').then(function(authors) {
+    get('/api/users').then(function(authors) {
       var suggestedAuthors = authors
       var suggestedAuthorsArray = []
       for (var i in suggestedAuthors) {
         suggestedAuthorsArray = suggestedAuthorsArray.concat([
                                    suggestedAuthors[i].first_name + " "
-                                   +suggestedAuthors[i].last_name +
+                                  +suggestedAuthors[i].last_name
                              + " ("+suggestedAuthors[i].email+ ")"])
       }
       console.log(suggestedAuthorsArray)

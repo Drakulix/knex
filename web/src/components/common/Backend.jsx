@@ -5,11 +5,69 @@ const PROJECT_URL = '/api/projects/'
   export function fetchJson(path) {
     // use this function to make a GET request.
     const url = `${path}`
-
     return fetch(url,{credentials: 'include',}).then(response => response.json()).catch(ex => {
       console.error('parsing failes', ex)
     })
+  }
 
+  export function get(path) {
+    // use this function to make a GET request.
+    const url = `${path}`
+    return fetch(url,{
+      method: "GET",
+      mode: 'no-cors',
+      credentials: 'include'})
+      .then(response => response.json())
+      .catch(ex => {
+        console.error('parsing failes', ex)
+    })
+  }
+
+
+  export function del(path) {
+      // use this function to make a POST request.
+      const url = `${path}`
+      return fetch(url,{
+        method: "POST",
+        mode: 'no-cors',
+        credentials: 'include',})
+        .then(response => response.json())
+        .catch(ex => {
+            console.error('parsing failes', ex)
+      })
+    }
+
+  export function post(path, body) {
+    // use this function to make a POST request.
+    const url = `${path}`
+    return fetch(url,{
+      method: "POST",
+      body: JSON.stringify(body),
+      mode: 'no-cors',
+      credentials: 'include',})
+      .then(response => response.json())
+      .catch(ex => {
+          console.error('parsing failes', ex)
+    })
+  }
+
+  export function put(path, body) {
+    // use this function to make a PUT request.
+    const url = `${path}`
+    return fetch(url,{
+      method: "PUT",
+      body: JSON.stringify(body),
+      mode: 'no-cors',
+      credentials: 'include',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .catch(ex => {
+      console.error('parsing failes', ex)
+    })
   }
 
 
@@ -17,12 +75,12 @@ const PROJECT_URL = '/api/projects/'
     return fetch(url, {
       method: "DELETE",
       credentials : "include",
+      mode: 'no-cors',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       }
     }).then(response => response.json())
-    // .then(json => console.dir(json))
       .catch(ex => {
       console.error('parsing failed', ex)
     })
