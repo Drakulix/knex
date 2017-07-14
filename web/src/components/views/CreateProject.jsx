@@ -309,7 +309,7 @@ export default class CreateProject extends Component {
             </div>
             <Snackbar
               open = {this.state.snackbar}
-              message = "New project added!"
+              message = {(this.state.projectID === undefined) ? "New project added!" : "Project updated"}
               autoHideDuration = {10000}
               />
           </div>
