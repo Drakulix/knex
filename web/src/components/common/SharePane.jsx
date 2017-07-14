@@ -3,6 +3,8 @@ import Dialog from 'material-ui/Dialog'
 import RaisedButton from 'material-ui/RaisedButton'
 import ChipInputList from '../common/ChipInputList.jsx'
 import {get, post} from '../common/Backend.jsx'
+import {getMyEmail} from '../common/Authentication.jsx'
+
 
 export default class SharePane extends React.Component {
   constructor(props) {
@@ -35,6 +37,8 @@ export default class SharePane extends React.Component {
       var suggestedAuthors = authors
       var suggestedAuthorsArray = []
       for (var i in suggestedAuthors) {
+        if(suggestedAuthors[i].email == getMyEmail())
+          continue
         suggestedAuthorsArray = suggestedAuthorsArray.concat([
                                    suggestedAuthors[i].first_name + " "
                                   +suggestedAuthors[i].last_name
