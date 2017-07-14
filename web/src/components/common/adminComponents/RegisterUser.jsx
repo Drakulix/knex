@@ -83,9 +83,11 @@ export default class RegisterUser extends Component {
           message={this.state.snackbarText}
           autoHideDuration={10000}
           />
-        <div className="header-tab">Register user</div>
-        <div className="row">
-          <div className="col-9">
+        <div>
+          <div className="header-tab" style = {{textAlign : "center"}}>Register user</div>
+          <div className="row">
+          <div className="col-4"></div>
+          <div className="col-4" style = {{textAlign : "center"}}>
             <form onSubmit={this.handleRegister}>
               {/*Input First Name*/}
               <div>
@@ -165,6 +167,7 @@ export default class RegisterUser extends Component {
                 />
             </form>
           </div>
+        </div>
         </div>
       </div>
     )
