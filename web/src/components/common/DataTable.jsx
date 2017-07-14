@@ -316,7 +316,8 @@ export default class BookmarksTable extends Component {
         style: {width: "100%"},
         accessor: d => d,
         Cell: props =>{
-          var text = new String(props.value.description).substring(0,250).trim()+"..."
+
+          var text = (props.value.description !== undefined) ? new String(props.value.description).substring(0,250).trim()+"..." : "";
           return(
             <div style ={{whiteSpace : "normal"}}>
               {text}
