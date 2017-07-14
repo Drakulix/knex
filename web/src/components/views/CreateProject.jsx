@@ -249,9 +249,11 @@ export default class CreateProject extends Component {
                             underlineStyle = {{width : '100%', marginLeft : 0}}
                             autoWidth = {false}
                             style = {{width : '100%'}}
-                            errorText = {(this.state.projectInf.status === "") ? this.props.statusErrorText : ""}
                             >
-                            {statusString.map(item =><MenuItem value = {item.value} primaryText = {item.text} />)}
+                            {statusString.map(item =><MenuItem
+                                key={item.value}
+                                value = {item.value}
+                                primaryText = {item.text} />)}
                           </DropDownMenu>
                         </div>
                       </div>

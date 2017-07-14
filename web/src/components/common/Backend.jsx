@@ -1,4 +1,3 @@
-import React, {Component} from 'react'
 import 'isomorphic-fetch'
 const PROJECT_URL = '/api/projects/'
 

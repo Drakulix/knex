@@ -52,7 +52,6 @@ export default class SharePane extends React.Component {
   }
 
   handleAuthorChange(event) {
-    const name = event.target.name
     const value = event.target.value
     this.setState({authors : value})
   }

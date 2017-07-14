@@ -283,7 +283,7 @@ export default class BookmarksTable extends Component {
           var array = props.value === undefined ? [] : new String(props.value).split(",")
           return(
               array.map(item =>
-                <Chip style= {styles["chip"]}>
+                <Chip key={item} style= {styles["chip"]}>
                   <Link to={"/discovery?tag=" +item} style= {styles["chipText"]} >{item}</Link></Chip>)
           )
         },
@@ -300,7 +300,7 @@ export default class BookmarksTable extends Component {
           return(
             <div>
             {array.map(item =>
-              <Chip style= {styles["chip"]}>
+              <Chip key={item.substring(item.indexOf(" ##")+3)} style= {styles["chip"]}>
                 <Link to={"/profile/"+item.substring(
                     item.indexOf(" ##")+3
                   )} style= {styles["chipText"]} >{item.substring(0,item.indexOf(" ##"))}</Link><br></br></Chip>) }
