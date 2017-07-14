@@ -226,7 +226,7 @@ export default class Filters extends Component{
             <IconButton style = {{color : 'gray', marginLeft : -30, visibility : (this.state.date_from != null) ? "visible" : "hidden"}} onClick = {()=> this.handleDateDelete('from')}>
               <i className = "material-icons">cancel</i>
             </IconButton>
-            <div className = "col-1 filter-label" style = {{textAlign : "left", marginLeft : -20}}>Till</div>
+            <div className = "col-1 filter-label" style = {{textAlign : "left", marginLeft : -20}}>To</div>
             <div className = "col-2" style = {{marginTop : 2}}>
               <DatePicker hintText = "Pick date"
                 mode = "landscape"

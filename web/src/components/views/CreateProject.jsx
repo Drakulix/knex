@@ -275,7 +275,9 @@ export default class CreateProject extends Component {
                       name = "url"
                       value = {this.state.projectInf.url}
                       onChange = {this.handleChange}
-                      errorText = {(this.state.projectInf.url.length === 0
+                      errorText = {(
+this.state.projectInf.url === undefined ||
+                        this.state.projectInf.url.length === 0
                                   ) ? "Please provide at least one url" : ""}
                       hintText='Add Links...'/>
                   </div>
