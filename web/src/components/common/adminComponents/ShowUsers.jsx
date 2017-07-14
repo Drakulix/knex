@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import ReactTable from 'react-table'
-import { fetchJson } from '../../common/Backend'
+import {get} from '../../common/Backend'
 import { Link } from 'react-router-dom'
 import IconButton from 'material-ui/IconButton'
 import styles from '../../common/Styles.jsx'
@@ -17,7 +17,7 @@ export default class ShowUsers extends Component {
   }
 
   componentWillMount(){
-    fetchJson("/api/users").then(function(data) {
+    get("/api/users").then(function(data) {
       this.setState({
         data : data,
         open : false

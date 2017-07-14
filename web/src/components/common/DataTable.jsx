@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import ReactTable from 'react-table'
-import { fetchJson } from './Backend'
+import {get} from './Backend'
 import Filters from './Filters'
 import IconButton from 'material-ui/IconButton'
 import Chip from 'material-ui/Chip'
@@ -21,9 +21,7 @@ export default class BookmarksTable extends Component {
       filters : filters,
       filteredTable : [{
       }],
-      isProfile : "false",
       url : "/api/projects",
-      bookmarksSite : "false"
     }
 
     this.handleFilterChange = this.handleFilterChange.bind(this)
@@ -74,18 +72,6 @@ export default class BookmarksTable extends Component {
   }
 
   handleRemoveBookmark(projectID){
-    var url = "/api/users/bookmarks/"
-    fetch(url+projectID, {
-      credentials: 'include',
-      method: "DELETE",
-      body: "",
-      headers: {
-      }
-    }).then(response => response.status)
-      .catch(ex => {
-        console.error('parsing failed', ex)
-      }
-    )
     for(let project of this.state.data) {
       if(project._id === projectID){
         project["is_bookmark"] = false
@@ -98,29 +84,29 @@ export default class BookmarksTable extends Component {
         break
       }
     }
+
+    var url = "/api/users/bookmarks/"
+    fetch(url+projectID, {
+      credentials: 'include',
+      method: "DELETE",
+      body: "",
+      headers: {
+      }
+    }).then(response => response.status)
+      .catch(ex => {
+        console.error('parsing failed', ex)
+      }
+    )
     this.fetchData(this.state.url)
   }
 
   componentDidMount() {
-    if(this.props.isProfile !== undefined){
-      this.setState({isProfile :true})
-    }
-    else if(this.props.bookmarksSite !== undefined){
-      this.setState({bookmarksSite :true})
-    }
     this.setState({url :this.props.fetchURL})
     this.fetchData(this.props.fetchURL)
   }
 
   componentWillReceiveProps(nextProps) {
     // You don't have to do this check first, but it can help prevent an unneeded render
-    if(nextProps.isProfile !== undefined){
-      this.setState({isProfile :true})
-    }
-    else if(nextProps.bookmarksSite !== undefined){
-      this.setState({bookmarksSite :true})
-    }
-
     if (this.state.url != nextProps.fetchURL){
       this.setState({url :nextProps.fetchURL})
       this.fetchData(nextProps.fetchURL)
@@ -128,7 +114,7 @@ export default class BookmarksTable extends Component {
   }
 
   fetchData(url){
-    fetchJson(url).then(function(data) {
+    get(url).then(function(data) {
       var datas =[]
       if(data !== undefined)
         datas = data
@@ -154,7 +140,7 @@ export default class BookmarksTable extends Component {
         data: dataArray,
         filteredTable : filteredDataArray
       })
-        //this.filter(this.state.filters)
+        this.filter(this.state.filters)
       }.bind(this))
     }
 

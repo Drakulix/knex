@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import CircularProgress from 'material-ui/CircularProgress'
 import {getMyEmail, getUserInfo} from '../common/Authentication.jsx'
-import { fetchJson } from '../common/Backend'
+import {get} from '../common/Backend'
 import Snackbar from 'material-ui/Snackbar'
 
 import ProfileView from '../common/userComponents/ProfileView'
@@ -34,10 +34,6 @@ export default class ProfileContainer extends Component {
     })
   }
 
-  isUserAdmin(){
-    return (this.state.isAdmin)
-  }
-
   componentWillReceiveProps(nextProps){
     this.setState({email: nextProps.email})
     this.loadProfileInf(this.state.email)
@@ -49,7 +45,6 @@ export default class ProfileContainer extends Component {
 
   loadMyAdmin() {
     getUserInfo(getMyEmail()).then(data => {
-      this.setState({profileInf: data})
       if(data){
         this.setState({
           isAdmin : data.roles.indexOf("admin") !== -1
@@ -65,6 +60,7 @@ export default class ProfileContainer extends Component {
         this.setState({profile_exists: false})
       }else{
         this.setState({
+          profile_exists : true,
           first_name: data.first_name,
           last_name: data.last_name,
           bio: data.bio,
@@ -74,11 +70,13 @@ export default class ProfileContainer extends Component {
       }
     }).catch(ex => {
       alert(ex)
-      this.setState({profile_exists: false,
-        site_loaded: true})
+      this.setState({
+        profile_exists: false,
+        site_loaded: true
       })
+    })
 
-      fetchJson("/api/users/"+e+"/tags").then(data => {
+    get("/api/users/"+e+"/tags").then(data => {
         this.setState({
           topTenTags: data
         })
@@ -86,9 +84,10 @@ export default class ProfileContainer extends Component {
     }
 
   handleProfileChange(snackbarText){
-    this.setState({value : "a",
-        snackbar : true,
-        snackbarText: snackbarText
+    this.setState({
+      value : "a",
+      snackbar : true,
+      snackbarText: snackbarText
     })
     this.loadProfileInf(this.state.email)
   }

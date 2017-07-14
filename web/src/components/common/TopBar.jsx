@@ -5,7 +5,7 @@ import Badge from 'material-ui/Badge'
 import IconButton from 'material-ui/IconButton'
 import Snackbar from 'material-ui/Snackbar'
 import NotificationPane from '../common/NotificationPane'
-import { fetchJson, fetchDelete } from '../common/Backend'
+import { get, fetchDelete } from '../common/Backend'
 
 export default class TopBar extends Component {
   constructor(props) {
@@ -29,7 +29,7 @@ export default class TopBar extends Component {
   }
 
   loadNotifications() {
-    fetchJson("/api/users/notifications").then(function (data) {
+    get("/api/users/notifications").then(function (data) {
       this.setState({
           notifications: data
           })

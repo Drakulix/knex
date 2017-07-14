@@ -7,7 +7,7 @@ import DropDownMenu from 'material-ui/DropDownMenu'
 import MenuItem from 'material-ui/MenuItem'
 import CircularProgress from 'material-ui/CircularProgress'
 import ChipInputList from '../common/ChipInputList'
-import {fetchJson } from '../common/Backend.jsx'
+import {get } from '../common/Backend.jsx'
 
 
 const statusString = [
@@ -24,11 +24,7 @@ export default class CreateProject extends Component {
     if(props.fromURL){
       this.state = {
         projectInf : props.projectInf,
-        status : props.status,
         authors : props.authors,
-        suggestedAuthors : [],
-        suggestedTags : [],
-        invalid : true,
         snackbar : false,
         site_loaded : false,
         project_exists : false,
@@ -46,7 +42,6 @@ export default class CreateProject extends Component {
           url : [],
           authors : [],
         },
-        invalid : true,
         snackbar : false,
         site_loaded : false,
         project_exists : false,
@@ -67,7 +62,6 @@ export default class CreateProject extends Component {
       value = []
       for (var i in event.target.value) {
         var string = event.target.value[i]
-        alert(string)
         var authorName = string.substring(0, string.lastIndexOf("(")-1)
         var authorId = string.substring(string.lastIndexOf("(")+1, string.length-1)
         value.push({name : authorName, email : authorId})
@@ -140,11 +134,6 @@ export default class CreateProject extends Component {
 
   handleUpload(event){
     event.preventDefault()
-    console.log(event)
-    this.submit()
-  }
-
-  submit(){
     var projectInf = this.state.projectInf
     delete projectInf.is_bookmark
     delete projectInf.is_owner
@@ -188,14 +177,14 @@ export default class CreateProject extends Component {
     * Please don't remove this unless you know how to fix it.
     */
 
-    fetchJson('/api/projects/tags').then(function(tags) {
+    get('/api/projects/tags').then(function(tags) {
       this.setState({
         suggestedTags : tags
       })
     }.bind(this))
 
     //gets all the authors from the backend
-    fetchJson('/api/users').then(function(authors) {
+    get('/api/users').then(function(authors) {
       var suggestedAuthors = authors
       var suggestedAuthorsArray = []
       for (var i in suggestedAuthors) {
@@ -266,6 +255,7 @@ export default class CreateProject extends Component {
                         <div className = "profile-info">Status</div>
                         <div>
                           <DropDownMenu
+                            name = "status"
                             value = {this.state.projectInf.status}
                             onChange = {this.handleStatusChange}
                             labelStyle = {{width : '100%', paddingLeft : 0}}

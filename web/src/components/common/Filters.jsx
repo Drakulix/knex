@@ -5,7 +5,7 @@ import DatePicker from 'material-ui/DatePicker'
 import DropDownMenu from 'material-ui/DropDownMenu'
 import MenuItem from 'material-ui/MenuItem'
 import {Card, CardHeader, CardTitle, CardText} from 'material-ui/Card'
-import { fetchJson } from '../common/Backend.jsx'
+import { get } from '../common/Backend.jsx'
 
 import ChipInputList from '../common/ChipInputList'
 
@@ -61,14 +61,14 @@ export default class Filters extends Component{
     //tipp : if you fetch server side data, this is the place where it should happen : )
 
     //gets all the exsiting tags from the backend
-    fetchJson('/api/projects/tags').then(function(tags) {
+    get('/api/projects/tags').then(function(tags) {
       this.setState({
         suggestedTags : tags
       })
     }.bind(this))
 
     //gets all the authors from the backend
-    fetchJson('/api/projects/authors').then(function(authors) {
+    get('/api/projects/authors').then(function(authors) {
       var suggestedAuthors = authors
       var suggestedAuthorsArray = []
       for (var i in suggestedAuthors) {

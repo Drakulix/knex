@@ -3,7 +3,7 @@ import Drawer from 'material-ui/Drawer'
 import RaisedButton from 'material-ui/RaisedButton'
 import {List, ListItem} from 'material-ui/List'
 import Divider from 'material-ui/Divider'
-import {fetchJson} from './Backend'
+import {get} from './Backend'
 import TextField from 'material-ui/TextField'
 
 export default class CommentSideBar extends React.Component {
@@ -65,7 +65,7 @@ export default class CommentSideBar extends React.Component {
 
   loadComments(){
     var fetchURL ="/api/projects/"+this.props.uuid+"/comment"
-    fetchJson(fetchURL).then(function(data) {
+    get(fetchURL).then(function(data) {
       var filteredData = this.transformArray(data)
       console.log(data)
       this.setState({

@@ -19,7 +19,6 @@ export default class ProjectContainer extends Component {
       projectInf:{},
       sharePane: false,
       commentBar: false,
-      owner: true,
       project_exists: false,
     }
 
@@ -40,9 +39,9 @@ export default class ProjectContainer extends Component {
     this.loadSiteInf(this.state.projectID)
   }
 
-//TODO CHECK IF you are OWNER IN REAL
+//TODO CHECK IF you are OWNER OR ADMNIN
   isOwner(){
-    return true
+    return this.state.projectInf.isOwner
   }
 
   fetchProjectInfo(uuid){
@@ -60,30 +59,33 @@ export default class ProjectContainer extends Component {
 
   loadSiteInf(uuid) {
     this.fetchProjectInfo(uuid).then(data => {
-      this.setState({projectInf: data})
-      if(!data){
-        this.setState({project_exists: false})
-      }else{
-        this.setState({project_exists: true})
-      }
-      this.setState({site_loaded: true})
+      this.setState({
+        projectInf: data,
+        project_exists : !!data,
+        site_loaded: true
+      })
     }).catch(ex => {
-      this.setState({project_exists: false})
-      this.setState({site_loaded: true})
+      this.setState({
+        project_exists: false,
+        site_loaded: true
+      })
     })
   }
 
   handleComment(event){
     event.preventDefault()
-    this.setState({sharePane:false})
-    this.setState({commentBar:true})
+    this.setState({
+      sharePane:false,
+      commentBar:true
+    })
   }
 
   handleShare(event){
     event.preventDefault()
-
-    this.setState({commentBar:false})
-    this.setState({sharePane:true})
+    this.setState({
+      commentBar:false,
+      sharePane:true
+    })
   }
 
   addBookmark(){
@@ -121,8 +123,10 @@ export default class ProjectContainer extends Component {
 
   handleBookmark(event){
     event.preventDefault()
-    this.setState({commentBar:false})
-    this.setState({sharePane:false})
+    this.setState({
+        commentBar:false,
+        sharePane:false
+    })
     if(this.state.projectInf.is_bookmark){
       this.removeBookmark().then(res => {
         if(res){
