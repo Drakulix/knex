@@ -25,6 +25,7 @@ export default class CreateProject extends Component {
       this.state = {
         projectInf : props.projectInf,
         authors : props.authors,
+        date : props.date,
         snackbar : false,
         site_loaded : false,
         project_exists : false,
@@ -194,6 +195,7 @@ export default class CreateProject extends Component {
     }
 
     render() {
+    console.log(this.state);
       if(!this.state.site_loaded && this.state.projectID){
         return (
           <div className = "container">

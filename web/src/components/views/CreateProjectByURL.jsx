@@ -72,7 +72,7 @@ export default class CreateProjectByURL extends React.Component {
                             default:
                                                   break
                           }
-                          project["status"] = that.state.status
+                          project["status"] = data.status;
                         }
                         if(data.tags!=null){
                           project["tags"] = data.tags
@@ -106,6 +106,7 @@ export default class CreateProjectByURL extends React.Component {
             authors={this.state.authors}
             projectInf={this.state.projectInf}
             status={this.state.status}
+            date={this.state.date}
             fromURL={true}
             />
           )
