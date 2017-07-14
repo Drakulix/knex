@@ -112,7 +112,7 @@ export default class ProfileEditor extends Component {
               <div className="col-4">
                 <RaisedButton
                     type="Submit"
-                    label="Edit Profile"
+                    label="Submit changes"
                     primary={true}
                     style={{width: "100%"}}
                     disabled={(this.state.last_name === "" || this.state.first_name === "") ? true : false}

@@ -220,7 +220,7 @@ export default class ProjectContainer extends Component {
                         iconStyle={{fontSize: '24px'}}
                         >
                         <i className="material-icons">
-                          {(new String(this.state.projectInf.is_bookmark) == "true") ? "star_rate" : "star_border"}
+                          {(new String(this.state.projectInf.is_bookmark) == "true") ? "star" : "star_border"}
                         </i>
               </IconButton>
               <IconButton

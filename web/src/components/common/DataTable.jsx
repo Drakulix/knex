@@ -341,7 +341,7 @@ export default class BookmarksTable extends Component {
                 touch={true}
                 style = {styles.largeIcon}
                 iconStyle={{fontSize: '24px'}}>
-                <i className="material-icons">star_rate</i>
+                <i className="material-icons">star</i>
               </IconButton>
             :
               <IconButton onClick={()=>this.handleAddBookmark(props.value._id)}
