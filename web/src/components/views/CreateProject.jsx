@@ -291,12 +291,12 @@ export default class CreateProject extends Component {
                       value = {this.state.projectInf.tags}
                       hintText = {'Add tags...'}
                       />
-                    <div className = "profile-info">Description</div>
+                    <div className = "profile-info" style = {{marginTop : 12}}>Description</div>
                     <TextField  value = {this.state.projectInf.description}
                       onChange = {this.handleChange}
                       name = "description"
                       hintText = "Add description..."
-                      style = {{width : '100%'}}
+                      style = {{width : '100%', marginTop : 6}}
                       multiLine = {true}
                       errorText = {(this.state.projectInf.description === "") ?
                                     "Please provide a description" : ""}
