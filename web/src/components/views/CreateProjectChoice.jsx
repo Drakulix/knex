@@ -5,6 +5,7 @@ import RaisedButton from 'material-ui/RaisedButton'
 import TextField from 'material-ui/TextField'
 import styles from '../common/Styles.jsx'
 import Snackbar from 'material-ui/Snackbar'
+import { post } from '../common/Backend'
 
 const JSON5 = require('json5')
 
@@ -29,6 +30,27 @@ export default class CreateProjectChoice extends Component {
         reader.onload = () => {
         try {
               var json = JSON.parse(reader.result);
+              console.log(json);
+
+
+              var xhr = new XMLHttpRequest()
+              xhr.withCredentials = true
+              xhr.addEventListener("readystatechange", function () {
+                if (this.readyState === 4) {
+                  console.log(this.responseText)
+                }
+              })
+
+              if( this.state.projectID === undefined){
+                xhr.open("POST", "/api/projects")
+              }
+              else{
+                /*Some strange bug with missing email here */
+                xhr.open("PUT", "/api/projects/"+this.state.projectID)
+              }
+
+              xhr.setRequestHeader("content-type", "application/json")
+              xhr.send(reader.result)
               this.setState({
                 snackbar : true,
                 snackbarText : "File uploaded"
