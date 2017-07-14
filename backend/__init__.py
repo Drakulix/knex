@@ -119,14 +119,14 @@ class Notification(DB.EmbeddedDocument):
 
 class SavedSearch(EmbeddedDocument):
     saved_search_id = ObjectIdField(default=ObjectId)
-    meta = DB.StringField(max_length=4096)
+    metadata = DB.StringField(max_length=4096)
     query = DB.StringField(max_length=4096)
     count = DB.LongField()
 
     def to_dict(self):
         dic = {}
         dic['id'] = str(self.saved_search_id)
-        dic['meta'] = json.loads(str(self.meta))
+        dic['meta'] = json.loads(str(self.metadata))
         dic['count'] = self.count
         return dic
 
@@ -207,7 +207,7 @@ def users_with_bookmark_func():
 
 
 def save_search(user, meta, query, count):
-    search = SavedSearch(meta=json.dumps(meta), query=json.dumps(query), count=count)
+    search = SavedSearch(metadata=json.dumps(meta), query=json.dumps(query), count=count)
     user.saved_searches.append(search)
     user.save()
     return str(search.saved_search_id)
