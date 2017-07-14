@@ -44,7 +44,7 @@ def search_simple():
     count = request.args.get('count', type=int)
     if count is None:
         count = 10
-    save = request.args.get('save', type=str)
+    save = json.loads(request.args.get('save', type=str))
 
     # ^2 is boosting the attribute, *_is allowing wildcards to be used
     request_json = {
@@ -100,7 +100,7 @@ def search_avanced():
     count = request.args.get('count', type=int)
     if count is None:
         count = 10
-    save = request.args.get('save', type=str)
+    save = json.loads(request.args.get('save', type=str))
 
     request_json = {
         'query': {
