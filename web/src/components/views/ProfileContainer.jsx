@@ -14,14 +14,14 @@ export default class ProfileContainer extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      email: this.props.match.params.email,
+      email : this.props.match.params.email,
       profile_exists : true,
-      site_loaded: false,
-      isAdmin: false,
+      site_loaded : false,
+      isAdmin : false,
       isMe : false,
-      profileInf: {},
-      value: 'a',
-      topTenTags :[]
+      profileInf : {},
+      value : 'a',
+      topTenTags : []
     }
 
     this.handleProfileChange = this.handleProfileChange.bind(this)
@@ -30,12 +30,12 @@ export default class ProfileContainer extends Component {
 
   handleChange = (value) => {
     this.setState({
-      value: value,
+      value : value,
     })
   }
 
   componentWillReceiveProps(nextProps){
-    this.setState({email: nextProps.email})
+    this.setState({email : nextProps.email})
     this.loadProfileInf(this.state.email)
   }
 
@@ -55,30 +55,30 @@ export default class ProfileContainer extends Component {
 
   loadProfileInf(e) {
     getUserInfo(e).then(data => {
-      this.setState({profileInf: data})
+      this.setState({profileInf : data})
       if(!data){
-        this.setState({profile_exists: false})
+        this.setState({profile_exists : false})
       }else{
         this.setState({
           profile_exists : true,
-          first_name: data.first_name,
-          last_name: data.last_name,
-          bio: data.bio,
-          site_loaded: true,
+          first_name : data.first_name,
+          last_name : data.last_name,
+          bio : data.bio,
+          site_loaded : true,
           isMe : data.email === getMyEmail()
         })
       }
     }).catch(ex => {
       alert(ex)
       this.setState({
-        profile_exists: false,
-        site_loaded: true
+        profile_exists : false,
+        site_loaded : true
       })
     })
 
     get("/api/users/"+e+"/tags").then(data => {
         this.setState({
-          topTenTags: data
+          topTenTags : data
         })
       })
     }
@@ -87,7 +87,7 @@ export default class ProfileContainer extends Component {
     this.setState({
       value : "a",
       snackbar : true,
-      snackbarText: snackbarText
+      snackbarText : snackbarText
     })
     this.loadProfileInf(this.state.email)
   }
@@ -95,48 +95,48 @@ export default class ProfileContainer extends Component {
   render() {
     if(!this.state.site_loaded){
       return (
-        <div className="container">
-          <div className="header"><CircularProgress size={80} thickness={5} /></div>
+        <div className = "container">
+          <div className = "header"><CircularProgress size = {80} thickness = {5} /></div>
         </div>
       )
     }
     if( !this.state.profile_exists){
       return (
-        <div className="container">
-          <div className="header">Profile not found</div>
+        <div className = "container">
+          <div className = "header">Profile not found</div>
         </div>
       )
     }
     else {
       return (
-        <div className="container">
-          <div className="header">Profile details</div>
+        <div className = "container">
+          <div className = "header">Profile details</div>
           <Tabs
-            value={this.state.value}
-            onChange={this.handleChange}
-            style={{marginBottom:"40px"}}>
+            value = {this.state.value}
+            onChange = {this.handleChange}
+            style = {{marginBottom : "40px"}}>
             <Tab
-              label="Profile Info" value="a">
-              <ProfileView profileInf={this.state.profileInf}
-                          topTenTags={this.state.topTenTags}/>
+              label = "Profile Info" value = "a">
+              <ProfileView profileInf = {this.state.profileInf}
+                          topTenTags = {this.state.topTenTags}/>
             </Tab>
             {(this.state.isAdmin || this.state.isMe)?
-              <Tab label="Edit Profile" value="b">
-                <ProfileEditor email={this.state.email}
+              <Tab label = "Edit Profile" value = "b">
+                <ProfileEditor email = {this.state.email}
                   profileInf = {this.state.profileInf}
                   profileChangeHandler = {this.handleProfileChange}/>
               </Tab> : ""
             }
-            <Tab label="Projects" value="c">
-              <ProfileProjects profileInf={this.state.profileInf}
-                isMe={this.state.isMe}
-                isAdmin={this.state.isAdmin}/>
+            <Tab label = "Projects" value = "c">
+              <ProfileProjects profileInf = {this.state.profileInf}
+                isMe = {this.state.isMe}
+                isAdmin = {this.state.isAdmin}/>
             </Tab>
           </Tabs>
           <Snackbar
-            open={this.state.snackbar}
-            message={this.state.snackbarText}
-            autoHideDuration={10000}/>
+            open = {this.state.snackbar}
+            message = {this.state.snackbarText}
+            autoHideDuration = {10000}/>
         </div>
       )
     }

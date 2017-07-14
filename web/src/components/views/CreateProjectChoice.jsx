@@ -105,51 +105,51 @@ export default class CreateProjectChoice extends Component {
 
   render() {
     if (this.state.redirect){
-      return <Redirect to={'/createNew/'+encodeURIComponent(this.state.sourceURL)}/>
+      return <Redirect to = {'/createNew/'+encodeURIComponent(this.state.sourceURL)}/>
     }
     return (
-      <div className="container"style={{textAlign : 'center'}} >
+      <div className = "container"style = {{textAlign : 'center'}} >
         <Snackbar
-          open={this.state.snackbar}
-          message={this.state.snackbarText}
-          autoHideDuration={10000}
+          open = {this.state.snackbar}
+          message = {this.state.snackbarText}
+          autoHideDuration = {10000}
           />
-        <div className="header">Create Project</div>
-          <form onSubmit={this.submitForm}>
+        <div className = "header">Create Project</div>
+          <form onSubmit = {this.submitForm}>
             <div>
               <TextField
-                  name="title"
-                  hintText="enter url here (e.g. “http://soundloud.com/stuff/manifest.json”)"
-                  style={{width:'460px',}}
-                  onChange={event => this.setState({sourceURL : event.target.value})}
-                  value={this.state.sourceURL}/>
+                  name = "title"
+                  hintText = "enter url here (e.g. “http://soundloud.com/stuff/manifest.json”)"
+                  style = {{width:'460px',}}
+                  onChange = {event => this.setState({sourceURL : event.target.value})}
+                  value = {this.state.sourceURL}/>
             </div>
             <div >
-              <RaisedButton style={{width:'300px'}}
-                          icon={<i className="material-icons" style={{color: "#ffffff", marginTop:-3}}>cloud_download</i>}
-                          label="import online json"
-                          primary={true}
-                          type="submit"/>
+              <RaisedButton style = {{width:'300px'}}
+                          icon = {<i className = "material-icons" style = {{color: "#ffffff", marginTop:-3}}>cloud_download</i>}
+                          label = "import online json"
+                          primary = {true}
+                          type = "submit"/>
             </div>
           </form>
-        <div className="text" >or</div>
+        <div className = "text" >or</div>
         <div>
           <RaisedButton
-                    label="Upload local json"
-                    icon={<i className="material-icons" style={{color: "#ffffff", marginTop:-3}}>file_upload</i>}
-                    containerElement="label"
-                    primary={true}
-                    style={{width:'300px'}}>
-                  <input type="file" style={styles.uploadInput} onChange={this.handleFile}/>
+                    label = "Upload local json"
+                    icon = {<i className = "material-icons" style = {{color: "#ffffff", marginTop:-3}}>file_upload</i>}
+                    containerElement = "label"
+                    primary = {true}
+                    style = {{width:'300px'}}>
+                  <input type = "file" style = {styles.uploadInput} onChange = {this.handleFile}/>
           </RaisedButton>
         </div>
-        <div className="text" >or</div>
+        <div className = "text" >or</div>
         <div>
-          <RaisedButton label="Use online formular"
-                      icon={<i className="material-icons" style={{color: "#ffffff", marginTop:-3}}>keyboard</i>}
-                      href="/createNew/"
-                      primary={true}
-                      style={{ width:'300px'}}/>
+          <RaisedButton label = "Use online formular"
+                      icon = {<i className = "material-icons" style = {{color: "#ffffff", marginTop:-3}}>keyboard</i>}
+                      href = "/createNew/"
+                      primary = {true}
+                      style = {{ width:'300px'}}/>
         </div>
       </div>
     )

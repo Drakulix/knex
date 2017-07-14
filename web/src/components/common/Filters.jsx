@@ -99,7 +99,6 @@ export default class Filters extends Component{
     this.setState({
       date_from : date,
       filter_date_from : this.dateToString(date)
-
     })
     this.props.onChange("filter_date_from",  this.dateToString(date))
   }
@@ -120,7 +119,6 @@ export default class Filters extends Component{
       })
       this.props.onChange("filter_date_to", '')
     }else{
-      
       this.setState({
         date_from : null,
         filter_date_from : ""
@@ -129,20 +127,12 @@ export default class Filters extends Component{
     }
   }
 
-
   handleStatusChange = (event, index, value) => {
     this.setState({
       status : value}
     )
-
     this.props.onChange("status", value)
   }
-
-
-
-
-
-
 
   render(){
     return   <div style = {{marginBottom : 20}}>

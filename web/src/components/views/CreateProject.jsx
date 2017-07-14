@@ -256,7 +256,7 @@ export default class CreateProject extends Component {
                             style = {{width : '100%'}}
                             >
                             {statusString.map(item =><MenuItem
-                                key={item.value}
+                                key = {item.value}
                                 value = {item.value}
                                 primaryText = {item.text} />)}
                           </DropDownMenu>

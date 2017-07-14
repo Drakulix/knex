@@ -16,11 +16,11 @@ export default class ProjectContainer extends Component {
 
     this.state = {
       projectID : this.props.match.params.uuid,
-      projectInf:{},
-      sharePane: false,
-      commentBar: false,
-      project_exists: false,
-      is_bookmark: false
+      projectInf : {},
+      sharePane : false,
+      commentBar : false,
+      project_exists : false,
+      is_bookmark : false
     }
 
     this.handleEdit = this.handleEdit.bind(this)
@@ -36,7 +36,7 @@ export default class ProjectContainer extends Component {
   }
 
   componentWillReceiveProps(nextProps){
-    this.setState({projectID: nextProps.uuid})
+    this.setState({projectID : nextProps.uuid})
     this.loadSiteInf(this.state.projectID)
   }
 
@@ -48,14 +48,14 @@ export default class ProjectContainer extends Component {
   loadSiteInf(uuid) {
     get('/api/projects/' + uuid).then(data => {
       this.setState({
-        projectInf: data,
+        projectInf : data,
         project_exists : !!data,
-        site_loaded: true,
+        site_loaded : true,
       })
     }).catch(ex => {
       this.setState({
-        project_exists: false,
-        site_loaded: true
+        project_exists : false,
+        site_loaded : true
       })
     })
   }
@@ -63,24 +63,24 @@ export default class ProjectContainer extends Component {
   handleComment(event){
     event.preventDefault()
     this.setState({
-      sharePane:false,
-      commentBar:true
+      sharePane : false,
+      commentBar : true
     })
   }
 
   handleShare(event){
     event.preventDefault()
     this.setState({
-      commentBar:false,
-      sharePane:true
+      commentBar : false,
+      sharePane : true
     })
   }
 
   handleBookmark(event){
     event.preventDefault()
     this.setState({
-        commentBar:false,
-        sharePane:false
+        commentBar : false,
+        sharePane : false
     })
     // HORRIBLE  and strange initialstate
     if(new String(this.state.projectInf.is_bookmark) == "true"){
@@ -88,7 +88,7 @@ export default class ProjectContainer extends Component {
         if(res){
           var projectInf = this.state.projectInf
           projectInf.is_bookmark = false
-          this.setState({projectInf: projectInf})
+          this.setState({projectInf : projectInf})
         }
       })
     } else {
@@ -96,7 +96,7 @@ export default class ProjectContainer extends Component {
         if(res){
           var projectInf = this.state.projectInf
           projectInf.is_bookmark = true
-          this.setState({projectInf: projectInf})
+          this.setState({projectInf : projectInf})
         }
       })
     }
@@ -115,146 +115,146 @@ export default class ProjectContainer extends Component {
   render(){
     if(!this.state.site_loaded){
       return (
-        <div className="container">
-          <div className="header"><CircularProgress size={80} thickness={5} /></div>
+        <div className = "container">
+          <div className = "header"><CircularProgress size = {80} thickness = {5} /></div>
         </div>
       )
     }
     if(!this.state.project_exists){
       return (
-        <div className="container">
-          <div className="header">Project Not Found</div>
+        <div className = "container">
+          <div className = "header">Project Not Found</div>
         </div>
       )
     }else{
       let status_badge = null
       if (this.state.projectInf.status === 'DONE'){
-        status_badge = <span className="badge badge-success">DONE</span>
+        status_badge = <span className = "badge badge-success">DONE</span>
       } else if (this.state.projectInf.status === 'IN_PROGRESS') {
-        status_badge = <span className="badge badge-warning">IN_PROGRESS</span>
+        status_badge = <span className = "badge badge-warning">IN_PROGRESS</span>
       } else if (this.state.projectInf.status === 'IN_REVIEW') {
-        status_badge = <span className="badge badge-info">IN_REVIEW</span>
+        status_badge = <span className = "badge badge-info">IN_REVIEW</span>
       } else {
         status_badge = this.state.projectInf.status
       }
       return(
-        <div className="container">
-          <div className="innerContainer">
-            <SharePane value={this.state.sharePane} uuid={this.state.projectID}></SharePane>
-            <CommentSideBar value={this.state.commentBar} uuid={this.state.projectID}></CommentSideBar>
-            <div className = "row headerCreation" style={{width:"100%"}}>
-              <div className="col-12">
+        <div className = "container">
+          <div className = "innerContainer">
+            <SharePane value = {this.state.sharePane} uuid = {this.state.projectID}></SharePane>
+            <CommentSideBar value = {this.state.commentBar} uuid = {this.state.projectID}></CommentSideBar>
+            <div className = "row headerCreation" style = {{width : "100%"}}>
+              <div className = "col-12">
                 <div>Project</div>
-                <div style={{fontSize: '20px'}}> {this.state.projectInf.title}</div>
+                <div style = {{fontSize : '20px'}}> {this.state.projectInf.title}</div>
               </div>
             </div>
-            <div className="row">
-              <div className="col-5">
-                <div className="row">
-                  <div className="col-4">
-                    <div className="profile-info">Status</div>
+            <div className = "row">
+              <div className = "col-5">
+                <div className = "row">
+                  <div className = "col-4">
+                    <div className = "profile-info">Status</div>
                     <div>{status_badge}</div>
                   </div>
-                  <div className="col-4">
-                    <div className="profile-info">Creation date</div>
+                  <div className = "col-4">
+                    <div className = "profile-info">Creation date</div>
                     <div>{this.state.projectInf.date_creation}</div>
                   </div>
-                  <div className="col-4">
-                    <div className="profile-info">Last update </div>
+                  <div className = "col-4">
+                    <div className = "profile-info">Last update </div>
                     <div> {this.state.projectInf.date_last_updated}</div>
                   </div>
                 </div>
-                <div style={{marginTop:30}}>
-                <div className="profile-info">Authors</div>
+                <div style = {{marginTop : 30}}>
+                <div className = "profile-info">Authors</div>
                 <div style = {styles["wrapper"]}>
                   {
                     this.state.projectInf.authors.map(item =>
                       <Chip style= {styles["chip"]}>
-                        <Link to={"/profile/"+item.email} style= {styles["chipText"]}>{item.name}</Link>
+                        <Link to = {"/profile/"+item.email} style= {styles["chipText"]}>{item.name}</Link>
                       </Chip>
                     )
                   }
                 </div>
               </div>
-              <div style={{marginTop:30}}>
-                <div className="profile-info">Links</div>
+              <div style = {{marginTop : 30}}>
+                <div className = "profile-info">Links</div>
                 <div style = {styles["wrapper"]}>
                   { this.state.projectInf.url.map(item => <Chip style= {styles["chip"]}>
-                  <a href={item} style= {styles["chipText"]}>{item}</a></Chip>) }
+                  <a href = {item} style= {styles["chipText"]}>{item}</a></Chip>) }
                   </div>
                 </div>
               </div>
-              <div className="col-1"></div>
-              <div className="col-6">
-                <div style={{marginTop:10}}>
-                  <div className="profile-info">Tags </div>
+              <div className = "col-1"></div>
+              <div className = "col-6">
+                <div style = {{marginTop : 10}}>
+                  <div className = "profile-info">Tags </div>
                   <div style = {styles["wrapper"]}>
                     { this.state.projectInf.tags.map(item =>
                       <Chip style= {styles["chip"]}>
-                        <Link to={"/discovery?tag=" +item} style= {styles["chipText"]} >{item}</Link></Chip>) }
+                        <Link to = {"/discovery?tag = " +item} style= {styles["chipText"]} >{item}</Link></Chip>) }
                   </div>
                 </div>
-                <div style={{marginTop:30}}>
-                  <div className="profile-info">Description</div>
+                <div style = {{marginTop : 30}}>
+                  <div className = "profile-info">Description</div>
                   <div><a>{this.state.projectInf.description}</a></div>
                 </div>
               </div>
             </div>
-            <div style={{textAlign:"center", marginTop:75}} >
+            <div style = {{textAlign : "center", marginTop : 75}} >
               <IconButton
-                        onClick={this.handleComment}
-                        touch={true}
+                        onClick = {this.handleComment}
+                        touch = {true}
                         style = {styles.largeIcon}
-                        tooltipPosition="top-center"
-                        tooltip="Comment project"
-                        iconStyle={{fontSize: '24px'}}
+                        tooltipPosition = "top-center"
+                        tooltip = "Comment project"
+                        iconStyle = {{fontSize : '24px'}}
                         >
-                        <i className="material-icons">comment</i>
+                        <i className = "material-icons">comment</i>
               </IconButton>
               <IconButton
-                        onClick={this.handleBookmark}
-                        touch={true}
+                        onClick = {this.handleBookmark}
+                        touch = {true}
                         style = {styles.largeIcon}
-                        tooltipPosition="top-center"
-                        tooltip="Bookmark project"
-                        iconStyle={{fontSize: '24px'}}
+                        tooltipPosition = "top-center"
+                        tooltip = "Bookmark project"
+                        iconStyle = {{fontSize : '24px'}}
                         >
-                        <i className="material-icons">
+                        <i className = "material-icons">
                           {(new String(this.state.projectInf.is_bookmark) == "true") ? "star" : "star_border"}
                         </i>
               </IconButton>
               <IconButton
-                        onClick={this.handleShare}
-                        touch={true}
+                        onClick = {this.handleShare}
+                        touch = {true}
                         style = {styles.largeIcon}
-                        tooltipPosition="top-center"
-                        tooltip="Share project"
-                        iconStyle={{fontSize: '24px'}}
+                        tooltipPosition = "top-center"
+                        tooltip = "Share project"
+                        iconStyle = {{fontSize : '24px'}}
                         >
-                        <i className="material-icons">share</i>
+                        <i className = "material-icons">share</i>
               </IconButton>
-              <Link to={"/update/" + this.state.projectID}  >
+              <Link to = {"/update/" + this.state.projectID}  >
                 <IconButton
-                          touch={true}
+                          touch = {true}
                           style = {styles.largeIcon}
-                          disabled={!this.isOwner}
-                          tooltipPosition="top-center"
-                          tooltip="Edit project"
-                          iconStyle={{fontSize: '24px'}}
+                          disabled = {!this.isOwner}
+                          tooltipPosition = "top-center"
+                          tooltip = "Edit project"
+                          iconStyle = {{fontSize : '24px'}}
                           >
-                          <i className="material-icons">mode_edit</i>
+                          <i className = "material-icons">mode_edit</i>
                 </IconButton>
               </Link>
               <IconButton
-                        onClick={this.handleDelete}
-                        touch={true}
+                        onClick = {this.handleDelete}
+                        touch = {true}
                         style = {styles.largeIcon}
-                        disabled={!this.isOwner}
-                        tooltipPosition="top-center"
-                        tooltip="Delete project"
-                        iconStyle={{fontSize: '24px'}}
+                        disabled = {!this.isOwner}
+                        tooltipPosition = "top-center"
+                        tooltip = "Delete project"
+                        iconStyle = {{fontSize : '24px'}}
                         >
-                        <i className="material-icons">delete</i>
+                        <i className = "material-icons">delete</i>
               </IconButton>
             </div>
           </div>

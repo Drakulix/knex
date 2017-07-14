@@ -9,33 +9,33 @@ export default class AdminOverview extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      value: "1",
+      value : "1",
     }
   }
 
   handleChange = (value) => {
     this.setState({
-      value: value,
+      value : value,
     })
   }
 
   render() {
     //TODO Chenge table to archived projects
     return (
-      <div className="container">
-        <div className="header">Admin area</div>
+      <div className = "container">
+        <div className = "header">Admin area</div>
         <Tabs
-          value={this.state.value}
-          onChange={this.handleChange}
-          style={{marginBottom:"40px"}}
+          value = {this.state.value}
+          onChange = {this.handleChange}
+          style = {{marginBottom : "40px"}}
           >
-          <Tab label="Manage Projects" value="1">
+          <Tab label = "Manage Projects" value = "1">
             <ShowProjects/>
           </Tab>
-          <Tab label="List Users" value="2">
+          <Tab label = "List Users" value = "2">
             <ShowUsers/>
           </Tab>
-          <Tab label="Register user" value="3">
+          <Tab label = "Register user" value = "3">
             <RegisterUser/>
           </Tab>
         </Tabs>

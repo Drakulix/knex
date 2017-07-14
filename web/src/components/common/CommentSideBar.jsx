@@ -10,9 +10,9 @@ export default class CommentSideBar extends React.Component {
 
   constructor(props) {
     super(props)
-    this.state = {showCommentBar: false,
-    comment:"",
-    comments: []}
+    this.state = {showCommentBar : false,
+    comment : "",
+    comments : []}
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
   }
@@ -28,18 +28,19 @@ export default class CommentSideBar extends React.Component {
   handleChange(event){
     const value = event.target.value
     this.setState({
-      comment: value})
+      comment : value
+    })
   }
 
   handleSubmit(event){
     var fetchURL ="/api/projects/"+this.props.uuid+"/comment"
     fetch(fetchURL, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'text/plain'
+        method : 'POST',
+        credentials : 'include',
+        headers : {
+          'Content-Type' : 'text/plain'
         },
-        body: this.state.comment
+        body : this.state.comment
       }).then(function(response){
         if(response.status === 200){
           return true
@@ -48,15 +49,15 @@ export default class CommentSideBar extends React.Component {
         }
       })
     this.setState({
-      comment: ""})
-
+      comment : ""
+    })
     this.loadComments()
   }
 
-  handleToggle = () => this.setState({showCommentBar: !this.state.showCommentBar})
+  handleToggle = () => this.setState({showCommentBar : !this.state.showCommentBar})
 
   componentWillReceiveProps(props){
-    this.setState({showCommentBar: props.value})
+    this.setState({showCommentBar : props.value})
   }
 
   componentWillMount(){
@@ -64,12 +65,12 @@ export default class CommentSideBar extends React.Component {
   }
 
   loadComments(){
-    var fetchURL ="/api/projects/"+this.props.uuid+"/comment"
+    var fetchURL = "/api/projects/" + this.props.uuid + "/comment"
     get(fetchURL).then(function(data) {
       var filteredData = this.transformArray(data)
       console.log(data)
       this.setState({
-        comments: filteredData
+        comments : filteredData
       })
     }.bind(this))
   }
@@ -82,14 +83,14 @@ export default class CommentSideBar extends React.Component {
         open={this.state.showCommentBar}
         onRequestChange={(showCommentBar) => this.setState({showCommentBar})}>
         <List>
-          <div style={{padding:20}}>
+          <div style={{padding : 20}}>
           <TextField  value={this.state.comment}
                       onChange={this.handleChange}
                       hintText="Add a comment"
-                      style={{width:'100%'}}
+                      style={{width : '100%'}}
                       multiLine={2}
           />
-          <div style={{textAlign:"center", marginBottom:25}}>
+          <div style={{textAlign : "center", marginBottom : 25}}>
             <RaisedButton label="Comment"
                           disabled={this.state.comment === ""}
                           onClick={this.handleSubmit}
@@ -100,7 +101,7 @@ export default class CommentSideBar extends React.Component {
           <div>
             <Divider/>
             <ListItem primaryText={item.message}
-                      secondaryText={<div><span style={{float: "left"}}>{item.author.email}</span><span style={{float: "right"}}> {item.datetime}</span></div>}
+                      secondaryText={<div><span style={{float : "left"}}>{item.author.email}</span><span style={{float : "right"}}> {item.datetime}</span></div>}
             />
           </div>)
         }
