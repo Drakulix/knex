@@ -5,8 +5,8 @@ import MenuItem from 'material-ui/MenuItem'
 import { Link } from 'react-router-dom'
 
 const styles = {
-  linkStyle:{
-    color :'#000000',
+  linkStyle : {
+    color : '#000000',
   }
 }
 
@@ -26,21 +26,21 @@ export default class NotificationPane extends Component {
   render() {
     return (
       <Popover
-        height={200}
-        open={this.props.value}
-        anchorEl={this.props.anchorEl}
-        anchorOrigin={{horizontal: 'middle', vertical: 'bottom'}}
-        targetOrigin={{horizontal: 'left', vertical: 'top'}}
-        canAutoPosition={true}
-        onRequestClose={this.props.onRequestClose}>
+        height = {200}
+        open = {this.props.value}
+        anchorEl = {this.props.anchorEl}
+        anchorOrigin = {{horizontal : 'middle', vertical : 'bottom'}}
+        targetOrigin = {{horizontal : 'left', vertical : 'top'}}
+        canAutoPosition = {true}
+        onRequestClose = {this.props.onRequestClose}>
         <Menu>
           {this.props.notifications.map(notification =>
             <MenuItem >
-              <Link style={styles["linkStyle"]}
-                    onClick={()=>this.resolveNotification(notification.id)}
-                    to={notification.link}>
-                <div style={{marginBottom:-25}}>{notification.title}</div>
-                <div style={{fontSize:"12px"}}> {notification.description}</div>
+              <Link style = {styles["linkStyle"]}
+                    onClick = {()=>this.resolveNotification(notification.id)}
+                    to = {notification.link}>
+                <div style = {{marginBottom : -25}}>{notification.title}</div>
+                <div style = {{fontSize : "12px"}}> {notification.description}</div>
               </Link>
            </MenuItem>
          )}
