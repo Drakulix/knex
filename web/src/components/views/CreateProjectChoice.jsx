@@ -34,7 +34,6 @@ export default class CreateProjectChoice extends Component {
                 snackbarText : "File uploaded"
               })
            } catch(e) {
-             alert(e)
              this.setState({
                snackbar : true,
                snackbarText : "File is not a valid JSON file"
@@ -65,13 +64,6 @@ export default class CreateProjectChoice extends Component {
           snackbar : true,
           snackbarText : "File is not a JSON file"
         })
-        reader.onload = () => {
-          try {
-                JSON.parse(reader.result);
-             } catch(e) {
-             }
-        }
-        reader.readAsText(file);
         break
     }
   }
