@@ -115,14 +115,14 @@ export default class Filters extends Component{
   handleDateDelete = (event) => {
     if(event === "until"){
       this.setState({
-        date_to : '',
-        filter_date_to : ''
+        date_to : null,
+        filter_date_to : null
       })
       this.props.onChange("filter_date_to", '')
     }else{
       this.setState({
-        date_from : '',
-        filter_date_from : ''
+        date_from : null,
+        filter_date_from : null
       })
       this.props.onChange("filter_date_from", '')
     }
@@ -223,7 +223,7 @@ export default class Filters extends Component{
                 onChange = {this.handleChangeDateFrom}
                 />
             </div>
-            <IconButton style = {{color : 'gray', marginLeft : -30, visibility : (this.state.date_from != "") ? "visible" : "hidden"}} onClick = {()=> this.handleDateDelete('from')}>
+            <IconButton style = {{color : 'gray', marginLeft : -30, visibility : (this.state.date_from != null) ? "visible" : "hidden"}} onClick = {()=> this.handleDateDelete('from')}>
               <i className = "material-icons">cancel</i>
             </IconButton>
             <div className = "col-1 filter-label" style = {{textAlign : "left", marginLeft : -20}}>Till</div>
@@ -238,7 +238,7 @@ export default class Filters extends Component{
                 onChange = {this.handleChangeDateTill}
                 />
             </div>
-            <IconButton style = {{color : 'gray', marginLeft : -60, visibility : (this.state.date_to != "") ? "visible" : "hidden"}} onClick = {() => this.handleDateDelete('until')}>
+            <IconButton style = {{color : 'gray', marginLeft : -60, visibility : (this.state.date_to != null) ? "visible" : "hidden"}} onClick = {() => this.handleDateDelete('until')}>
               <i className = "material-icons" style = {{color : 'gray', marginLeft : -30}}>cancel</i>
             </IconButton>
             <div className = "col-1 filter-label" style = {{textAlign : "left", marginLeft : -8}} >Status</div>
