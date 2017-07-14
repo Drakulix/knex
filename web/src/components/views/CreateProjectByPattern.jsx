@@ -62,8 +62,10 @@ export default class UploadByPattern extends Component {
   }
 
 
-  handleAuthorChange(value) {
-    this.setState({authors : value})
+  handleAuthorChange(event) {
+    alert(event)
+    const name = event.target.name
+    const value = event.target.value
     var authors = []
     for (var i in value) {
       var string = value[i]
@@ -74,15 +76,22 @@ export default class UploadByPattern extends Component {
     var projectInf = this.state.projectInf
     projectInf.authors = authors
     this.setState({projectInf: projectInf})
+    this.setState({authors : value})
+
   }
 
-  handleTagChange(value) {
+  handleTagChange(event) {
+    alert("Df")
+    const name = event.target.name
+    const value = event.target.value
     var projectInf = this.state.projectInf
     projectInf.tags = value
     this.setState({projectInf: projectInf})
   }
 
-  handleURLChange(value) {
+  handleURLChange(event) {
+    const name = event.target.name
+    const value = event.target.value
     var projectInf = this.state.projectInf
     projectInf.url = value
     this.setState({projectInf: projectInf})
@@ -296,25 +305,22 @@ export default class UploadByPattern extends Component {
                     </div>
                     <div className="profile-info">Authors</div>
                     <ChipInputList suggestions = {this.state.suggestedAuthors}
-                      onChange={this.handleAuthorChange}
-                      filtered ={true}
-                      value={this.state.authors}
-                      hintText={'Add authors...'}
-                      errorText={(this.state.authors.length === 0) ? this.props.authorsErrorText : ""}
+                      onChange = {this.handleAuthorChange}
+                      filtered = {true}
+                      value = {this.state.authors}
+                      hintText = {'Add authors...'}
+                      errorText = {(this.state.authors.length === 0) ? this.props.authorsErrorText : ""}
                       />
                     <div className="profile-info">Links</div>
-                    <ChipInputList
-                      defaultValue={this.state.projectInf.url}
-                      value={this.state.projectInf.url}
-                      onChange={this.handleURLChange}
-                      errorText={(this.state.projectInf.url.length === 0) ? this.props.urlErrorText : ""}
-                      hintText='Add Links...'/>
+                    <ChipInputList name = {'urls'}
+                      />
                   </div>
                   <div className="col-1"></div>
                   <div className="col-7">
                     <div className="profile-info"> Tags</div>
                     <ChipInputList suggestions = {this.state.suggestedTags}
                       onChange={this.handleTagChange}
+                      name = "tags"
                       value={this.state.projectInf.tags}
                       hintText={'Add tags...'}
                       />

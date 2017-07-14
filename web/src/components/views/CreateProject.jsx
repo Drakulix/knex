@@ -11,9 +11,9 @@ import {fetchJson } from '../common/Backend.jsx'
 
 
 const statusString = [
-  {text :<span className="badge badge-success">DONE</span>, value : "DONE"},
-  {text :<span className="badge badge-info">IN_REVIEW</span>, value : "IN_REVIEW"},
-  {text :<span className="badge badge-warning">IN_PROGRESS</span>, value : "IN_PROGRESS"},
+  {text : <span className = "badge badge-success">DONE</span>, value : "DONE"},
+  {text : <span className = "badge badge-info">IN_REVIEW</span>, value : "IN_REVIEW"},
+  {text : <span className = "badge badge-warning">IN_PROGRESS</span>, value : "IN_PROGRESS"},
 ]
 
 export default class CreateProject extends Component {
@@ -23,99 +23,73 @@ export default class CreateProject extends Component {
 
     if(props.fromURL){
       this.state = {
-        projectInf:props.projectInf,
-        status :  props.status,
-        authors: props.authors,
-        suggestedAuthors: [],
+        projectInf : props.projectInf,
+        status : props.status,
+        authors : props.authors,
+        suggestedAuthors : [],
         suggestedTags : [],
         invalid : true,
         snackbar : false,
-        site_loaded: false,
-        project_exists: false,
+        site_loaded : false,
+        project_exists : false,
       }
     } else {
       this.state = {
-        projectID: this.props.match.params.uuid,
+        projectID : this.props.match.params.uuid,
         authors : [],
-        projectInf:{
-          status: "IN_PROGRESS",
-          title :"",
-          description: "",
-          date_creation: "2012-12-12",
-          tags: [],
-          url: [],
-          authors: [],
+        projectInf : {
+          status : "IN_PROGRESS",
+          title : "",
+          description : "",
+          date_creation : "2012-12-12",
+          tags : [],
+          url : [],
+          authors : [],
         },
         invalid : true,
         snackbar : false,
-        site_loaded: false,
-        project_exists: false,
+        site_loaded : false,
+        project_exists : false,
       }
     }
 
     this.handleUpload = this.handleUpload.bind(this)
-    this.handleURLChange = this.handleURLChange.bind(this)
-    this.handleAuthorChange = this.handleAuthorChange.bind(this)
-    this.handleTagChange = this.handleTagChange.bind(this)
-    this.handleTitleChange = this.handleTitleChange.bind(this)
-    this.handleDescriptionChange = this.handleDescriptionChange.bind(this)
     this.handleStatusChange = this.handleStatusChange.bind(this)
+    this.handleChange = this.handleChange.bind(this)
   }
 
-
-  handleAuthorChange(value) {
-    var authors = []
-    for (var i in value) {
-      var string = value[i]
-      var name = string.substring(0, string.lastIndexOf("(")-1)
-      var id = string.substring(string.lastIndexOf("(")+1, string.length-1)
-      authors.push({"name" : name, "email" :id})
+  handleChange(event) {
+    const name = event.target.name
+    var value = event.target.value
+    var projectInf = this.state.projectInf
+    if(name === "authors"){
+      this.setState({authors : value})
+      value = []
+      for (var i in event.target.value) {
+        var string = event.target.value[i]
+        alert(string)
+        var authorName = string.substring(0, string.lastIndexOf("(")-1)
+        var authorId = string.substring(string.lastIndexOf("(")+1, string.length-1)
+        value.push({name : authorName, email : authorId})
+      }
     }
-
-    var projectInf = this.state.projectInf
-    projectInf.authors = authors
-    this.setState({
-      authors : value,
-      projectInf: projectInf})
-  }
-
-  handleTagChange(value) {
-    var projectInf = this.state.projectInf
-    projectInf.tags = value
-    this.setState({projectInf: projectInf})
-  }
-
-  handleURLChange(value) {
-    var projectInf = this.state.projectInf
-    projectInf.url = value
-    this.setState({projectInf: projectInf})
-  }
-
-  handleTitleChange(event,value) {
-    var projectInf = this.state.projectInf
-    projectInf.title = value
-    this.setState({projectInf: projectInf})
-  }
-
-  handleDescriptionChange(event,value) {
-    var projectInf = this.state.projectInf
-    projectInf.description = value
-    this.setState({projectInf: projectInf})
+    projectInf[name] = value
+    this.setState({ projectInf : projectInf})
   }
 
   handleStatusChange = (event, index, value) => {
     var projectInf = this.state.projectInf
     projectInf.status = value
-    this.setState({projectInf: projectInf})
+    this.setState({projectInf : projectInf})
   }
 
   handleChangeDate = (event, date) => {
-    var mm = date.getMonth()+1
+    var mm = date.getMonth() + 1
     var dd = date.getDate()
-    var dateString =  [date.getFullYear(),'-', ((mm > 9) ? '' :'0')+ mm, '-', ((dd> 9) ? '':'0')+ dd].join('')
+    var dateString =  [date.getFullYear(),'-', ((mm > 9) ? '' : '0')+ mm, '-', ((dd> 9) ? '' : '0')+ dd].join('')
     this.setState({
-      date: date,
-      projectInf: {date_creation:dateString}
+      date : date,
+      projectInf : {date_creation : dateString}
     })
   }
 
@@ -127,11 +101,11 @@ export default class CreateProject extends Component {
 
   fetchProjectInfo(uuid){
     return fetch('/api/projects/' + uuid, {
-      method: 'GET',
-      mode: 'no-cors',
-      credentials: 'include',
-      headers: {
-        "Accept": "application/json",
+      method : 'GET',
+      mode : 'no-cors',
+      credentials : 'include',
+      headers : {
+        "Accept" : "application/json",
       }
     }).then(response => response.json()).catch(ex => {
       console.error('parsing failes', ex)
@@ -141,10 +115,10 @@ export default class CreateProject extends Component {
   loadProjectInf(uuid) {
     // Load Project info into state
     this.fetchProjectInfo(uuid).then(data => {
-      this.setState({projectInf: data})
+      this.setState({projectInf : data})
       if(!data){
-        this.setState({ project_exists: false,
-                        site_loaded: true,})
+        this.setState({ project_exists : false,
+                        site_loaded : true,})
       }else{
         var authorArray = []
         var authors = data.authors
@@ -152,11 +126,11 @@ export default class CreateProject extends Component {
           authorArray = authorArray.concat([authors[i].name + " ("+ authors[i].email+ ")"])
         }
         this.setState({
-          project_exists: true,
-          site_loaded: true,
-          projectInf: data,
+          project_exists : true,
+          site_loaded : true,
+          projectInf : data,
           authors : authorArray,
-          date: new Date( data.date_creation.split("-")[0],
+          date : new Date( data.date_creation.split("-")[0],
                           data.date_creation.split("-")[1]-1,
                           data.date_creation.split("-")[2],0,0,0,0)
         })
@@ -194,7 +168,7 @@ export default class CreateProject extends Component {
 
     xhr.setRequestHeader("content-type", "application/json")
     xhr.send(data)
-    this.setState({snackbar:true})
+    this.setState({snackbar : true})
   }
 
   isInValid(){
@@ -216,7 +190,7 @@ export default class CreateProject extends Component {
 
     fetchJson('/api/projects/tags').then(function(tags) {
       this.setState({
-        suggestedTags: tags
+        suggestedTags : tags
       })
     }.bind(this))
 
@@ -232,7 +206,7 @@ export default class CreateProject extends Component {
         }
         console.log(suggestedAuthorsArray)
         this.setState({
-          suggestedAuthors: suggestedAuthorsArray
+          suggestedAuthors : suggestedAuthorsArray
         })
       }.bind(this))
       if(this.props.fromURL&&(this.state.status!==this.props.status)){
@@ -243,107 +217,111 @@ export default class CreateProject extends Component {
     render() {
       if(!this.state.site_loaded && this.state.projectID){
         return (
-          <div className="container">
-            <div className="header"><CircularProgress size={80} thickness={5} /></div>
+          <div className = "container">
+            <div className = "header"><CircularProgress size = {80} thickness = {5} /></div>
           </div>
         )
       }
       if(!this.state.project_exists && this.state.projectID){
         return (
-          <div className="container">
-            <div className="header">Project Not Found</div>
+          <div className = "container">
+            <div className = "header">Project Not Found</div>
           </div>
         )
       }else{
         return(
-          <div className="container">
-            <div className="innerContainer">
-              <div className = "headerCreation" style={{width:"100%"}}>
+          <div className = "container">
+            <div className = "innerContainer">
+              <div className = "headerCreation" style = {{width : "100%"}}>
                 {(this.state.projectID !== undefined) ? "Edit project" : "Add new project"}
               </div>
               <form>
                 <div>
-                  <div className="profile-info">Title</div>
-                  <TextField  value={this.state.projectInf.title}
-                    onChange={this.handleTitleChange}
-                    hintText="Add title..."
-                    style={{width:'100%'}}
-                    errorText={(this.state.projectInf.title==="") ? this.props.titleErrorText : ""}
+                  <div className = "profile-info">Title</div>
+                  <TextField  value = {this.state.projectInf.title}
+                    name = "title"
+                    onChange = {this.handleChange}
+                    hintText = "Add title..."
+                    style = {{width : '100%'}}
+                    errorText = {(this.state.projectInf.title === "") ? this.props.titleErrorText : ""}
                     />
                 </div>
-                <div className="row">
-                  <div className="col-4">
-                    <div className="row">
-                      <div className="col-6">
-                        <div className="profile-info">Creation date</div>
+                <div className = "row">
+                  <div className = "col-4">
+                    <div className = "row">
+                      <div className = "col-6">
+                        <div className = "profile-info">Creation date</div>
                         <div>
-                          <DatePicker hintText="Pick a creation Date..."
-                            value={this.state.date}
-                            mode="landscape"
-                            onChange={this.handleChangeDate}
-                            style={{display: "inline"}}
-                            textFieldStyle={{width: '100%', marginTop:8}}
-                            errorText={(this.state.date==="") ? this.props.dateErrorText : ""}
+                          <DatePicker hintText = "Pick a creation Date..."
+                            value = {this.state.date}
+                            mode = "landscape"
+                            onChange = {this.handleChangeDate}
+                            style = {{display : "inline"}}
+                            textFieldStyle = {{width : '100%', marginTop : 8}}
+                            errorText = {(this.state.date === "") ? this.props.dateErrorText : ""}
                             />
                         </div>
                       </div>
-                      <div className="col-6">
-                        <div className="profile-info">Status</div>
+                      <div className = "col-6">
+                        <div className = "profile-info">Status</div>
                         <div>
                           <DropDownMenu
-                            value={this.state.projectInf.status}
-                            onChange={this.handleStatusChange}
-                            labelStyle={{width: '100%', paddingLeft:0}}
-                            underlineStyle={{width: '100%', marginLeft:0}}
-                            autoWidth={false}
-                            style={{width: '100%'}}
-                            errorText={(this.state.projectInf.status==="") ? this.props.statusErrorText : ""}
+                            value = {this.state.projectInf.status}
+                            onChange = {this.handleStatusChange}
+                            labelStyle = {{width : '100%', paddingLeft : 0}}
+                            underlineStyle = {{width : '100%', marginLeft : 0}}
+                            autoWidth = {false}
+                            style = {{width : '100%'}}
+                            errorText = {(this.state.projectInf.status === "") ? this.props.statusErrorText : ""}
                             >
-                            {statusString.map(item =><MenuItem value={item.value} primaryText={item.text} />)}
+                            {statusString.map(item =><MenuItem value = {item.value} primaryText = {item.text} />)}
                           </DropDownMenu>
                         </div>
                       </div>
                     </div>
-                    <div className="profile-info">Authors</div>
+                    <div className = "profile-info">Authors</div>
                     <ChipInputList suggestions = {this.state.suggestedAuthors}
-                      onChange={this.handleAuthorChange}
-                      filtered ={true}
-                      value={this.state.authors}
-                      hintText={'Add authors...'}
-                      errorText={(this.state.authors.length === 0) ? this.props.authorsErrorText : ""}
+                      onChange = {this.handleChange}
+                      name = "authors"
+                      filtered = {true}
+                      value = {this.state.authors}
+                      hintText = {'Add authors...'}
+                      errorText = {(this.state.authors.length === 0) ? this.props.authorsErrorText : ""}
                       />
-                    <div className="profile-info">Links</div>
+                    <div className = "profile-info">Links</div>
                     <ChipInputList
-                      value={this.state.projectInf.url}
-                      onChange={this.handleURLChange}
-                      errorText={(this.state.projectInf.url.length === 0
+                      name = "url"
+                      value = {this.state.projectInf.url}
+                      onChange = {this.handleChange}
+                      errorText = {(this.state.projectInf.url.length === 0
                       ) ? this.props.urlErrorText : ""}
                       hintText='Add Links...'/>
                   </div>
-                  <div className="col-1"></div>
-                  <div className="col-7">
-                    <div className="profile-info"> Tags</div>
+                  <div className = "col-1"></div>
+                  <div className = "col-7">
+                    <div className = "profile-info"> Tags</div>
                     <ChipInputList suggestions = {this.state.suggestedTags}
-                      onChange={this.handleTagChange}
-                      name="tags"
-                      value={this.state.projectInf.tags}
-                      hintText={'Add tags...'}
+                      onChange = {this.handleChange}
+                      name = "tags"
+                      value = {this.state.projectInf.tags}
+                      hintText = {'Add tags...'}
                       />
-                    <div className="profile-info">Description</div>
-                    <TextField  value={this.state.projectInf.description}
-                      onChange={this.handleDescriptionChange}
-                      hintText="Add description..."
-                      style={{width:'100%'}}
-                      multiLine={true}
-                      errorText={(this.state.projectInf.description==="") ? this.props.descriptionErrorText : ""}
+                    <div className = "profile-info">Description</div>
+                    <TextField  value = {this.state.projectInf.description}
+                      onChange = {this.handleChange}
+                      name = "description"
+                      hintText = "Add description..."
+                      style = {{width : '100%'}}
+                      multiLine = {true}
+                      errorText = {(this.state.projectInf.description === "") ? this.props.descriptionErrorText : ""}
                       />
-                    <div className="row" style={{marginTop:100}}>
-                      <div className="col-10"></div>
-                      <div className="col-1" >
-                        <RaisedButton label="Submit"
-                          disabled={this.isInValid()}
-                          onClick={this.handleUpload}
-                          primary={true}/>
+                    <div className = "row" style = {{marginTop : 100}}>
+                      <div className = "col-10"></div>
+                      <div className = "col-1" >
+                        <RaisedButton label = "Submit"
+                          disabled = {this.isInValid()}
+                          onClick = {this.handleUpload}
+                          primary = {true}/>
                       </div>
                     </div>
                   </div>
@@ -351,9 +329,9 @@ export default class CreateProject extends Component {
               </form>
             </div>
             <Snackbar
-              open={this.state.snackbar}
-              message="New project added!"
-              autoHideDuration={10000}
+              open = {this.state.snackbar}
+              message = "New project added!"
+              autoHideDuration = {10000}
               />
           </div>
         )
@@ -362,10 +340,10 @@ export default class CreateProject extends Component {
   }
 
   CreateProject.defaultProps = {
-    authorsErrorText: 'Please provide at least one author',
-    titleErrorText: 'Please provide a title',
-    dateErrorText: 'Please provide a creation date',
-    descriptionErrorText: 'Please provide a description',
-    statusErrorText: 'Please provide a status',
-    urlErrorText: 'Please provide at least one url'
+    authorsErrorText : 'Please provide at least one author',
+    titleErrorText : 'Please provide a title',
+    dateErrorText : 'Please provide a creation date',
+    descriptionErrorText : 'Please provide a description',
+    statusErrorText : 'Please provide a status',
+    urlErrorText : 'Please provide at least one url'
   }
