@@ -1,8 +1,9 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import registerServiceWorker from './registerServiceWorker'
-import './style/style.css'
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { withRouter } from 'react-router';
+import registerServiceWorker from './registerServiceWorker';
+import './style/style.css';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 
 import {
@@ -42,23 +43,24 @@ injectTapEventPlugin()
 
 const muiTheme = getMuiTheme(styles)
 
+const TopBarWithRouter = withRouter(TopBar);
+const SideBarWithRouter = withRouter(SideBar);
 
-
-
-const PageRoute = ({ component: Component, path, site_path, ...rest }) => (
-  <Route {...rest} path={path} render={props => (
-    (
+const PageRoute = ({ component: Component, path, ...rest }) => (
+  <Route {...rest} path={path} render={props => {
+    const ComponentWithRouter = withRouter(Component);
+    return (
       <div className="inner-content">
-        <TopBar />
+        <TopBarWithRouter />
         <div className="row">
-          <SideBar location={site_path} />
+          <SideBarWithRouter/>
           <div className="col-9 content">
-            <Component {...props} />
+            <ComponentWithRouter {...props} />
           </div>
         </div>
       </div>
-    )
-  )}/>
+    );
+  }}/>
 )
 
 ReactDOM.render(
@@ -78,8 +80,8 @@ ReactDOM.render(
         <PageRoute site_path="/profile" path="/profile/:email" component={ProfileContainer} />
         <PageRoute site_path="/yourprojects" path="/yourprojects" component={UserProjects} />
         <PageRoute site_path="/queries" path="/queries" component={SavedQueries} />
-        <Route path="/register" component={SignUp} />
-        <Route exact path="/" component={SignIn} />
+        <Route path="/register" component={withRouter(SignUp)} />
+        <Route exact path="/" component={withRouter(SignIn)} />
      </div>
     </BrowserRouter>
   </MuiThemeProvider>
