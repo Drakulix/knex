@@ -176,5 +176,5 @@ def delete_saved_search(id):
         if search.saved_search_id == ObjectId(id):
             user.saved_searches.remove(search)
             user.save()
-            return jsonify([search.to_dict() for search in user.saved_searches])
+            return make_response("Success", 200)
     return make_response("No search with the given id known", 404)
