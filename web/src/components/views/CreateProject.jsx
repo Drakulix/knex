@@ -51,6 +51,7 @@ export default class CreateProject extends Component {
     this.handleUpload = this.handleUpload.bind(this)
     this.handleStatusChange = this.handleStatusChange.bind(this)
     this.handleChange = this.handleChange.bind(this)
+    this.handleChangeDate = this.handleChangeDate.bind(this)
   }
 
   handleChange(event) {
@@ -77,13 +78,15 @@ export default class CreateProject extends Component {
     this.setState({projectInf : projectInf})
   }
 
-  handleChangeDate = (event, date) => {
+  handleChangeDate(event, date) {
     var mm = date.getMonth() + 1
     var dd = date.getDate()
     var dateString =  [date.getFullYear(),'-', ((mm > 9) ? '' : '0')+ mm, '-', ((dd> 9) ? '' : '0')+ dd].join('')
+    var projectInf = this.state.projectInf
+    projectInf["date_creation"] = dateString
     this.setState({
       date : date,
-      projectInf : {date_creation : dateString}
+      projectInf : projectInf
     })
   }
 
@@ -275,9 +278,7 @@ export default class CreateProject extends Component {
                       name = "url"
                       value = {this.state.projectInf.url}
                       onChange = {this.handleChange}
-                      errorText = {(
-this.state.projectInf.url === undefined ||
-                        this.state.projectInf.url.length === 0
+                      errorText = {(this.state.projectInf.url.length === 0
                                   ) ? "Please provide at least one url" : ""}
                       hintText='Add Links...'/>
                   </div>
