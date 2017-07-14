@@ -219,7 +219,8 @@ export default class CreateProject extends Component {
                     onChange = {this.handleChange}
                     hintText = "Add title..."
                     style = {{width : '100%'}}
-                    errorText = {(this.state.projectInf.title === "") ? this.props.titleErrorText : ""}
+                    errorText = {(this.state.projectInf.title === "") ?
+                                  "Please provide a title" : ""}
                     />
                 </div>
                 <div className = "row">
@@ -234,7 +235,8 @@ export default class CreateProject extends Component {
                             onChange = {this.handleChangeDate}
                             style = {{display : "inline"}}
                             textFieldStyle = {{width : '100%', marginTop : 8}}
-                            errorText = {(this.state.date === "") ? this.props.dateErrorText : ""}
+                            errorText = {(this.state.date === "") ?
+                                        "Please provide a creation date" : ""}
                             />
                         </div>
                       </div>
@@ -265,7 +267,8 @@ export default class CreateProject extends Component {
                       filtered = {true}
                       value = {this.state.authors}
                       hintText = {'Add authors...'}
-                      errorText = {(this.state.authors.length === 0) ? this.props.authorsErrorText : ""}
+                      errorText = {(this.state.authors.length === 0) ?
+                                  "Please provide at least one author" : ""}
                       />
                     <div className = "profile-info">Links</div>
                     <ChipInputList
@@ -273,7 +276,7 @@ export default class CreateProject extends Component {
                       value = {this.state.projectInf.url}
                       onChange = {this.handleChange}
                       errorText = {(this.state.projectInf.url.length === 0
-                      ) ? this.props.urlErrorText : ""}
+                                  ) ? "Please provide at least one url" : ""}
                       hintText='Add Links...'/>
                   </div>
                   <div className = "col-1"></div>
@@ -292,7 +295,8 @@ export default class CreateProject extends Component {
                       hintText = "Add description..."
                       style = {{width : '100%'}}
                       multiLine = {true}
-                      errorText = {(this.state.projectInf.description === "") ? this.props.descriptionErrorText : ""}
+                      errorText = {(this.state.projectInf.description === "") ?
+                                    "Please provide a description" : ""}
                       />
                     <div className = "row" style = {{marginTop : 100}}>
                       <div className = "col-10"></div>
@@ -316,13 +320,4 @@ export default class CreateProject extends Component {
         )
       }
     }
-  }
-
-  CreateProject.defaultProps = {
-    authorsErrorText : 'Please provide at least one author',
-    titleErrorText : 'Please provide a title',
-    dateErrorText : 'Please provide a creation date',
-    descriptionErrorText : 'Please provide a description',
-    statusErrorText : 'Please provide a status',
-    urlErrorText : 'Please provide at least one url'
   }
