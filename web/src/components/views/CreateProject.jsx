@@ -7,7 +7,7 @@ import DropDownMenu from 'material-ui/DropDownMenu'
 import MenuItem from 'material-ui/MenuItem'
 import CircularProgress from 'material-ui/CircularProgress'
 import ChipInputList from '../common/ChipInputList'
-import {get } from '../common/Backend.jsx'
+import {get} from '../common/Backend.jsx'
 
 
 const statusString = [
@@ -93,22 +93,9 @@ export default class CreateProject extends Component {
     }
   }
 
-  fetchProjectInfo(uuid){
-    return fetch('/api/projects/' + uuid, {
-      method : 'GET',
-      mode : 'no-cors',
-      credentials : 'include',
-      headers : {
-        "Accept" : "application/json",
-      }
-    }).then(response => response.json()).catch(ex => {
-      console.error('parsing failes', ex)
-    })
-  }
-
   loadProjectInf(uuid) {
     // Load Project info into state
-    this.fetchProjectInfo(uuid).then(data => {
+    get('/api/projects/' + uuid).then(data => {
       this.setState({projectInf : data})
       if(!data){
         this.setState({ project_exists : false,

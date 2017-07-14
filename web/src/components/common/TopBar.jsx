@@ -5,7 +5,7 @@ import Badge from 'material-ui/Badge'
 import IconButton from 'material-ui/IconButton'
 import Snackbar from 'material-ui/Snackbar'
 import NotificationPane from '../common/NotificationPane'
-import { get, fetchDelete } from '../common/Backend'
+import { get, del } from '../common/Backend'
 
 export default class TopBar extends Component {
   constructor(props) {
@@ -40,7 +40,7 @@ export default class TopBar extends Component {
     var list = this.state.notifications.filter((c) => c.id !== notificationID)
     this.setState({notifications : list,
                   popover:false})
-    fetchDelete("/api/users/notifications/"+ notificationID)
+  //  del("/api/users/notifications/"+ notificationID)
   }
 
   handleNotificationClick(event){

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 import Chip from 'material-ui/Chip'
 import styles from '../common/Styles.jsx'
-
+import {get, post, del} from '../common/Backend'
 import IconButton from 'material-ui/IconButton'
 import SharePane from '../common/SharePane'
 import CircularProgress from 'material-ui/CircularProgress'
@@ -20,6 +20,7 @@ export default class ProjectContainer extends Component {
       sharePane: false,
       commentBar: false,
       project_exists: false,
+      is_bookmark: false
     }
 
     this.handleEdit = this.handleEdit.bind(this)
@@ -44,25 +45,12 @@ export default class ProjectContainer extends Component {
     return this.state.projectInf.isOwner
   }
 
-  fetchProjectInfo(uuid){
-    return fetch('/api/projects/' + uuid, {
-      method: 'GET',
-      mode: 'no-cors',
-      credentials: 'include',
-      headers: {
-        "Accept": "application/json",
-      }
-    }).then(response => response.json()).catch(ex => {
-      console.error('parsing failes', ex)
-    })
-  }
-
   loadSiteInf(uuid) {
-    this.fetchProjectInfo(uuid).then(data => {
+    get('/api/projects/' + uuid).then(data => {
       this.setState({
         projectInf: data,
         project_exists : !!data,
-        site_loaded: true
+        site_loaded: true,
       })
     }).catch(ex => {
       this.setState({
@@ -88,47 +76,15 @@ export default class ProjectContainer extends Component {
     })
   }
 
-  addBookmark(){
-    return fetch('/api/users/bookmarks/' + this.state.projectID , {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-    }).then(function(response){
-      if(response.status===200){
-        return true
-      }else{
-        return false
-      }
-    })
-  }
-
-  removeBookmark(){
-    var url = "/api/users/bookmarks/"
-    return fetch(url+this.state.projectID, {
-      credentials: 'include',
-      method: "DELETE",
-      body: "",
-      headers: {
-      }
-    }).then(function(response){
-      if(response.status===200){
-        return true
-      }else{
-        return false
-      }
-    })
-  }
-
   handleBookmark(event){
     event.preventDefault()
     this.setState({
         commentBar:false,
         sharePane:false
     })
-    if(this.state.projectInf.is_bookmark){
-      this.removeBookmark().then(res => {
+    // HORRIBLE  and strange initialstate
+    if(new String(this.state.projectInf.is_bookmark) == "true"){
+      del ("/api/users/bookmarks/"+this.state.projectID).then(res => {
         if(res){
           var projectInf = this.state.projectInf
           projectInf.is_bookmark = false
@@ -136,7 +92,7 @@ export default class ProjectContainer extends Component {
         }
       })
     } else {
-      this.addBookmark().then(res => {
+      post('/api/users/bookmarks/' + this.state.projectID).then(res => {
         if(res){
           var projectInf = this.state.projectInf
           projectInf.is_bookmark = true

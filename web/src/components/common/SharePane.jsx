@@ -2,7 +2,7 @@ import React from 'react'
 import Dialog from 'material-ui/Dialog'
 import RaisedButton from 'material-ui/RaisedButton'
 import ChipInputList from '../common/ChipInputList.jsx'
-import {get} from '../common/Backend.jsx'
+import {get, post} from '../common/Backend.jsx'
 
 export default class SharePane extends React.Component {
   constructor(props) {
@@ -22,16 +22,7 @@ export default class SharePane extends React.Component {
     for (var i in this.state.authors) {
       var string = this.state.authors[i]
       var id = string.substring(string.lastIndexOf("(")+1, string.length-1)
-      var shareURL =  "/api/projects/"+this.props.uuid+"/share/"+id
-      fetch(shareURL, {
-        method : 'POST',
-        mode : 'no-cors',
-        credentials : 'include',
-        body: JSON.stringify({}),
-
-      }).then(response => response).catch(ex => {
-        console.error('parsing failes', ex)
-      })
+      post("/api/projects/"+this.props.uuid+"/share/"+id, {})
     }
     this.setState({open : false})
   }
@@ -39,7 +30,6 @@ export default class SharePane extends React.Component {
 
   componentDidMount() {
     //tipp : if you fetch server side data, this is the place where it should happen :)
-
     //gets all the authors from the backend
     get('/api/users').then(function(authors) {
       var suggestedAuthors = authors
