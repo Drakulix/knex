@@ -112,6 +112,7 @@ export default class ProfileContainer extends Component {
         <div className = "container">
           <div className = "header">Profile details</div>
           <Tabs
+            inkBarStyle = {{marginTop : -5, height : 5}}
             value = {this.state.value}
             onChange = {this.handleChange}
             style = {{marginBottom : "40px"}}>

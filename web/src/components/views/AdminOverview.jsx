@@ -25,6 +25,7 @@ export default class AdminOverview extends Component {
       <div className = "container">
         <div className = "header">Admin area</div>
         <Tabs
+          inkBarStyle = {{marginTop : -4, height : 4}}
           value = {this.state.value}
           onChange = {this.handleChange}
           style = {{marginBottom : "40px"}}
