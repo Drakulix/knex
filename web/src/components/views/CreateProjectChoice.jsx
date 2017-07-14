@@ -70,7 +70,7 @@ export default class CreateProjectChoice extends Component {
                 JSON.parse(reader.result);
              } catch(e) {
              }
-           }
+        }
         reader.readAsText(file);
         break
     }
@@ -162,3 +162,4 @@ export default class CreateProjectChoice extends Component {
       </div>
     )
   }
+}
