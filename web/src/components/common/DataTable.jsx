@@ -212,8 +212,8 @@ export default class BookmarksTable extends Component {
         if(!discard){
           array.push(dataObject)
         }
-        this.setState({filteredTable : array})
       }
+      this.setState({filteredTable : array})
     }
 
   render() {
