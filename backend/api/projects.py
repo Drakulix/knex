@@ -228,7 +228,7 @@ def update_project(project_id):
                          if author['email'] != current_user['email']] +
                         g.users_with_bookmark(str(manifest['_id']))
                     )), "Project was updated", manifest['title'],
-                    '/projects/' + str(manifest['_id']))
+                    '/project/' + str(manifest['_id']))
                 g.rerun_saved_searches()
                 return make_response("Success")
             elif not is_permitted(current_user, manifest):
@@ -491,7 +491,7 @@ def share_via_email(project_id, user_mail):
         raise ApiException("Project not found", 404)
 
     description = res["title"] + "was shared with you."
-    link = "/projects/" + str(project_id)
+    link = "/project/" + str(project_id)
     title = "Project shared."
     return g.notify_users([user_mail], description, title, link)
 
@@ -510,6 +510,6 @@ def share_with_users(project_id):
         raise ApiException("Project not found", 404)
 
     description = res["title"] + "was shared with you"
-    link = "/projects/" + str(project_id)
+    link = "/project/" + str(project_id)
     title = "Project shared"
     return g.notify_users(emails_list, description, title, link)
