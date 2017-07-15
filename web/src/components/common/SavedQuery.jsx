@@ -51,7 +51,7 @@ export default class SavedQuery extends Component {
                touch={true}
                style = {styles.largeIcon}
                tooltipPosition="top-center"
-               tooltip="Delete project"
+               tooltip="Delete Query"
                iconStyle={{fontSize: '24px'}}
                >
                <i className="material-icons">delete</i>
