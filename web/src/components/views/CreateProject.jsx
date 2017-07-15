@@ -20,7 +20,7 @@ export default class CreateProject extends Component {
 
   constructor(props) {
     super(props)
-
+alert(props.authors)
     if(props.fromURL){
       this.state = {
         projectInf : props.projectInf,

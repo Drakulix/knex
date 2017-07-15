@@ -10,7 +10,6 @@ export default class CreateProjectByURL extends React.Component {
         super(props)
         var data = this.props.json;
         this.state = {
-          status : "2",
           json : data
         }
       }
@@ -35,6 +34,7 @@ export default class CreateProjectByURL extends React.Component {
               for(var i = 0;i<data.authors.length;i++){
                   projectAuthors.push(data.authors[i].name + " ("+data.authors[i].email + ")")
               }
+              project["authors"] = data.authors
               this.setState({ authors : projectAuthors })
             }
             if(data.date_creation!=null){
@@ -46,16 +46,6 @@ export default class CreateProjectByURL extends React.Component {
               project["description"] = data.description
             }
             if(data.status!=null){
-              switch(data.status.toLowerCase()){
-                case "done" :         this.setState({ status : "0" })
-                                      break
-                case "in review" :    this.setState({ status : "1" })
-                                      break
-                case "in progress" :  this.setState({ status : "2" })
-                                      break
-                default:
-                                      break
-              }
               project["status"] = data.status;
             }
             if(data.tags!=null){
@@ -74,7 +64,6 @@ export default class CreateProjectByURL extends React.Component {
             <CreateProject
             authors={this.state.authors}
             projectInf={this.state.projectInf}
-            status={this.state.status}
             date={this.state.date}
             fromURL={true}
             />
