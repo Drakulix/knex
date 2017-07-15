@@ -1,3 +1,6 @@
+import json
+import time
+
 from elasticsearch import Elasticsearch
 from flask import Flask, g, jsonify, request
 from flask.helpers import make_response
@@ -12,9 +15,7 @@ from mongoengine import NotUniqueError
 from pymongo import MongoClient, ReturnDocument
 from mongoengine.fields import (UUIDField, ListField, StringField, BooleanField,
                                 ObjectId, EmbeddedDocumentField, EmbeddedDocument,
-                                ListField, ObjectIdField)
-import json
-import time
+                                ObjectIdField)
 from werkzeug.routing import BaseConverter
 
 from api.projects import projects
@@ -142,6 +143,8 @@ class User(DB.Document, UserMixin):
     roles = DB.ListField(DB.ReferenceField(Role), default=[])
     notifications = DB.ListField(DB.EmbeddedDocumentField(Notification), default=[])
     saved_searches = DB.ListField(DB.EmbeddedDocumentField(SavedSearch), default=[])
+    avatar_name = DB.StringField(max_length=255)
+    avatar = DB.StringField()  # this is ugly as fuck but we store b64 encoded file data
 
     # we must not override the method __iter__ because Document.save() stops working then
     def to_dict(self):
