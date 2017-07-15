@@ -18,6 +18,7 @@ import SignUp from './components/pages/SignUp.jsx'
 import AdminOverview from './components/views/AdminOverview'
 import CreateProject from './components/views/CreateProject'
 import CreateProjectByURL from './components/views/CreateProjectByURL'
+import CreateProjectFromFile from './components/views/CreateProjectFromFile'
 import CreateProjectChoice from './components/views/CreateProjectChoice.jsx'
 import ProfileContainer from './components/views/ProfileContainer.jsx'
 import ProjectContainer from './components/views/ProjectContainer'
@@ -66,7 +67,8 @@ ReactDOM.render(
         <PageRoute site_path="/discovery" path="/discovery/" component={SearchPage} />
         <PageRoute site_path="/admin" path="/admin" component={AdminOverview} />
         <PageRoute site_path="/createNew" exact path="/createNew" component={CreateProject} />
-        <PageRoute site_path="/createNew" path="/createNew/:getURL" component={CreateProjectByURL} />
+        <PageRoute site_path="/createNew" path="/createByURL/:getURL" component={CreateProjectByURL} />
+        <PageRoute site_path="/createNew" path="/createFromFile/:data" component={CreateProjectFromFile} />
         <PageRoute site_path="/update" path="/update/:uuid" component={CreateProject} />
         <PageRoute site_path="/createbylink" path="/createbylink" component={CreateProjectChoice} />
         <PageRoute site_path="/project" path="/project/:uuid" component={ProjectContainer} />

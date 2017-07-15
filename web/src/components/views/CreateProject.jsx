@@ -195,7 +195,6 @@ export default class CreateProject extends Component {
     }
 
     render() {
-    console.log(this.state);
       if(!this.state.site_loaded && this.state.projectID){
         return (
           <div className = "container">

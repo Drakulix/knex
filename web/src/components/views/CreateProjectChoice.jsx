@@ -16,6 +16,8 @@ export default class CreateProjectChoice extends Component {
      redirect : false,
      snackbar : false,
      snackbarText : "",
+     data : null,
+     uploaded : false,
     }
     this.submitForm = this.submitForm.bind(this)
     this.handleFile = this.handleFile.bind(this)
@@ -31,7 +33,9 @@ export default class CreateProjectChoice extends Component {
               var json = JSON.parse(reader.result);
               this.setState({
                 snackbar : true,
-                snackbarText : "File uploaded"
+                snackbarText : "File uploaded",
+                data : json,
+                uploaded : true,
               })
            } catch(e) {
              this.setState({
@@ -48,7 +52,9 @@ export default class CreateProjectChoice extends Component {
               var json5 = JSON5.parse(reader.result);
               this.setState({
                 snackbar : true,
-                snackbarText : "File uploaded"
+                snackbarText : "File uploaded",
+                data : json5,
+                uploaded : true,
               })
            } catch(e) {
              this.setState({
@@ -103,9 +109,34 @@ export default class CreateProjectChoice extends Component {
       )
   }
 
+  serialiseObject(obj){
+    var pairs = [];
+    for (var prop in obj) {
+        if (!obj.hasOwnProperty(prop)) {
+            continue;
+        }
+        if (Object.prototype.toString.call(obj[prop]) == '[object Array]') {
+            pairs.push(this.serialiseObject(obj[prop]));
+            continue;
+        }
+        if (Object.prototype.toString.call(obj[prop]) == '[object Object]') {
+            pairs.push(this.serialiseObject(obj[prop]));
+            continue;
+        }
+        pairs.push(prop + '=' + obj[prop]);
+    }
+    return pairs.join('&');
+  }
+
   render() {
     if (this.state.redirect){
-      return <Redirect to = {'/createNew/'+encodeURIComponent(this.state.sourceURL)}/>
+      return <Redirect to = {'/createByURL/'+encodeURIComponent(this.state.sourceURL)}/>
+    }
+    if(this.state.uploaded){
+      var data = encodeURIComponent(JSON5.stringify(this.state.data));
+      return(<Redirect to = {
+        '/createFromFile/'+data
+      }/>);
     }
     return (
       <div className = "container"style = {{textAlign : 'center'}} >
