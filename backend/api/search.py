@@ -77,7 +77,10 @@ def search_simple():
         raise ApiException(str(e), 400)
 
     if save:
-        return g.save_search(current_user, json.loads(save), request_json, len(projects))
+        try:
+            return g.save_search(current_user, json.loads(save), request_json, len(projects))
+        except json.JSONDecodeError:
+            return make_response('Invalid json', 400)
     else:
         return jsonify(projects)
 
@@ -127,7 +130,10 @@ def search_avanced():
         raise ApiException(str(e), 400)
 
     if save:
-        return g.save_search(current_user, json.loads(save), request_json, len(projects))
+        try:
+            return g.save_search(current_user, json.loads(save), request_json, len(projects))
+        except json.JSONDecodeError:
+            return make_response('Invalid json', 400)
     else:
         return jsonify(projects)
 
