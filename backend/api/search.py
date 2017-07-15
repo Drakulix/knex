@@ -1,4 +1,4 @@
-from flask import request, jsonify, g, Blueprint
+from flask import request, jsonify, g, Blueprint, make_response
 from elasticsearch.exceptions import RequestError
 from flask_security import login_required, current_user
 from mongoengine.fields import ObjectId
