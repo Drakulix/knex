@@ -44,7 +44,7 @@ def search_simple():
     count = request.args.get('count', type=int)
     if count is None:
         count = 10
-    save = json.loads(request.args.get('save', type=str))
+    save = request.args.get('save', type=str)
 
     # ^2 is boosting the attribute, *_is allowing wildcards to be used
     request_json = {
@@ -77,7 +77,7 @@ def search_simple():
         raise ApiException(str(e), 400)
 
     if save:
-        return g.save_search(current_user, save, request_json, len(projects))
+        return g.save_search(current_user, json.loads(save), request_json, len(projects))
     else:
         return jsonify(projects)
 
@@ -100,7 +100,7 @@ def search_avanced():
     count = request.args.get('count', type=int)
     if count is None:
         count = 10
-    save = json.loads(request.args.get('save', type=str))
+    save = request.args.get('save', type=str)
 
     request_json = {
         'query': {
@@ -127,7 +127,7 @@ def search_avanced():
         raise ApiException(str(e), 400)
 
     if save:
-        return g.save_search(current_user, save, request_json, len(projects))
+        return g.save_search(current_user, json.loads(save), request_json, len(projects))
     else:
         return jsonify(projects)
 
