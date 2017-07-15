@@ -99,12 +99,18 @@ export default class CreateProjectChoice extends Component {
                     redirect : true,
                   })
                 } catch (error) {
-                  alert(error)
+                  that.setState({
+                    snackbar : true,
+                    snackbarText : error,
+                  });
                 }
               }
             )
           } else {
-            alert("Connection Error.\n Unable to find anything at the given URL")
+            that.setState({
+              snackbar : true,
+              snackbarText : "Connection Error.\n Unable to find anything at the given URL",
+            });
           }
         }
       )
