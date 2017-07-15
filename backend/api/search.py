@@ -1,4 +1,4 @@
-from flask import request, jsonify, g, Blueprint
+from flask import request, jsonify, g, Blueprint, make_response
 from elasticsearch.exceptions import RequestError
 from flask_security import login_required, current_user
 from mongoengine.fields import ObjectId
@@ -77,7 +77,10 @@ def search_simple():
         raise ApiException(str(e), 400)
 
     if save:
-        return g.save_search(current_user, save, request_json, len(projects))
+        try:
+            return g.save_search(current_user, json.loads(save), request_json, len(projects))
+        except json.JSONDecodeError:
+            return make_response('Invalid json', 400)
     else:
         return jsonify(projects)
 
@@ -127,104 +130,12 @@ def search_avanced():
         raise ApiException(str(e), 400)
 
     if save:
-        return g.save_search(current_user, save, request_json, len(projects))
+        try:
+            return g.save_search(current_user, json.loads(save), request_json, len(projects))
+        except json.JSONDecodeError:
+            return make_response('Invalid json', 400)
     else:
         return jsonify(projects)
-
-
-@search.route('/api/projects/search/tag/', methods=['GET'])
-@login_required
-def search_tag():
-    """Search projects
-
-    Returns:
-        res (json): JSON containing Projects and metadata
-    """
-    tag = request.args.get('q', type=str)
-    sorting = request.args.get('sort', type=str)
-    order = request.args.get('order', type=str)
-    offset = request.args.get('offset', type=int)
-    if offset is None:
-        offset = 0
-    count = request.args.get('count', type=int)
-    if count is None:
-        count = 10
-    save = request.args.get('save', type=str)
-
-    request_json = {
-        'query': {
-            'bool': {
-                'must': [
-                    {
-                        'match_phrase': {
-                            'tags': tag,
-                        },
-                    },
-                ],
-            },
-        },
-        'from': offset,
-        'size': count,
-    }
-    if (sorting is not None) and (order is not None):
-        request_json["sort"] = dict()
-        request_json["sort"][sorting] = {
-            'order': order,
-        }
-
-    if save:
-        del request_json['from']
-        del request_json['size']
-
-    try:
-        projects = prepare_es_results(g.es.search(index="knexdb", body=request_json))
-    except RequestError as e:
-        return (str(e), 400)
-
-    if save:
-        return g.save_search(current_user, save, request_json, len(projects))
-    else:
-        return jsonify(projects)
-
-
-@search.route('/api/projects/search/suggest/', methods=['GET'])
-@login_required
-def search_suggest():
-    """Suggests search improvements
-
-    Returns:
-        res (json): JSON containing suggested search terms
-    """
-    text = request.args.get('q', type=str)
-
-    request_json = {
-        'suggest': {
-            'text': text,
-            'phraseSuggestion': {
-                'phrase': {
-                    'field': "description",
-                    'highlight': {
-                        'pre_tag': '<em>',
-                        'post_tag': '</em>',
-                    },
-                    'direct_generator': [
-                        {
-                            'field': 'description',
-                            'size': 10,
-                            'suggest_mode': 'missing',
-                            'min_word_length': 3,
-                            'prefix_length': 2,
-                        }
-                    ],
-                },
-            },
-        },
-    }
-    try:
-        res = g.es.search(index="knexdb", body=request_json)
-        return jsonify(res['suggest']['phraseSuggestion'][0]['options'])
-    except RequestError as e:
-        return (str(e), 400)
 
 
 @search.route('/api/projects/search/saved/<id>', methods=['GET'])
@@ -271,5 +182,5 @@ def delete_saved_search(id):
         if search.saved_search_id == ObjectId(id):
             user.saved_searches.remove(search)
             user.save()
-            return jsonify([search.to_dict() for search in user.saved_searches])
+            return make_response("Success", 200)
     return make_response("No search with the given id known", 404)

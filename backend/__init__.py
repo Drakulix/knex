@@ -1,3 +1,6 @@
+import json
+import time
+
 from elasticsearch import Elasticsearch
 from flask import Flask, g, jsonify, request
 from flask.helpers import make_response
@@ -12,9 +15,7 @@ from mongoengine import NotUniqueError
 from pymongo import MongoClient, ReturnDocument
 from mongoengine.fields import (UUIDField, ListField, StringField, BooleanField,
                                 ObjectId, EmbeddedDocumentField, EmbeddedDocument,
-                                ListField, ObjectIdField)
-import json
-import time
+                                ObjectIdField)
 from werkzeug.routing import BaseConverter
 
 from api.projects import projects
@@ -119,14 +120,14 @@ class Notification(DB.EmbeddedDocument):
 
 class SavedSearch(EmbeddedDocument):
     saved_search_id = ObjectIdField(default=ObjectId)
-    title = DB.StringField(max_length=255)
-    query = DB.StringField(max_length=2048)
+    metadata = DB.StringField(max_length=4096)
+    query = DB.StringField(max_length=4096)
     count = DB.LongField()
 
     def to_dict(self):
         dic = {}
         dic['id'] = str(self.saved_search_id)
-        dic['title'] = str(self.title)
+        dic['meta'] = json.loads(str(self.metadata))
         dic['count'] = self.count
         return dic
 
@@ -142,6 +143,8 @@ class User(DB.Document, UserMixin):
     roles = DB.ListField(DB.ReferenceField(Role), default=[])
     notifications = DB.ListField(DB.EmbeddedDocumentField(Notification), default=[])
     saved_searches = DB.ListField(DB.EmbeddedDocumentField(SavedSearch), default=[])
+    avatar_name = DB.StringField(max_length=255)
+    avatar = DB.StringField()  # this is ugly as fuck but we store b64 encoded file data
 
     # we must not override the method __iter__ because Document.save() stops working then
     def to_dict(self):
@@ -206,8 +209,8 @@ def users_with_bookmark_func():
     g.users_with_bookmark = users_with_bookmark
 
 
-def save_search(user, title, query, count):
-    search = SavedSearch(title=title, query=json.dumps(query), count=count)
+def save_search(user, meta, query, count):
+    search = SavedSearch(metadata=json.dumps(meta), query=json.dumps(query), count=count)
     user.saved_searches.append(search)
     user.save()
     return str(search.saved_search_id)
