@@ -15,7 +15,7 @@ from mongoengine import NotUniqueError
 from pymongo import MongoClient, ReturnDocument
 from mongoengine.fields import (UUIDField, ListField, StringField, BooleanField,
                                 ObjectId, EmbeddedDocumentField, EmbeddedDocument,
-                                ObjectIdField, ImageField, FileField)
+                                ObjectIdField)
 from werkzeug.routing import BaseConverter
 
 from api.projects import projects
@@ -143,7 +143,8 @@ class User(DB.Document, UserMixin):
     roles = DB.ListField(DB.ReferenceField(Role), default=[])
     notifications = DB.ListField(DB.EmbeddedDocumentField(Notification), default=[])
     saved_searches = DB.ListField(DB.EmbeddedDocumentField(SavedSearch), default=[])
-    avatar = DB.FileField()
+    avatar_name = DB.StringField(max_length=255)
+    avatar = DB.StringField()  # this is ugly as fuck but we store b64 encoded file data
 
     # we must not override the method __iter__ because Document.save() stops working then
     def to_dict(self):
