@@ -1,7 +1,9 @@
 const mainColor ="#ff5000";
 
 export default {
-
+  uploadButton: {
+    verticalAlign: 'middle',
+  },
   uploadInput: {
     cursor: 'pointer',
     position: 'absolute',
@@ -15,8 +17,7 @@ export default {
   chip: {
     margin: '8px 8px 0 0',
     float: 'left',
-    background: mainColor,
-    color: '#ffffff',
+    background: mainColor
   },
   wrapper: {
     display: 'flex',
@@ -31,8 +32,7 @@ export default {
     color: '#292b2c',
   },
   chipText:{
-    background: mainColor,
-
+    color : '#000000',
   },
   datePicker: {
       selectColor: mainColor
@@ -43,4 +43,4 @@ export default {
       pickerHeaderColor: mainColor,
 
   }
-}
+};

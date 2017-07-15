@@ -53,6 +53,7 @@ export default class ChipInputList extends Component {
           <Chip
             key={key}
             style= {styles["chip"]}
+            backgroundColor={isFocused ? '#ff5000' : '#ff5000'}
             onTouchTap={handleClick}
             onRequestDelete={handleRequestDelete}>
             <span style={styles["chipText"]}> {value} </span>
