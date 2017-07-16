@@ -1,34 +1,38 @@
 import React, { Component } from 'react'
 import ReactTable from 'react-table'
-import {get} from '../../common/Backend'
 import { Link } from 'react-router-dom'
 import IconButton from 'material-ui/IconButton'
 import styles from '../../common/Styles.jsx'
 import RaisedButton from 'material-ui/RaisedButton'
+import Snackbar from 'material-ui/Snackbar'
 import Dialog from 'material-ui/Dialog'
+import {del} from '../../common/Backend'
+
 
 export default class ShowUsers extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      data : [{}],
+      open : false,
+      snackbar : false,
+      snackbarText : ""
     }
     this.handleDelete = this.handleDelete.bind(this)
-  }
-
-  componentWillMount(){
-    get("/api/users").then(function(data) {
-      this.setState({
-        data : data,
-        open : false
-      })
-    }.bind(this))
+    this.handleSnackbar = this.handleSnackbar.bind(this)
   }
 
   handleDelete(userID){
     this.setState({
         open : true,
         userID : userID})
+  }
+
+  handleSnackbar(text){
+    this.setState({
+      open  : false,
+      snackbar : true,
+      snackbarText : text
+    })
   }
 
   render(){
@@ -128,13 +132,21 @@ export default class ShowUsers extends Component {
     return (
 
       <div className="padding">
-        <ConfirmationPane open={this.state.open} userID={this.state.userID}/>
+        <ConfirmationPane open={this.state.open}
+                          userID={this.state.userID}
+                          handleUserUpdate={this.props.handleUserUpdate}
+                          handleSnackbar={this.handleSnackbar}/>
+        <Snackbar
+            open={this.state.snackbar}
+            message={this.state.snackbarText}
+            autoHideDuration={10000}
+            />
         <div className="header-tab" style={{textAlign:"center"}}>List users</div>
         <div className="row">
           <div className="col-1"></div>
           <div className="col-10">
             <ReactTable style = {{width : "100%"}}
-                 data={this.state.data}
+                 data={this.props.userList}
                  columns={columns}
                  defaultExpanded={{1: true}}
                  filterable={true}
@@ -166,7 +178,13 @@ class ConfirmationPane extends Component {
   }
 
   handleDelete = () =>{
-    this.setState({open : false})
+    var text = "You can not delete the admin user"
+    if(this.props.userID !== "admin@knex.com"){
+      del("/api/users/"+this.props.userID)
+      this.props.handleUserUpdate()
+      text = "User " + this.props.userID + " deleted"
+    }
+    this.props.handleSnackbar(text)
   }
 
   componentWillReceiveProps(props){
@@ -193,7 +211,7 @@ class ConfirmationPane extends Component {
         title = {"Do you want to delete user "+ this.props.userID}
         actions = {actions}
         modal = {false}
-        open = {this.state.open}
+        open = {this.props.open}
         onRequestClose = {this.handleClose}
         >
       </Dialog>

@@ -8,6 +8,7 @@ import IconButton from 'material-ui/IconButton'
 import SharePane from '../common/SharePane'
 import CircularProgress from 'material-ui/CircularProgress'
 import CommentSideBar from '../common/CommentSideBar.jsx'
+import {getMyEmail, getUserInfo} from '../common/Authentication.jsx'
 
 
 export default class ProjectContainer extends Component {
@@ -20,7 +21,10 @@ export default class ProjectContainer extends Component {
       sharePane : false,
       commentBar : false,
       project_exists : false,
-      is_bookmark : false
+      is_bookmark : false,
+      canEdit : false,
+      myEmail : getMyEmail(),
+      isAdmin : false
     }
 
     this.handleEdit = this.handleEdit.bind(this)
@@ -28,7 +32,15 @@ export default class ProjectContainer extends Component {
     this.handleBookmark = this.handleBookmark.bind(this)
     this.handleShare = this.handleShare.bind(this)
     this.handleDelete = this.handleDelete.bind(this)
-    this.isOwner = this.isOwner.bind(this)
+
+
+    getUserInfo(getMyEmail()).then(data => {
+      if(data){
+        this.setState({
+          isAdmin : data.roles.indexOf("admin") !== -1
+        })
+      }
+    })
   }
 
   componentWillMount(){
@@ -38,19 +50,20 @@ export default class ProjectContainer extends Component {
   componentWillReceiveProps(nextProps){
     this.setState({projectID : nextProps.uuid})
     this.loadSiteInf(this.state.projectID)
-  }
 
-//TODO CHECK IF you are OWNER OR ADMNIN
-  isOwner(){
-    return this.state.projectInf.isOwner
   }
 
   loadSiteInf(uuid) {
     get('/api/projects/' + uuid).then(data => {
+      var email = this.state.myEmail
+      var isOwner = false
+      for (let author in data.authors)
+        isOwner = isOwner || data.authors[author].email === email
       this.setState({
         projectInf : data,
         project_exists : !!data,
         site_loaded : true,
+        isOwner : isOwner
       })
     }).catch(ex => {
       this.setState({
@@ -237,7 +250,7 @@ export default class ProjectContainer extends Component {
                 <IconButton
                           touch = {true}
                           style = {styles.largeIcon}
-                          disabled = {!this.isOwner}
+                          disabled = {! (this.state.isOwner || this.state.isAdmin)}
                           tooltipPosition = "top-center"
                           tooltip = "Edit project"
                           iconStyle = {{fontSize : '24px'}}
@@ -249,7 +262,7 @@ export default class ProjectContainer extends Component {
                         onClick = {this.handleDelete}
                         touch = {true}
                         style = {styles.largeIcon}
-                        disabled = {!this.isOwner}
+                        disabled = {! (this.state.isOwner || this.state.isAdmin)}
                         tooltipPosition = "top-center"
                         tooltip = "Delete project"
                         iconStyle = {{fontSize : '24px'}}

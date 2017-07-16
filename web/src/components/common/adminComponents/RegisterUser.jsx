@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import Snackbar from "material-ui/Snackbar"
 import TextField from "material-ui/TextField"
 import RaisedButton from "material-ui/RaisedButton"
 import MenuItem from "material-ui/MenuItem"
 import SelectField from "material-ui/SelectField"
+import Snackbar from 'material-ui/Snackbar'
 import {register} from '../../common/Authentication.jsx'
 
 
@@ -17,8 +17,6 @@ export default class RegisterUser extends Component {
       password : "",
       password_confirm : "",
       role : 'user',
-      snackbar : false,
-      snackbarText : ""
     }
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleRegister = this.handleRegister.bind(this)
@@ -37,7 +35,6 @@ export default class RegisterUser extends Component {
     const name = target.name
     this.setState({
       [name]: value,
-      snackbar : false
     })
   }
 
@@ -66,11 +63,13 @@ export default class RegisterUser extends Component {
           snackbar : true,
           snackbarText :  'Registration successfull!'
         })
+        this.props.handleUserUpdate()
       }else{
         this.setState({
           snackbar : true,
           snackbarText :  'Registration failed!'
         })
+        this.props.handleUserUpdate()
       }
     })
   }
