@@ -122,7 +122,7 @@ export default class ProjectContainer extends Component {
 
   handleDelete(event){
     event.preventDefault()
-    window.location = '/delete/'+  this.state.projectID
+    del("/api/projects/"+this.state.projectID)
   }
 
   render(){

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import ReactTable from 'react-table'
-import {get} from './Backend'
+import {get, del} from './Backend'
 import Filters from './Filters'
 import IconButton from 'material-ui/IconButton'
 import Chip from 'material-ui/Chip'
@@ -31,16 +31,7 @@ export default class BookmarksTable extends Component {
   }
 
   handleDelete(projectID){
-    fetch("/api/projects/"+projectID, {
-      credentials: 'include',
-      method: "DELETE",
-      body: "",
-      headers: {
-      }
-    }).then(response => response.status)
-      .catch(ex => {
-      console.error('parsing failed', ex)
-    })
+    del("/api/projects/"+projectID)
     this.fetchData(this.state.url)
   }
 
