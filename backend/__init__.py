@@ -7,7 +7,7 @@ from flask.helpers import make_response
 from flask_cors import CORS
 from flask_login import LoginManager
 from flask_mongoengine import MongoEngine
-from flask_security import Security, MongoEngineUserDatastore, UserMixin, RoleMixin
+from flask_security import Security, MongoEngineUserDatastore, UserMixin, RoleMixin, current_user
 from flask_security.utils import hash_password
 from flask_principal import PermissionDenied
 from jsonschema import FormatChecker, Draft4Validator

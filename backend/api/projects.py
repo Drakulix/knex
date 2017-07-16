@@ -192,9 +192,12 @@ def delete_project(project_id):
     return make_response("Success")
 
 
-@projects.route('/api/projects/<uuid:project_id>/archive/<bool:archived>', methods=['PUT'])
+@projects.route('/api/projects/<uuid:project_id>/archive/<string:archived>', methods=['PUT'])
 @login_required
 def archive_project(project_id, archived):
+    archived = True if archived == "true" else False if archived == "false" else None
+    if archived is None:  # we don't want to evaluate to bool
+        raise ApiException("Argument <string:archived> must be 'true' or 'false'", 400)
     manifest = g.projects.find_one({'_id': project_id})
     if not manifest:
         raise ApiException("Project not found", 404)
@@ -203,8 +206,7 @@ def archive_project(project_id, archived):
                                     return_document=ReturnDocument.AFTER)
     g.notify_users(
         list(set(
-            [author['email'] for author in manifest['authors']
-                if author['email'] != current_user['email']] +
+            [author['email'] for author in manifest['authors']] +
             g.users_with_bookmark(str(manifest['_id']))
         )), "Project was archived", manifest['title'],
         '/project/' + str(manifest['_id']))
@@ -243,8 +245,7 @@ def update_project(project_id):
                                                 return_document=ReturnDocument.AFTER)
                 g.notify_users(
                     list(set(
-                        [author['email'] for author in manifest['authors']
-                         if author['email'] != current_user['email']] +
+                        [author['email'] for author in manifest['authors']] +
                         g.users_with_bookmark(str(manifest['_id']))
                     )), "Project was updated", manifest['title'],
                     '/project/' + str(manifest['_id']))
