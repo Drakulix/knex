@@ -3,6 +3,10 @@ import {Tabs, Tab} from 'material-ui/Tabs'
 import ShowUsers from '../common/adminComponents/ShowUsers'
 import RegisterUser from '../common/adminComponents/RegisterUser'
 import ShowProjects from '../common/adminComponents/ShowProjects'
+import Snackbar from "material-ui/Snackbar"
+import {get} from '../common/Backend'
+
+
 
 export default class AdminOverview extends Component {
 
@@ -10,7 +14,22 @@ export default class AdminOverview extends Component {
     super(props)
     this.state = {
       value : "1",
+      userList : []
     }
+    this.handleUserUpdate = this.handleUserUpdate.bind(this)
+    this.loadUsers = this.loadUsers.bind(this)
+  }
+
+  componentWillMount(){
+    this.loadUsers()
+  }
+
+  loadUsers(){
+    get("/api/users").then(function(data) {
+      this.setState({
+        userList : data,
+      })
+    }.bind(this))
   }
 
   handleChange = (value) => {
@@ -18,6 +37,12 @@ export default class AdminOverview extends Component {
       value : value,
     })
   }
+
+  handleUserUpdate(){
+    this.loadUsers()
+  }
+
+
 
   render() {
     //TODO Chenge table to archived projects
@@ -34,10 +59,13 @@ export default class AdminOverview extends Component {
             <ShowProjects/>
           </Tab>
           <Tab label = "List Users" value = "2">
-            <ShowUsers/>
+            <ShowUsers
+              userList = {this.state.userList}
+              handleUserUpdate = {this.handleUserUpdate}/>
           </Tab>
           <Tab label = "Register user" value = "3">
-            <RegisterUser/>
+            <RegisterUser
+              handleUserUpdate = {this.handleUserUpdate}/>
           </Tab>
         </Tabs>
       </div>
