@@ -201,6 +201,8 @@ def archive_project(project_id, archived):
     manifest = g.projects.find_one({'_id': project_id})
     if not manifest:
         raise ApiException("Project not found", 404)
+    if not is_permitted(current_user, manifest):
+        raise ApiException("User is not permitted to archive this project", 403)
     manifest['archived'] = archived
     g.projects.find_one_and_replace({'_id': project_id}, manifest,
                                     return_document=ReturnDocument.AFTER)
