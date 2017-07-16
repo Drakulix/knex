@@ -178,8 +178,7 @@ def notify_users(useremail_list, n_description, n_title, n_link):
     n = Notification(description=n_description, title=n_title, link=n_link)
     for email in useremail_list:
         user = USER_DATASTORE.get_user(email)
-        id = None
-        if user:
+        if user and user['email'] != current_user['email']:
             for existing_n in user.notifications:
                 if str(existing_n.link) == n_link:
                     break
