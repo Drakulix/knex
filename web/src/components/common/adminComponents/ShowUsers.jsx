@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import ReactTable from 'react-table'
-import { fetchJson } from '../../common/Backend'
+import {get} from '../../common/Backend'
 import { Link } from 'react-router-dom'
 import IconButton from 'material-ui/IconButton'
 import styles from '../../common/Styles.jsx'
@@ -12,12 +12,12 @@ export default class ShowUsers extends Component {
     super(props)
     this.state = {
       data : [{}],
-    };
-    this.handleDelete = this.handleDelete.bind(this);
+    }
+    this.handleDelete = this.handleDelete.bind(this)
   }
 
   componentWillMount(){
-    fetchJson("/api/users").then(function(data) {
+    get("/api/users").then(function(data) {
       this.setState({
         data : data,
         open : false
@@ -72,6 +72,19 @@ export default class ShowUsers extends Component {
       }
     })
 
+
+    columns.push({
+      Header: 'Admin',
+      id: 'admin',
+      width:100,
+      filterable:false,
+      style:{textAlign:"center"},
+      accessor: d => d,
+      Cell: props =>{
+        return(<div></div>)
+      }
+    })
+
     columns.push({
       Header: 'Edit',
       accessor: d => d,
@@ -113,31 +126,32 @@ export default class ShowUsers extends Component {
       })
 
     return (
-      <div className="padding row">
+
+      <div className="padding">
         <ConfirmationPane open={this.state.open} userID={this.state.userID}/>
-        <div className="header-tab">List users</div>
-        <div className="col-1"></div>
-        <div className="col-10">
-          <ReactTable style = {{width : "100%"}}
-               data={this.state.data}
-               columns={columns}
-               defaultExpanded={{1: true}}
-               filterable={true}
-               showPageSizeOptions={false}
-               defaultPageSize={10}
-               defaultSorted={[{
-                  id: 'userID',
-                  desc: true
-                }]}
-               />
-           </div>
-        <div className="col-1"></div>
+        <div className="header-tab" style={{textAlign:"center"}}>List users</div>
+        <div className="row">
+          <div className="col-1"></div>
+          <div className="col-10">
+            <ReactTable style = {{width : "100%"}}
+                 data={this.state.data}
+                 columns={columns}
+                 defaultExpanded={{1: true}}
+                 filterable={true}
+                 showPageSizeOptions={false}
+                 defaultPageSize={10}
+                 defaultSorted={[{
+                    id: 'userID',
+                    desc: true
+                  }]}
+                 />
+             </div>
+          <div className="col-1"></div>
+        </div>
       </div>
     )
   }
 }
-
-
 
 class ConfirmationPane extends Component {
   constructor(props) {
@@ -151,13 +165,12 @@ class ConfirmationPane extends Component {
     this.setState({open: false})
   }
 
-
   handleDelete = () =>{
     this.setState({open : false})
   }
 
   componentWillReceiveProps(props){
-    this.setState({open: props.open});
+    this.setState({open: props.open})
   }
 
   render() {

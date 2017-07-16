@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 import Chip from 'material-ui/Chip'
-import IconButton from 'material-ui/IconButton';
-import styles from '../common/Styles.jsx';
+import IconButton from 'material-ui/IconButton'
+import styles from '../common/Styles.jsx'
 
 
 
@@ -12,9 +12,9 @@ export default class SavedQuery extends Component {
 
 
     constructor(props) {
-      super(props);
-      this.deleteQuery = this.deleteQuery.bind(this);
-      this.runQuery = this.runQuery.bind(this);
+      super(props)
+      this.deleteQuery = this.deleteQuery.bind(this)
+      this.runQuery = this.runQuery.bind(this)
     }
 
     deleteQuery(){
@@ -51,7 +51,7 @@ export default class SavedQuery extends Component {
                touch={true}
                style = {styles.largeIcon}
                tooltipPosition="top-center"
-               tooltip="Delete project"
+               tooltip="Delete Query"
                iconStyle={{fontSize: '24px'}}
                >
                <i className="material-icons">delete</i>
@@ -101,6 +101,6 @@ export default class SavedQuery extends Component {
              </div>
            </div>
          </div>
-      );
+      )
     }
   }

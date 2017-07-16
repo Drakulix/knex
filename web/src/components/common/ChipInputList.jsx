@@ -1,40 +1,42 @@
-import React, { Component } from 'react';
-import ChipInput from 'material-ui-chip-input';
-import Chip from 'material-ui/Chip';
+import React, { Component } from 'react'
+import ChipInput from 'material-ui-chip-input'
+import Chip from 'material-ui/Chip'
 import AutoComplete from 'material-ui/AutoComplete'
 import styles from '../common/Styles.jsx'
 
-
 export default class ChipInputList extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
-      list:this.props.value
-    };
+      list : this.props.value
+    }
   }
 
   handleRequestAdd (chip) {
     if(this.props.filtered && this.props.suggestions.indexOf(chip) === -1)
-      return;
-    var list = [...this.state.list, chip];
+      return
+    var list = [...this.state.list, chip]
     this.setState({
-      list: list
+      list : list
     })
-    this.props.onChange(list);
+    var event = {target : { name : this.props.name,
+      value : list}}
+    this.props.onChange(event)
   }
 
   handleRequestDelete (deletedChip) {
     var list = this.state.list.filter((c) => c !== deletedChip)
     this.setState({
-      list: list
+      list : list
     })
-    this.props.onChange(list);
+    var event = {target : { name : this.props.name,
+      value : list}}
+    this.props.onChange(event)
   }
 
   componentWillReceiveProps(props){
-    this.props = props;
+    this.setState({list : props.value});
   }
-
 
   render(){
     return(
@@ -51,12 +53,12 @@ export default class ChipInputList extends Component {
           <Chip
             key={key}
             style= {styles["chip"]}
-            backgroundColor={styles.chip.background}
+            backgroundColor={isFocused ? '#ff5000' : '#ff5000'}
             onTouchTap={handleClick}
             onRequestDelete={handleRequestDelete}>
             <span style={styles["chipText"]}> {value} </span>
           </Chip>
         )}/>
-      );
+      )
     }
   }

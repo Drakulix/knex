@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import Snackbar from "material-ui/Snackbar"
 import TextField from "material-ui/TextField"
 import RaisedButton from "material-ui/RaisedButton"
@@ -9,14 +9,16 @@ import {register} from '../../common/Authentication.jsx'
 
 export default class RegisterUser extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       first_name : "",
       last_name : "",
       email : "",
       password : "",
       password_confirm : "",
-      role : 'user'
+      role : 'user',
+      snackbar : false,
+      snackbarText : ""
     }
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleRegister = this.handleRegister.bind(this)
@@ -57,22 +59,7 @@ export default class RegisterUser extends Component {
   }
 
   handleRegister(event){
-    event.preventDefault();
-    if(this.state.password !== this.state.password_confirm){
-      this.setState({
-        snackbar : true,
-        snackbarText :  'Passwords do not match'
-      })
-      return
-    }
-    if(this.state.password === ""){
-      this.setState({
-        snackbar : true,
-        snackbarText :  'Password can not be empty'
-      })
-      return
-    }
-
+    event.preventDefault()
     register(this.state.first_name, this.state.last_name, this.state.email, this.state.password, this.state.password_confirm, this.state.role).then((success) => {
       if(success){
         this.setState({
@@ -96,9 +83,11 @@ export default class RegisterUser extends Component {
           message={this.state.snackbarText}
           autoHideDuration={10000}
           />
-        <div className="header-tab">Register user</div>
-        <div className="row">
-          <div className="col-9">
+        <div>
+          <div className="header-tab" style = {{textAlign : "center"}}>Register user</div>
+          <div className="row">
+          <div className="col-4"></div>
+          <div className="col-4" style = {{textAlign : "center"}}>
             <form onSubmit={this.handleRegister}>
               {/*Input First Name*/}
               <div>
@@ -178,6 +167,7 @@ export default class RegisterUser extends Component {
                 />
             </form>
           </div>
+        </div>
         </div>
       </div>
     )

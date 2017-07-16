@@ -77,7 +77,7 @@ export function changePassword(email, oldpw, newpw){
 
 export function changeProfile(email, first_name, last_name, bio){
 
-  var sbody = {'email': email, 'first name': first_name, 'last name': last_name, 'bio': bio};
+  var sbody = {'email': email, 'first_name': first_name, 'last_name': last_name, 'bio': bio};
 
   return fetch('/api/users' , {
       method: 'PUT',

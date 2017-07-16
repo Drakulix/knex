@@ -12,7 +12,6 @@ class Headline extends Component {
   }
 }
 
-
 export default class SavedQueries extends Component {
   constructor(props) {
     super(props);
