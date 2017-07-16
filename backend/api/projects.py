@@ -291,7 +291,7 @@ def add_comment(project_id):
                 list(set(
                     [author['email'] for author in manifest['authors']] +
                     [comment['author']['email'] for comment in manifest['comments']]
-                )),
+                        ) - set([current_user['email']])),
                 "New comment", author["name"] + " commented on " + manifest["title"],
                 '/project/' + str(manifest['_id']))
             return jsonify(comment['id'])
