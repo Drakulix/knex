@@ -354,8 +354,9 @@ class TestGET(object):
         response = session.get(flask_api_url + "/api/projects/" +
                                project_id + "/archive/" + "true")
         print(response.text)
-        print(project_id)
-        print(flask_api_url + "/api/projects/" + project_id + "/archive/" + "true")
+        assert response.status_code == 200
+        response = session.get(flask_api_url + "/api/projects/" +
+                               project_id + "?archived=true")
         assert response.status_code == 200
 
     def test_unarchive_endpoint(self, flask_api_url, session, enter_data_using_post):
@@ -363,8 +364,9 @@ class TestGET(object):
         response = session.get(flask_api_url + "/api/projects/" +
                                project_id + "/archive/" + "false")
         print(response.text)
-        print(project_id)
-        print(flask_api_url + "/api/projects/" + project_id + "/archive/" + "false")
+        assert response.status_code == 200
+        response = session.get(flask_api_url + "/api/projects/" +
+                               project_id + "?archived=false")
         assert response.status_code == 200
 
     def test_get_archived_mixed_admin(self, session, flask_api_url,
