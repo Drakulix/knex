@@ -12,7 +12,6 @@ from mongoengine.fields import ObjectId
 from werkzeug.utils import secure_filename
 
 from api.helper.apiexception import ApiException
-from globals import object_id_to_uuid
 
 
 users = Blueprint('api_users', __name__)
@@ -185,8 +184,10 @@ def get_user_avatar(mail):
     if not user:
         raise ApiException("Unknown User with Email-address: " + str(mail), 404)
     filedata = base64.b64decode(user.avatar)
-    return make_response(filedata, attachment_filename=user.avatar_name,
-                         mimetype=mimetypes.guess_type(user.avatar_name))
+    response = make_response(filedata)
+    response.headers['Content-Type'] = mimetypes.guess_type(user.avatar_name)
+    response.headers['Content-Disposition'] = 'attachment; filename=' + user.avatar_name
+    return res
 
 
 @users.route('/api/users/<email:mail>/avatar', methods=['PUT'])
@@ -201,7 +202,7 @@ def set_user_avatar(mail):
         raise ApiException("Content-Type must be set to 'image/<filetype>'", 400)
     file = request.files['image']
     user.avatar_name = file.filename
-    user.avatar = base64.b64encode(file.read())
+    user.avatar = base64.b64encode(file.read()).decode()
     user.save()
     return make_response("Avatar successfully replaced.", 200)
 
@@ -214,9 +215,10 @@ def reset_user_avatar(mail):
         raise ApiException("Unknown User with Email-address: " + str(mail), 404)
     with open(os.path.join(sys.path[0], "default_avatar.png"), 'rb') as tf:
         imgtext = base64.b64encode(tf.read())
-    user.avatar = imgtext
+    user.avatar = imgtext.decode()
     user.avatar_name = "default_avatar.png"
     user.save()
+    return make_response("Success", 200)
 
 
 @users.route('/api/users/<email:mail>/tags', methods=['GET'])
@@ -355,7 +357,7 @@ def delete_notification(id):
         raise ApiException("Couldn't find current_user in datastore", 500)
 
     for notification in user.notifications:
-        if notification.notification_id == object_id_to_uuid(ObjectId(id)):
+        if notification.notification_id == ObjectId(id):
             user.notifications.remove(notification)
             user.save()
             return jsonify([notification.to_dict() for notification in user.notifications])
