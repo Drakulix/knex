@@ -42,7 +42,7 @@ export default class SavedQueries extends Component {
         shortName : "TEST",
         userID:"av"
       },
-      { _id :"FDAF",
+      { _id :"dFDAF",
         authors : [{email:"marko@knex", name :"Marko"},
         {email:"marko@knex", name :"Marko"}
       ],
@@ -71,7 +71,7 @@ export default class SavedQueries extends Component {
           <div>
             {
               this.state.queries.map(item =>
-                <div><SavedQuery value={item}></SavedQuery>
+                <div key = {item._id}><SavedQuery value={item}></SavedQuery>
                 <hr></hr>
                 </div>
               )

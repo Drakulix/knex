@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import ReactTable from 'react-table'
-import {get, del, put, post} from './Backend'
+import {get, del, post} from './Backend'
 import Filters from './Filters'
 import IconButton from 'material-ui/IconButton'
 import Chip from 'material-ui/Chip'
@@ -28,7 +28,6 @@ export default class BookmarksTable extends Component {
       dialogText : "",
       projectTitle : "",
       projectID : "",
-      buttonText : "",
       action : null,
       url : "/api/projects",
       loading : true,
@@ -58,8 +57,8 @@ export default class BookmarksTable extends Component {
   }
 
   handleUnArchive(projectID){
-    get("/api/projects/"+projectID+"/archive/false")
-    this.fetchData(this.state.url)
+    get("/api/projects/"+projectID+"/archive/false").then(
+    this.fetchData(this.state.url))
   }
 
   handleClose(){

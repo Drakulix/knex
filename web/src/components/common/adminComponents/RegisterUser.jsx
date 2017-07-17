@@ -17,6 +17,8 @@ export default class RegisterUser extends Component {
       password : "",
       password_confirm : "",
       role : 'user',
+      snackbar : false,
+      snackbarText : ""
     }
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleRegister = this.handleRegister.bind(this)
