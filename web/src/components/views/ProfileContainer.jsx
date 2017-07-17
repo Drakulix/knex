@@ -15,7 +15,7 @@ export default class ProfileContainer extends Component {
     super(props)
     this.state = {
       email : this.props.match.params.email,
-      profile_exists : true,
+      profile_exists : false,
       site_loaded : false,
       isAdmin : false,
       isMe : false,
@@ -57,7 +57,9 @@ export default class ProfileContainer extends Component {
     getUserInfo(e).then(data => {
       this.setState({profileInf : data})
       if(!data){
-        this.setState({profile_exists : false})
+        this.setState({
+          profile_exists : false,
+          site_loaded : true})
       }else{
         this.setState({
           profile_exists : true,
@@ -67,6 +69,11 @@ export default class ProfileContainer extends Component {
           site_loaded : true,
           isMe : data.email === getMyEmail()
         })
+        get("/api/users/"+e+"/tags").then(data => {
+            this.setState({
+              topTenTags : data
+            })
+          })
       }
     }).catch(ex => {
       alert(ex)
@@ -75,13 +82,7 @@ export default class ProfileContainer extends Component {
         site_loaded : true
       })
     })
-
-    get("/api/users/"+e+"/tags").then(data => {
-        this.setState({
-          topTenTags : data
-        })
-      })
-    }
+  }
 
   handleProfileChange(snackbarText){
     this.setState({
