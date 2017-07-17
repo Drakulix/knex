@@ -192,12 +192,12 @@ def delete_project(project_id):
     return make_response("Success")
 
 
-@projects.route('/api/projects/<uuid:project_id>/archive/<string:archived>', methods=['PUT'])
+@projects.route('/api/projects/<uuid:project_id>/archive/<string:archived>', methods=['GET'])
 @login_required
 def archive_project(project_id, archived):
-    archived = True if archived == "true" else False if archived == "false" else None
-    if archived is None:  # we don't want to evaluate to bool
+    if archived not in ["true", "false"]:
         raise ApiException("Argument <string:archived> must be 'true' or 'false'", 400)
+    archived = True if archived == "true" else False
     manifest = g.projects.find_one({'_id': project_id})
     if not manifest:
         raise ApiException("Project not found", 404)
@@ -210,7 +210,7 @@ def archive_project(project_id, archived):
         list(set(
             [author['email'] for author in manifest['authors']] +
             g.users_with_bookmark(str(manifest['_id']))
-        )), "Project was archived", manifest['title'],
+        )), "Project was (un)archived", manifest['title'],
         '/project/' + str(manifest['_id']))
     g.rerun_saved_searches()
     return make_response("Project was successfully archived.", 200)
