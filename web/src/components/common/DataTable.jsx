@@ -50,9 +50,9 @@ export default class BookmarksTable extends Component {
       projectID : projectID,
       buttonText : "Delete",
       action : function (){
-        del("/api/projects/"+projectID)
         this.setState({dialogOpen:false})
-        this.fetchData(this.state.url)
+        del("/api/projects/"+projectID)
+          .then(this.fetchData(this.state.url))
       }.bind(this)
       })
   }
@@ -72,15 +72,12 @@ export default class BookmarksTable extends Component {
       projectID : projectID,
       buttonText : "archive",
       action : function (){
-        get("/api/projects/"+projectID+"/archive/true")
         this.setState({dialogOpen:false})
-        this.fetchData(this.state.url)
+        get("/api/projects/"+projectID+"/archive/true")
+          .then(this.fetchData(this.state.url))
       }.bind(this)
       })
   }
-
-
-
 
   handleAddBookmark(projectID){
     for(let project of this.state.data) {
@@ -96,7 +93,7 @@ export default class BookmarksTable extends Component {
       }
     }
     post("/api/users/bookmarks/"+projectID, {})
-    this.fetchData(this.state.url)
+      .then(this.fetchData(this.state.url))
   }
 
   handleRemoveBookmark(projectID){
@@ -113,7 +110,7 @@ export default class BookmarksTable extends Component {
       }
     }
     del("/api/users/bookmarks/"+projectID)
-    this.fetchData(this.state.url)
+      .then(this.fetchData(this.state.url))
   }
 
   componentDidMount() {
