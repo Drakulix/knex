@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import CircularProgress from 'material-ui/CircularProgress'
-import {getMyEmail, getUserInfo} from '../common/Authentication.jsx'
+import {getMyEmail, getUserInfo, isAdmin} from '../common/Authentication.jsx'
 import {get} from '../common/Backend'
 import Snackbar from 'material-ui/Snackbar'
 
@@ -18,14 +18,13 @@ export default class ProfileContainer extends Component {
       profile_exists : false,
       site_loaded : false,
       isAdmin : false,
-      isMe : false,
+      isMe : this.props.match.params.email === getMyEmail(),
       profileInf : {},
       value : 'a',
-      topTenTags : []
-    }
+      topTenTags : [],
+  }
 
     this.handleProfileChange = this.handleProfileChange.bind(this)
-    this.loadMyAdmin()
   }
 
   handleChange = (value) => {
@@ -41,16 +40,7 @@ export default class ProfileContainer extends Component {
 
   componentWillMount(){
     this.loadProfileInf(this.state.email)
-  }
-
-  loadMyAdmin() {
-    getUserInfo(getMyEmail()).then(data => {
-      if(data){
-        this.setState({
-          isAdmin : data.roles.indexOf("admin") !== -1
-        })
-      }
-    })
+    isAdmin((admin) =>{this.setState({isAdmin :  admin})})
   }
 
   loadProfileInf(e) {
@@ -67,7 +57,6 @@ export default class ProfileContainer extends Component {
           last_name : data.last_name,
           bio : data.bio,
           site_loaded : true,
-          isMe : data.email === getMyEmail()
         })
         get("/api/users/"+e+"/tags").then(data => {
             this.setState({

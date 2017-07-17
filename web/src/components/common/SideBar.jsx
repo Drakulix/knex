@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import logo from '../../style/img/white_logo_title.svg'
-import {getMyEmail, getUserInfo} from '../common/Authentication.jsx'
+import {getMyEmail, getUserInfo, isAdmin} from '../common/Authentication.jsx'
 
 export default class SideBar extends Component {
   constructor(props) {
@@ -23,24 +23,9 @@ export default class SideBar extends Component {
   }
 
   componentWillMount(){
-    this.loadProfileInf(this.state.myProfile)
+    isAdmin((admin) =>{this.setState({isAdmin :  admin})})
   }
 
-  loadProfileInf(e) {
-    getUserInfo(e).then(data => {
-      this.setState({profileInf : data})
-      if(!data){
-        this.setState({profile_exists : false})
-      }else{
-        this.setState({
-          first_name : data.first_name, last_name : data.last_name, bio : data.bio,
-          isAdmin : data.roles.indexOf("admin") !== -1
-        })
-      }
-    }).catch(ex => {
-      this.setState({profile_exists : false})
-    })
-  }
 
   isActive = (url) => { return url === this.props.location }
 
