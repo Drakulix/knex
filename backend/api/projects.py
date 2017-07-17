@@ -189,6 +189,7 @@ def delete_project(project_id):
     if g.projects.delete_one({'_id': project_id}).deleted_count == 0:
         return make_response("Project could not be found", 404)
     g.rerun_saved_searches()
+    g.on_project_deletion()
     return make_response("Success")
 
 
@@ -209,9 +210,8 @@ def archive_project(project_id, archived):
     g.notify_users(
         list(set(
             [author['email'] for author in manifest['authors']] +
-            g.users_with_bookmark(str(manifest['_id']))
-        )), "Project was (un)archived", manifest['title'],
-        '/project/' + str(manifest['_id']))
+            g.users_with_bookmark(str(manifest['_id'])))),
+        "Project was (un)archived", manifest['title'], manifest['_id'])
     g.rerun_saved_searches()
     return make_response("Project was successfully archived.", 200)
 
@@ -249,9 +249,8 @@ def update_project(project_id):
                 g.notify_users(
                     list(set(
                         [author['email'] for author in manifest['authors']] +
-                        g.users_with_bookmark(str(manifest['_id']))
-                    )), "Project was updated", manifest['title'],
-                    '/project/' + str(manifest['_id']))
+                        g.users_with_bookmark(str(manifest['_id'])))),
+                    "Project was updated", manifest['title'], manifest['_id'])
                 g.rerun_saved_searches()
                 return make_response("Success")
             elif not is_permitted(current_user, manifest):
@@ -315,7 +314,7 @@ def add_comment(project_id):
                     [author['email'] for author in manifest['authors']] +
                     [comment['author']['email'] for comment in manifest['comments']])),
                 "New comment", author["name"] + " commented on " + manifest["title"],
-                '/project/' + str(manifest['_id']))
+                manifest['_id'])
             return jsonify(comment['id'])
         else:
             raise ApiException(
@@ -513,7 +512,7 @@ def share_via_email(project_id, user_mail):
         raise ApiException("Project not found", 404)
 
     description = res["title"] + "was shared with you."
-    link = "/project/" + str(project_id)
+    link = project_id
     title = "Project shared."
     return g.notify_users([user_mail], description, title, link)
 
@@ -532,6 +531,6 @@ def share_with_users(project_id):
         raise ApiException("Project not found", 404)
 
     description = res["title"] + "was shared with you"
-    link = "/project/" + str(project_id)
+    link = project_id
     title = "Project shared"
     return g.notify_users(emails_list, description, title, link)
