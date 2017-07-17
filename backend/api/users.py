@@ -12,7 +12,6 @@ from mongoengine.fields import ObjectId
 from werkzeug.utils import secure_filename
 
 from api.helper.apiexception import ApiException
-from globals import object_id_to_uuid
 
 
 users = Blueprint('api_users', __name__)
@@ -358,7 +357,7 @@ def delete_notification(id):
         raise ApiException("Couldn't find current_user in datastore", 500)
 
     for notification in user.notifications:
-        if notification.notification_id == object_id_to_uuid(ObjectId(id)):
+        if notification.notification_id == ObjectId(id):
             user.notifications.remove(notification)
             user.save()
             return jsonify([notification.to_dict() for notification in user.notifications])
