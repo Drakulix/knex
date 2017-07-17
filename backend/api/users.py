@@ -186,9 +186,10 @@ def get_user_avatar(mail):
         raise ApiException("Unknown User with Email-address: " + str(mail), 404)
     filedata = base64.b64decode(user.avatar)
     response = make_response(filedata)
-    response.headers['Content-Type']= mimetypes.guess_type(user.avatar_name)
-    response.headers['Content-Disposition'] = user.avatar_name
+    response.headers['Content-Type'] = mimetypes.guess_type(user.avatar_name)
+    response.headers['Content-Disposition'] = 'attachment; filename=' + user.avatar_name
     return res
+
 
 @users.route('/api/users/<email:mail>/avatar', methods=['PUT'])
 @login_required
@@ -219,6 +220,7 @@ def reset_user_avatar(mail):
     user.avatar_name = "default_avatar.png"
     user.save()
     return make_response("Success", 200)
+
 
 @users.route('/api/users/<email:mail>/tags', methods=['GET'])
 @login_required
