@@ -48,7 +48,6 @@ import 'isomorphic-fetch'
   }
 
   export function put(path, body) {
-    alert("FF")
     // use this function to make a PUT request.
     const url = `${path}`
     return fetch(url,{

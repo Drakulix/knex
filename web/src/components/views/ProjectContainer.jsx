@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 import Chip from 'material-ui/Chip'
 import styles from '../common/Styles.jsx'
-import {get, post, del} from '../common/Backend'
+import {get, post, del, put} from '../common/Backend'
 import IconButton from 'material-ui/IconButton'
 import SharePane from '../common/SharePane'
 import Dialog from 'material-ui/Dialog'
@@ -63,7 +63,12 @@ export default class ProjectContainer extends Component {
   }
 
   handleDelete(){
-    get("/api/projects/"+this.state.projectID+"/archive/true")
+    var project = this.state.projectInf;
+    delete project.is_bookmark
+    delete project.is_owner
+    project['archived'] = true
+    put("/api/projects/"+this.state.projectID, project)
+    this.setState({dialogOpen : false})
   }
 
   loadSiteInf(uuid) {
