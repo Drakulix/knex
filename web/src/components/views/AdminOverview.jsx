@@ -4,6 +4,7 @@ import ShowUsers from '../common/adminComponents/ShowUsers'
 import RegisterUser from '../common/adminComponents/RegisterUser'
 import ShowProjects from '../common/adminComponents/ShowProjects'
 import {get} from '../common/Backend'
+import Snackbar from 'material-ui/Snackbar'
 
 export default class AdminOverview extends Component {
 
@@ -11,7 +12,10 @@ export default class AdminOverview extends Component {
     super(props)
     this.state = {
       value : "1",
-      userList : []
+      userList : [],
+      loading : false,
+      snackbar : false,
+      snackbarText :""
     }
     this.handleUserUpdate = this.handleUserUpdate.bind(this)
     this.loadUsers = this.loadUsers.bind(this)
@@ -21,10 +25,18 @@ export default class AdminOverview extends Component {
     this.loadUsers()
   }
 
+  handleUserUpdate(snackbarText){
+    this.setState({snackbar : true,
+    snackbarText : snackbarText})
+    return this.loadUsers()
+  }
+
   loadUsers(){
-    get("/api/users").then(function(data) {
+    this.setState({loading : true})
+    return get("/api/users").then(function(data) {
       this.setState({
         userList : data,
+        loading : false
       })
     }.bind(this))
   }
@@ -32,19 +44,18 @@ export default class AdminOverview extends Component {
   handleChange = (value) => {
     this.setState({
       value : value,
+      snackbar : false
     })
   }
 
-  handleUserUpdate(){
-    this.loadUsers()
-  }
-
-
-
   render() {
-    //TODO Chenge table to archived projects
     return (
       <div className = "container">
+        <Snackbar
+          open={this.state.snackbar}
+          message={this.state.snackbarText}
+          autoHideDuration={10000}
+        />
         <div className = "header">Admin area</div>
         <Tabs
           inkBarStyle = {{marginTop : -4, height : 4}}
@@ -58,7 +69,8 @@ export default class AdminOverview extends Component {
           <Tab label = "List Users" value = "2">
             <ShowUsers
               userList = {this.state.userList}
-              handleUserUpdate = {this.handleUserUpdate}/>
+              handleUserUpdate = {this.handleUserUpdate}
+              loading = {this.state.loading}/>
           </Tab>
           <Tab label = "Register user" value = "3">
             <RegisterUser

@@ -173,6 +173,7 @@ export default class BookmarksTable extends Component {
     }
 
     filter(filters){
+      this.setState({loading : true})
       var array = []
       for(let dataObject of this.state.data) {
         var discard = false
@@ -433,12 +434,12 @@ export default class BookmarksTable extends Component {
                           handleAction= {this.state.action}
         />
       <div className = "container" style = {{display : (this.state.loading ? "block" : "none")}}>
-          <div className = "header"><CircularProgress size = {80} thickness = {5} /></div>
-        </div>
-        <div style = {{display : (!this.state.loading ? "block" : "none")}}>
+        <div className = "header"><CircularProgress size = {80} thickness = {5} /></div>
+      </div>
+      <div style = {{display : (!this.state.loading ? "block" : "none")}}>
         <Filters value={this.state.filters}
                  onChange={this.handleFilterChange}/>
-          <ReactTable
+        <ReactTable
             data={this.state.filteredTable}
             columns={columns}
             defaultExpanded={{1: true}}
