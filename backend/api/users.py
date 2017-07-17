@@ -185,9 +185,10 @@ def get_user_avatar(mail):
     if not user:
         raise ApiException("Unknown User with Email-address: " + str(mail), 404)
     filedata = base64.b64decode(user.avatar)
-    return make_response(filedata, attachment_filename=user.avatar_name,
-                         mimetype=mimetypes.guess_type(user.avatar_name))
-
+    response = make_response(filedata)
+    response.headers['Content-Type']= mimetypes.guess_type(user.avatar_name)
+    response.headers['Content-Disposition'] = user.avatar_name
+    return res
 
 @users.route('/api/users/<email:mail>/avatar', methods=['PUT'])
 @login_required
@@ -201,7 +202,7 @@ def set_user_avatar(mail):
         raise ApiException("Content-Type must be set to 'image/<filetype>'", 400)
     file = request.files['image']
     user.avatar_name = file.filename
-    user.avatar = base64.b64encode(file.read())
+    user.avatar = base64.b64encode(file.read()).decode()
     user.save()
     return make_response("Avatar successfully replaced.", 200)
 
@@ -214,10 +215,10 @@ def reset_user_avatar(mail):
         raise ApiException("Unknown User with Email-address: " + str(mail), 404)
     with open(os.path.join(sys.path[0], "default_avatar.png"), 'rb') as tf:
         imgtext = base64.b64encode(tf.read())
-    user.avatar = imgtext
+    user.avatar = imgtext.decode()
     user.avatar_name = "default_avatar.png"
     user.save()
-
+    return make_response("Success", 200)
 
 @users.route('/api/users/<email:mail>/tags', methods=['GET'])
 @login_required
