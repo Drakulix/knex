@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import ReactTable from 'react-table'
-import {get, del, put} from './Backend'
+import {get, del, put, post} from './Backend'
 import Filters from './Filters'
 import IconButton from 'material-ui/IconButton'
 import Chip from 'material-ui/Chip'
@@ -93,18 +93,8 @@ export default class BookmarksTable extends Component {
         break
       }
     }
-    fetch("/api/users/bookmarks/"+projectID, {
-      credentials: 'include',
-      method: "POST",
-      body: "",
-      headers: {
-      }
-    }).then(response => response.status)
-      .catch(ex => {
-      console.error('parsing failed', ex)
-    }
-  )
-  this.fetchData(this.state.url)
+    post("/api/users/bookmarks/"+projectID, {})
+    this.fetchData(this.state.url)
   }
 
   handleRemoveBookmark(projectID){
@@ -120,19 +110,7 @@ export default class BookmarksTable extends Component {
         break
       }
     }
-
-    var url = "/api/users/bookmarks/"
-    fetch(url+projectID, {
-      credentials: 'include',
-      method: "DELETE",
-      body: "",
-      headers: {
-      }
-    }).then(response => response.status)
-      .catch(ex => {
-        console.error('parsing failed', ex)
-      }
-    )
+    del("/api/users/bookmarks/"+projectID)
     this.fetchData(this.state.url)
   }
 
