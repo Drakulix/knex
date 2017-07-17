@@ -1,5 +1,6 @@
 import json
 import time
+import uuid
 
 from elasticsearch import Elasticsearch
 from flask import Flask, g, jsonify, request
@@ -22,7 +23,6 @@ from api.projects import projects
 from api.users import users
 from api.search import search, prepare_es_results
 from api.helper.apiexception import ApiException
-from globals import ADMIN_PERMISSION, uuid_to_object_id, object_id_to_uuid
 
 
 app = Flask(__name__, static_url_path='')
@@ -107,7 +107,7 @@ class Notification(DB.EmbeddedDocument):
     notification_id = DB.ObjectIdField(default=ObjectId)
     title = DB.StringField(max_length=255)
     description = DB.StringField(max_length=255)
-    link = DB.UUIDField()
+    link = DB.StringField(max_length=255)
 
     def to_dict(self):
         dic = {}
@@ -180,7 +180,7 @@ def notify_users(useremail_list, n_description, n_title, n_link):
         user = USER_DATASTORE.get_user(email)
         if user and user['email'] != current_user['email']:
             for existing_n in user.notifications:
-                if existing_n.link == n_link:
+                if str(existing_n.link) == str(n_link):
                     break
             else:
                 user.notifications.append(n)
@@ -196,11 +196,7 @@ def notification_func():
 
 
 def users_with_bookmark(id):
-    users = []
-    for user in User.objects:
-        if id in user.bookmarks:
-            users.append(user['email'])
-    return users
+    return [user['email'] for user in User.objects if id in user.bookmarks]
 
 
 @app.before_request
@@ -232,7 +228,7 @@ def rerun_saved_searches():
                 search.save()
                 notify_users([user['email']], 'Saved search changed',
                              str(search.title) + ' updated',
-                             object_id_to_uuid(search.saved_search_id))
+                             '/results/saved/' + str(search.saved_search_id))
 
 
 @app.before_request
@@ -243,7 +239,12 @@ def rerun_saved_searches_func():
 def on_project_deletion():
     for user in User.objects:
         user.bookmarks = [x for x in user.bookmarks if g.projects.find_one({'_id': x})]
-        user.notifications = [x for x in user.notifications if g.projects.find_one({'_id': x.link})]
+        user.notifications = [x for x in user.notifications if
+                              '/project/' not in str(x.link) or g.projects.find_one(
+                               {'_id': uuid.UUID(
+                                   str(x.link)[str(x.link).index('/project/') + len('/project/'):]
+                                   )
+                                })]
         user.save()
 
 
@@ -266,7 +267,6 @@ def initialize_users():
     try:
         USER_DATASTORE.create_user(
             email='admin@knex.com', password=adminpw, roles=[user_role, admin_role])
-    # user_datastore.get_user might return None or throw an exception if the user does not exist
     except NotUniqueError:
         pass
 
