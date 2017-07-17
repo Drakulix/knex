@@ -7,7 +7,7 @@ from flask.helpers import make_response
 from flask_cors import CORS
 from flask_login import LoginManager
 from flask_mongoengine import MongoEngine
-from flask_security import Security, MongoEngineUserDatastore, UserMixin, RoleMixin
+from flask_security import Security, MongoEngineUserDatastore, UserMixin, RoleMixin, current_user
 from flask_security.utils import hash_password
 from flask_principal import PermissionDenied
 from jsonschema import FormatChecker, Draft4Validator
@@ -178,8 +178,7 @@ def notify_users(useremail_list, n_description, n_title, n_link):
     n = Notification(description=n_description, title=n_title, link=n_link)
     for email in useremail_list:
         user = USER_DATASTORE.get_user(email)
-        id = None
-        if user:
+        if user and user['email'] != current_user['email']:
             for existing_n in user.notifications:
                 if str(existing_n.link) == n_link:
                     break
