@@ -340,16 +340,34 @@ class TestGET(object):
 
     def test_get_archived_success(self, session, flask_api_url, enter_archived_using_post):
         project_id_archived = enter_archived_using_post.json()
-
         print(project_id_archived)
         get_response = session.get(flask_api_url + "/api/projects/" +
                                    project_id_archived[0] + "?archived=true")
         print(get_response.text)
         response_json = get_response.json()
-
         assert get_response.status_code == 200
         assert response_json["archived"]
         assert response_json["_id"] == project_id_archived[0]
+
+    def test_archive_endpoint(self, flask_api_url, session, enter_data_using_post):
+        project_id = enter_data_using_post.json()[0]
+        response = session.get(flask_api_url + "/api/projects/" +
+                               project_id + "/archive/" + "true")
+        print(response.text)
+        assert response.status_code == 200
+        response = session.get(flask_api_url + "/api/projects/" +
+                               project_id + "?archived=true")
+        assert response.status_code == 200
+
+    def test_unarchive_endpoint(self, flask_api_url, session, enter_data_using_post):
+        project_id = enter_data_using_post.json()[0]
+        response = session.get(flask_api_url + "/api/projects/" +
+                               project_id + "/archive/" + "false")
+        print(response.text)
+        assert response.status_code == 200
+        response = session.get(flask_api_url + "/api/projects/" +
+                               project_id + "?archived=false")
+        assert response.status_code == 200
 
     def test_get_archived_mixed_admin(self, session, flask_api_url,
                                       enter_archived_using_post, enter_data_using_post):
@@ -439,7 +457,6 @@ class TestPUT(object):
                                    project_id_not_archived[0])
         manifest_json = get_response.json()
         print(get_response.text)
-        # archive it
         manifest_json['archived'] = True
         del manifest_json['is_bookmark']
         del manifest_json['is_owner']
@@ -463,7 +480,6 @@ class TestPUT(object):
                                    project_id_archived[0] + "?archived=true")
         manifest_json = get_response.json()
         print(get_response.text)
-        # archive it
         manifest_json['archived'] = False
         del manifest_json['is_bookmark']
         del manifest_json['is_owner']
