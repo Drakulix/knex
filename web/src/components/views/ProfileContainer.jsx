@@ -21,7 +21,9 @@ export default class ProfileContainer extends Component {
       isMe : false,
       profileInf : {},
       value : 'a',
-      topTenTags : []
+      topTenTags : [],
+      snackbar : false,
+      snackbarText : ""
     }
 
     this.handleProfileChange = this.handleProfileChange.bind(this)

@@ -16,6 +16,8 @@ export default class ProfileEditor extends Component {
       pw_old: props.profileInf.password,
       pw_new: '',
       pw_new_confirm: '',
+      snackbar : false,
+      snackbarText : ""
     }
     this.handlePwChangeSubmit = this.handlePwChangeSubmit.bind(this)
     this.handleProfileChangeSubmit = this.handleProfileChangeSubmit.bind(this)
@@ -128,14 +130,14 @@ export default class ProfileEditor extends Component {
       </div>
       <div className="change-password">
         <form onSubmit={this.handlePwChangeSubmit}>
-          <div className="form-group row">
+          <div className="row">
             <label className="col-2 col-form-label">Email</label>
             <div className="col-10">
               <div className="form-control-static">{ this.props.profileInf.email }</div>
             </div>
           </div>
-          <div className="form-group row">
-            <label for="inputPassword" className="col-2">New Password</label>
+          <div className="row">
+            <label className="col-2">New Password</label>
             <div className="col-4">
               <TextField
                           value={this.state.pw_new}
@@ -146,8 +148,8 @@ export default class ProfileEditor extends Component {
                           />
             </div>
           </div>
-          <div className="form-group row">
-            <label for="inputPassword" className="col-2">Confirm password</label>
+          <div className="row">
+            <label className="col-2">Confirm password</label>
             <div className="col-4">
               <TextField
                           value={this.state.pw_new_confirm}
@@ -158,7 +160,7 @@ export default class ProfileEditor extends Component {
                           errorText ={this.state.pw_new !== this.state.pw_new_confirm ? "Passwords do not match" :""} />
             </div>
           </div>
-          <div className="form-group row">
+          <div className="row">
             <div className="col-10">
               <RaisedButton
                           type="Submit"

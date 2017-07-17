@@ -28,9 +28,11 @@ export default class BookmarksTable extends Component {
       dialogText : "",
       projectTitle : "",
       projectID : "",
+      buttonText : "",
       action : null,
       url : "/api/projects",
-      loading : true
+      loading : true,
+      buttonText : "DELETE"
     }
 
     this.handleFilterChange = this.handleFilterChange.bind(this)
@@ -46,7 +48,7 @@ export default class BookmarksTable extends Component {
     this.setState({dialogOpen : true,
       dialogText : "Do you want to delete project " + projectName,
       projectID : projectID,
-      label : "Delete",
+      buttonText : "Delete",
       action : function (){
         del("/api/projects/"+projectID)
         this.setState({dialogOpen:false})
@@ -68,7 +70,7 @@ export default class BookmarksTable extends Component {
     this.setState({dialogOpen : true,
       dialogText : "Do you want to archive project " + projectName,
       projectID : projectID,
-      label : "archive",
+      buttonText : "archive",
       action : function (){
         get("/api/projects/"+projectID+"/archive/true")
         this.setState({dialogOpen:false})
@@ -431,7 +433,7 @@ export default class BookmarksTable extends Component {
                           dialogText = {this.state.dialogText}
                           handleDelete = {this.handleDelete}
                           handleClose = {this.handleClose}
-                          label = {this.state.label}
+                          buttonText = {this.state.buttonText}
                           handleAction= {this.state.action}
         />
       <div className = "container" style = {{display : (this.state.loading ? "block" : "none")}}>
@@ -481,7 +483,7 @@ export default class BookmarksTable extends Component {
           onTouchTap = {this.props.handleClose}
           />,
         <RaisedButton
-          label = {this.props.label}
+          label = {this.props.buttonText}
           primary = {true}
           onTouchTap = {this.handleDelete}
           style = {{marginLeft:20}}

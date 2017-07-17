@@ -16,15 +16,15 @@ export default class ProfileView extends Component {
           </div>
           <div className="profile-header">Biography</div>
           <div className="profile-info" style={{width:"100%"}}>
-            <table style={{tableLayout: "fixed", width: "80%" ,wordWrap: "break-word"}}><tr><td>
+            <table style={{tableLayout: "fixed", width: "80%" ,wordWrap: "break-word"}}><tbody><tr><td>
               {this.props.profileInf.bio}
-            </td></tr></table>
+            </td></tr></tbody></table>
           </div>
           <div>
             <div className="profile-header">Expertise</div>
             <div style = {styles["wrapper"]}>
               { this.props.topTenTags.map(item =>
-                <Chip style= {styles["chip"]}>
+                <Chip style= {styles["chip"]} key={item}>
                   <Link to={"/discovery?tag=" +item} style= {styles["chipText"]} >{item}</Link></Chip>) }
             </div>
           </div>

@@ -3,10 +3,7 @@ import {Tabs, Tab} from 'material-ui/Tabs'
 import ShowUsers from '../common/adminComponents/ShowUsers'
 import RegisterUser from '../common/adminComponents/RegisterUser'
 import ShowProjects from '../common/adminComponents/ShowProjects'
-import Snackbar from "material-ui/Snackbar"
 import {get} from '../common/Backend'
-
-
 
 export default class AdminOverview extends Component {
 
