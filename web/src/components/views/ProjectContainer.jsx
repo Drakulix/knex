@@ -10,7 +10,7 @@ import Dialog from 'material-ui/Dialog'
 import RaisedButton from 'material-ui/RaisedButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import CommentSideBar from '../common/CommentSideBar.jsx'
-import {getMyEmail, getUserInfo} from '../common/Authentication.jsx'
+import {getMyEmail, getUserInfo, isAdmin} from '../common/Authentication.jsx'
 
 
 export default class ProjectContainer extends Component {
@@ -35,19 +35,11 @@ export default class ProjectContainer extends Component {
     this.handleBookmark = this.handleBookmark.bind(this)
     this.handleShare = this.handleShare.bind(this)
     this.handleDelete = this.handleDelete.bind(this)
-    this.handleClose = this.handleClose.bind(this)
-
-    getUserInfo(getMyEmail()).then(data => {
-      if(data){
-        this.setState({
-          isAdmin : data.roles.indexOf("admin") !== -1
-        })
-      }
-    })
   }
 
   componentWillMount(){
     this.loadSiteInf(this.state.projectID)
+    isAdmin((admin) =>{this.setState({isAdmin :  admin})})
   }
 
   componentWillReceiveProps(nextProps){

@@ -5,26 +5,30 @@ import 'babel-polyfill';
 var loggedin = false;
 var myemail = '';
 var myProfile;
+var loaded = false
+var isAdmin = false
 
 export function isLoggedIn(){
   return loggedin;
 }
 
 export function getMyEmail(){
+  if(myemail === '')
+    myemail = getCookie('email')
   return ( myemail || getCookie('email') );
 }
 
-export function isAdmin(){
-
-        return getUserInfo(getMyEmail()).then(function(response) {
-          return response.json;
-        }).then(function (response){
-            myProfile = response;
-            return (myProfile && (myProfile.roles === 'admin'));
-        }).then(res => {return res});
-
+export function isAdmin(resolveSetAdmin){
+  if(!loaded){
+    getUserInfo(getMyEmail()).then(function(response) {
+              isAdmin = response.roles.indexOf('admin') !== -1
+              loaded = true
+              return isAdmin
+       }).then(function(admin) {resolveSetAdmin(admin)})
+  } else {
+    resolveSetAdmin(isAdmin)
+  }
 }
-
 
 
 export function setCookie(cname, cvalue, exdays) {
@@ -124,6 +128,7 @@ export function login(login_email, login_password){
         console.log("MYLOG status: " + response.status);
         myemail = login_email;
         loggedin = true;
+        isAdmin = response.roles
         return true;
       }else{
         console.log("MYLOG status: " + response.status);
