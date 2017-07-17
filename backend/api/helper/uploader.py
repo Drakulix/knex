@@ -1,7 +1,6 @@
 """Module to upload or save manifests to the databases.
 """
 
-import sys
 import time
 import uuid
 
@@ -28,7 +27,6 @@ def save_manifest_to_db(manifest):
                 entry['date_creation'] = time.strftime("%Y-%m-%d")
 
         is_valid = g.validator.is_valid(manifestlist)
-
         if is_valid:
             ids = []
 
@@ -40,20 +38,23 @@ def save_manifest_to_db(manifest):
                 g.projects.insert(entry)
 
                 ids.append(entry['_id'])
-
+                g.notify_users(
+                    list(set(
+                        [author['email'] for author in entry['authors']] +
+                        g.users_with_bookmark(str(entry['_id']))
+                    )), "Project was updated", entry['title'],
+                    '/project/' + str(entry['_id']))
+                g.rerun_saved_searches()
             return ids
         else:
-            print(is_valid, file=sys.stderr)
             errors = sorted(g.validator.iter_errors(manifest), key=str)
             validation_error = {}
             validation_error["errors"] = []
             validation_error["sub_errors"] = []
             for error in errors:
                 validation_error["errors"].append(error.message)
-                print(error.message, file=sys.stderr)
                 for suberror in sorted(error.context, key=lambda e: e.schema_path):
                     validation_error["sub_errors"].append(suberror.message)
-                    print(list(suberror.schema_path), suberror.message, sep=", ", file=sys.stderr)
             raise ApiException("Validation Error: \n" + str(is_valid), 400, validation_error)
 
     except ApiException as e:
