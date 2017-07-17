@@ -6,6 +6,8 @@ import styles from '../common/Styles.jsx'
 import {get, post, del} from '../common/Backend'
 import IconButton from 'material-ui/IconButton'
 import SharePane from '../common/SharePane'
+import Dialog from 'material-ui/Dialog'
+import RaisedButton from 'material-ui/RaisedButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import CommentSideBar from '../common/CommentSideBar.jsx'
 import {getMyEmail, getUserInfo} from '../common/Authentication.jsx'
@@ -24,7 +26,8 @@ export default class ProjectContainer extends Component {
       is_bookmark : false,
       canEdit : false,
       myEmail : getMyEmail(),
-      isAdmin : false
+      isAdmin : false,
+      dialogOpen : false
     }
 
     this.handleEdit = this.handleEdit.bind(this)
@@ -32,7 +35,7 @@ export default class ProjectContainer extends Component {
     this.handleBookmark = this.handleBookmark.bind(this)
     this.handleShare = this.handleShare.bind(this)
     this.handleDelete = this.handleDelete.bind(this)
-
+    this.handleClose = this.handleClose.bind(this)
 
     getUserInfo(getMyEmail()).then(data => {
       if(data){
@@ -51,6 +54,17 @@ export default class ProjectContainer extends Component {
     this.setState({projectID : nextProps.uuid})
     this.loadSiteInf(this.state.projectID)
 
+  }
+
+  handleClose(){
+    this.setState({
+      dialogOpen : false
+    })
+  }
+
+  handleDelete(){
+    alert("DEL")
+  //  del("/api/projects/"+this.props.projectID)
   }
 
   loadSiteInf(uuid) {
@@ -120,10 +134,6 @@ export default class ProjectContainer extends Component {
     window.location = '/update/'+  this.state.projectID
   }
 
-  handleDelete(event){
-    event.preventDefault()
-    del("/api/projects/"+this.state.projectID)
-  }
 
   render(){
     if(!this.state.site_loaded){
@@ -155,6 +165,12 @@ export default class ProjectContainer extends Component {
           <div className = "innerContainer">
             <SharePane value = {this.state.sharePane} uuid = {this.state.projectID}></SharePane>
             <CommentSideBar value = {this.state.commentBar} uuid = {this.state.projectID}></CommentSideBar>
+            <ConfirmationPane open = {this.state.dialogOpen}
+                              projectID = {this.state.projectID}
+                              projectTitle = {this.state.projectInf.title}
+                              handleDelete = {this.handleDelete}
+                              handleClose = {this.handleClose}
+            />
             <div className = "row headerCreation" style = {{width : "100%"}}>
               <div className = "col-12">
                 <div>Project</div>
@@ -259,15 +275,15 @@ export default class ProjectContainer extends Component {
                 </IconButton>
               </Link>
               <IconButton
-                        onClick = {this.handleDelete}
+                        onClick ={() => this.setState({dialogOpen : true})}
                         touch = {true}
                         style = {styles.largeIcon}
                         disabled = {! (this.state.isOwner || this.state.isAdmin)}
                         tooltipPosition = "top-center"
-                        tooltip = "Delete project"
+                        tooltip = "Archive project"
                         iconStyle = {{fontSize : '24px'}}
                         >
-                        <i className = "material-icons">delete</i>
+                        <i className = "material-icons">archive</i>
               </IconButton>
             </div>
           </div>
@@ -275,4 +291,51 @@ export default class ProjectContainer extends Component {
       )
     }
   }
+}
+
+  class ConfirmationPane extends Component {
+    constructor(props) {
+      super(props)
+      this.state = {
+        open: false
+        }
+      this.handleDelete = this.handleDelete.bind(this)
+    }
+
+    handleDelete(event){
+      event.preventDefault()
+      this.props.handleDelete()
+    }
+
+
+    componentWillReceiveProps(props){
+      this.setState({open: props.dialogOpen})
+    }
+
+    render() {
+      const actions = [
+        <RaisedButton
+          label = "Cancel"
+          primary = {true}
+          onTouchTap = {this.props.handleClose}
+          />,
+        <RaisedButton
+          label="DELETE USER"
+          primary = {true}
+          onTouchTap = {this.handleDelete}
+          style = {{marginLeft:20}}
+          />,
+      ]
+
+      return (
+        <Dialog
+          title = {"Do you want to archive project: \n"+ this.props.projectTitle}
+          actions = {actions}
+          modal = {false}
+          open = {this.props.open}
+          onRequestClose = {this.props.handleClose}
+          >
+        </Dialog>
+      )
+    }
 }

@@ -19,6 +19,13 @@ export default class ShowUsers extends Component {
     }
     this.handleDelete = this.handleDelete.bind(this)
     this.handleSnackbar = this.handleSnackbar.bind(this)
+    this.handleClose = this.handleClose.bind(this)
+  }
+
+  handleClose(){
+    this.setState({
+      open : false
+    })
   }
 
   handleDelete(userID){
@@ -135,7 +142,8 @@ export default class ShowUsers extends Component {
         <ConfirmationPane open={this.state.open}
                           userID={this.state.userID}
                           handleUserUpdate={this.props.handleUserUpdate}
-                          handleSnackbar={this.handleSnackbar}/>
+                          handleSnackbar={this.handleSnackbar}
+                          handleClose={this.handleClose}/>
         <Snackbar
             open={this.state.snackbar}
             message={this.state.snackbarText}
@@ -166,16 +174,7 @@ export default class ShowUsers extends Component {
 }
 
 class ConfirmationPane extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      open: false
-      }
-  }
 
-  handleClose = () => {
-    this.setState({open: false})
-  }
 
   handleDelete = () =>{
     var text = "You can not delete the admin user"
@@ -196,7 +195,7 @@ class ConfirmationPane extends Component {
       <RaisedButton
         label = "Cancel"
         primary = {true}
-        onTouchTap = {this.handleClose}
+        onTouchTap = {this.props.handleClose}
         />,
       <RaisedButton
         label="DELETE USER"
@@ -212,7 +211,7 @@ class ConfirmationPane extends Component {
         actions = {actions}
         modal = {false}
         open = {this.props.open}
-        onRequestClose = {this.handleClose}
+        onRequestClose = {this.props.handleClose}
         >
       </Dialog>
     )

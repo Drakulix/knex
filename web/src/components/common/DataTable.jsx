@@ -1,11 +1,14 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import ReactTable from 'react-table'
-import {get, del} from './Backend'
+import {get, del, put} from './Backend'
 import Filters from './Filters'
 import IconButton from 'material-ui/IconButton'
 import Chip from 'material-ui/Chip'
 import styles from '../common/Styles.jsx'
+import RaisedButton from 'material-ui/RaisedButton'
+import Dialog from 'material-ui/Dialog'
+import CircularProgress from 'material-ui/CircularProgress'
 
 export default class BookmarksTable extends Component {
 
@@ -21,19 +24,61 @@ export default class BookmarksTable extends Component {
       filters : filters,
       filteredTable : [{
       }],
+      dialogOpen : false,
+      dialogText : "",
+      projectTitle : "",
+      projectID : "",
+      action : null,
       url : "/api/projects",
+      loading : true
     }
 
     this.handleFilterChange = this.handleFilterChange.bind(this)
     this.handleDelete = this.handleDelete.bind(this)
     this.handleAddBookmark = this.handleAddBookmark.bind(this)
     this.handleRemoveBookmark = this.handleRemoveBookmark.bind(this)
+    this.handleArchive = this.handleArchive.bind(this)
+    this.handleUnArchive = this.handleUnArchive.bind(this)
+    this.handleClose = this.handleClose.bind(this)
   }
 
-  handleDelete(projectID){
-    del("/api/projects/"+projectID)
+  handleDelete(projectID, projectName){
+    this.setState({dialogOpen : true,
+      dialogText : "Do you want to delete project " + projectName,
+      projectID : projectID,
+      label : "Delete",
+      action : function (){
+        del("/api/projects/"+projectID)
+        this.setState({dialogOpen:false})
+        this.fetchData(this.state.url)
+      }.bind(this)
+      })
+  }
+
+  handleUnArchive(projectID){
+    get("/api/projects/"+projectID+"/archive/false")
     this.fetchData(this.state.url)
   }
+
+  handleClose(){
+    this.setState({dialogOpen : false})
+  }
+
+  handleArchive(projectID, projectName){
+    this.setState({dialogOpen : true,
+      dialogText : "Do you want to archive project " + projectName,
+      projectID : projectID,
+      label : "archive",
+      action : function (){
+        get("/api/projects/"+projectID+"/archive/true")
+        this.setState({dialogOpen:false})
+        this.fetchData(this.state.url)
+      }.bind(this)
+      })
+  }
+
+
+
 
   handleAddBookmark(projectID){
     for(let project of this.state.data) {
@@ -105,6 +150,7 @@ export default class BookmarksTable extends Component {
   }
 
   fetchData(url){
+    this.setState({loading : true})
     get(url).then(function(data) {
       var datas =[]
       if(data !== undefined)
@@ -132,6 +178,7 @@ export default class BookmarksTable extends Component {
         filteredTable : filteredDataArray
       })
         this.filter(this.state.filters)
+        this.setState({loading : false})
       }.bind(this))
     }
 
@@ -345,6 +392,42 @@ export default class BookmarksTable extends Component {
         }
       })
     }
+    if(this.props.columns.indexOf("archive") !== -1){
+      columns.push({
+        Header: 'Archive',
+        accessor: d => d,
+        id: 'archive',
+        sortable:false,
+        width: 80,
+        style: {textAlign:"center"},
+        Cell: props => <IconButton
+          onClick = {()=>this.handleArchive(props.value._id, props.value.title)}
+          touch = {true}
+          style = {styles.largeIcon}
+          iconStyle = {{fontSize: '24px'}}
+          value = {props.value._id}>
+            <i className="material-icons">archive</i>
+          </IconButton>
+      })
+    }
+    if(this.props.columns.indexOf("dearchive") !== -1){
+      columns.push({
+        Header: 'Unarchive',
+        accessor: d => d,
+        id: 'dearchive',
+        sortable:false,
+        width: 100,
+        style: {textAlign:"center"},
+        Cell: props => <IconButton
+          onClick = {()=>this.handleUnArchive(props.value._id)}
+          touch = {true}
+          style = {styles.largeIcon}
+          iconStyle = {{fontSize: '24px'}}
+          value = {props.value._id}>
+            <i className="material-icons">unarchive</i>
+          </IconButton>
+      })
+    }
     if(this.props.columns.indexOf("delete") !== -1){
       columns.push({
         Header: 'Delete',
@@ -354,7 +437,7 @@ export default class BookmarksTable extends Component {
         width: 60,
         style: {textAlign:"center"},
         Cell: props => <IconButton
-          onClick = {()=>this.handleDelete(props.value._id)}
+          onClick = {()=>this.handleDelete(props.value._id,props.value.title)}
           touch = {true}
           style = {styles.largeIcon}
           iconStyle = {{fontSize: '24px'}}
@@ -365,6 +448,18 @@ export default class BookmarksTable extends Component {
     }
     return (
       <div>
+        <ConfirmationPane open = {this.state.dialogOpen}
+                          projectID = {this.state.projectID}
+                          dialogText = {this.state.dialogText}
+                          handleDelete = {this.handleDelete}
+                          handleClose = {this.handleClose}
+                          label = {this.state.label}
+                          handleAction= {this.state.action}
+        />
+      <div className = "container" style = {{display : (this.state.loading ? "block" : "none")}}>
+          <div className = "header"><CircularProgress size = {80} thickness = {5} /></div>
+        </div>
+        <div style = {{display : (!this.state.loading ? "block" : "none")}}>
         <Filters value={this.state.filters}
                  onChange={this.handleFilterChange}/>
           <ReactTable
@@ -374,7 +469,56 @@ export default class BookmarksTable extends Component {
             filterable={false}
             showPageSizeOptions={false}
             defaultPageSize={10}/>
+        </div>
       </div>
     )
   }
+}
+
+
+  class ConfirmationPane extends Component {
+    constructor(props) {
+      super(props)
+      this.state = {
+        open: false
+        }
+      this.handleDelete = this.handleDelete.bind(this)
+    }
+
+    handleDelete(event){
+      event.preventDefault()
+      this.props.handleAction()
+    }
+
+
+    componentWillReceiveProps(props){
+      this.setState({open: props.dialogOpen})
+    }
+
+    render() {
+      const actions = [
+        <RaisedButton
+          label = "Cancel"
+          primary = {true}
+          onTouchTap = {this.props.handleClose}
+          />,
+        <RaisedButton
+          label = {this.props.label}
+          primary = {true}
+          onTouchTap = {this.handleDelete}
+          style = {{marginLeft:20}}
+          />,
+      ]
+
+      return (
+        <Dialog
+          title = {this.props.dialogText}
+          actions = {actions}
+          modal = {false}
+          open = {this.props.open}
+          onRequestClose = {this.props.handleClose}
+          >
+        </Dialog>
+      )
+    }
 }
