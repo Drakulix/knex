@@ -3,7 +3,6 @@ import TextField from "material-ui/TextField"
 import RaisedButton from "material-ui/RaisedButton"
 import MenuItem from "material-ui/MenuItem"
 import SelectField from "material-ui/SelectField"
-import Snackbar from 'material-ui/Snackbar'
 import {register} from '../../common/Authentication.jsx'
 
 

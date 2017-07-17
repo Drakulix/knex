@@ -25,8 +25,6 @@ export default class ProfileContainer extends Component {
       snackbar : false,
       snackbarText : ""
     }
-  }
-
     this.handleProfileChange = this.handleProfileChange.bind(this)
   }
 
