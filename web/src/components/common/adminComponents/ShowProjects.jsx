@@ -9,7 +9,7 @@ export default class ShowProjects extends Component {
       <div>
         <div className = "header-tab" style = {{textAlign : "center"}}>Archived projects</div>
         <DataTable columns = {['title', 'status', 'tags', 'authors', 'description', '_id', 'dearchive', 'delete']}
-                   fetchURL = "/api/projects"/>
+                   fetchURL = "/api/projects?archived=true"/>
       </div>
     )
   }

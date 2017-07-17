@@ -63,8 +63,7 @@ export default class ProjectContainer extends Component {
   }
 
   handleDelete(){
-    alert("DEL")
-  //  del("/api/projects/"+this.props.projectID)
+    get("/api/projects/"+this.state.projectID+"/archive/true")
   }
 
   loadSiteInf(uuid) {
@@ -246,6 +245,7 @@ export default class ProjectContainer extends Component {
                         style = {styles.largeIcon}
                         tooltipPosition = "top-center"
                         tooltip = "Bookmark project"
+                        disabled = {! (this.state.isOwner)}
                         iconStyle = {{fontSize : '24px'}}
                         >
                         <i className = "material-icons">
@@ -320,7 +320,7 @@ export default class ProjectContainer extends Component {
           onTouchTap = {this.props.handleClose}
           />,
         <RaisedButton
-          label="DELETE USER"
+          label="Archive project"
           primary = {true}
           onTouchTap = {this.handleDelete}
           style = {{marginLeft:20}}
