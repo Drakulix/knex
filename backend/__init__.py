@@ -22,7 +22,7 @@ from api.projects import projects
 from api.users import users
 from api.search import search, prepare_es_results
 from api.helper.apiexception import ApiException
-from globals import ADMIN_PERMISSION
+from globals import ADMIN_PERMISSION, uuid_to_object_id, object_id_to_uuid
 
 
 app = Flask(__name__, static_url_path='')
@@ -107,7 +107,7 @@ class Notification(DB.EmbeddedDocument):
     notification_id = DB.ObjectIdField(default=ObjectId)
     title = DB.StringField(max_length=255)
     description = DB.StringField(max_length=255)
-    link = DB.StringField(max_length=255)
+    link = DB.UUIDField()
 
     def to_dict(self):
         dic = {}
@@ -119,7 +119,7 @@ class Notification(DB.EmbeddedDocument):
 
 
 class SavedSearch(EmbeddedDocument):
-    saved_search_id = ObjectIdField(default=ObjectId)
+    saved_search_id = DB.ObjectIdField(default=ObjectId)
     metadata = DB.StringField(max_length=4096)
     query = DB.StringField(max_length=4096)
     count = DB.LongField()
@@ -180,7 +180,7 @@ def notify_users(useremail_list, n_description, n_title, n_link):
         user = USER_DATASTORE.get_user(email)
         if user and user['email'] != current_user['email']:
             for existing_n in user.notifications:
-                if str(existing_n.link) == n_link:
+                if existing_n.link == n_link:
                     break
             else:
                 user.notifications.append(n)
@@ -230,13 +230,26 @@ def rerun_saved_searches():
             if search['count'] != len(projects):
                 search['count'] = len(projects)
                 search.save()
-                notify_users([user['email']], 'Saved search changed', str(
-                    search.title) + ' updated', '/results/saved/' + str(search.saved_search_id))
+                notify_users([user['email']], 'Saved search changed',
+                             str(search.title) + ' updated',
+                             object_id_to_uuid(search.saved_search_id))
 
 
 @app.before_request
 def rerun_saved_searches_func():
     g.rerun_saved_searches = rerun_saved_searches
+
+
+def on_project_deletion():
+    for user in User.objects:
+        user.bookmarks = [x for x in user.bookmarks if g.projects.find_one({'_id': x})]
+        user.notifications = [x for x in user.notifications if g.projects.find_one({'_id': x.link})]
+        user.save()
+
+
+@app.before_request
+def project_deleted_func():
+    g.on_project_deletion = on_project_deletion
 
 
 @app.before_first_request
