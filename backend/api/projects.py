@@ -213,6 +213,7 @@ def archive_project(project_id, archived):
         )), "Project was archived", manifest['title'],
         '/project/' + str(manifest['_id']))
     g.rerun_saved_searches()
+    return make_response("Project was successfully archived.", 200)
 
 
 @projects.route('/api/projects/<uuid:project_id>', methods=['PUT'])

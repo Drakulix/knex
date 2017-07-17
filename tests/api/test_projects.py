@@ -478,6 +478,13 @@ class TestPUT(object):
         assert get_response.status_code == 200
         assert not after_put_json["archived"]
 
+    def test_archive_endpoint(self, flask_api_url, session, enter_data_using_post):
+        project_id = enter_data_using_post.json()
+        put_response = session.put(flask_api_url + "/api/projects/" +
+                                   project_id[0] + "archive/" + "true")
+        assert put_response.status_code == 200
+
+
     def test_invalid_id(self, session, flask_api_url):
         """ Test for 405 when one tries to put a project with ID in invalid format.
         """
