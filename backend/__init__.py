@@ -240,11 +240,11 @@ def on_project_deletion():
     for user in User.objects:
         user.bookmarks = [x for x in user.bookmarks if g.projects.find_one({'_id': x})]
         user.notifications = [x for x in user.notifications if
-                              '/project/' in str(x.link) and g.projects.find_one(
+                              '/project/' not in str(x.link) or g.projects.find_one(
                                {'_id': uuid.UUID(
                                    str(x.link)[str(x.link).index('/project/') + len('/project/'):]
                                    )
-                                }) or '/project/' not in str(x.link)]
+                                })]
         user.save()
 
 
