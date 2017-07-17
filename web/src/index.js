@@ -78,6 +78,7 @@ ReactDOM.render(
         <PageRoute site_path="/queries" path="/queries" component={SavedQueries} />
         <Route path="/register" component={SignUp} />
         <Route exact path="/" component={SignIn} />
+        <Route path="*" component={SignIn} />
      </div>
     </BrowserRouter>
   </MuiThemeProvider>
