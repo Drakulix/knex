@@ -51,19 +51,19 @@ export default class ProfileContainer extends Component {
           profile_exists : false,
           site_loaded : true})
       }else{
-        this.setState({
-          profileInf : data,
-          profile_exists : true,
-          site_loaded : true,
-        })
-        get("/api/users/"+e+"/tags").then(data => {
+        get("/api/users/"+e+"/tags").then(tags => {
             this.setState({
-              topTenTags : data
+              topTenTags : tags
             })
+        }).then(
+          this.setState({
+            profileInf : data,
+            profile_exists : true,
+            site_loaded : true,
           })
+        )
       }
     }).catch(ex => {
-      alert(ex)
       this.setState({
         profile_exists : false,
         site_loaded : true

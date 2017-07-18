@@ -65,7 +65,6 @@ ReactDOM.render(
   <MuiThemeProvider  muiTheme={muiTheme}>
     <BrowserRouter history={history}>
       <div>
-
         <PageRoute site_path="/discovery" path="/discovery/:qID" component={SearchPage} />
         <PageRoute site_path="/discovery" path="/discovery/" component={SearchPage} />
         <PageRoute site_path="/admin" path="/admin" component={AdminOverview} />

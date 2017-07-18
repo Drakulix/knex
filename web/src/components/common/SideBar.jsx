@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import logo from '../../style/img/white_logo_title.svg'
-import {getMyEmail, getUserInfo, isAdmin} from '../common/Authentication.jsx'
+import {getMyEmail, isAdmin} from '../common/Authentication.jsx'
 
 export default class SideBar extends Component {
   constructor(props) {

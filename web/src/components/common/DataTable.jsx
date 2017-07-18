@@ -228,7 +228,8 @@ export default class BookmarksTable extends Component {
           array.push(dataObject)
         }
       }
-      this.setState({filteredTable : array})
+      this.setState({filteredTable : array,
+      loading : false})
     }
 
   render() {
