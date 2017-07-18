@@ -194,7 +194,7 @@ export default class ProjectContainer extends Component {
                 <div style = {styles["wrapper"]}>
                   {
                     this.state.projectInf.authors.map(item =>
-                      <Chip style= {styles["chip"]}>
+                      <Chip style= {styles["chip"]} key={item.email}>
                         <Link to = {"/profile/"+item.email} style= {styles["chipText"]}>{item.name}</Link>
                       </Chip>
                     )
@@ -204,7 +204,7 @@ export default class ProjectContainer extends Component {
               <div style = {{marginTop : 30}}>
                 <div className = "profile-info">Links</div>
                 <div style = {styles["wrapper"]}>
-                  { this.state.projectInf.url.map(item => <Chip style= {styles["chip"]}>
+                  { this.state.projectInf.url.map(item => <Chip style= {styles["chip"]} key={item}>
                   <a href = {item} style= {styles["chipText"]}>{item}</a></Chip>) }
                   </div>
                 </div>

@@ -88,7 +88,7 @@ export default class CommentSideBar extends React.Component {
                       onChange={this.handleChange}
                       hintText="Add a comment"
                       style={{width : '100%'}}
-                      multiLine={2}
+                      multiLine = {true}
           />
           <div style={{textAlign : "center", marginBottom : 25}}>
             <RaisedButton label="Comment"
