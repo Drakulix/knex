@@ -38,7 +38,7 @@ export default class NotificationPane extends Component {
             <MenuItem key={notification.id}>
               <Link style = {styles["linkStyle"]}
                     onClick = {()=>this.resolveNotification(notification.id)}
-                    to = {"project/"+notification.link}>
+                    to = {notification.link}>
                 <div style = {{marginBottom : -25}}>{notification.title}</div>
                 <div style = {{fontSize : "12px"}}> {notification.description}</div>
               </Link>

@@ -77,7 +77,8 @@ export default class ProfileEditor extends Component {
     if (file.name.substring(file.name.lastIndexOf(".")+1) === "png"){
       reader.onload = () => {
         try {
-          putImage("/api/users/"+this.props.profileInf.email+"/avatar" , reader.result)
+          putImage("/api/users/"+this.props.profileInf.email+"/avatar" , {}
+          )
           .then(
             this.props.profileChangeHandler("Avatar changed",true)
           )

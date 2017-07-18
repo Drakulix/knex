@@ -52,7 +52,7 @@ import 'isomorphic-fetch'
     const url = `${path}`
     return fetch(url,{
       method: "PUT",
-      body: JSON.stringify(body),
+      body: body,
       credentials: 'include',
       headers: {
         'Accept': 'application/json',
@@ -66,9 +66,7 @@ import 'isomorphic-fetch'
 
 
   export function putImage(path, body) {
-    // use this function to make a PUT request.
-
-    alert("fd")
+    // use this function to make a PUT Image request.
     const url = `${path}`
     return fetch(url,{
       method: "PUT",
