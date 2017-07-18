@@ -71,7 +71,7 @@ def create_user():
         role = g.user_datastore.find_or_create_role(user['roles'])
 
         with open(os.path.join(sys.path[0], "default_avatar.png"), 'rb') as tf:
-            imgtext = base64.b64encode(tf.read())
+            imgtext = base64.b64encode(tf.read()).decode()
 
         g.user_datastore.create_user(first_name=user['first_name'],
                                      last_name=user['last_name'],
@@ -187,7 +187,7 @@ def get_user_avatar(mail):
     response = make_response(filedata)
     response.headers['Content-Type'] = mimetypes.guess_type(user.avatar_name)
     response.headers['Content-Disposition'] = 'attachment; filename=' + user.avatar_name
-    return res
+    return response
 
 
 @users.route('/api/users/<email:mail>/avatar', methods=['PUT'])
