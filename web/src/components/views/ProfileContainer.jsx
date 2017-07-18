@@ -46,17 +46,14 @@ export default class ProfileContainer extends Component {
 
   loadProfileInf(e) {
     getUserInfo(e).then(data => {
-      this.setState({profileInf : data})
       if(!data){
         this.setState({
           profile_exists : false,
           site_loaded : true})
       }else{
         this.setState({
+          profileInf : data,
           profile_exists : true,
-          first_name : data.first_name,
-          last_name : data.last_name,
-          bio : data.bio,
           site_loaded : true,
         })
         get("/api/users/"+e+"/tags").then(data => {
