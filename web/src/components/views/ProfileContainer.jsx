@@ -71,9 +71,9 @@ export default class ProfileContainer extends Component {
     })
   }
 
-  handleProfileChange(snackbarText){
+  handleProfileChange(snackbarText, success){
     this.setState({
-      value : "a",
+      value : success ? 'a' : 'b',
       snackbar : true,
       snackbarText : snackbarText
     })
