@@ -39,11 +39,12 @@ export default class CreateProject extends Component {
           status : "IN_PROGRESS",
           title : "",
           description : "",
-          date_creation : "2012-12-12",
+          date_creation : Moment().format("YYYY-MM-DD"),
           tags : [],
           url : [],
           authors : [],
         },
+        date : Moment().toDate(),
         snackbar : false,
         site_loaded : false,
         project_exists : false,
@@ -83,6 +84,7 @@ export default class CreateProject extends Component {
   handleChangeDate(event, date) {
     var projectInf = this.state.projectInf
 
+
     projectInf.date_creation = Moment(date).format("YYYY-MM-DD")
     this.setState({
       date : date,
@@ -114,9 +116,7 @@ export default class CreateProject extends Component {
           site_loaded : true,
           projectInf : data,
           authors : authorArray,
-          date : new Date( data.date_creation.split("-")[0],
-                          data.date_creation.split("-")[1]-1,
-                          data.date_creation.split("-")[2],0,0,0,0)
+          date : Moment(data.date_creation, "YYYY-MM-DD").toDate()
         })
       }
     })

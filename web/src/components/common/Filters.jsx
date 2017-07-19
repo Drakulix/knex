@@ -23,16 +23,6 @@ export default class Filters extends Component{
   constructor(props){
     super(props)
     var filters = (props.value === undefined) ? {} : props.value
-    var picker_date_from = (filters.date_from !== undefined) ?
-                              new Date( filters.date_from.split("-")[0],
-                                        filters.date_from.split("-")[1]-1,
-                                        filters.date_from.split("-")[2],0,0,0,0)
-                         : null
-    var picker_date_to = (filters.date_to !== undefined) ?
-                              new Date( filters.date_to.split("-")[0],
-                                        filters.date_to.split("-")[1]-1,
-                                        filters.date_to.split("-")[2],0,0,0,0)
-                         : null
 
     var authors = []
     if(filters.authors !== undefined){
@@ -48,8 +38,8 @@ export default class Filters extends Component{
       title : filters.title !== undefined ? filters.title : "",
       tags : filters.tags !== undefined ? filters.tags : [],
       status : filters.status !== undefined ? filters.status : "",
-      picker_date_from : picker_date_from,
-      picker_date_to :picker_date_to,
+      picker_date_from : (filters.date_from !== undefined) ? Moment(filters.date_from, "YYYY-MM-DD").toDate():null,
+      picker_date_to : (filters.date_to !== undefined) ? Moment(filters.date_to, "YYYY-MM-DD").toDate():null,
       date_from : (filters.date_from !== undefined) ? filters.date_from : null,
       date_to : (filters.date_to !== undefined) ?filters.date_to : null,
       description : filters.description !== undefined ? filters.description : "",
