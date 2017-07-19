@@ -1,0 +1,12 @@
+flask:
+    hostname: "0.0.0.0"
+    port: 5000
+    debug: True
+mongo_db:
+    hostname: "mongodb"
+    port: 27017
+    security_password_hash: 'pbkdf2_sha512'
+    security_password_salt: 'THISISMYOWNSALT'
+elasticsearch:
+    hostname: "elasticsearch"
+    port: 9200

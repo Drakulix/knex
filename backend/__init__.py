@@ -5,6 +5,7 @@ import time
 import uuid
 import base64
 
+import yaml
 from elasticsearch import Elasticsearch
 from flask import Flask, g, jsonify, request
 from flask.helpers import make_response
@@ -27,18 +28,42 @@ from api.users import users
 from api.search import search, prepare_es_results
 from api.helper.apiexception import ApiException
 
+config_file_path = os.path.dirname(os.path.abspath(__file__))
+config = {}
+default_config = {"flask": {}, "mongo_db": {}, "elasticsearch": {}}
+default_config["flask"]["hostname"] = "0.0.0.0"
+default_config["flask"]["port"] = 5000
+default_config["flask"]["debug"] = False
+default_config["mongo_db"]["secret_key"] = "super-secret"
+default_config["mongo_db"]["hostname"] = "mongodb"
+default_config["mongo_db"]["port"] = 27017
+default_config["mongo_db"]["security_password_hash"] = 'pbkdf2_sha512'
+default_config["mongo_db"]["security_password_salt"] = 'THISISMYOWNSALT'
+default_config["elasticsearch"]["hostname"] = "elasticsearch"
+default_config["elasticsearch"]["port"] = 9200
+if os.path.isfile(os.path.join(config_file_path, "config.yml")):
+    print("Starting flask server (Backend/Api) using config file")
+    with open(os.path.join(config_file_path, "config.yml"), 'r') as config_file:
+        config = yaml.load(config_file)
+        if "flask" in config:
+            default_config["flask"].update(config["flask"])
+        if "mongo_db" in config:
+            default_config["mongo_db"].update(config["mongo_db"])
+        if "elasticsearch" in config:
+            default_config["elasticsearch"].update(config["elasticsearch"])
+config = default_config
 
 app = Flask(__name__, static_url_path='')
 CORS(app)
 
 app.config['DEBUG'] = True
 app.config['TESTING'] = False
-app.config['SECRET_KEY'] = 'super-secret'
-app.config['MONGODB_DB'] = 'knexdb'
-app.config['MONGODB_HOST'] = 'mongodb'
-app.config['MONGODB_PORT'] = 27017
-app.config['SECURITY_PASSWORD_HASH'] = 'pbkdf2_sha512'
-app.config['SECURITY_PASSWORD_SALT'] = 'THISISMYOWNSALT'
+app.config['SECRET_KEY'] = config["mongo_db"]["secret_key"]
+app.config['MONGODB_DB'] = "knexdb"
+app.config['MONGODB_HOST'] = config["mongo_db"]["hostname"]
+app.config['MONGODB_PORT'] = config["mongo_db"]["port"]
+app.config['SECURITY_PASSWORD_HASH'] = config["mongo_db"]["security_password_hash"]
+app.config['SECURITY_PASSWORD_SALT'] = config["mongo_db"]["security_password_salt"]
 app.config['MAX_CONTENT_PATH'] = 1000000  # 1.000.000 byte = 1mb
 
 DB = MongoEngine(app)
@@ -50,7 +75,8 @@ LOGINMANAGER.init_app(app)
 @app.before_first_request
 def init_global_elasticsearch():
     global ES
-    ES = Elasticsearch([{'host': 'elasticsearch', 'port': 9200}])
+    ES = Elasticsearch([{'host': config["elasticsearch"]["hostname"],
+                         'port': config["elasticsearch"]["port"]}])
     ES.indices.create(index='knexdb', ignore=400)
 
 
@@ -62,7 +88,8 @@ def set_global_elasticsearch():
 @app.before_first_request
 def init_global_mongoclient():
     global MONGOCLIENT
-    MONGOCLIENT = MongoClient('mongodb:27017')
+    mongo_address = config["mongo_db"]["hostname"] + ":" + config["mongo_db"]["port"]
+    MONGOCLIENT = MongoClient(mongo_address)
 
 
 @app.before_request
@@ -163,9 +190,9 @@ class User(DB.Document, UserMixin):
 
 
 class EmailConverter(BaseConverter):
-    regex = r"([a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\." +\
-            r"[a-z0-9!#$%&'*+\/=?^_`"r"{|}~-]+)" +\
-            r"*(@|\sat\s)(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" +\
+    regex = r"([a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\." + \
+            r"[a-z0-9!#$%&'*+\/=?^_`"r"{|}~-]+)" + \
+            r"*(@|\sat\s)(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" + \
             r"(\.|"r"\sdot\s))+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)"
 
 
@@ -243,10 +270,10 @@ def on_project_deletion():
         user.bookmarks = [x for x in user.bookmarks if g.projects.find_one({'_id': x})]
         user.notifications = [x for x in user.notifications if
                               '/project/' not in str(x.link) or g.projects.find_one(
-                               {'_id': uuid.UUID(
-                                   str(x.link)[str(x.link).index('/project/') + len('/project/'):]
-                                   )
-                                })]
+                                  {'_id': uuid.UUID(
+                                      str(x.link)[str(x.link).index('/project/') + len('/project/'):]
+                                  )
+                                  })]
         user.save()
 
 
@@ -322,7 +349,6 @@ app.register_blueprint(projects)
 app.register_blueprint(users)
 app.register_blueprint(search)
 
-
 if __name__ == "__main__":
     # remove debug for production
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host=config["flask"]["hostname"], port=config["flask"]["port"], debug=config["flask"]["debug"])
