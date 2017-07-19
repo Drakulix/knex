@@ -1,6 +1,9 @@
+import os
+import sys
 import json
 import time
 import uuid
+import base64
 
 from elasticsearch import Elasticsearch
 from flask import Flask, g, jsonify, request
@@ -36,8 +39,7 @@ app.config['MONGODB_HOST'] = 'mongodb'
 app.config['MONGODB_PORT'] = 27017
 app.config['SECURITY_PASSWORD_HASH'] = 'pbkdf2_sha512'
 app.config['SECURITY_PASSWORD_SALT'] = 'THISISMYOWNSALT'
-app.config['UPLOAD_FOLDER'] = ''
-app.config['MAX_CONTENT_PATH'] = 1000000  # 100.000 byte = 100kb
+app.config['MAX_CONTENT_PATH'] = 1000000  # 1.000.000 byte = 1mb
 
 DB = MongoEngine(app)
 
@@ -261,12 +263,17 @@ def initialize_users():
     adminpw = hash_password("admin")
     try:
         USER_DATASTORE.create_user(
-            email='user@knex.com', password=userpw, roles=[user_role])
+            email="user@knex.com", password=userpw, roles=[user_role])
     except NotUniqueError:
         pass
     try:
+        with open(os.path.join(sys.path[0], "default_avatar.png"), 'rb') as tf:
+            imgtext = base64.b64encode(tf.read()).decode()
         USER_DATASTORE.create_user(
-            email='admin@knex.com', password=adminpw, roles=[user_role, admin_role])
+            email="admin@knex.com", password=adminpw, first_name="Max", last_name="Mustermann",
+            bio="Lead developer proxy of knex.", roles=[user_role, admin_role],
+            avatar_name="default_avatar.png", avatar=imgtext)
+
     except NotUniqueError:
         pass
 
