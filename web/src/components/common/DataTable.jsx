@@ -189,10 +189,10 @@ export default class BookmarksTable extends Component {
             case "status":
               discard = dataObject.status.toLowerCase().indexOf(value.toLowerCase()) === -1
               break
-            case "filter_date_to":
+            case "date_to":
               discard = dataObject.date_creation  > value
               break
-            case "filter_date_from":
+            case "date_from":
               discard = dataObject.date_creation  < value
               break
             case "tags":

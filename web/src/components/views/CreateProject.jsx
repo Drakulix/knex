@@ -7,7 +7,8 @@ import DropDownMenu from 'material-ui/DropDownMenu'
 import MenuItem from 'material-ui/MenuItem'
 import CircularProgress from 'material-ui/CircularProgress'
 import ChipInputList from '../common/ChipInputList'
-import {get} from '../common/Backend.jsx'
+import {get} from '../common/Backend'
+import Moment from 'moment'
 
 
 const statusString = [
@@ -79,11 +80,8 @@ export default class CreateProject extends Component {
   }
 
   handleChangeDate(event, date) {
-    var mm = date.getMonth() + 1
-    var dd = date.getDate()
-    var dateString =  [date.getFullYear(),'-', ((mm > 9) ? '' : '0')+ mm, '-', ((dd> 9) ? '' : '0')+ dd].join('')
     var projectInf = this.state.projectInf
-    projectInf["date_creation"] = dateString
+    projectInf["date_creation"] = Moment(date).format("YYYY-MM-DD")
     this.setState({
       date : date,
       projectInf : projectInf

@@ -28,7 +28,7 @@ export default class SavedQuery extends Component {
         <div style={{marginBottom:20}}>
          <div className="row" >
           <div className="col-2 filter-label">
-             {this.props.value.shortName}
+             {this.props.value.label}
           </div>
           <div className="col-8"></div>
            <div className="col-1" style={{textAlign:"center",marginTop: 0, marginBottom: 20}}>
@@ -89,11 +89,11 @@ export default class SavedQuery extends Component {
            <div className="row">
              <div className="col-1 filter-label" style={{textAlign: "left" , marginLeft:2}}>From</div>
              <div className="col-2  query-value" style={{marginLeft:-40}} >
-               {this.props.value.filter_date_from}
+               {this.props.value.date_from}
              </div>
              <div className="col-1 filter-label" style={{textAlign: "left"}}>Till</div>
              <div className="col-2  query-value" style={{marginLeft:-40}}>
-               {this.props.value.filter_date_to}
+               {this.props.value.date_to}
              </div>
              <div className="col-1 filter-label" style={{textAlign: "left", marginLeft:37}} >Status</div>
              <div className="col-2  query-value">
