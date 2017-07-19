@@ -23,6 +23,8 @@ export default class Filters extends Component{
   constructor(props){
     super(props)
     var filters = (props.value === undefined) ? {} : props.value
+
+
     var picker_date_from = (filters.date_from !== undefined) ?
                               new Date( filters.date_from.split("-")[0],
                                         filters.date_from.split("-")[1]-1,
