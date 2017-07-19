@@ -122,6 +122,7 @@ def enter_users(pytestconfig, session):
     print(delete_user_response.text)
     assert delete_user_response.status_code == 200
 
+
 @pytest.yield_fixture()
 def enter_default_user_users(pytestconfig, session):
     user = {'email': 'user@knex.com',
@@ -140,4 +141,3 @@ def enter_default_user_users(pytestconfig, session):
                                           add_user_response.json()['email'])
     print(delete_user_response.text)
     assert delete_user_response.status_code == 200
-
