@@ -81,7 +81,7 @@ export default class CommentSideBar extends React.Component {
 
   handleDeleted(event){
     this.loadComments()
-    this.props.callback()
+    this.props.handleUpdateComments()
   }
 
   handleSubmit(event){
@@ -104,7 +104,7 @@ export default class CommentSideBar extends React.Component {
       comment : ""
     })
     this.loadComments()
-    this.props.callback()
+    this.props.handleUpdateComments()
   }
 
   handleToggle = () => this.setState({showCommentBar : !this.state.showCommentBar})

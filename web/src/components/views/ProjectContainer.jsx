@@ -221,7 +221,7 @@ export default class ProjectContainer extends Component {
                         open = {this.state.sharePane}
                         handleClosedSharePane ={this.handleClosedSharePane}
                         />
-            <CommentSideBar callback={this.handleUpdateComments} value = {this.state.commentBar} uuid = {this.state.projectID}></CommentSideBar>
+            <CommentSideBar handleUpdateComments={this.handleUpdateComments} value = {this.state.commentBar} uuid = {this.state.projectID}></CommentSideBar>
             <ConfirmationPane open = {this.state.dialogOpen}
                               projectID = {this.state.projectID}
                               projectTitle = {this.state.projectInf.title}
