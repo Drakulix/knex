@@ -10,14 +10,9 @@ export default class SharePane extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      open : false,
       authors : []
     }
     this.handleAuthorChange = this.handleAuthorChange.bind(this)
-  }
-
-  handleClose = () => {
-    this.setState({open : false})
   }
 
   shareProject =() =>{
@@ -27,8 +22,8 @@ export default class SharePane extends React.Component {
       post("/api/projects/"+this.props.uuid+"/share/"+id, {})
     }
     this.setState({open : false})
+    this.props.handleSharedProject()
   }
-
 
   componentDidMount() {
     //tipp : if you fetch server side data, this is the place where it should happen :)
@@ -51,10 +46,6 @@ export default class SharePane extends React.Component {
     }.bind(this))
   }
 
-  componentWillReceiveProps(props){
-    this.setState({open : props.value})
-  }
-
   handleAuthorChange(event) {
     const value = event.target.value
     this.setState({authors : value})
@@ -65,13 +56,14 @@ export default class SharePane extends React.Component {
       <RaisedButton
         label="Cancel"
         primary={true}
-        onTouchTap={this.handleClose}
+        onTouchTap={this.props.handleClosedSharePane}
         />,
       <RaisedButton
         label="Share"
         primary={true}
         onTouchTap={this.shareProject}
         style={{marginLeft : 20}}
+        disabled ={this.state.authors.length === 0}
         />,
     ]
     return (
@@ -79,8 +71,8 @@ export default class SharePane extends React.Component {
         title="Share project with"
         actions={actions}
         modal={false}
-        open={this.state.open}
-        onRequestClose={this.handleClose}
+        open={this.props.open}
+        onRequestClose={this.handleClosedSharePane}
         >
         <ChipInputList suggestions = {this.state.suggestedAuthors}
           onChange={this.handleAuthorChange}
