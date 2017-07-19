@@ -4,9 +4,8 @@ import 'babel-polyfill';
 
 var loggedin = false;
 var myemail = '';
-var myProfile;
 var loaded = false
-var isAdmin = false
+var admin = false
 
 export function isLoggedIn(){
   return loggedin;
@@ -21,12 +20,12 @@ export function getMyEmail(){
 export function isAdmin(resolveSetAdmin){
   if(!loaded){
     getUserInfo(getMyEmail()).then(function(response) {
-              isAdmin = response.roles.indexOf('admin') !== -1
+              admin = response.roles.indexOf('admin') !== -1
               loaded = true
-              return isAdmin
+              return admin
        }).then(function(admin) {resolveSetAdmin(admin)})
   } else {
-    resolveSetAdmin(isAdmin)
+    resolveSetAdmin(admin)
   }
 }
 
@@ -128,16 +127,12 @@ export function login(login_email, login_password){
         console.log("MYLOG status: " + response.status);
         myemail = login_email;
         loggedin = true;
-        isAdmin = response.roles
         return true;
       }else{
         console.log("MYLOG status: " + response.status);
         return false;
       }
     });
-    getUserInfo(myemail).then((success) => {
-        myProfile = success;
-    });;
     return res;
 }
 

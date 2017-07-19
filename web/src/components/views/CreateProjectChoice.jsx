@@ -5,7 +5,6 @@ import RaisedButton from 'material-ui/RaisedButton'
 import TextField from 'material-ui/TextField'
 import styles from '../common/Styles.jsx'
 import Snackbar from 'material-ui/Snackbar'
-import { post } from '../common/Backend'
 
 const JSON5 = require('json5')
 

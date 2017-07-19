@@ -65,7 +65,6 @@ ReactDOM.render(
   <MuiThemeProvider  muiTheme={muiTheme}>
     <BrowserRouter history={history}>
       <div>
-
         <PageRoute site_path="/discovery" path="/discovery/:qID" component={SearchPage} />
         <PageRoute site_path="/discovery" path="/discovery/" component={SearchPage} />
         <PageRoute site_path="/admin" path="/admin" component={AdminOverview} />
@@ -81,7 +80,6 @@ ReactDOM.render(
         <PageRoute site_path="/queries" path="/queries" component={SavedQueries} />
         <Route path="/register" component={SignUp} />
         <Route exact path="/" component={SignIn} />
-        <Route path="/*" component={SignIn} />
      </div>
     </BrowserRouter>
   </MuiThemeProvider>

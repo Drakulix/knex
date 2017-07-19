@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
-import {changePassword, changeProfile} from '../../common/Authentication.jsx'
-
+import FlatButton from 'material-ui/FlatButton'
+import {changePassword, changeProfile} from '../../common/Authentication'
+import styles from '../../common/Styles'
+import {putImage} from '../../common/Backend'
 
 export default class ProfileEditor extends Component {
 
@@ -16,10 +18,13 @@ export default class ProfileEditor extends Component {
       pw_old: props.profileInf.password,
       pw_new: '',
       pw_new_confirm: '',
+      snackbar : false,
+      snackbarText : ""
     }
     this.handlePwChangeSubmit = this.handlePwChangeSubmit.bind(this)
     this.handleProfileChangeSubmit = this.handleProfileChangeSubmit.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
+    this.handleFile = this.handleFile.bind(this)
   }
 
   handleInputChange(event) {
@@ -56,11 +61,36 @@ export default class ProfileEditor extends Component {
       this.state.last_name,
       this.state.bio ).then((success) => {
       if(success){
-        this.props.profileChangeHandler("Profile changed")
+        this.props.profileChangeHandler("Profile changed", true)
       }else{
-        this.props.profileChangeHandler("Profile change failed")
+        this.props.profileChangeHandler("Profile change failed",false)
       }
     })
+  }
+
+
+  handleFile(event){
+
+    var file = event.target.files[0]
+
+    let reader = new FileReader();
+    if (file.name.substring(file.name.lastIndexOf(".")+1) === "png"){
+      reader.onload = () => {
+        try {
+          putImage("/api/users/"+this.props.profileInf.email+"/avatar" , {}
+          )
+          .then(
+            this.props.profileChangeHandler("Avatar changed",true)
+          )
+        } catch(e) {
+          alert(e)
+        }
+      }
+      reader.readAsText(file);
+    }
+    else {
+      this.props.profileChangeHandler("Invalid format for picture",false)
+    }
   }
 
 
@@ -122,20 +152,27 @@ export default class ProfileEditor extends Component {
           </form>
         </div>
         <div className="col-3">
-          <img src="http://www.freeiconspng.com/uploads/profile-icon-9.png" width="200px" height="200px" alt="..." className="rounded-circle profile-icon" />
-          <div className="profile-icon-text">Change avatar</div>
+          <img src={"/api/users/"+this.props.profileInf.email+"/avatar"} width="200px" height="200px" alt="..." className="rounded-circle profile-icon" />
+            <FlatButton
+                      label = "Upload new avatar"
+                      containerElement = "label"
+                      primary = {true}
+                      style = {{width:'100%'}}>
+                    <input type = "file" style = {styles.uploadInput}
+                      onChange = {this.handleFile} accept="image/png"/>
+            </FlatButton>
         </div>
       </div>
       <div className="change-password">
         <form onSubmit={this.handlePwChangeSubmit}>
-          <div className="form-group row">
+          <div className="row">
             <label className="col-2 col-form-label">Email</label>
             <div className="col-10">
               <div className="form-control-static">{ this.props.profileInf.email }</div>
             </div>
           </div>
-          <div className="form-group row">
-            <label for="inputPassword" className="col-2">New Password</label>
+          <div className="row">
+            <label className="col-2">New Password</label>
             <div className="col-4">
               <TextField
                           value={this.state.pw_new}
@@ -146,8 +183,8 @@ export default class ProfileEditor extends Component {
                           />
             </div>
           </div>
-          <div className="form-group row">
-            <label for="inputPassword" className="col-2">Confirm password</label>
+          <div className="row">
+            <label className="col-2">Confirm password</label>
             <div className="col-4">
               <TextField
                           value={this.state.pw_new_confirm}
@@ -158,7 +195,7 @@ export default class ProfileEditor extends Component {
                           errorText ={this.state.pw_new !== this.state.pw_new_confirm ? "Passwords do not match" :""} />
             </div>
           </div>
-          <div className="form-group row">
+          <div className="row">
             <div className="col-10">
               <RaisedButton
                           type="Submit"

@@ -4,7 +4,7 @@ import TextField from 'material-ui/TextField'
 import DatePicker from 'material-ui/DatePicker'
 import DropDownMenu from 'material-ui/DropDownMenu'
 import MenuItem from 'material-ui/MenuItem'
-import {Card, CardHeader, CardTitle, CardText} from 'material-ui/Card'
+import {Card, CardHeader, CardText} from 'material-ui/Card'
 import { get } from '../common/Backend.jsx'
 
 import ChipInputList from '../common/ChipInputList'

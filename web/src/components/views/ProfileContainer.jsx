@@ -22,8 +22,9 @@ export default class ProfileContainer extends Component {
       profileInf : {},
       value : 'a',
       topTenTags : [],
-  }
-
+      snackbar : false,
+      snackbarText : ""
+    }
     this.handleProfileChange = this.handleProfileChange.bind(this)
   }
 
@@ -45,27 +46,24 @@ export default class ProfileContainer extends Component {
 
   loadProfileInf(e) {
     getUserInfo(e).then(data => {
-      this.setState({profileInf : data})
       if(!data){
         this.setState({
           profile_exists : false,
           site_loaded : true})
       }else{
-        this.setState({
-          profile_exists : true,
-          first_name : data.first_name,
-          last_name : data.last_name,
-          bio : data.bio,
-          site_loaded : true,
-        })
-        get("/api/users/"+e+"/tags").then(data => {
+        get("/api/users/"+e+"/tags").then(tags => {
             this.setState({
-              topTenTags : data
+              topTenTags : tags
             })
+        }).then(
+          this.setState({
+            profileInf : data,
+            profile_exists : true,
+            site_loaded : true,
           })
+        )
       }
     }).catch(ex => {
-      alert(ex)
       this.setState({
         profile_exists : false,
         site_loaded : true
@@ -73,9 +71,9 @@ export default class ProfileContainer extends Component {
     })
   }
 
-  handleProfileChange(snackbarText){
+  handleProfileChange(snackbarText, success){
     this.setState({
-      value : "a",
+      value : success ? 'a' : 'b',
       snackbar : true,
       snackbarText : snackbarText
     })
