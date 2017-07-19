@@ -22,12 +22,33 @@ function getCookie(cname) {
     return "";
 }
 
-export default class Backend {
-    constructor(history) {
-        this.history = history;
-        this.loggedIn = false;
-        this.mail = '';
-        this.profile = '';
+class Backend {
+    constructor(done) {
+        this.mail = getCookie('email');
+        fetch(`/api/users/${this.mail}`, {
+            credentials: 'same-origin',
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => {
+          if (response.ok) {
+            return response.json()
+          } else {
+            throw {
+              status: response.status
+            }
+          }
+        })
+        .then(profile => {
+          this.profile = profile;
+          this.loggedIn = true;
+        })
+        .catch(() => {
+          this.profile = null;
+          this.loggedIn = false;
+        })
+        .then(done)
     }
 
     isLoggedIn() {
@@ -35,40 +56,41 @@ export default class Backend {
     }
 
     isAdmin() {
-        return this.profile.roles.contains('admin');
+        return this.profile.roles.includes('admin');
     }
 
     getMail() {
-        ( this.mail || getCookie('email') )
+        return ( this.mail || getCookie('email') )
     }
 
     async login(mail, password) {
-        return await fetch('/api/users/login', {
+        let response = await fetch('/api/users/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: `email=${encodeURIComponent(mail)}&password=${encodeURIComponent(password)}}`,
+            credentials: 'same-origin',
+            body: `email=${encodeURIComponent(mail)}&password=${encodeURIComponent(password)}`,
         })
         .catch(ex => {
             console.error('Network Error', ex);
             throw ex;
-        })
-        .then((response) => {
-            if (response.status == 403) {
-                return false
-            } else if (response.ok) {
-                setCookie('email', mail);
-                this.loggedIn = true;
-                this.mail = mail;
-                this.profile = this.getProfile();
-            } else {
-                throw {
-                    status: response.status,
-                    error: await response.text(),
-                }
-            }
         });
+
+        if (response.status == 403) {
+            return false
+        } else if (response.ok) {
+            setCookie('email', mail);
+            this.loggedIn = true;
+            this.mail = mail;
+            this.profile = await this.getProfile();
+            return true
+        } else {
+            throw {
+                status: response.status,
+                error: await response.text(),
+            }
+        }
     }
 
     register(firstname, lastname, mail, password, password_confirm, role) {
@@ -88,29 +110,30 @@ export default class Backend {
     }
 
     async logout() {
-        return await fetch('/api/users/logout', {
-            credentials: 'include'
+        let response = await fetch('/api/users/logout', {
+            credentials: 'same-origin'
         })
         .catch(ex => {
             console.error('Network Error', ex);
             throw ex;
-        })
-        .then((response) => {
-            if (response.ok) {
-                return true;
-            } else {
-                throw {
-                    status: response.status,
-                    error: await response.text(),
-                }
-            }
-        })
+        });
+
+        if (response.ok) {
+          this.loggedIn = false;
+          this.profile = null;
+          return true
+        } else {
+          throw {
+            status: response.status,
+            error: await response.text(),
+          }
+        }
     }
 
     // returns json
     async getJson(url) {
         let response = await fetch(url, {
-            credentials: 'include',
+            credentials: 'same-origin',
             headers: {
                 'Accept': 'application/json'
             }
@@ -124,7 +147,7 @@ export default class Backend {
             this.loggedIn = false;
             this.mail = '';
             this.profile = '';
-            this.history.replace('/');
+            window.location = '/';
             return undefined;
         } else if (response.status == 404) {
             return null;
@@ -142,7 +165,7 @@ export default class Backend {
     async delete(url) {
         let response = await fetch(url, {
             method: 'DELETE',
-            credentials: 'include',
+            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -156,7 +179,7 @@ export default class Backend {
             this.loggedIn = false;
             this.mail = '';
             this.profile = '';
-            this.history.replace('/');
+            window.location = '/';
             return undefined;
         } else if (response.status == 404) {
             return false;
@@ -174,7 +197,7 @@ export default class Backend {
     async postJson(url, payload) {
         let response = await fetch(url, {
             method: 'POST',
-            credentials: 'include',
+            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -189,7 +212,7 @@ export default class Backend {
             this.loggedIn = false;
             this.mail = '';
             this.profile = '';
-            this.history.replace('/');
+            window.location = '/';
             return undefined;
         } else if (response.ok) {
             return await response.text();
@@ -205,7 +228,7 @@ export default class Backend {
     async putJson(url, payload) {
         let response = await fetch(url, {
             method: 'PUT',
-            credentials: 'include',
+            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -220,7 +243,7 @@ export default class Backend {
             this.loggedIn = false;
             this.mail = '';
             this.profile = '';
-            this.history.replace('/');
+            window.location = '/';
             return undefined;
         } else if (response.status == 404) {
             return false;
@@ -254,6 +277,10 @@ export default class Backend {
         return this.getJson('/api/projects/'+id);
     }
 
+    getProjectArchived(id, archived) {
+        return this.getJson(`/api/projects/${encodeURIComponent(id)}/archive/${archived.toString()}`)
+    }
+
     updateProject(id, payload) {
         return this.putJson('/api/projects'+id, payload);
     }
@@ -265,7 +292,7 @@ export default class Backend {
     async addProjectComment(id, message) {
         let response = await fetch(`/api/projects/${encodeURIComponent(id)}/comment`, {
             method: 'POST',
-            credentials: 'include',
+            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -280,7 +307,7 @@ export default class Backend {
             this.loggedIn = false;
             this.mail = '';
             this.profile = '';
-            this.history.replace('/');
+            window.location = '/';
             return undefined;
         } else if (response.ok) {
             return await response.text();
@@ -303,7 +330,7 @@ export default class Backend {
     async updateProjectComment(projId, commentId, message) {
         let response = await fetch(`/api/projects/${encodeURIComponent(projId)}/comment/${encodeURIComponent(commentId)}`, {
             method: 'PUT',
-            credentials: 'include',
+            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -318,7 +345,7 @@ export default class Backend {
             this.loggedIn = false;
             this.mail = '';
             this.profile = '';
-            this.history.replace('/');
+            window.location = '/';
             return undefined;
         } else if (response.status == 404) {
             return false;
@@ -339,7 +366,7 @@ export default class Backend {
     async shareProjectToUser(id, mail) {
         let response = await fetch(`/api/projects/${encodeURIComponent(id)}/share/${encodeURIComponent(mail)}`, {
             method: 'POST',
-            credentials: 'include',
+            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -353,7 +380,7 @@ export default class Backend {
             this.loggedIn = false;
             this.mail = '';
             this.profile = '';
-            this.history.replace('/');
+            window.location = '/';
             return undefined;
         } else if (response.ok) {
             return await response.text();
@@ -415,7 +442,7 @@ export default class Backend {
 
     async updateProfile(user) {
         if (await this.putJson('/api/users', user)) {
-            this.profile = this.getProfile();
+            this.profile = await this.getProfile();
             return true;
         } else {
             return false;
@@ -426,8 +453,13 @@ export default class Backend {
         return this.putJson('/api/users/password', user);
     }
 
-    getProfile(mail = this.mail) {
-        return this.getJson('/api/users/'+encodeURIComponent(mail));
+    deleteUser(mail) {
+        return this.delete('/api/users/'+encodeURIComponent(mail))
+    }
+
+    async getProfile(mail = this.mail) {
+        this.profile = await this.getJson('/api/users/'+encodeURIComponent(mail));
+        return this.profile;
     }
 
     getTagsOfUser(mail) {
@@ -458,3 +490,11 @@ export default class Backend {
         return this.delete('/api/users/notifications/'+encodeURIComponent(id));
     }
 }
+
+var backend = undefined;
+
+export function init(done) {
+  backend = new Backend(done)
+}
+
+export { backend as default };

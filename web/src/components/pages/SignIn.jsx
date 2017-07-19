@@ -6,7 +6,7 @@ import {
 import RaisedButton from 'material-ui/RaisedButton'
 import TextField from 'material-ui/TextField'
 import logo from '../../style/img/black_logo_title_below.svg'
-import {login, isLoggedIn, getCookie} from '../common/Authentication.jsx'
+import Backend from '../common/Backend'
 
 export default class SignIn extends Component {
 
@@ -17,7 +17,7 @@ export default class SignIn extends Component {
     this.state = {
       redirect: false,
       error: '',
-      email: getCookie('email'),
+      email: Backend.getMail(),
       password: '',
       remember: null
     }
@@ -41,7 +41,7 @@ export default class SignIn extends Component {
 
   handleSubmit(event){
     event.preventDefault()
-    login(this.state.email, this.state.password).then((success) => {
+    Backend.login(this.state.email, this.state.password).then((success) => {
 
       if(success){
         this.setState({ redirect: true })
@@ -55,7 +55,7 @@ export default class SignIn extends Component {
   render() {
     const { teamName } = this.props
 
-    if (this.state.redirect || isLoggedIn() ) {
+    if (this.state.redirect || Backend.isLoggedIn() ) {
       return <Redirect to='/discovery'/>
     }
 

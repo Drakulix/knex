@@ -4,7 +4,7 @@ import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton'
 import {List, ListItem} from 'material-ui/List'
 import Divider from 'material-ui/Divider'
-import {get, del, putPlainText} from './Backend'
+import Backend from './Backend'
 import {grey400, darkBlack, lightBlack} from 'material-ui/styles/colors';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
@@ -24,10 +24,9 @@ class CommentItem extends React.Component {
   }
 
   handleDelete(event){
-    var fetchURL ="/api/projects/"+this.props.p_id+"/comment/"+this.props.comment.id
-    del(fetchURL)
-    this.props.handleUpdateList()
-    }
+    Backend.deleteProjectComment(this.props.p_id, this.props.comment.id)
+    .then(() => this.props.handleUpdateList())
+  }
 
   handleOpen = () => {
     this.setState({open: true});
@@ -37,8 +36,6 @@ class CommentItem extends React.Component {
     this.setState({open: false});
   };
 
-
-
   handleEdit(event){
     this.setState({
       message : this.props.comment.message
@@ -47,10 +44,11 @@ class CommentItem extends React.Component {
   }
 
   handleSubmitEdit(event){
-    var fetchURL ="/api/projects/"+this.props.p_id+"/comment/"+this.props.comment.id
-    putPlainText(fetchURL, this.state.message)
-    this.props.handleUpdateList()
-    this.handleClose()
+    Backend.updateProjectComment(this.props.p_id, this.props.comment.id, this.state.message)
+    .then(() => {
+      this.props.handleUpdateList()
+      this.handleClose()
+    })
   }
 
   handleChange(event) {
@@ -153,15 +151,7 @@ export default class CommentSideBar extends React.Component {
   }
 
   handleSubmit(event){
-    var fetchURL ="/api/projects/"+this.props.uuid+"/comment"
-    fetch(fetchURL, {
-        method : 'POST',
-        credentials : 'include',
-        headers : {
-          'Content-Type' : 'text/plain'
-        },
-        body : this.state.comment
-      }).then(function(response){
+    Backend.addProjectComment(this.props.uuid, this.state.comment).then(function(response){
         if(response.status === 200){
           return true
         }else{
@@ -186,8 +176,7 @@ export default class CommentSideBar extends React.Component {
   }
 
   loadComments(){
-    var fetchURL = "/api/projects/" + this.props.uuid + "/comment"
-    get(fetchURL).then(function(data) {
+    Backend.getProjectComments().then(function(data) {
       var filteredData = this.transformArray(data)
       this.setState({
         comments : filteredData

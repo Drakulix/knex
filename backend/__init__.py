@@ -42,6 +42,7 @@ app.config['MAX_CONTENT_PATH'] = 1000000  # 1.000.000 byte = 1mb
 
 DB = MongoEngine(app)
 
+
 @app.before_first_request
 def init_global_elasticsearch():
     global ES
@@ -64,6 +65,7 @@ def init_global_mongoclient():
 def set_global_mongoclient():
     g.knexdb = MONGOCLIENT.knexdb
     g.projects = g.knexdb.projects
+
 
 @app.before_first_request
 def init_global_manifest_validator():
@@ -158,9 +160,11 @@ app.url_map.converters['email'] = EmailConverter
 USER_DATASTORE = MongoEngineUserDatastore(DB, User, Role)
 SECURITY = Security(app, USER_DATASTORE)
 
+
 @SECURITY.login_manager.unauthorized_handler
 def handle_unauthorized_access():
     return make_response("Forbidden", 403)
+
 
 # internal function to append notifications to the given userlist
 def notify_users(useremail_list, n_description, n_title, n_link):
@@ -230,10 +234,10 @@ def on_project_deletion():
         user.bookmarks = [x for x in user.bookmarks if g.projects.find_one({'_id': x})]
         user.notifications = [x for x in user.notifications if
                               '/project/' not in str(x.link) or g.projects.find_one(
-                               {'_id': uuid.UUID(
+                                  {'_id': uuid.UUID(
                                    str(x.link)[str(x.link).index('/project/') + len('/project/'):]
                                    )
-                                })]
+                                   })]
         user.save()
 
 
