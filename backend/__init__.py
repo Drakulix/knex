@@ -94,7 +94,7 @@ def set_global_elasticsearch():
 @app.before_first_request
 def init_global_mongoclient():
     global MONGOCLIENT
-    mongo_address = config["mongo_db"]["hostname"] + ":" + config["mongo_db"]["port"]
+    mongo_address = config["mongo_db"]["hostname"] + ":" + str(config["mongo_db"]["port"])
     MONGOCLIENT = MongoClient(mongo_address)
 
 
