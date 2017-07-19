@@ -52,6 +52,7 @@ export default class CommentSideBar extends React.Component {
       comment : ""
     })
     this.loadComments()
+    this.props.callback()
   }
 
   handleToggle = () => this.setState({showCommentBar : !this.state.showCommentBar})
