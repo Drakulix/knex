@@ -95,7 +95,7 @@ export default class Filters extends Component{
       picker_date_from : date,
       date_from : Moment(date).format("YYYY-MM-DD")
     })
-    this.props.onChange("date_from",  this.dateToString(date))
+    this.props.onChange("date_from",  Moment(date).format("YYYY-MM-DD"))
   }
 
   handleChangeDateTill = (event, date) => {
@@ -103,7 +103,7 @@ export default class Filters extends Component{
       picker_date_to : date,
       date_to : Moment(date).format("YYYY-MM-DD")
     })
-    this.props.onChange("date_to", this.dateToString(date))
+    this.props.onChange("date_to", Moment(date).format("YYYY-MM-DD"))
   }
 
   handleDateDelete = (event) => {
