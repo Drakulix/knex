@@ -277,7 +277,8 @@ def on_project_deletion():
         user.notifications = [x for x in user.notifications if
                               '/project/' not in str(x.link) or g.projects.find_one(
                                   {'_id': uuid.UUID(
-                                      str(x.link)[str(x.link).index('/project/') + len('/project/'):]
+                                      str(x.link)[str(x.link).index('/project/') +
+                                                  len('/project/'):]
                                   )
                                   })]
         user.save()
@@ -353,4 +354,5 @@ app.register_blueprint(search)
 
 if __name__ == "__main__":
     # remove debug for production
-    app.run(host=config["flask"]["hostname"], port=config["flask"]["port"], debug=config["flask"]["debug"])
+    app.run(host=config["flask"]["hostname"], port=config["flask"]["port"],
+            debug=config["flask"]["debug"])
