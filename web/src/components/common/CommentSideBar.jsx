@@ -26,7 +26,7 @@ class CommentItem extends React.Component {
   handleDelete(event){
     var fetchURL ="/api/projects/"+this.props.p_id+"/comment/"+this.props.comment.id
     del(fetchURL)
-    this.props.handleDeleted()
+    this.props.handleUpdateList()
     }
 
   handleOpen = () => {
@@ -49,7 +49,7 @@ class CommentItem extends React.Component {
   handleSubmitEdit(event){
     var fetchURL ="/api/projects/"+this.props.p_id+"/comment/"+this.props.comment.id
     putPlainText(fetchURL, this.state.message)
-    this.props.handleDeleted()
+    this.props.handleUpdateList()
     this.handleClose()
   }
 
@@ -129,7 +129,7 @@ export default class CommentSideBar extends React.Component {
     comments : []}
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
-    this.handleDeleted = this.handleDeleted.bind(this)
+    this.handleUpdateList = this.handleUpdateList.bind(this)
   }
 
   transformArray(dataArray) {
@@ -147,7 +147,7 @@ export default class CommentSideBar extends React.Component {
     })
   }
 
-  handleDeleted(event){
+  handleUpdateList(event){
     this.loadComments()
     this.props.handleUpdateComments()
   }
@@ -220,7 +220,7 @@ export default class CommentSideBar extends React.Component {
         {this.state.comments.map(item =>
           <div>
             <Divider/>
-            <CommentItem comment={item} p_id={this.props.uuid} handleDeleted={this.handleDeleted}/>
+            <CommentItem comment={item} p_id={this.props.uuid} handleUpdateList={this.handleUpdateList}/>
           </div>)
         }
       </List>
