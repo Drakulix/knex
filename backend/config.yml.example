@@ -10,3 +10,7 @@ mongo_db:
 elasticsearch:
     hostname: "elasticsearch"
     port: 9200
+administration_user:
+    username: "admin"
+    password: "admin"
+    email: "admin@knex.com"

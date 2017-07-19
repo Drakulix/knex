@@ -30,7 +30,7 @@ from api.helper.apiexception import ApiException
 
 config_file_path = os.path.dirname(os.path.abspath(__file__))
 config = {}
-default_config = {"flask": {}, "mongo_db": {}, "elasticsearch": {}}
+default_config = {"flask": {}, "mongo_db": {}, "elasticsearch": {}, "administration_user": {}}
 default_config["flask"]["hostname"] = "0.0.0.0"
 default_config["flask"]["port"] = 5000
 default_config["flask"]["debug"] = False
@@ -41,6 +41,9 @@ default_config["mongo_db"]["security_password_hash"] = 'pbkdf2_sha512'
 default_config["mongo_db"]["security_password_salt"] = 'THISISMYOWNSALT'
 default_config["elasticsearch"]["hostname"] = "elasticsearch"
 default_config["elasticsearch"]["port"] = 9200
+default_config["administration_user"]["username"] = "admin"
+default_config["administration_user"]["password"] = "admin"
+default_config["administration_user"]["email"] = "admin@knex.com"
 if os.path.isfile(os.path.join(config_file_path, "config.yml")):
     print("Starting flask server (Backend/Api) using config file")
     with open(os.path.join(config_file_path, "config.yml"), 'r') as config_file:
@@ -51,6 +54,9 @@ if os.path.isfile(os.path.join(config_file_path, "config.yml")):
             default_config["mongo_db"].update(config["mongo_db"])
         if "elasticsearch" in config:
             default_config["elasticsearch"].update(config["elasticsearch"])
+        if "administration_user" in config:
+            default_config["administration_user"].update(config["administration_user"])
+
 config = default_config
 
 app = Flask(__name__, static_url_path='')
@@ -286,18 +292,14 @@ def project_deleted_func():
 def initialize_users():
     user_role = USER_DATASTORE.find_or_create_role('user')
     admin_role = USER_DATASTORE.find_or_create_role('admin')
-    userpw = hash_password("user")
-    adminpw = hash_password("admin")
-    try:
-        USER_DATASTORE.create_user(
-            email="user@knex.com", password=userpw, roles=[user_role])
-    except NotUniqueError:
-        pass
+    # userpw = hash_password("user")
+    adminpw = hash_password(config["administration_user"]["password"])
     try:
         with open(os.path.join(sys.path[0], "default_avatar.png"), 'rb') as tf:
             imgtext = base64.b64encode(tf.read()).decode()
         USER_DATASTORE.create_user(
-            email="admin@knex.com", password=adminpw, first_name="Max", last_name="Mustermann",
+            email=config["administration_user"]["email"], password=adminpw,
+            first_name="", last_name=config["administration_user"]["username"],
             bio="Lead developer proxy of knex.", roles=[user_role, admin_role],
             avatar_name="default_avatar.png", avatar=imgtext)
 
