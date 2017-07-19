@@ -1,20 +1,26 @@
 import React from 'react'
 import Drawer from 'material-ui/Drawer'
+import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton'
 import {List, ListItem} from 'material-ui/List'
 import Divider from 'material-ui/Divider'
-import {get, del} from './Backend'
+import {get, del, putPlainText} from './Backend'
 import {grey400, darkBlack, lightBlack} from 'material-ui/styles/colors';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import TextField from 'material-ui/TextField'
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
+import FlatButton from 'material-ui/FlatButton';
 
 
 class CommentItem extends React.Component {
   constructor(){
     super();
+    this.state = {open : false}
+
+    this.handleChange = this.handleChange.bind(this)
+    this.handleSubmitEdit = this.handleSubmitEdit.bind(this)
   }
 
   handleDelete(event){
@@ -23,7 +29,51 @@ class CommentItem extends React.Component {
     this.props.handleDeleted()
     }
 
+  handleOpen = () => {
+    this.setState({open: true});
+  };
+
+  handleClose = () => {
+    this.setState({open: false});
+  };
+
+
+
+  handleEdit(event){
+    this.setState({
+      message : this.props.comment.message
+    })
+    this.handleOpen()
+  }
+
+  handleSubmitEdit(event){
+    var fetchURL ="/api/projects/"+this.props.p_id+"/comment/"+this.props.comment.id
+    putPlainText(fetchURL, this.state.message)
+    this.props.handleDeleted()
+    this.handleClose()
+  }
+
+  handleChange(event) {
+    var value = event.target.value;
+    this.setState({message: value})
+
+  }
+
   render(){
+    const actions = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onTouchTap={this.handleClose}
+      />,
+      <FlatButton
+        label="Submit"
+        primary={true}
+        keyboardFocused={true}
+        onTouchTap={this.handleSubmitEdit}
+      />,
+    ];
+
     const iconButtonElement = (
       <IconButton
         touch={true}
@@ -36,11 +86,28 @@ class CommentItem extends React.Component {
 
     const rightIconMenu = (
       <IconMenu iconButtonElement={iconButtonElement}>
-        <MenuItem onClick = {()=>console.log('Edit')}>Edit</MenuItem>
+        <MenuItem onClick = {()=>this.handleEdit()}>Edit</MenuItem>
         <MenuItem onClick = {()=>this.handleDelete()} >Delete</MenuItem>
       </IconMenu>
     );
     return (
+    <div>
+    <Dialog
+          title="Edit Comment"
+          actions={actions}
+          modal={false}
+          open={this.state.open}
+          onRequestClose={this.handleClose}
+        >
+        <TextField  value = {this.state.message}
+          name = "Change Comment."
+          onChange = {this.handleChange}
+          hintText = "Change Comment."
+          style = {{width : '100%', marginTop : 6}}
+          multiLine = {true}
+          />
+
+        </Dialog>
     <ListItem primaryText={this.props.comment.message}
               secondaryText={<div>
                 <span style={{float : "left"}}>{this.props.comment.author.email}</span>
@@ -48,6 +115,7 @@ class CommentItem extends React.Component {
               </div>}
               rightIconButton={rightIconMenu}
     />
+    </div>
   )
   }
 }

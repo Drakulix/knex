@@ -64,6 +64,22 @@ import 'isomorphic-fetch'
     })
   }
 
+  export function putPlainText(path, body) {
+    // use this function to make a PUT request.
+    const url = `${path}`
+    return fetch(url,{
+      method: "PUT",
+      body: body,
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'text/plain'
+      }
+    })
+    .catch(ex => {
+      console.error('parsing failes', ex)
+    })
+  }
+
 
   export function putImage(path, body) {
     // use this function to make a PUT Image request.
