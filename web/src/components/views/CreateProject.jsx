@@ -21,6 +21,7 @@ export default class CreateProject extends Component {
 
   constructor(props) {
     super(props)
+
     if(props.fromURL){
       this.state = {
         projectInf : props.projectInf,
@@ -81,7 +82,8 @@ export default class CreateProject extends Component {
 
   handleChangeDate(event, date) {
     var projectInf = this.state.projectInf
-    projectInf["date_creation"] = Moment(date).format("YYYY-MM-DD")
+
+    projectInf.date_creation = Moment(date).format("YYYY-MM-DD")
     this.setState({
       date : date,
       projectInf : projectInf
@@ -158,13 +160,6 @@ export default class CreateProject extends Component {
   }
 
   componentDidMount(){
-    /* Some bug resets this.state.status initialy to [].
-    * This happens inbetween the end of componentWillMount()
-    * and the beginning of the first time the component renders.
-    * This is a temporary workaround until the issue is resolved.
-    * Please don't remove this unless you know how to fix it.
-    */
-
     get('/api/projects/tags').then(function(tags) {
       this.setState({
         suggestedTags : tags
