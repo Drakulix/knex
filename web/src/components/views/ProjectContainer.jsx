@@ -33,7 +33,7 @@ export default class ProjectContainer extends Component {
       dialogOpen : false,
       snackbar : false,
       sharePane : false,
-      snackbarText : ""
+      snackbarText : "",
       comments_count: 0
     }
 
