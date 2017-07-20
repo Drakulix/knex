@@ -7,7 +7,8 @@ import DropDownMenu from 'material-ui/DropDownMenu'
 import MenuItem from 'material-ui/MenuItem'
 import CircularProgress from 'material-ui/CircularProgress'
 import ChipInputList from '../common/ChipInputList'
-import {get} from '../common/Backend.jsx'
+import {get} from '../common/Backend'
+import Moment from 'moment'
 
 
 const statusString = [
@@ -20,6 +21,7 @@ export default class CreateProject extends Component {
 
   constructor(props) {
     super(props)
+
     if(props.fromURL){
       this.state = {
         projectInf : props.projectInf,
@@ -37,11 +39,12 @@ export default class CreateProject extends Component {
           status : "IN_PROGRESS",
           title : "",
           description : "",
-          date_creation : "2012-12-12",
+          date_creation : Moment().format("YYYY-MM-DD"),
           tags : [],
           url : [],
           authors : [],
         },
+        date : Moment().toDate(),
         snackbar : false,
         site_loaded : false,
         project_exists : false,
@@ -79,11 +82,10 @@ export default class CreateProject extends Component {
   }
 
   handleChangeDate(event, date) {
-    var mm = date.getMonth() + 1
-    var dd = date.getDate()
-    var dateString =  [date.getFullYear(),'-', ((mm > 9) ? '' : '0')+ mm, '-', ((dd> 9) ? '' : '0')+ dd].join('')
     var projectInf = this.state.projectInf
-    projectInf["date_creation"] = dateString
+
+
+    projectInf.date_creation = Moment(date).format("YYYY-MM-DD")
     this.setState({
       date : date,
       projectInf : projectInf
@@ -114,9 +116,7 @@ export default class CreateProject extends Component {
           site_loaded : true,
           projectInf : data,
           authors : authorArray,
-          date : new Date( data.date_creation.split("-")[0],
-                          data.date_creation.split("-")[1]-1,
-                          data.date_creation.split("-")[2],0,0,0,0)
+          date : Moment(data.date_creation, "YYYY-MM-DD").toDate()
         })
       }
     })
@@ -160,13 +160,6 @@ export default class CreateProject extends Component {
   }
 
   componentDidMount(){
-    /* Some bug resets this.state.status initialy to [].
-    * This happens inbetween the end of componentWillMount()
-    * and the beginning of the first time the component renders.
-    * This is a temporary workaround until the issue is resolved.
-    * Please don't remove this unless you know how to fix it.
-    */
-
     get('/api/projects/tags').then(function(tags) {
       this.setState({
         suggestedTags : tags

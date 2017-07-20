@@ -2,15 +2,17 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 
 import Chip from 'material-ui/Chip'
-import styles from '../common/Styles.jsx'
+import styles from '../common/Styles'
 import {get, post, del, put} from '../common/Backend'
 import IconButton from 'material-ui/IconButton'
 import SharePane from '../common/SharePane'
 import Dialog from 'material-ui/Dialog'
 import RaisedButton from 'material-ui/RaisedButton'
 import CircularProgress from 'material-ui/CircularProgress'
-import CommentSideBar from '../common/CommentSideBar.jsx'
-import {getMyEmail, getUserInfo, isAdmin} from '../common/Authentication.jsx'
+import CommentSideBar from '../common/CommentSideBar'
+import {getMyEmail, getUserInfo, isAdmin} from '../common/Authentication'
+import Snackbar from 'material-ui/Snackbar'
+
 
 
 export default class ProjectContainer extends Component {
@@ -27,7 +29,10 @@ export default class ProjectContainer extends Component {
       canEdit : false,
       myEmail : getMyEmail(),
       isAdmin : false,
-      dialogOpen : false
+      dialogOpen : false,
+      snackbar : false,
+      sharePane : false,
+      snackbarText : ""
     }
 
     this.handleEdit = this.handleEdit.bind(this)
@@ -35,6 +40,8 @@ export default class ProjectContainer extends Component {
     this.handleBookmark = this.handleBookmark.bind(this)
     this.handleShare = this.handleShare.bind(this)
     this.handleDelete = this.handleDelete.bind(this)
+    this.handleSharedProject = this.handleSharedProject.bind(this)
+    this.handleClosedSharePane = this.handleClosedSharePane.bind(this)
   }
 
   componentWillMount(){
@@ -45,12 +52,30 @@ export default class ProjectContainer extends Component {
   componentWillReceiveProps(nextProps){
     this.setState({projectID : nextProps.uuid})
     this.loadSiteInf(this.state.projectID)
-
   }
+
+  handleClosedSharePane(){
+    this.setState({
+      dialogOpen : false,
+      snackbar : false,
+      sharePane : false
+    })
+  }
+
+  handleSharedProject(){
+    this.setState({
+      dialogOpen : false,
+      snackbar : true,
+      sharePane : false,
+      snackbarText : `Project ${this.state.projectInf.title} shared`
+    })
+  }
+
 
   handleClose(){
     this.setState({
-      dialogOpen : false
+      dialogOpen : false,
+      snackbar : false
     })
   }
 
@@ -60,7 +85,11 @@ export default class ProjectContainer extends Component {
     delete project.is_owner
     project['archived'] = true
     put("/api/projects/"+this.state.projectID, project)
-    this.setState({dialogOpen : false})
+    this.setState({
+      dialogOpen : false,
+      snackbar : true,
+      snackbarText : "Project " + project.title + " deleted"
+    })
   }
 
   loadSiteInf(uuid) {
@@ -103,7 +132,8 @@ export default class ProjectContainer extends Component {
     event.preventDefault()
     this.setState({
         commentBar : false,
-        sharePane : false
+        sharePane : false,
+        snackbar : false
     })
     // HORRIBLE  and strange initialstate
     if(new String(this.state.projectInf.is_bookmark) == "true"){
@@ -159,14 +189,21 @@ export default class ProjectContainer extends Component {
       return(
         <div className = "container">
           <div className = "innerContainer">
-            <SharePane value = {this.state.sharePane} uuid = {this.state.projectID}></SharePane>
+            <SharePane  uuid = {this.state.projectID}
+                        handleSharedProject = {this.handleSharedProject}
+                        open = {this.state.sharePane}
+                        handleClosedSharePane ={this.handleClosedSharePane}
+                        />
             <CommentSideBar value = {this.state.commentBar} uuid = {this.state.projectID}></CommentSideBar>
             <ConfirmationPane open = {this.state.dialogOpen}
                               projectID = {this.state.projectID}
                               projectTitle = {this.state.projectInf.title}
                               handleDelete = {this.handleDelete}
-                              handleClose = {this.handleClose}
-            />
+                              handleClose = {this.handleClose}/>
+            <Snackbar
+              open = {this.state.snackbar}
+              message = {this.state.snackbarText}
+              autoHideDuration = {10000}/>
             <div className = "row headerCreation" style = {{width : "100%"}}>
               <div className = "col-12">
                 <div>Project</div>

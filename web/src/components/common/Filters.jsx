@@ -5,7 +5,9 @@ import DatePicker from 'material-ui/DatePicker'
 import DropDownMenu from 'material-ui/DropDownMenu'
 import MenuItem from 'material-ui/MenuItem'
 import {Card, CardHeader, CardText} from 'material-ui/Card'
-import { get } from '../common/Backend.jsx'
+import { get } from '../common/Backend'
+import Moment from 'moment'
+
 
 import ChipInputList from '../common/ChipInputList'
 
@@ -21,16 +23,7 @@ export default class Filters extends Component{
   constructor(props){
     super(props)
     var filters = (props.value === undefined) ? {} : props.value
-    var date_from = (filters.filter_date_from !== undefined) ?
-                              new Date( filters.filter_date_from.split("-")[0],
-                                        filters.filter_date_from.split("-")[1]-1,
-                                        filters.filter_date_from.split("-")[2],0,0,0,0)
-                         : null
-    var date_to = (filters.filter_date_to !== undefined) ?
-                              new Date( filters.filter_date_to.split("-")[0],
-                                        filters.filter_date_to.split("-")[1]-1,
-                                        filters.filter_date_to.split("-")[2],0,0,0,0)
-                         : null
+
     var authors = []
     if(filters.authors !== undefined){
       var dataAuthors = filters.authors
@@ -45,10 +38,10 @@ export default class Filters extends Component{
       title : filters.title !== undefined ? filters.title : "",
       tags : filters.tags !== undefined ? filters.tags : [],
       status : filters.status !== undefined ? filters.status : "",
-      date_from : date_from,
-      date_to : date_to,
-      filter_date_from : (filters.filter_date_from !== undefined) ? filters.filter_date_from : null,
-      filter_date_to : (filters.filter_date_to !== undefined) ?filters.filter_date_to : null,
+      picker_date_from : (filters.date_from !== undefined) ? Moment(filters.date_from, "YYYY-MM-DD").toDate():null,
+      picker_date_to : (filters.date_to !== undefined) ? Moment(filters.date_to, "YYYY-MM-DD").toDate():null,
+      date_from : (filters.date_from !== undefined) ? filters.date_from : null,
+      date_to : (filters.date_to !== undefined) ?filters.date_to : null,
       description : filters.description !== undefined ? filters.description : "",
       searchString : filters.searchString !== undefined ? filters.searchString : "",
     }
@@ -88,42 +81,35 @@ export default class Filters extends Component{
     this.props.onChange( [name], value)
   }
 
-  dateToString(date){
-    var mm = date.getMonth()+1
-    var dd = date.getDate()
-    return [date.getFullYear(),'-', ((mm > 9) ? '' : '0')+ mm, '-',
-    ((dd> 9) ? '' : '0')+ dd].join('')
-  }
-
   handleChangeDateFrom = (event, date) => {
     this.setState({
-      date_from : date,
-      filter_date_from : this.dateToString(date)
+      picker_date_from : date,
+      date_from : Moment(date).format("YYYY-MM-DD")
     })
-    this.props.onChange("filter_date_from",  this.dateToString(date))
+    this.props.onChange("date_from",  Moment(date).format("YYYY-MM-DD"))
   }
 
   handleChangeDateTill = (event, date) => {
     this.setState({
-      date_to : date,
-      filter_date_to : this.dateToString(date)
+      picker_date_to : date,
+      date_to : Moment(date).format("YYYY-MM-DD")
     })
-    this.props.onChange("filter_date_to", this.dateToString(date))
+    this.props.onChange("date_to", Moment(date).format("YYYY-MM-DD"))
   }
 
   handleDateDelete = (event) => {
     if(event === "until"){
       this.setState({
-        date_to : null,
-        filter_date_to : ""
+        picker_date_to : null,
+        date_to : ""
       })
-      this.props.onChange("filter_date_to", '')
+      this.props.onChange("date_to", '')
     }else{
       this.setState({
-        date_from : null,
-        filter_date_from : ""
+        picker_date_from : null,
+        date_from : ""
       })
-      this.props.onChange("filter_date_from", '')
+      this.props.onChange("date_from", '')
     }
   }
 
@@ -210,7 +196,7 @@ export default class Filters extends Component{
                 style = {{marginLeft : -40}}
                 underlineStyle = {{width : '100%', marginLeft : 0}}
                 textFieldStyle = {{width : '100%'}}
-                value = {this.state.date_from}
+                value = {this.state.picker_date_from}
                 onChange = {this.handleChangeDateFrom}
                 />
             </div>
@@ -223,7 +209,7 @@ export default class Filters extends Component{
                 mode = "landscape"
                 style = {{marginLeft : -50}}
                 name  = "date_to"
-                value = {this.state.date_to}
+                value = {this.state.picker_date_to}
                 underlineStyle = {{width : '90%', marginLeft : 0}}
                 textFieldStyle = {{width : '90%'}}
                 onChange = {this.handleChangeDateTill}
