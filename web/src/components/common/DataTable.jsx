@@ -185,7 +185,6 @@ export default class BookmarksTable extends Component {
       else  {
         state[key] = value
       }
-      alert(Object.keys(state))
       this.setState({filters : state})
       this.filter(state)
       if(this.props.handleFilter !== undefined)
