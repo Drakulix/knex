@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { withRouter } from 'react-router';
+import { withRouter, Redirect } from 'react-router';
 import registerServiceWorker from './registerServiceWorker';
 import './style/style.css';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -81,6 +81,7 @@ init(() => {
           <PageRoute sitePath="/queries" path="/queries" component={SavedQueries} />
           <Route path="/register" component={SignUp} />
           <Route exact path="/" component={SignIn} />
+          <Route component={() => (<Redirect to="/"/>)} />
        </div>
       </BrowserRouter>
     </MuiThemeProvider>
