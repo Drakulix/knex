@@ -67,6 +67,10 @@ export default class SavedQuery extends Component {
            </div>
          </div>
          <div className="row">
+           <div className="col-1 filter-label" style={{textAlign: "left"}}>Query</div>
+           <div className="col-5 query-value" style={{marginLeft:-40}}>
+             {this.state.query.searchString}
+           </div>
            <div className="col-1 filter-label" style={{textAlign: "left"}}>Title</div>
            <div className="col-5 query-value" style={{marginLeft:-40}}>
              {this.state.query.title}

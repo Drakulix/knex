@@ -17,6 +17,10 @@ export default class BookmarksTable extends Component {
     var filters = {}
     if(props.predefinedFilter !== undefined){
       filters = props.predefinedFilter
+      delete filters.searchString
+      delete filters._id
+      delete filters.userID
+      delete filters.label
     }
     this.state = {
       data: [{
@@ -79,35 +83,11 @@ export default class BookmarksTable extends Component {
   }
 
   handleAddBookmark(projectID){
-    for(let project of this.state.data) {
-      if(project._id === projectID){
-        project["is_bookmark"] = true
-        break
-      }
-    }
-    for(let project of this.state.filteredTable) {
-      if(project._id === projectID){
-        project["is_bookmark"] = true
-        break
-      }
-    }
     post("/api/users/bookmarks/"+projectID, {})
       .then(this.fetchData(this.state.url))
   }
 
   handleRemoveBookmark(projectID){
-    for(let project of this.state.data) {
-      if(project._id === projectID){
-        project["is_bookmark"] = false
-        break
-      }
-    }
-    for(let project of this.state.filteredTable) {
-      if(project._id === projectID){
-        project["is_bookmark"] = false
-        break
-      }
-    }
     del("/api/users/bookmarks/"+projectID)
       .then(this.fetchData(this.state.url))
   }
@@ -160,12 +140,13 @@ export default class BookmarksTable extends Component {
 
     handleFilterChange(key, value){
       var state = this.state.filters
-      if(value === ""){
+      if(value === undefined || value ===""  || value.length === 0){
         delete state[key]
       }
       else  {
         state[key] = value
       }
+      alert(Object.keys(state))
       this.setState({filters : state})
       this.filter(state)
       if(this.props.handleFilter !== undefined)
