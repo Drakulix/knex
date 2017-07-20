@@ -176,7 +176,7 @@ export default class CommentSideBar extends React.Component {
   }
 
   loadComments(){
-    Backend.getProjectComments().then(function(data) {
+    Backend.getProjectComments(this.props.uuid).then(function(data) {
       var filteredData = this.transformArray(data)
       this.setState({
         comments : filteredData
