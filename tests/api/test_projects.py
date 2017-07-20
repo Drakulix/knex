@@ -283,6 +283,7 @@ class TestDELETE(object):
             /api/delete endpoint.
         """
         response = enter_default_user_users
+        assert response.status_code == 200
         data = {"email": "user@knex.com", "password": "user"}
         session = requests.Session()
         response = session.post(flask_api_url + '/api/users/login', data=data)
@@ -510,6 +511,7 @@ class TestPUT(object):
         """ Tests for 403 when attempting to update a different users project
         """
         response = enter_default_user_users
+        assert response.status_code == 200
         data = {"email": "user@knex.com", "password": "user"}
         session = requests.Session()
         response = session.post(flask_api_url + '/api/users/login', data=data)

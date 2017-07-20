@@ -30,20 +30,30 @@ from api.helper.apiexception import ApiException
 
 config_file_path = os.path.dirname(os.path.abspath(__file__))
 config = {}
-default_config = {"flask": {}, "mongo_db": {}, "elasticsearch": {}, "administration_user": {}}
-default_config["flask"]["hostname"] = "0.0.0.0"
-default_config["flask"]["port"] = 5000
-default_config["flask"]["debug"] = False
-default_config["mongo_db"]["secret_key"] = "super-secret"
-default_config["mongo_db"]["hostname"] = "mongodb"
-default_config["mongo_db"]["port"] = 27017
-default_config["mongo_db"]["security_password_hash"] = 'pbkdf2_sha512'
-default_config["mongo_db"]["security_password_salt"] = 'THISISMYOWNSALT'
-default_config["elasticsearch"]["hostname"] = "elasticsearch"
-default_config["elasticsearch"]["port"] = 9200
-default_config["administration_user"]["username"] = "admin"
-default_config["administration_user"]["password"] = "admin"
-default_config["administration_user"]["email"] = "admin@knex.com"
+default_config = {
+    "flask": {
+        "hostname": "0.0.0.0",
+        "port": 5000,
+        "debug": False
+    },
+    "mongo_db": {
+        "secret_key": "super-secret",
+        "hostname": "mongodb",
+        "port": 27017,
+        "security_password_hash": 'pbkdf2_sha512',
+        "security_password_salt": 'THISISMYOWNSALT'
+    },
+    "elasticsearch": {
+        "hostname": "elasticsearch",
+        "port": 9200
+    },
+    "administration_user": {
+        "username": "admin",
+        "password": "admin",
+        "email": "admin@knex.com"
+    }
+}
+
 if os.path.isfile(os.path.join(config_file_path, "config.yml")):
     print("Starting flask server (Backend/Api) using config file")
     with open(os.path.join(config_file_path, "config.yml"), 'r') as config_file:
@@ -196,9 +206,9 @@ class User(DB.Document, UserMixin):
 
 
 class EmailConverter(BaseConverter):
-    regex = r"([a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\." + \
-            r"[a-z0-9!#$%&'*+\/=?^_`"r"{|}~-]+)" + \
-            r"*(@|\sat\s)(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" + \
+    regex = r"([a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\." +\
+            r"[a-z0-9!#$%&'*+\/=?^_`"r"{|}~-]+)" +\
+            r"*(@|\sat\s)(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" +\
             r"(\.|"r"\sdot\s))+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)"
 
 
@@ -293,7 +303,6 @@ def project_deleted_func():
 def initialize_users():
     user_role = USER_DATASTORE.find_or_create_role('user')
     admin_role = USER_DATASTORE.find_or_create_role('admin')
-    # userpw = hash_password("user")
     adminpw = hash_password(config["administration_user"]["password"])
     try:
         with open(os.path.join(sys.path[0], "default_avatar.png"), 'rb') as tf:
