@@ -115,9 +115,7 @@ export default class ProfileContainer extends Component {
               </Tab> : ""
             }
             <Tab label = "Projects" value = "c">
-              <ProfileProjects profileInf = {this.state.profileInf}
-                isMe = {this.state.isMe}
-                isAdmin = {this.state.isAdmin}/>
+              <ProfileProjects profileInf={this.state.profileInf} />
             </Tab>
           </Tabs>
           <Snackbar

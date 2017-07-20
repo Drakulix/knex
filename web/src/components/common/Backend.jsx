@@ -442,8 +442,10 @@ class Backend {
 
     async updateProfile(user) {
         if (await this.putJson('/api/users', user)) {
-            this.profile = await this.getProfile();
-            return true;
+          if (this.mail == user.mail) {
+            await this.getProfile();
+          }
+          return true;
         } else {
             return false;
         }
@@ -458,8 +460,11 @@ class Backend {
     }
 
     async getProfile(mail = this.mail) {
-        this.profile = await this.getJson('/api/users/'+encodeURIComponent(mail));
-        return this.profile;
+        let profile = await this.getJson('/api/users/'+encodeURIComponent(mail));
+        if (mail == this.mail) {
+          this.profile = profile;
+        }
+        return profile;
     }
 
     getTagsOfUser(mail) {
