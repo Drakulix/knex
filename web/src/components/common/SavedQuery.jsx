@@ -16,12 +16,8 @@ export default class SavedQuery extends Component {
       for (var i in query.authors) {
         temp = temp.concat([query.authors[i].name + " ("+query.authors[i].email+ ")"])
       }
-      query.authors = temp
-      temp = []
-      for (var i in query.tags) {
-        temp = temp.concat([query.tags[i]])
-      }
-      query.tags = temp
+      query.authors = (temp.length !== 0 ? temp : undefined)
+      delete query.userID
       this.state = {
         query : query
       }
@@ -80,23 +76,25 @@ export default class SavedQuery extends Component {
              {this.state.query.description}
            </div>
            </div>
-           <div className="row">
-             <div className="col-1 filter-label">Tags</div>
-             <div  className="col-5  query-value" style={{marginLeft:-40}}>
-               <div style = {styles["wrapper"]}>
-                 { this.state.query.tags.map(item =>
-                   <Chip style= {styles["chipText"]}>
-                     {item}</Chip>) }
-                     </div>
-             </div>
-             <div className="col-1 filter-label"> Authors</div>
-             <div  className="col-5  query-value">
-               <div style = {styles["wrapper"]}>
-                 { this.state.query.authors.map(item =>
-                   <Chip style= {styles["chipText"]}>
-                     {item}</Chip>) }
-                     </div>
-             </div>
+          <div className="row">
+            <div className="col-1 filter-label">Tags</div>
+            <div  className="col-5  query-value" style={{marginLeft:-40}}>
+              <div style = {styles["wrapper"]}>
+                 { this.state.query.tags !== undefined ?
+                    this.state.query.tags.map(item =>
+                      <Chip style= {styles["chipText"]}>
+                        {item}</Chip>) : ""}
+              </div>
+            </div>
+            <div className="col-1 filter-label"> Authors</div>
+            <div  className="col-5  query-value">
+              <div style = {styles["wrapper"]}>
+                 { this.state.query.authors !== undefined ?
+                    this.state.query.authors.map(item =>
+                      <Chip style= {styles["chipText"]}>
+                        {item}</Chip>) : ""}
+              </div>
+            </div>
            </div>
            <div className="row">
              <div className="col-1 filter-label" style={{textAlign: "left" , marginLeft:2}}>From</div>
