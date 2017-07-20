@@ -20,13 +20,15 @@ export function getMyEmail(){
 export function isAdmin(resolveSetAdmin){
   if(!loaded){
     getUserInfo(getMyEmail()).then(function(response) {
-              admin = response.roles.indexOf('admin') !== -1
-              loaded = true
-              return admin
+              admin = response.roles.indexOf('admin') !== -1;
+
+              loaded = true;
+              return admin;
        }).then(function(admin) {resolveSetAdmin(admin)})
   } else {
-    resolveSetAdmin(admin)
+    resolveSetAdmin(admin);
   }
+
 }
 
 
@@ -113,6 +115,8 @@ export function login(login_email, login_password){
   const m = encodeURIComponent(login_email);
   const p = encodeURIComponent(login_password);
   const requestBody = `email=${m}&password=${p}`;
+  loaded= false;
+  admin = false;
   var res = fetch('/api/users/login', {
       mode: 'no-cors',
       credentials: 'include',
@@ -145,6 +149,8 @@ export function logout(){
       if(response.status===200){
         myemail = '';
         loggedin = false;
+        loaded = false;
+        admin = false;
         return true;
       }else{
         return false;
