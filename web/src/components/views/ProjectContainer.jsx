@@ -37,8 +37,8 @@ export default class ProjectContainer extends Component {
     this.handleEdit = this.handleEdit.bind(this)
     this.handleComment = this.handleComment.bind(this)
     this.handleBookmark = this.handleBookmark.bind(this)
-    this.handleShare = this.handleShare.bind(this    isAdmin((admin) =>{this.setState({isAdmin :  admin})})
-)
+    this.handleShare = this.handleShare.bind(this)
+
     this.handleDelete = this.handleDelete.bind(this)
     this.handleSharedProject = this.handleSharedProject.bind(this)
     this.handleClosedSharePane = this.handleClosedSharePane.bind(this)
