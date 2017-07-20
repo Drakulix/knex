@@ -142,6 +142,7 @@ export default class BookmarksTable extends Component {
       var state = this.state.filters
       if(value === undefined || value ===""  || value.length === 0){
         delete state[key]
+        value = undefined
       }
       else  {
         state[key] = value
