@@ -4,27 +4,30 @@ import 'babel-polyfill';
 
 var loggedin = false;
 var myemail = '';
-var myProfile;
+var loaded = false
+var admin = false
 
 export function isLoggedIn(){
   return loggedin;
 }
 
 export function getMyEmail(){
+  if(myemail === '')
+    myemail = getCookie('email')
   return ( myemail || getCookie('email') );
 }
 
-export function isAdmin(){
-
-        return getUserInfo(getMyEmail()).then(function(response) {
-          return response.json;
-        }).then(function (response){
-            myProfile = response;
-            return (myProfile && (myProfile.roles === 'admin'));
-        }).then(res => {return res});
-
+export function isAdmin(resolveSetAdmin){
+  if(!loaded){
+    getUserInfo(getMyEmail()).then(function(response) {
+              admin = response.roles.indexOf('admin') !== -1
+              loaded = true
+              return admin
+       }).then(function(admin) {resolveSetAdmin(admin)})
+  } else {
+    resolveSetAdmin(admin)
+  }
 }
-
 
 
 export function setCookie(cname, cvalue, exdays) {
@@ -77,7 +80,7 @@ export function changePassword(email, oldpw, newpw){
 
 export function changeProfile(email, first_name, last_name, bio){
 
-  var sbody = {'email': email, 'first name': first_name, 'last name': last_name, 'bio': bio};
+  var sbody = {'email': email, 'first_name': first_name, 'last_name': last_name, 'bio': bio};
 
   return fetch('/api/users' , {
       method: 'PUT',
@@ -130,9 +133,6 @@ export function login(login_email, login_password){
         return false;
       }
     });
-    getUserInfo(myemail).then((success) => {
-        myProfile = success;
-    });;
     return res;
 }
 

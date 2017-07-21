@@ -1,10 +1,18 @@
+import io
+import os
+import sys
+import base64
+import mimetypes
+
 from flask import request, jsonify, make_response, g, Blueprint
 from flask_security import login_required, login_user, logout_user, current_user
 from flask_security.utils import verify_password, hash_password
 from mongoengine import NotUniqueError
 from mongoengine.fields import ObjectId
+from werkzeug.utils import secure_filename
 
 from api.helper.apiexception import ApiException
+
 
 users = Blueprint('api_users', __name__)
 
@@ -62,16 +70,22 @@ def create_user():
 
         role = g.user_datastore.find_or_create_role(user['roles'])
 
-        g.user_datastore.create_user(first_name=user["first_name"],
-                                     last_name=user["last_name"],
-                                     email=user["email"],
-                                     password=hash_password(user["password"]),
-                                     bio=user["bio"], roles=[role])
+        with open(os.path.join(sys.path[0], "default_avatar.png"), 'rb') as tf:
+            imgtext = base64.b64encode(tf.read()).decode()
 
-        return jsonify(g.user_datastore.get_user(user['email']))
+        g.user_datastore.create_user(first_name=user['first_name'],
+                                     last_name=user['last_name'],
+                                     email=user['email'],
+                                     password=hash_password(user['password']),
+                                     bio=user['bio'], roles=[role],
+                                     avatar_name="default_avatar.png",
+                                     avatar=imgtext)
 
-    except NotUniqueError as ue:
-        raise ApiException("duplicated user error", 409)
+        usr = g.user_datastore.get_user(user['email'])
+        return jsonify(usr.to_dict())
+
+    except NotUniqueError:
+        raise ApiException("Duplicated user error", 409)
     except ApiException as e:
         raise e
     except Exception as err:
@@ -156,11 +170,55 @@ def get_user(mail):
     """
     user = g.user_datastore.get_user(mail)
     if not user:
-        return make_response("Unknown User with Email-address: " + str(mail), 400)
+        return make_response("Unknown User with Email-address: " + str(mail), 404)
 
     res = user.to_dict()
     res['roles'] = [role for role in ['admin', 'user'] if user.has_role(role)]
     return jsonify(res)
+
+
+@users.route('/api/users/<email:mail>/avatar', methods=['GET'])
+@login_required
+def get_user_avatar(mail):
+    user = g.user_datastore.get_user(mail)
+    if not user:
+        raise ApiException("Unknown User with Email-address: " + str(mail), 404)
+    filedata = base64.b64decode(user.avatar)
+    response = make_response(filedata)
+    response.headers['Content-Type'] = mimetypes.guess_type(user.avatar_name)
+    response.headers['Content-Disposition'] = 'attachment; filename=' + user.avatar_name
+    return response
+
+
+@users.route('/api/users/<email:mail>/avatar', methods=['PUT'])
+@login_required
+def set_user_avatar(mail):
+    user = g.user_datastore.get_user(mail)
+    if not user:
+        raise ApiException("Unknown User with Email-address: " + str(mail), 404)
+    if 'image' not in request.files:
+        raise ApiException("request.files contains no image", 400)
+    if 'image/' not in request.content_type:
+        raise ApiException("Content-Type must be set to 'image/<filetype>'", 400)
+    file = request.files['image']
+    user.avatar_name = file.filename
+    user.avatar = base64.b64encode(file.read()).decode()
+    user.save()
+    return make_response("Avatar successfully replaced.", 200)
+
+
+@users.route('/api/users/<email:mail>/avatar', methods=['DELETE'])
+@login_required
+def reset_user_avatar(mail):
+    user = g.user_datastore.get_user(mail)
+    if not user:
+        raise ApiException("Unknown User with Email-address: " + str(mail), 404)
+    with open(os.path.join(sys.path[0], "default_avatar.png"), 'rb') as tf:
+        imgtext = base64.b64encode(tf.read())
+    user.avatar = imgtext.decode()
+    user.avatar_name = "default_avatar.png"
+    user.save()
+    return make_response("Success", 200)
 
 
 @users.route('/api/users/<email:mail>/tags', methods=['GET'])
@@ -222,7 +280,7 @@ def add_bookmarks(id):
     user.bookmarks.append(id)
     user.save()
     projects = [g.projects.find_one({'_id': project_id})
-                for project_id in user['bookmarks']]
+                for project_id in user.bookmarks]
 
     try:
         for project in projects:

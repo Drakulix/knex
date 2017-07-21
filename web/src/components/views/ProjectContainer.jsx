@@ -1,347 +1,404 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 
+import Badge from 'material-ui/Badge'
 import Chip from 'material-ui/Chip'
-import styles from '../common/Styles.jsx';
+import styles from '../common/Styles'
+import {get, post, del, put} from '../common/Backend'
+import IconButton from 'material-ui/IconButton'
+import SharePane from '../common/SharePane'
+import Dialog from 'material-ui/Dialog'
+import RaisedButton from 'material-ui/RaisedButton'
+import CircularProgress from 'material-ui/CircularProgress'
+import CommentSideBar from '../common/CommentSideBar'
+import {getMyEmail, getUserInfo, isAdmin} from '../common/Authentication'
+import Snackbar from 'material-ui/Snackbar'
 
-import IconButton from 'material-ui/IconButton';
-import SharePane from '../common/SharePane';
-import CircularProgress from 'material-ui/CircularProgress';
-import CommentSideBar from '../common/CommentSideBar.jsx'
 
 
 export default class ProjectContainer extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       projectID : this.props.match.params.uuid,
-      projectInf:{},
-      myBookmarks: {},
-      bookmarked:false,
-      owner : false,
-      sharePane: false,
-      commentBar: false,
-      project_exists: false
-    };
+      projectInf : {},
+      sharePane : false,
+      commentBar : false,
+      project_exists : false,
+      is_bookmark : false,
+      canEdit : false,
+      myEmail : getMyEmail(),
+      isAdmin : false,
+      dialogOpen : false,
+      snackbar : false,
+      sharePane : false,
+      snackbarText : "",
+      comments_count: 0
+    }
 
-    this.handleEdit = this.handleEdit.bind(this);
-    this.handleComment = this.handleComment.bind(this);
-    this.handleBookmark = this.handleBookmark.bind(this);
-    this.handleShare = this.handleShare.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
+    this.handleEdit = this.handleEdit.bind(this)
+    this.handleComment = this.handleComment.bind(this)
+    this.handleBookmark = this.handleBookmark.bind(this)
+    this.handleShare = this.handleShare.bind(this)
+    this.handleDelete = this.handleDelete.bind(this)
+    this.handleSharedProject = this.handleSharedProject.bind(this)
+    this.handleClosedSharePane = this.handleClosedSharePane.bind(this)
+    this.handleUpdateComments = this.handleUpdateComments.bind(this)
+
+  }
+
+  handleUpdateComments(event){
+    this.loadComments();
+  }
+
+  transformArray(dataArray) {
+    var filteredDataArray = []
+    for(let dataObject of dataArray) {
+      filteredDataArray.push(dataObject)
+    }
+    return filteredDataArray
+  }
+
+  loadComments(){
+    var fetchURL = "/api/projects/" + this.state.projectID + "/comment"
+    get(fetchURL).then(function(data) {
+      var filteredData = this.transformArray(data)
+      this.setState({
+        comments_count : filteredData.length
+      })
+    }.bind(this))
   }
 
   componentWillMount(){
-    this.loadSiteInf(this.state.projectID);
+    this.loadSiteInf(this.state.projectID)
+    isAdmin((admin) =>{this.setState({isAdmin :  admin})})
+    this.loadComments()
   }
 
   componentWillReceiveProps(nextProps){
-    this.setState({projectID: nextProps.uuid});
+    this.setState({projectID : nextProps.uuid})
     this.loadSiteInf(this.state.projectID)
   }
 
-
-  fetchMyBookmarks(){
-    return fetch('/api/users/bookmarks', {
-      method: 'GET',
-      mode: 'no-cors',
-      credentials: 'include',
-      headers: {
-        "Accept": "application/json",
-      }
-    }).then(response => response.json()).catch(ex => {
-      console.error('parsing failes', ex);
-    });
+  handleClosedSharePane(){
+    this.setState({
+      dialogOpen : false,
+      snackbar : false,
+      sharePane : false
+    })
   }
 
-  fetchProjectInfo(uuid){
-    return fetch('/api/projects/' + uuid, {
-      method: 'GET',
-      mode: 'no-cors',
-      credentials: 'include',
-      headers: {
-        "Accept": "application/json",
-      }
-    }).then(response => response.json()).catch(ex => {
-      console.error('parsing failes', ex);
-    });
+  handleSharedProject(){
+    this.setState({
+      dialogOpen : false,
+      snackbar : true,
+      sharePane : false,
+      snackbarText : `Project ${this.state.projectInf.title} shared`
+    })
+  }
+
+
+  handleClose(){
+    this.setState({
+      dialogOpen : false,
+      snackbar : false
+    })
+  }
+
+  handleDelete(){
+    var project = this.state.projectInf;
+    delete project.is_bookmark
+    delete project.is_owner
+    project['archived'] = true
+    put("/api/projects/"+this.state.projectID, project)
+    this.setState({
+      dialogOpen : false,
+      snackbar : true,
+      snackbarText : "Project " + project.title + " deleted"
+    })
   }
 
   loadSiteInf(uuid) {
-    this.fetchProjectInfo(uuid).then(data => {
-      this.setState({projectInf: data});
-      if(!data){
-        this.setState({project_exists: false});
-      }else{
-        this.setState({project_exists: true})
-      }
-      this.setState({site_loaded: true})
+    get('/api/projects/' + uuid).then(data => {
+      var email = this.state.myEmail
+      var isOwner = false
+      for (let author in data.authors)
+        isOwner = isOwner || data.authors[author].email === email
+      this.setState({
+        projectInf : data,
+        project_exists : !!data,
+        site_loaded : true,
+        isOwner : isOwner
+      })
     }).catch(ex => {
-      this.setState({project_exists: false});
-        this.setState({site_loaded: true})
-    });
-
-    this.fetchMyBookmarks().then(data => {
-      this.setState({myBookmarks: data});
-      if(!data){
-        this.setState({});
-      }else{
-        var bookmarks_id = [];
-        var arrayLength = data.length;
-        for (var i = 0; i < arrayLength; i++){
-          bookmarks_id.push(data[i]._id)
-        }
-        if (bookmarks_id.indexOf(this.state.projectID) !== -1){
-          this.setState({bookmarked: true})
-        } else {
-          this.setState({bookmarked: false})
-        }
-        this.setState({project_exists: true})
-      }
-      this.setState({site_loaded: true})
-    }).catch(ex => {
-      this.setState({project_exists: false});
-        this.setState({site_loaded: true})
-    });
-
-  this.setState({owner : true});
+      this.setState({
+        project_exists : false,
+        site_loaded : true
+      })
+    })
   }
 
   handleComment(event){
-    event.preventDefault();
-  //  window.location = '/comment/'+  this.state.projectID;
-    this.setState({sharePane:false});
-    this.setState({commentBar:true});
+    event.preventDefault()
+    this.setState({
+      sharePane : false,
+      commentBar : true
+    })
   }
 
   handleShare(event){
-    event.preventDefault();
-    //window.location = '/share/'+  this.state.projectID;
-    this.setState({commentBar:false});
-    this.setState({sharePane:true});
-  }
-
-  addBookmark(){
-  return fetch('/api/users/bookmarks/' + this.state.projectID , {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-    }).then(function(response){
-      if(response.status=200){
-        return true;
-      }else{
-        return false;
-      }
-    });
-  }
-
-  removeBookmark(){
-    var url = "/api/users/bookmarks/"
-    return fetch(url+this.state.projectID, {
-      credentials: 'include',
-      method: "DELETE",
-      body: "",
-      headers: {
-
-      }
-    }).then(function(response){
-      if(response.status===200){
-        return true;
-      }else{
-        return false;
-      }
-    });
+    event.preventDefault()
+    this.setState({
+      commentBar : false,
+      sharePane : true
+    })
   }
 
   handleBookmark(event){
-    event.preventDefault();
-    this.setState({commentBar:false});
-    this.setState({sharePane:false});
-
-
-    if(new String (this.state.bookmarked) == "true"){
-      //deleteBookmark
-      this.removeBookmark().then(res => {
+    event.preventDefault()
+    this.setState({
+        commentBar : false,
+        sharePane : false,
+        snackbar : false
+    })
+    // HORRIBLE  and strange initialstate
+    if(new String(this.state.projectInf.is_bookmark) == "true"){
+      del ("/api/users/bookmarks/"+this.state.projectID).then(res => {
         if(res){
-          this.setState({bookmarked : false});
+          var projectInf = this.state.projectInf
+          projectInf.is_bookmark = false
+          this.setState({projectInf : projectInf})
         }
-      });
-    }else {
-      this.addBookmark().then(res => {
+      })
+    } else {
+      post('/api/users/bookmarks/' + this.state.projectID).then(res => {
         if(res){
-          this.setState({bookmarked : true});
+          var projectInf = this.state.projectInf
+          projectInf.is_bookmark = true
+          this.setState({projectInf : projectInf})
         }
-      });
-
+      })
     }
   }
 
-
-
   handleEdit(event){
-    event.preventDefault();
-    window.location = '/update/'+  this.state.projectID;
+    event.preventDefault()
+    window.location = '/update/'+  this.state.projectID
   }
 
-
-  handleDelete(event){
-    event.preventDefault();
-    window.location = '/delete/'+  this.state.projectID;
-  }
 
   render(){
     if(!this.state.site_loaded){
       return (
-        <div className="container">
-          <div className="header"><CircularProgress size={80} thickness={5} /></div>
+        <div className = "container">
+          <div className = "header"><CircularProgress size = {80} thickness = {5} /></div>
         </div>
-      );
+      )
     }
     if(!this.state.project_exists){
       return (
-        <div className="container">
-          <div className="header">Project Not Found</div>
+        <div className = "container">
+          <div className = "header">Project Not Found</div>
         </div>
-      );
+      )
     }else{
-    let status_badge = null;
-    if (this.state.projectInf.status === 'DONE'){
-      status_badge = <span className="badge badge-success">DONE</span>
-    } else if (this.state.projectInf.status === 'IN_PROGRESS') {
-      status_badge = <span className="badge badge-warning">IN_PROGRESS</span>
-    } else if (this.state.projectInf.status === 'IN_REVIEW') {
-      status_badge = <span className="badge badge-info">IN_REVIEW</span>
-    } else {
-      status_badge = this.state.projectInf.status
-    }
-    return(
-
-      <div className="container">
-        <div className="innerContainer">
-          <SharePane value={this.state.sharePane} uuid={this.state.projectID}></SharePane>
-          <CommentSideBar value={this.state.commentBar} uuid={this.state.projectID}></CommentSideBar>
-          <div className = "row headerCreation" style={{width:"100%"}}>
-            <div className="col-12">
-              <div>Project</div>
-              <div style={{fontSize: '20px'}}> {this.state.projectInf.title}</div>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-5">
-              <div className="row">
-                <div className="col-4">
-                  <div className="profile-info">Status</div>
-                  <div>{status_badge}</div>
-                </div>
-                <div className="col-4">
-                  <div className="profile-info">Creation date</div>
-                  <div>{this.state.projectInf.date_creation}</div>
-                </div>
-                <div className="col-4">
-                  <div className="profile-info">Last update </div>
-                  <div> {this.state.projectInf.date_last_updated}</div>
-                </div>
+      let status_badge = null
+      if (this.state.projectInf.status === 'DONE'){
+        status_badge = <span className = "badge badge-success">DONE</span>
+      } else if (this.state.projectInf.status === 'IN_PROGRESS') {
+        status_badge = <span className = "badge badge-warning">IN_PROGRESS</span>
+      } else if (this.state.projectInf.status === 'IN_REVIEW') {
+        status_badge = <span className = "badge badge-info">IN_REVIEW</span>
+      } else {
+        status_badge = this.state.projectInf.status
+      }
+      return(
+        <div className = "container">
+          <div className = "innerContainer">
+            <SharePane  uuid = {this.state.projectID}
+                        handleSharedProject = {this.handleSharedProject}
+                        open = {this.state.sharePane}
+                        handleClosedSharePane ={this.handleClosedSharePane}
+                        />
+            <CommentSideBar handleUpdateComments={this.handleUpdateComments} value = {this.state.commentBar} uuid = {this.state.projectID}></CommentSideBar>
+            <ConfirmationPane open = {this.state.dialogOpen}
+                              projectID = {this.state.projectID}
+                              projectTitle = {this.state.projectInf.title}
+                              handleDelete = {this.handleDelete}
+                              handleClose = {this.handleClose}/>
+            <Snackbar
+              open = {this.state.snackbar}
+              message = {this.state.snackbarText}
+              autoHideDuration = {10000}/>
+            <div className = "row headerCreation" style = {{width : "100%"}}>
+              <div className = "col-12">
+                <div>Project</div>
+                <div style = {{fontSize : '20px'}}> {this.state.projectInf.title}</div>
               </div>
-              <div style={{marginTop:30}}>
-                <div className="profile-info">Authors</div>
+            </div>
+            <div className = "row">
+              <div className = "col-5">
+                <div className = "row">
+                  <div className = "col-4">
+                    <div className = "profile-info">Status</div>
+                    <div>{status_badge}</div>
+                  </div>
+                  <div className = "col-4">
+                    <div className = "profile-info">Creation date</div>
+                    <div>{this.state.projectInf.date_creation}</div>
+                  </div>
+                  <div className = "col-4">
+                    <div className = "profile-info">Last update </div>
+                    <div> {this.state.projectInf.date_last_updated}</div>
+                  </div>
+                </div>
+                <div style = {{marginTop : 30}}>
+                <div className = "profile-info">Authors</div>
                 <div style = {styles["wrapper"]}>
                   {
                     this.state.projectInf.authors.map(item =>
-                      <Chip style= {styles["chip"]}>
-                        <Link to={"/profile/"+item.email} style= {styles["chipText"]}>{item.name}</Link>
+                      <Chip style= {styles["chip"]} key={item.email}>
+                        <Link to = {"/profile/"+item.email} style= {styles["chipText"]}>{item.name}</Link>
                       </Chip>
                     )
                   }
+                </div>
+              </div>
+              <div style = {{marginTop : 30}}>
+                <div className = "profile-info">Links</div>
+                <div style = {styles["wrapper"]}>
+                  { this.state.projectInf.url.map(item => <Chip style= {styles["chip"]} key={item}>
+                  <a href = {item} style= {styles["chipText"]}>{item}</a></Chip>) }
                   </div>
                 </div>
-                <div style={{marginTop:30}}>
-                  <div className="profile-info">Links</div>
+              </div>
+              <div className = "col-1"></div>
+              <div className = "col-6">
+                <div style = {{marginTop : 10}}>
+                  <div className = "profile-info">Tags </div>
                   <div style = {styles["wrapper"]}>
-                    { this.state.projectInf.url.map(item => <Chip style= {styles["chip"]}>
-                    <a href={item} style= {styles["chipText"]}>{item}</a></Chip>) }
-                    </div>
+                    { this.state.projectInf.tags.map(item =>
+                      <Chip style= {styles["chip"]}>
+                        <Link to = {"/discovery?tag = " +item} style= {styles["chipText"]} >{item}</Link></Chip>) }
                   </div>
                 </div>
-                <div className="col-1"></div>
-                <div className="col-6">
-                  <div style={{marginTop:10}}>
-                    <div className="profile-info">Tags </div>
-                    <div style = {styles["wrapper"]}>
-                      { this.state.projectInf.tags.map(item =>
-                        <Chip style= {styles["chip"]}>
-                          <Link to={"/discovery?tag=" +item} style= {styles["chipText"]} >{item}</Link></Chip>) }
-                          </div>
-                        </div>
-                        <div style={{marginTop:30}}>
-                          <div className="profile-info">Description</div>
-                          <div><a>{this.state.projectInf.description}</a></div>
-                        </div>
-                      </div>
-                    </div>
-                    <div style={{textAlign:"center", marginTop:75}} >
-                      <IconButton
-                        onClick={this.handleComment}
-                        touch={true}
+                <div style = {{marginTop : 30}}>
+                  <div className = "profile-info">Description</div>
+                  <div><a>{this.state.projectInf.description}</a></div>
+                </div>
+              </div>
+            </div>
+            <div style = {{textAlign : "center", marginTop : 75}} >
+              <IconButton
+                        onClick = {this.handleComment}
+                        touch = {true}
                         style = {styles.largeIcon}
-                        tooltipPosition="top-center"
-                        tooltip="Comment project"
-                        iconStyle={{fontSize: '24px'}}
+                        tooltipPosition = "top-center"
+                        tooltip = "Comment project"
+                        iconStyle = {{fontSize : '24px'}}
                         >
-                        <i className="material-icons">comment</i>
-                      </IconButton>
-                      <IconButton
-                        onClick={this.handleBookmark}
-                        touch={true}
+                        <i className = "material-icons">comment</i>
+                        <Badge  badgeContent = {this.state.comments_count} primary = {true}
+                          badgeStyle = {{top : -30, height : 20, width : 20}} />
+              </IconButton>
+              <IconButton
+                        onClick = {this.handleBookmark}
+                        touch = {true}
                         style = {styles.largeIcon}
-                        tooltipPosition="top-center"
-                        tooltip="Bookmark project"
-                        iconStyle={{fontSize: '24px'}}
+                        tooltipPosition = "top-center"
+                        tooltip = "Bookmark project"
+                        disabled = {! (this.state.isOwner)}
+                        iconStyle = {{fontSize : '24px'}}
                         >
-                        <i className="material-icons">
-                          {(new String(this.state.bookmarked) == "true") ? "star_rate" : "star_border"}
+                        <i className = "material-icons">
+                          {(new String(this.state.projectInf.is_bookmark) == "true") ? "star" : "star_border"}
                         </i>
-                      </IconButton>
-                      <IconButton
-                        onClick={this.handleShare}
-                        touch={true}
+              </IconButton>
+              <IconButton
+                        onClick = {this.handleShare}
+                        touch = {true}
                         style = {styles.largeIcon}
-                        tooltipPosition="top-center"
-                        tooltip="Share project"
-                        iconStyle={{fontSize: '24px'}}
+                        tooltipPosition = "top-center"
+                        tooltip = "Share project"
+                        iconStyle = {{fontSize : '24px'}}
                         >
-                        <i className="material-icons">share</i>
-                      </IconButton>
-                      <Link to={"/update/" + this.state.projectID}  >
-                      <IconButton
+                        <i className = "material-icons">share</i>
+              </IconButton>
+              <Link to = {"/update/" + this.state.projectID}  >
+                <IconButton
+                          touch = {true}
+                          style = {styles.largeIcon}
+                          disabled = {! (this.state.isOwner || this.state.isAdmin)}
+                          tooltipPosition = "top-center"
+                          tooltip = "Edit project"
+                          iconStyle = {{fontSize : '24px'}}
+                          >
+                          <i className = "material-icons">mode_edit</i>
+                </IconButton>
+              </Link>
+              <IconButton
+                        onClick ={() => this.setState({dialogOpen : true})}
+                        touch = {true}
+                        style = {styles.largeIcon}
+                        disabled = {! (this.state.isOwner || this.state.isAdmin)}
+                        tooltipPosition = "top-center"
+                        tooltip = "Archive project"
+                        iconStyle = {{fontSize : '24px'}}
+                        >
+                        <i className = "material-icons">archive</i>
+              </IconButton>
+            </div>
+          </div>
+        </div>
+      )
+    }
+  }
+}
 
-                        touch={true}
-                        style = {styles.largeIcon}
-                        disabled={!this.state.owner}
-                        tooltipPosition="top-center"
-                        tooltip="Edit project"
-                        iconStyle={{fontSize: '24px'}}
-                        >
-                        <i className="material-icons">mode_edit</i>
-                      </IconButton>
-                      </Link>
-                      <IconButton
-                        onClick={this.handleDelete}
-                        touch={true}
-                        style = {styles.largeIcon}
-                        disabled={!this.state.owner}
-                        tooltipPosition="top-center"
-                        tooltip="Delete project"
-                        iconStyle={{fontSize: '24px'}}
-                        >
-                        <i className="material-icons">delete</i>
-                      </IconButton>
-                    </div>
-                  </div>
-                </div>
-    );
-  }
-  }
+  class ConfirmationPane extends Component {
+    constructor(props) {
+      super(props)
+      this.state = {
+        open: false
+        }
+      this.handleDelete = this.handleDelete.bind(this)
+    }
+
+    handleDelete(event){
+      event.preventDefault()
+      this.props.handleDelete()
+    }
+
+
+    componentWillReceiveProps(props){
+      this.setState({open: props.dialogOpen})
+    }
+
+    render() {
+      const actions = [
+        <RaisedButton
+          label = "Cancel"
+          primary = {true}
+          onTouchTap = {this.props.handleClose}
+          />,
+        <RaisedButton
+          label="Archive project"
+          primary = {true}
+          onTouchTap = {this.handleDelete}
+          style = {{marginLeft:20}}
+          />,
+      ]
+
+      return (
+        <Dialog
+          title = {"Do you want to archive project: \n"+ this.props.projectTitle}
+          actions = {actions}
+          modal = {false}
+          open = {this.props.open}
+          onRequestClose = {this.props.handleClose}
+          >
+        </Dialog>
+      )
+    }
 }

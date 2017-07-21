@@ -189,7 +189,32 @@ def delete_project(project_id):
     if g.projects.delete_one({'_id': project_id}).deleted_count == 0:
         return make_response("Project could not be found", 404)
     g.rerun_saved_searches()
+    g.on_project_deletion()
     return make_response("Success")
+
+
+@projects.route('/api/projects/<uuid:project_id>/archive/<string:archived>', methods=['GET'])
+@login_required
+def archive_project(project_id, archived):
+    if archived not in ["true", "false"]:
+        raise ApiException("Argument <string:archived> must be 'true' or 'false'", 400)
+    archived = True if archived == "true" else False
+    manifest = g.projects.find_one({'_id': project_id})
+    if not manifest:
+        raise ApiException("Project not found", 404)
+    if not is_permitted(current_user, manifest):
+        raise ApiException("User is not permitted to archive this project", 403)
+    manifest['archived'] = archived
+    g.projects.find_one_and_replace({'_id': project_id}, manifest,
+                                    return_document=ReturnDocument.AFTER)
+    g.notify_users(
+        list(set(
+            [author['email'] for author in manifest['authors']] +
+            g.users_with_bookmark(str(manifest['_id'])))),
+        "Project was (un)archived", manifest['title'],
+        '/project/' + str(manifest['_id']))
+    g.rerun_saved_searches()
+    return make_response("Project was successfully archived.", 200)
 
 
 @projects.route('/api/projects/<uuid:project_id>', methods=['PUT'])
@@ -224,11 +249,10 @@ def update_project(project_id):
                                                 return_document=ReturnDocument.AFTER)
                 g.notify_users(
                     list(set(
-                        [author['email'] for author in manifest['authors']
-                         if author['email'] != current_user['email']] +
-                        g.users_with_bookmark(str(manifest['_id']))
-                    )), "Project was updated", manifest['title'],
-                    '/projects/' + str(manifest['_id']))
+                        [author['email'] for author in manifest['authors']] +
+                        g.users_with_bookmark(str(manifest['_id'])))),
+                    "Project was updated", manifest['title'],
+                    '/project/' + str(manifest['_id']))
                 g.rerun_saved_searches()
                 return make_response("Success")
             elif not is_permitted(current_user, manifest):
@@ -290,8 +314,7 @@ def add_comment(project_id):
             g.notify_users(
                 list(set(
                     [author['email'] for author in manifest['authors']] +
-                    [comment['author']['email'] for comment in manifest['comments']]
-                )),
+                    [comment['author']['email'] for comment in manifest['comments']])),
                 "New comment", author["name"] + " commented on " + manifest["title"],
                 '/project/' + str(manifest['_id']))
             return jsonify(comment['id'])
@@ -491,7 +514,7 @@ def share_via_email(project_id, user_mail):
         raise ApiException("Project not found", 404)
 
     description = res["title"] + "was shared with you."
-    link = "/projects/" + str(project_id)
+    link = '/project/' + str(project_id)
     title = "Project shared."
     return g.notify_users([user_mail], description, title, link)
 
@@ -510,6 +533,6 @@ def share_with_users(project_id):
         raise ApiException("Project not found", 404)
 
     description = res["title"] + "was shared with you"
-    link = "/projects/" + str(project_id)
+    link = '/project/' + str(project_id)
     title = "Project shared"
     return g.notify_users(emails_list, description, title, link)

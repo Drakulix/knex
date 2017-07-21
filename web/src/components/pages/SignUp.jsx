@@ -1,21 +1,21 @@
 
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import {
   Link,
   Redirect,
-} from 'react-router-dom';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
-import logo from '../../style/img/black_logo_title_below.svg';
-import {register, getUserInfo, getMyEmail} from '../common/Authentication.jsx';
+} from 'react-router-dom'
+import RaisedButton from 'material-ui/RaisedButton'
+import TextField from 'material-ui/TextField'
+import SelectField from 'material-ui/SelectField'
+import MenuItem from 'material-ui/MenuItem'
+import logo from '../../style/img/black_logo_title_below.svg'
+import {register, getUserInfo, getMyEmail} from '../common/Authentication.jsx'
 
 
 export default class SignUp extends Component {
 
   constructor(props) {
-    super(props);
+    super(props)
 
     // set the initial component state
     this.state = {
@@ -34,132 +34,132 @@ export default class SignUp extends Component {
       password_confirm: '',
       role: 'user',
       myProfile: getMyEmail()
-    };
-    this.handleChangeFirstName = this.handleChangeFirstName.bind(this);
-    this.handleChangeLastName = this.handleChangeLastName.bind(this);
-    this.handleChangeEmail = this.handleChangeEmail.bind(this);
-    this.handleChangePassword = this.handleChangePassword.bind(this);
-    this.handleChangePasswordConfirm = this.handleChangePasswordConfirm.bind(this);
-    this.handleRoleChange = this.handleRoleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    }
+    this.handleChangeFirstName = this.handleChangeFirstName.bind(this)
+    this.handleChangeLastName = this.handleChangeLastName.bind(this)
+    this.handleChangeEmail = this.handleChangeEmail.bind(this)
+    this.handleChangePassword = this.handleChangePassword.bind(this)
+    this.handleChangePasswordConfirm = this.handleChangePasswordConfirm.bind(this)
+    this.handleRoleChange = this.handleRoleChange.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   handleChangeFirstName(event) {
     if(event.target.value === ''){
-      this.setState({firstname_error: 'Requiered'});
+      this.setState({firstname_error: 'Requiered'})
     }else{
-      this.setState({firstname_error: ''});
+      this.setState({firstname_error: ''})
     }
-    this.setState({firstname: event.target.value});
+    this.setState({firstname: event.target.value})
   }
 
   handleChangeLastName(event) {
     if(event.target.value === ''){
-      this.setState({lastname_error: 'Requiered'});
+      this.setState({lastname_error: 'Requiered'})
     }else{
-      this.setState({lastname_error: ''});
+      this.setState({lastname_error: ''})
     }
-    this.setState({lastname: event.target.value});
+    this.setState({lastname: event.target.value})
   }
 
   handleChangeEmail(event) {
     if(event.target.value === '' || !this.isValidEmailAddress(event.target.value)){
-      this.setState({email_error: 'Not a valid email'});
+      this.setState({email_error: 'Not a valid email'})
     }else{
-      this.setState({email_error: ''});
+      this.setState({email_error: ''})
     }
-    this.setState({email: event.target.value});
+    this.setState({email: event.target.value})
   }
 
   handleChangePassword(event) {
     if(event.target.value === ''){
-      this.setState({password_error: 'Can not be empty!'});
+      this.setState({password_error: 'Can not be empty!'})
     }else if(this.state.password !== this.state.password_confirm){
-      this.setState({password_confirm_error: 'Password do not match!'});
+      this.setState({password_confirm_error: 'Password do not match!'})
     }else{
-      this.setState({password_error: ''});
-      this.setState({password_confirm_error: ''});
+      this.setState({password_error: ''})
+      this.setState({password_confirm_error: ''})
     }
-    this.setState({password: event.target.value});
+    this.setState({password: event.target.value})
   }
 
 
   handleRoleChange(event, index, value) {
-    this.setState({'role': value});
+    this.setState({'role': value})
   }
 
   handleChangePasswordConfirm(event) {
     if(event.target.value !== this.state.password){
-      this.setState({password_confirm_error: 'Requiered'});
+      this.setState({password_confirm_error: 'Requiered'})
     }else if(this.state.password !== this.state.password_confirm){
-      this.setState({password_confirm_error: 'Password do not match!'});
+      this.setState({password_confirm_error: 'Password do not match!'})
     }else{
-      this.setState({password_confirm_error: ''});
+      this.setState({password_confirm_error: ''})
     }
-    this.setState({password_confirm: event.target.value});
+    this.setState({password_confirm: event.target.value})
   }
 
   handleSubmit(event){
-    event.preventDefault();
+    event.preventDefault()
     if(this.state.password !== this.state.password_confirm){
-      this.setState({password_confirm_error: 'Password do not match!'});
+      this.setState({password_confirm_error: 'Password do not match!'})
     }else{
-      this.setState({password_confirm_error: ''});
+      this.setState({password_confirm_error: ''})
     }
 
     if(this.state.firstname_error === '' && this.state.lastname_error === '' &&this.state.email_error === '' && this.state.password_error === '' &&  this.state.password_confirm_error === ''){
     register(this.state.firstname, this.state.lastname, this.state.email, this.state.password, this.state.password_confirm, this.state.role).then((success) => {
 
       if(success){
-        alert("Registration successfull!");
-        this.setState({ redirect: true });
+        alert("Registration successfull!")
+        this.setState({ redirect: true })
       }else{
-        this.setState({ redirect: false, error: 'Registration failed!' });
-        alert("Registration failed!");
+        this.setState({ redirect: false, error: 'Registration failed!' })
+        alert("Registration failed!")
       }
-    });
+    })
     }
   }
 
   isValidEmailAddress(address) {
-    return !! address.match(/\S+@\S+\.\S+/);
+    return !! address.match(/\S+@\S+\.\S+/)
   }
 
   loadProfileInf(e) {
     getUserInfo(e).then(data => {
-      this.setState({profileInf: data});
+      this.setState({profileInf: data})
       if(!data){
-        this.setState({profile_exists: false});
+        this.setState({profile_exists: false})
       }else{
-        this.setState({first_name: data.first_name, last_name: data.last_name, bio: data.bio});
+        this.setState({first_name: data.first_name, last_name: data.last_name, bio: data.bio})
       }
     }).catch(ex => {
-      this.setState({profile_exists: false});
-    });
+      this.setState({profile_exists: false})
+    })
 
   }
 
   componentDidMount(){
-    this.loadProfileInf(this.state.myProfile);
+    this.loadProfileInf(this.state.myProfile)
   }
 
   isUserAdmin(){
-    return this.state.profileInf && (this.state.profileInf.roles === 'admin');
+    return this.state.profileInf && (this.state.profileInf.roles === 'admin')
   }
 
   getRoleStyle(){
     if(!this.isUserAdmin()){
-      return {visibility: 'hidden', display: 'none'};
+      return {visibility: 'hidden', display: 'none'}
     }else{
-      return {};
+      return {}
     }
   }
 
   render() {
-    const { teamName } = this.props;
+    const { teamName } = this.props
 
     if (this.state.redirect) {
-      return <Redirect to='/'/>;
+      return <Redirect to='/'/>
     }
 
     return (
@@ -254,7 +254,7 @@ export default class SignUp extends Component {
         </div>
 
       </section>
-    );
+    )
   }
 }
 
@@ -266,4 +266,4 @@ SignUp.propTypes = {
 SignUp.defaultProps = {
   serviceName: 'Knex',
   teamName: 'brings light to the cloud'
-};
+}

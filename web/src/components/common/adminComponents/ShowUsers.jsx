@@ -1,28 +1,36 @@
 import React, { Component } from 'react'
 import ReactTable from 'react-table'
-import { fetchJson } from '../../common/Backend'
 import { Link } from 'react-router-dom'
 import IconButton from 'material-ui/IconButton'
-import styles from '../../common/Styles.jsx'
+import styles from '../../common/Styles'
 import RaisedButton from 'material-ui/RaisedButton'
 import Dialog from 'material-ui/Dialog'
+import {del} from '../../common/Backend'
+import CircularProgress from 'material-ui/CircularProgress'
+
 
 export default class ShowUsers extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      data : [{}],
-    };
-    this.handleDelete = this.handleDelete.bind(this);
+      open : false,
+      loading : false
+    }
+    this.handleDelete = this.handleDelete.bind(this)
+    this.handleClose = this.handleClose.bind(this)
   }
 
-  componentWillMount(){
-    fetchJson("/api/users").then(function(data) {
-      this.setState({
-        data : data,
-        open : false
-      })
-    }.bind(this))
+  handleClose(){
+    this.setState({
+      open : false
+    })
+  }
+
+  componentWillReceiveProps(props){
+    this.setState({
+      loading : props.loading,
+      open:false
+    })
   }
 
   handleDelete(userID){
@@ -73,6 +81,18 @@ export default class ShowUsers extends Component {
     })
 
     columns.push({
+      Header: 'Admin',
+      id: 'admin',
+      width:100,
+      filterable:false,
+      style:{textAlign:"center"},
+      accessor: d => d,
+      Cell: props =>{
+        return(<div></div>)
+      }
+    })
+
+    columns.push({
       Header: 'Edit',
       accessor: d => d,
       id: 'delete',
@@ -113,51 +133,52 @@ export default class ShowUsers extends Component {
       })
 
     return (
-      <div className="padding row">
-        <ConfirmationPane open={this.state.open} userID={this.state.userID}/>
-        <div className="header-tab">List users</div>
-        <div className="col-1"></div>
-        <div className="col-10">
-          <ReactTable style = {{width : "100%"}}
-               data={this.state.data}
-               columns={columns}
-               defaultExpanded={{1: true}}
-               filterable={true}
-               showPageSizeOptions={false}
-               defaultPageSize={10}
-               defaultSorted={[{
-                  id: 'userID',
-                  desc: true
-                }]}
-               />
-           </div>
-        <div className="col-1"></div>
-      </div>
+      <div className="padding">
+        <ConfirmationPane open={this.state.open}
+                          userID={this.state.userID}
+                          handleUserUpdate={this.props.handleUserUpdate}
+                          handleClose={this.handleClose}/>
+        <div className="header-tab" style={{textAlign:"center"}}>List users</div>
+          <div className = "container" style = {{display : (this.state.loading ? "block" : "none")}}>
+            <div className = "header"><CircularProgress size = {80} thickness = {5} /></div>
+          </div>
+          <div style = {{display : (!this.state.loading ? "block" : "none")}}>
+            <div className="row">
+              <div className="col-1"></div>
+              <div className="col-10">
+                <ReactTable style = {{width : "100%"}}
+                     data={this.props.userList}
+                     columns={columns}
+                     defaultExpanded={{1: true}}
+                     filterable={true}
+                     showPageSizeOptions={false}
+                     defaultPageSize={10}
+                     defaultSorted={[{
+                        id: 'userID',
+                        desc: true
+                      }]}
+                     />
+              </div>
+              <div className="col-1"></div>
+            </div>
+          </div>
+        </div>
     )
   }
 }
 
-
-
 class ConfirmationPane extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      open: false
-      }
-  }
-
-  handleClose = () => {
-    this.setState({open: false})
-  }
-
-
   handleDelete = () =>{
-    this.setState({open : false})
+    var text = "You can not delete the admin user"
+    if(this.props.userID !== "admin@knex.com"){
+      text = "User " + this.props.userID + " deleted"
+      del("/api/users/"+this.props.userID).then(
+        this.props.handleUserUpdate(text))
+    }
   }
 
   componentWillReceiveProps(props){
-    this.setState({open: props.open});
+    this.setState({open: props.open})
   }
 
   render() {
@@ -165,7 +186,7 @@ class ConfirmationPane extends Component {
       <RaisedButton
         label = "Cancel"
         primary = {true}
-        onTouchTap = {this.handleClose}
+        onTouchTap = {this.props.handleClose}
         />,
       <RaisedButton
         label="DELETE USER"
@@ -180,8 +201,8 @@ class ConfirmationPane extends Component {
         title = {"Do you want to delete user "+ this.props.userID}
         actions = {actions}
         modal = {false}
-        open = {this.state.open}
-        onRequestClose = {this.handleClose}
+        open = {this.props.open}
+        onRequestClose = {this.props.handleClose}
         >
       </Dialog>
     )

@@ -1,10 +1,17 @@
+import os
+import sys
+import json
+import time
+import uuid
+import base64
+
 from elasticsearch import Elasticsearch
 from flask import Flask, g, jsonify, request
 from flask.helpers import make_response
 from flask_cors import CORS
 from flask_login import LoginManager
 from flask_mongoengine import MongoEngine
-from flask_security import Security, MongoEngineUserDatastore, UserMixin, RoleMixin
+from flask_security import Security, MongoEngineUserDatastore, UserMixin, RoleMixin, current_user
 from flask_security.utils import hash_password
 from flask_principal import PermissionDenied
 from jsonschema import FormatChecker, Draft4Validator
@@ -12,16 +19,13 @@ from mongoengine import NotUniqueError
 from pymongo import MongoClient, ReturnDocument
 from mongoengine.fields import (UUIDField, ListField, StringField, BooleanField,
                                 ObjectId, EmbeddedDocumentField, EmbeddedDocument,
-                                ListField, ObjectIdField)
-import json
-import time
+                                ObjectIdField)
 from werkzeug.routing import BaseConverter
 
 from api.projects import projects
 from api.users import users
 from api.search import search, prepare_es_results
 from api.helper.apiexception import ApiException
-from globals import ADMIN_PERMISSION
 
 
 app = Flask(__name__, static_url_path='')
@@ -35,8 +39,7 @@ app.config['MONGODB_HOST'] = 'mongodb'
 app.config['MONGODB_PORT'] = 27017
 app.config['SECURITY_PASSWORD_HASH'] = 'pbkdf2_sha512'
 app.config['SECURITY_PASSWORD_SALT'] = 'THISISMYOWNSALT'
-app.config['UPLOAD_FOLDER'] = ''
-app.config['MAX_CONTENT_PATH'] = 1000000  # 100.000 byte = 100kb
+app.config['MAX_CONTENT_PATH'] = 1000000  # 1.000.000 byte = 1mb
 
 DB = MongoEngine(app)
 
@@ -118,15 +121,15 @@ class Notification(DB.EmbeddedDocument):
 
 
 class SavedSearch(EmbeddedDocument):
-    saved_search_id = ObjectIdField(default=ObjectId)
-    title = DB.StringField(max_length=255)
-    query = DB.StringField(max_length=2048)
+    saved_search_id = DB.ObjectIdField(default=ObjectId)
+    metadata = DB.StringField(max_length=4096)
+    query = DB.StringField(max_length=4096)
     count = DB.LongField()
 
     def to_dict(self):
         dic = {}
         dic['id'] = str(self.saved_search_id)
-        dic['title'] = str(self.title)
+        dic['meta'] = json.loads(str(self.metadata))
         dic['count'] = self.count
         return dic
 
@@ -142,6 +145,8 @@ class User(DB.Document, UserMixin):
     roles = DB.ListField(DB.ReferenceField(Role), default=[])
     notifications = DB.ListField(DB.EmbeddedDocumentField(Notification), default=[])
     saved_searches = DB.ListField(DB.EmbeddedDocumentField(SavedSearch), default=[])
+    avatar_name = DB.StringField(max_length=255)
+    avatar = DB.StringField()  # this is ugly as fuck but we store b64 encoded file data
 
     # we must not override the method __iter__ because Document.save() stops working then
     def to_dict(self):
@@ -175,10 +180,9 @@ def notify_users(useremail_list, n_description, n_title, n_link):
     n = Notification(description=n_description, title=n_title, link=n_link)
     for email in useremail_list:
         user = USER_DATASTORE.get_user(email)
-        id = None
-        if user:
+        if user and user['email'] != current_user['email']:
             for existing_n in user.notifications:
-                if str(existing_n.link) == n_link:
+                if str(existing_n.link) == str(n_link):
                     break
             else:
                 user.notifications.append(n)
@@ -194,11 +198,7 @@ def notification_func():
 
 
 def users_with_bookmark(id):
-    users = []
-    for user in User.objects:
-        if id in user.bookmarks:
-            users.append(user['email'])
-    return users
+    return [user['email'] for user in User.objects if id in user.bookmarks]
 
 
 @app.before_request
@@ -206,8 +206,8 @@ def users_with_bookmark_func():
     g.users_with_bookmark = users_with_bookmark
 
 
-def save_search(user, title, query, count):
-    search = SavedSearch(title=title, query=json.dumps(query), count=count)
+def save_search(user, meta, query, count):
+    search = SavedSearch(metadata=json.dumps(meta), query=json.dumps(query), count=count)
     user.saved_searches.append(search)
     user.save()
     return str(search.saved_search_id)
@@ -228,13 +228,31 @@ def rerun_saved_searches():
             if search['count'] != len(projects):
                 search['count'] = len(projects)
                 search.save()
-                notify_users([user['email']], 'Saved search changed', str(
-                    search.title) + ' updated', '/results/saved/' + str(search.saved_search_id))
+                notify_users([user['email']], 'Saved search changed',
+                             str(search.title) + ' updated',
+                             '/results/saved/' + str(search.saved_search_id))
 
 
 @app.before_request
 def rerun_saved_searches_func():
     g.rerun_saved_searches = rerun_saved_searches
+
+
+def on_project_deletion():
+    for user in User.objects:
+        user.bookmarks = [x for x in user.bookmarks if g.projects.find_one({'_id': x})]
+        user.notifications = [x for x in user.notifications if
+                              '/project/' not in str(x.link) or g.projects.find_one(
+                               {'_id': uuid.UUID(
+                                   str(x.link)[str(x.link).index('/project/') + len('/project/'):]
+                                   )
+                                })]
+        user.save()
+
+
+@app.before_request
+def project_deleted_func():
+    g.on_project_deletion = on_project_deletion
 
 
 @app.before_first_request
@@ -245,13 +263,17 @@ def initialize_users():
     adminpw = hash_password("admin")
     try:
         USER_DATASTORE.create_user(
-            email='user@knex.com', password=userpw, roles=[user_role])
+            email="user@knex.com", password=userpw, roles=[user_role])
     except NotUniqueError:
         pass
     try:
+        with open(os.path.join(sys.path[0], "default_avatar.png"), 'rb') as tf:
+            imgtext = base64.b64encode(tf.read()).decode()
         USER_DATASTORE.create_user(
-            email='admin@knex.com', password=adminpw, roles=[user_role, admin_role])
-    # user_datastore.get_user might return None or throw an exception if the user does not exist
+            email="admin@knex.com", password=adminpw, first_name="Max", last_name="Mustermann",
+            bio="Lead developer proxy of knex.", roles=[user_role, admin_role],
+            avatar_name="default_avatar.png", avatar=imgtext)
+
     except NotUniqueError:
         pass
 

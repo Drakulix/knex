@@ -1,117 +1,104 @@
-import React, { Component } from 'react';
-import {
-  Redirect,
-} from 'react-router-dom';
-import { logout } from '../common/Authentication.jsx';
-
-import Badge from 'material-ui/Badge';
-import IconButton from 'material-ui/IconButton';
-import Snackbar from 'material-ui/Snackbar';
+import React, { Component } from 'react'
+import {Redirect} from 'react-router-dom'
+import { logout } from '../common/Authentication.jsx'
+import Badge from 'material-ui/Badge'
+import IconButton from 'material-ui/IconButton'
+import Snackbar from 'material-ui/Snackbar'
 import NotificationPane from '../common/NotificationPane'
-import { fetchJson, fetchDelete } from '../common/Backend';
-
-
+import { get, del } from '../common/Backend'
 
 export default class TopBar extends Component {
   constructor(props) {
-    super(props);
-
+    super(props)
     this.state = {
-      redirect: false,
-      popoverOpen: false,
-      logo: 'Company Logo',
-      notifications :[],
-      snackbar: false,
+      redirect : false,
+      popoverOpen : false,
+      logo : 'Company Logo',
+      notifications : [],
+      snackbar : false,
       popover : false,
-
-    };
-    this.handleLogout = this.handleLogout.bind(this);
-    this.handleNotificationClick = this.handleNotificationClick.bind(this);
-    this.handleRequestClose = this.handleRequestClose.bind(this);
-    this.resolveNotification = this.resolveNotification.bind(this);
-
+    }
+    this.handleLogout = this.handleLogout.bind(this)
+    this.handleNotificationClick = this.handleNotificationClick.bind(this)
+    this.handleRequestClose = this.handleRequestClose.bind(this)
+    this.resolveNotification = this.resolveNotification.bind(this)
   }
 
   componentWillMount(){
-    this.loadNotifications();
+    this.loadNotifications()
   }
 
   loadNotifications() {
-    fetchJson("/api/users/notifications").then(function (data) {
+    get("/api/users/notifications").then(function (data) {
       this.setState({
-          notifications: data
-          });
-      }.bind(this));
+          notifications : data
+          })
+      }.bind(this))
   }
 
   resolveNotification(notificationID){
-    var list = this.state.notifications.filter((c) => c.id !== notificationID);
-    this.setState({notifications : list});
-    fetchDelete("api/users/notifications/"+ notificationID);
+    var list = this.state.notifications.filter((c) => c.id !== notificationID)
+    this.setState({notifications : list,
+                  popover : false})
+    del("/api/users/notifications/"+ notificationID)
   }
 
   handleNotificationClick(event){
-    event.preventDefault();
+    event.preventDefault()
     this.setState({
-      popover: true,
-      anchorEl: event.currentTarget,
-    });
+      popover : true,
+      anchorEl : event.currentTarget,
+    })
   }
 
   handleRequestClose(){
-    this.setState({popover:false});
+    this.setState({popover : false})
   }
 
   handleLogout(event){
-    event.preventDefault();
+    event.preventDefault()
     logout().then((success) => {
       if(success){
-        this.setState({ redirect: true });
+        this.setState({ redirect : true })
       }else{
-        this.setState({ redirect: false});
-        this.setState({snackbar:true})
+        this.setState({ redirect : false})
+        this.setState({snackbar : true})
       }
-    });
+    })
   }
 
   render() {
     if (this.state.redirect) {
-      return <Redirect to='/'/>;
+      return <Redirect to='/'/>
     }
     return (
-      <div className="container-fluid topbar">
-        <div className="row">
-          <div className="col-10">
+      <div className = "container-fluid topbar">
+        <div className = "row">
+          <div className = "col-10">
           </div>
-          <div className="col-1" style={{marginTop:2}}>
-            <IconButton tooltip="Notifications" style={{color: 'white'}} onClick={this.handleNotificationClick}>
-              <i className="material-icons">notifications</i>
-              <Badge  badgeContent={this.state.notifications.length} primary={true}
-                badgeStyle={{top:-30, height:20, width: 20}} />
+          <div className = "col-1" style = {{marginTop : 2}}>
+            <IconButton tooltip = "Notifications" style = {{color : 'white'}} onClick = {this.handleNotificationClick}>
+              <i className = "material-icons">notifications</i>
+              <Badge  badgeContent = {this.state.notifications.length} primary = {true}
+                badgeStyle = {{top : -30, height : 20, width : 20}} />
             </IconButton>
-
-            <NotificationPane value={this.state.popover}
-                              anchorEl={this.state.anchorEl}
-                              onRequestClose={this.handleRequestClose}
-                              notifications={this.state.notifications}
-                              resolveNotification ={this.resolveNotification}
-              ></NotificationPane>
-
-
-                        </div>
-
-            <div className="col-1" style={{marginTop:2}}>
-              <IconButton tooltip="Log out" style={{color: 'white'}} onClick={this.handleLogout}>
-                <i className="material-icons">exit_to_app</i>
-              </IconButton>
-            </div>
+            <NotificationPane value = {this.state.popover}
+                              anchorEl = {this.state.anchorEl}
+                              onRequestClose = {this.handleRequestClose}
+                              notifications = {this.state.notifications}
+                              resolveNotification = {this.resolveNotification}/>
           </div>
-          <Snackbar
-            open={this.state.snackbar}
-            message="Log out failed!"
-            autoHideDuration={10000}
-          />
+          <div className = "col-1" style = {{marginTop : 2}}>
+            <IconButton tooltip = "Log out" style = {{color : 'white'}} onClick = {this.handleLogout}>
+              <i className = "material-icons">exit_to_app</i>
+            </IconButton>
+          </div>
         </div>
-      );
-    }
+        <Snackbar
+          open = {this.state.snackbar}
+          message = "Log out failed!"
+          autoHideDuration = {10000}/>
+      </div>
+    )
   }
+}

@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import {
   Link,
   Redirect,
-} from 'react-router-dom';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
-import logo from '../../style/img/black_logo_title_below.svg';
-import {login, isLoggedIn, getCookie} from '../common/Authentication.jsx';
+} from 'react-router-dom'
+import RaisedButton from 'material-ui/RaisedButton'
+import TextField from 'material-ui/TextField'
+import logo from '../../style/img/black_logo_title_below.svg'
+import {login, isLoggedIn, getCookie} from '../common/Authentication.jsx'
 
 export default class SignIn extends Component {
 
   constructor(props) {
-    super(props);
+    super(props)
 
     // set the initial component state
     this.state = {
@@ -20,43 +20,43 @@ export default class SignIn extends Component {
       email: getCookie('email'),
       password: '',
       remember: null
-    };
+    }
 
-    this.handleChangeEmail = this.handleChangeEmail.bind(this);
-    this.handleChangePassword = this.handleChangePassword.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChangeEmail = this.handleChangeEmail.bind(this)
+    this.handleChangePassword = this.handleChangePassword.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   handleChangeEmail(event) {
-    this.setState({email: event.target.value});
+    this.setState({email: event.target.value})
   }
 
   handleChangePassword(event) {
-    this.setState({password: event.target.value});
+    this.setState({password: event.target.value})
   }
 
   handleChangeRemember(event) {
-    this.setState({remember: event.target.value});
+    this.setState({remember: event.target.value})
   }
 
   handleSubmit(event){
-    event.preventDefault();
+    event.preventDefault()
     login(this.state.email, this.state.password).then((success) => {
 
       if(success){
-        this.setState({ redirect: true });
+        this.setState({ redirect: true })
       }else{
-        this.setState({ redirect: false, error: 'Login failed' });
-        alert("Login failed");
+        this.setState({ redirect: false, error: 'Login failed' })
+        alert("Login failed")
       }
-    });
+    })
   }
 
   render() {
-    const { teamName } = this.props;
+    const { teamName } = this.props
 
     if (this.state.redirect || isLoggedIn() ) {
-      return <Redirect to='/discovery'/>;
+      return <Redirect to='/discovery'/>
     }
 
     return (
@@ -115,7 +115,7 @@ export default class SignIn extends Component {
         </div>
 
       </section>
-    );
+    )
   }
 }
 
@@ -127,4 +127,4 @@ SignIn.propTypes = {
 SignIn.defaultProps = {
   serviceName: 'Knex',
   teamName: 'brings light to the cloud'
-};
+}
