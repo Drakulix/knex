@@ -17,8 +17,8 @@ class Testsecurity(object):
         response = requests.post(flask_api_url + '/api/users/login',
                                  data=dict(email='user1', password='password'))
 
-        assert response.reason == 'Bad Request'
-        assert response.status_code == 400
+        assert response.reason == 'FORBIDDEN'
+        assert response.status_code == 403
 
     def test_login_real_user(self, flask_api_url):
         response = requests.post(flask_api_url + '/api/users/login',
@@ -29,8 +29,8 @@ class Testsecurity(object):
     def test_login_real_user_wrong_psswd(self, flask_api_url):
         response = requests.post(flask_api_url + '/api/users/login',
                                  data=dict(email='admin', password='a'))
-        assert response.reason == 'Bad Request'
-        assert response.status_code == 400
+        assert response.reason == 'FORBIDDEN'
+        assert response.status_code == 403
 
     def test_logout(self, flask_api_url):
         response = requests.get(flask_api_url + '/api/users/login',
@@ -52,7 +52,7 @@ class Testsecurity(object):
                                  data=data.encode('utf-8'),
                                  headers={'Content-Type': 'application/json5'})
 
-        assert response.status_code == 200
+        assert response.status_code == 403
 
     def test_access_login_required_not_logged(self, pytestconfig, flask_api_url):
         response = requests.get(flask_api_url + '/api/users/logout')
