@@ -9,7 +9,7 @@ export default class BookmarksTable extends Component {
       <div className = "container">
         <div className = "header">Your bookmarks</div>
         <DataTable  columns = {['title', 'status', 'tags', 'authors', 'description', '_id', 'bookmarked']}
-                    fetchURL ="/api/users/bookmarks"
+                    fetchURL = "/api/users/bookmarks"
         />
       </div>
     )

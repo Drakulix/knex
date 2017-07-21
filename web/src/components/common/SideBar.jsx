@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import logo from '../../style/img/white_logo_title.svg'
-import {getMyEmail, isAdmin} from '../common/Authentication.jsx'
+import Backend from '../common/Backend.jsx'
 
 export default class SideBar extends Component {
   constructor(props) {
@@ -16,16 +16,10 @@ export default class SideBar extends Component {
         profile : 'Profile',
         adminArea : 'Admin area'
       },
-      myProfile : getMyEmail(),
+      myProfile : Backend.getMail(),
       data : "",
-      isAdmin : false
     }
   }
-
-  componentWillMount(){
-    isAdmin((admin) =>{this.setState({isAdmin :  admin})})
-  }
-
 
   isActive = (url) => { return url === this.props.location }
 
@@ -44,7 +38,7 @@ export default class SideBar extends Component {
                   icon = "settings"
                   name = {this.state.menu.adminArea}
                   to = "/admin" active = {this.isActive("/admin")}
-                  style = {{display : (this.state.isAdmin) ? "block" : "none"}}
+                  style = {{display : (Backend.isAdmin()) ? "block" : "none"}}
                 />
             </ul>
         </div>

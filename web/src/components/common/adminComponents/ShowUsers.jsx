@@ -5,7 +5,7 @@ import IconButton from 'material-ui/IconButton'
 import styles from '../../common/Styles'
 import RaisedButton from 'material-ui/RaisedButton'
 import Dialog from 'material-ui/Dialog'
-import {del} from '../../common/Backend'
+import Backend from '../../common/Backend'
 import CircularProgress from 'material-ui/CircularProgress'
 
 
@@ -170,11 +170,10 @@ export default class ShowUsers extends Component {
 class ConfirmationPane extends Component {
   handleDelete = () =>{
     var text = "You can not delete the admin user"
-    if(this.props.userID !== "admin@knex.com"){
-      text = "User " + this.props.userID + " deleted"
-      del("/api/users/"+this.props.userID).then(
-        this.props.handleUserUpdate(text))
-    }
+    text = "User " + this.props.userID + " deleted"
+    Backend.deleteUser(this.props.userID).then(
+      this.props.handleUserUpdate(text)
+    )
   }
 
   componentWillReceiveProps(props){

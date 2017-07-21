@@ -9,7 +9,6 @@ from elasticsearch import Elasticsearch
 from flask import Flask, g, jsonify, request
 from flask.helpers import make_response
 from flask_cors import CORS
-from flask_login import LoginManager
 from flask_mongoengine import MongoEngine
 from flask_security import Security, MongoEngineUserDatastore, UserMixin, RoleMixin, current_user
 from flask_security.utils import hash_password
@@ -43,9 +42,6 @@ app.config['MAX_CONTENT_PATH'] = 1000000  # 1.000.000 byte = 1mb
 
 DB = MongoEngine(app)
 
-LOGINMANAGER = LoginManager()
-LOGINMANAGER.init_app(app)
-
 
 @app.before_first_request
 def init_global_elasticsearch():
@@ -69,16 +65,6 @@ def init_global_mongoclient():
 def set_global_mongoclient():
     g.knexdb = MONGOCLIENT.knexdb
     g.projects = g.knexdb.projects
-
-
-@LOGINMANAGER.user_loader
-def load_user(user_id):
-    return User.get(user_id)
-
-
-@LOGINMANAGER.unauthorized_handler
-def handle_unauthorized_access():
-    return make_response("Forbidden", 403)
 
 
 @app.before_first_request
@@ -175,6 +161,11 @@ USER_DATASTORE = MongoEngineUserDatastore(DB, User, Role)
 SECURITY = Security(app, USER_DATASTORE)
 
 
+@SECURITY.login_manager.unauthorized_handler
+def handle_unauthorized_access():
+    return make_response("Forbidden", 403)
+
+
 # internal function to append notifications to the given userlist
 def notify_users(useremail_list, n_description, n_title, n_link):
     n = Notification(description=n_description, title=n_title, link=n_link)
@@ -243,10 +234,10 @@ def on_project_deletion():
         user.bookmarks = [x for x in user.bookmarks if g.projects.find_one({'_id': x})]
         user.notifications = [x for x in user.notifications if
                               '/project/' not in str(x.link) or g.projects.find_one(
-                               {'_id': uuid.UUID(
+                                  {'_id': uuid.UUID(
                                    str(x.link)[str(x.link).index('/project/') + len('/project/'):]
                                    )
-                                })]
+                                   })]
         user.save()
 
 

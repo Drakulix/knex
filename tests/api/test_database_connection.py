@@ -13,7 +13,7 @@ def test_no_elastic(flask_api_url, docker_client):
     assert True
 
 
-def test_empty_database(flask_api_url, mongo_client):
+def test_empty_database(flask_api_url, mongo_client, session):
     """
     :param flask_api_url:
     :param mongo_client:
@@ -21,7 +21,7 @@ def test_empty_database(flask_api_url, mongo_client):
     """
     result = mongo_client.projects.delete_many({})
     print("Database cleaned: ", result)
-    response = requests.get(flask_api_url + "/api/projects")
+    response = session.get(flask_api_url + "/api/projects")
     assert response.status_code == 200
     print(response.text)
 
