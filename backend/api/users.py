@@ -312,7 +312,7 @@ def delete_bookmarks(id):
                 project['is_owner'] = 'true' if current_user['email'] \
                     in [author['email'] for author in project['authors']] else 'false'
 
-            return jsonify(projects)
+            return make_response("Success", 200)
 
         except KeyError as err:
             raise ApiException(str(err), 500)
@@ -360,5 +360,5 @@ def delete_notification(id):
         if notification.notification_id == ObjectId(id):
             user.notifications.remove(notification)
             user.save()
-            return jsonify([notification.to_dict() for notification in user.notifications])
+            return make_response("Success", 200)
     return make_response("No notification with the given id known", 404)

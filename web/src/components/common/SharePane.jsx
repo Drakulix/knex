@@ -2,42 +2,35 @@ import React from 'react'
 import Dialog from 'material-ui/Dialog'
 import RaisedButton from 'material-ui/RaisedButton'
 import ChipInputList from '../common/ChipInputList.jsx'
-import {get, post} from '../common/Backend.jsx'
-import {getMyEmail} from '../common/Authentication.jsx'
-
+import Backend from '../common/Backend.jsx'
 
 export default class SharePane extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      open : false,
       authors : []
     }
     this.handleAuthorChange = this.handleAuthorChange.bind(this)
-  }
-
-  handleClose = () => {
-    this.setState({open : false})
   }
 
   shareProject =() =>{
     for (var i in this.state.authors) {
       var string = this.state.authors[i]
       var id = string.substring(string.lastIndexOf("(")+1, string.length-1)
-      post("/api/projects/"+this.props.uuid+"/share/"+id, {})
+      Backend.shareProjectToUser(this.props.uuid, id)
     }
     this.setState({open : false})
+    this.props.handleSharedProject()
   }
-
 
   componentDidMount() {
     //tipp : if you fetch server side data, this is the place where it should happen :)
     //gets all the authors from the backend
-    get('/api/users').then(function(authors) {
+    Backend.getUsers().then(function(authors) {
       var suggestedAuthors = authors
       var suggestedAuthorsArray = []
       for (var i in suggestedAuthors) {
-        if(suggestedAuthors[i].email == getMyEmail())
+        if(suggestedAuthors[i].email == Backend.getMail())
           continue
         suggestedAuthorsArray = suggestedAuthorsArray.concat([
                                    suggestedAuthors[i].first_name + " "
@@ -51,10 +44,6 @@ export default class SharePane extends React.Component {
     }.bind(this))
   }
 
-  componentWillReceiveProps(props){
-    this.setState({open : props.value})
-  }
-
   handleAuthorChange(event) {
     const value = event.target.value
     this.setState({authors : value})
@@ -65,13 +54,14 @@ export default class SharePane extends React.Component {
       <RaisedButton
         label="Cancel"
         primary={true}
-        onTouchTap={this.handleClose}
+        onTouchTap={this.props.handleClosedSharePane}
         />,
       <RaisedButton
         label="Share"
         primary={true}
         onTouchTap={this.shareProject}
         style={{marginLeft : 20}}
+        disabled ={this.state.authors.length === 0}
         />,
     ]
     return (
@@ -79,8 +69,8 @@ export default class SharePane extends React.Component {
         title="Share project with"
         actions={actions}
         modal={false}
-        open={this.state.open}
-        onRequestClose={this.handleClose}
+        open={this.props.open}
+        onRequestClose={this.handleClosedSharePane}
         >
         <ChipInputList suggestions = {this.state.suggestedAuthors}
           onChange={this.handleAuthorChange}

@@ -3,8 +3,7 @@ import TextField from "material-ui/TextField"
 import RaisedButton from "material-ui/RaisedButton"
 import MenuItem from "material-ui/MenuItem"
 import SelectField from "material-ui/SelectField"
-import Snackbar from 'material-ui/Snackbar'
-import {register} from '../../common/Authentication.jsx'
+import Backend from '../../common/Backend.jsx'
 
 
 export default class RegisterUser extends Component {
@@ -16,7 +15,7 @@ export default class RegisterUser extends Component {
       email : "",
       password : "",
       password_confirm : "",
-      role : 'user',
+      role : 'user'
     }
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleRegister = this.handleRegister.bind(this)
@@ -57,19 +56,11 @@ export default class RegisterUser extends Component {
 
   handleRegister(event){
     event.preventDefault()
-    register(this.state.first_name, this.state.last_name, this.state.email, this.state.password, this.state.password_confirm, this.state.role).then((success) => {
+    Backend.register(this.state.first_name, this.state.last_name, this.state.email, this.state.password, this.state.password_confirm, this.state.role).then((success) => {
       if(success){
-        this.setState({
-          snackbar : true,
-          snackbarText :  'Registration successfull!'
-        })
-        this.props.handleUserUpdate()
+        this.props.handleUserUpdate('Registration successfull!')
       }else{
-        this.setState({
-          snackbar : true,
-          snackbarText :  'Registration failed!'
-        })
-        this.props.handleUserUpdate()
+        this.props.handleUserUpdate('Registration failed!')
       }
     })
   }
@@ -77,11 +68,6 @@ export default class RegisterUser extends Component {
   render(){
     return (
       <div>
-        <Snackbar
-          open={this.state.snackbar}
-          message={this.state.snackbarText}
-          autoHideDuration={10000}
-          />
         <div>
           <div className="header-tab" style = {{textAlign : "center"}}>Register user</div>
           <div className="row">

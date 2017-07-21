@@ -52,7 +52,9 @@ a:hover {
   display: inline-block !important;
 }
 
-
+.-previous, .-next{
+  background-color: #ff5000;
+}
 
 .popover {
   border-radius: 0px;

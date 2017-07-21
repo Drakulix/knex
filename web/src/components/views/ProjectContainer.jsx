@@ -1,15 +1,18 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 
+import Badge from 'material-ui/Badge'
 import Chip from 'material-ui/Chip'
 import styles from '../common/Styles.jsx'
-import {get, post, del} from '../common/Backend'
+import Backend from '../common/Backend'
+import history from '../common/history'
 import IconButton from 'material-ui/IconButton'
 import SharePane from '../common/SharePane'
+import Dialog from 'material-ui/Dialog'
+import RaisedButton from 'material-ui/RaisedButton'
 import CircularProgress from 'material-ui/CircularProgress'
-import CommentSideBar from '../common/CommentSideBar.jsx'
-import {getMyEmail, getUserInfo, isAdmin} from '../common/Authentication.jsx'
-
+import Snackbar from 'material-ui/Snackbar'
+import CommentSideBar from '../common/CommentSideBar'
 
 export default class ProjectContainer extends Component {
   constructor(props) {
@@ -23,30 +26,97 @@ export default class ProjectContainer extends Component {
       project_exists : false,
       is_bookmark : false,
       canEdit : false,
-      myEmail : getMyEmail(),
-      isAdmin : false
+      myEmail : Backend.getMail(),
+      dialogOpen : false,
+      snackbar : false,
+      sharePane : false,
+      snackbarText : "",
+      comments_count: 0
     }
 
     this.handleEdit = this.handleEdit.bind(this)
     this.handleComment = this.handleComment.bind(this)
     this.handleBookmark = this.handleBookmark.bind(this)
     this.handleShare = this.handleShare.bind(this)
+
     this.handleDelete = this.handleDelete.bind(this)
+    this.handleSharedProject = this.handleSharedProject.bind(this)
+    this.handleClosedSharePane = this.handleClosedSharePane.bind(this)
+    this.handleUpdateComments = this.handleUpdateComments.bind(this)
+
+  }
+
+  handleUpdateComments(event){
+    this.loadComments();
+  }
+
+  transformArray(dataArray) {
+    var filteredDataArray = []
+    for(let dataObject of dataArray) {
+      filteredDataArray.push(dataObject)
+    }
+    return filteredDataArray
+  }
+
+  loadComments(){
+    Backend.getProjectComments(this.state.projectID).then(function(data) {
+      var filteredData = this.transformArray(data)
+      this.setState({
+        comments_count : filteredData.length
+      })
+    }.bind(this))
   }
 
   componentWillMount(){
     this.loadSiteInf(this.state.projectID)
-    isAdmin((admin) =>{this.setState({isAdmin :  admin})})
+    this.loadComments()
   }
 
   componentWillReceiveProps(nextProps){
     this.setState({projectID : nextProps.uuid})
     this.loadSiteInf(this.state.projectID)
+  }
 
+  handleClosedSharePane(){
+    this.setState({
+      dialogOpen : false,
+      snackbar : false,
+      sharePane : false
+    })
+  }
+
+  handleSharedProject(){
+    this.setState({
+      dialogOpen : false,
+      snackbar : true,
+      sharePane : false,
+      snackbarText : `Project ${this.state.projectInf.title} shared`
+    })
+  }
+
+
+  handleClose(){
+    this.setState({
+      dialogOpen : false,
+      snackbar : false
+    })
+  }
+
+  handleDelete(){
+    var project = this.state.projectInf;
+    delete project.is_bookmark
+    delete project.is_owner
+    project['archived'] = true
+    Backend.updateProject(this.state.projectID, project)
+    this.setState({
+      dialogOpen : false,
+      snackbar : true,
+      snackbarText : "Project " + project.title + " deleted"
+    })
   }
 
   loadSiteInf(uuid) {
-    get('/api/projects/' + uuid).then(data => {
+    Backend.getProject(uuid).then(data => {
       var email = this.state.myEmail
       var isOwner = false
       for (let author in data.authors)
@@ -85,11 +155,12 @@ export default class ProjectContainer extends Component {
     event.preventDefault()
     this.setState({
         commentBar : false,
-        sharePane : false
+        sharePane : false,
+        snackbar : false
     })
     // HORRIBLE  and strange initialstate
     if(new String(this.state.projectInf.is_bookmark) == "true"){
-      del ("/api/users/bookmarks/"+this.state.projectID).then(res => {
+      Backend.deleteBookmark(this.state.projectID).then(res => {
         if(res){
           var projectInf = this.state.projectInf
           projectInf.is_bookmark = false
@@ -97,7 +168,7 @@ export default class ProjectContainer extends Component {
         }
       })
     } else {
-      post('/api/users/bookmarks/' + this.state.projectID).then(res => {
+      Backend.addBookmark(this.state.projectID).then(res => {
         if(res){
           var projectInf = this.state.projectInf
           projectInf.is_bookmark = true
@@ -109,13 +180,9 @@ export default class ProjectContainer extends Component {
 
   handleEdit(event){
     event.preventDefault()
-    window.location = '/update/'+  this.state.projectID
+    history.push('/update/'+  this.state.projectID)
   }
 
-  handleDelete(event){
-    event.preventDefault()
-    window.location = '/delete/'+  this.state.projectID
-  }
 
   render(){
     if(!this.state.site_loaded){
@@ -145,8 +212,21 @@ export default class ProjectContainer extends Component {
       return(
         <div className = "container">
           <div className = "innerContainer">
-            <SharePane value = {this.state.sharePane} uuid = {this.state.projectID}></SharePane>
-            <CommentSideBar value = {this.state.commentBar} uuid = {this.state.projectID}></CommentSideBar>
+            <SharePane  uuid = {this.state.projectID}
+                        handleSharedProject = {this.handleSharedProject}
+                        open = {this.state.sharePane}
+                        handleClosedSharePane ={this.handleClosedSharePane}
+                        />
+            <CommentSideBar handleUpdateComments={this.handleUpdateComments} value = {this.state.commentBar} uuid = {this.state.projectID}></CommentSideBar>
+            <ConfirmationPane open = {this.state.dialogOpen}
+                              projectID = {this.state.projectID}
+                              projectTitle = {this.state.projectInf.title}
+                              handleDelete = {this.handleDelete}
+                              handleClose = {this.handleClose}/>
+            <Snackbar
+              open = {this.state.snackbar}
+              message = {this.state.snackbarText}
+              autoHideDuration = {10000}/>
             <div className = "row headerCreation" style = {{width : "100%"}}>
               <div className = "col-12">
                 <div>Project</div>
@@ -174,7 +254,7 @@ export default class ProjectContainer extends Component {
                 <div style = {styles["wrapper"]}>
                   {
                     this.state.projectInf.authors.map(item =>
-                      <Chip style= {styles["chip"]}>
+                      <Chip style= {styles["chip"]} key={item.email}>
                         <Link to = {"/profile/"+item.email} style= {styles["chipText"]}>{item.name}</Link>
                       </Chip>
                     )
@@ -184,7 +264,7 @@ export default class ProjectContainer extends Component {
               <div style = {{marginTop : 30}}>
                 <div className = "profile-info">Links</div>
                 <div style = {styles["wrapper"]}>
-                  { this.state.projectInf.url.map(item => <Chip style= {styles["chip"]}>
+                  { this.state.projectInf.url.map(item => <Chip style= {styles["chip"]} key={item}>
                   <a href = {item} style= {styles["chipText"]}>{item}</a></Chip>) }
                   </div>
                 </div>
@@ -215,6 +295,8 @@ export default class ProjectContainer extends Component {
                         iconStyle = {{fontSize : '24px'}}
                         >
                         <i className = "material-icons">comment</i>
+                        <Badge  badgeContent = {this.state.comments_count} primary = {true}
+                          badgeStyle = {{top : -30, height : 20, width : 20}} />
               </IconButton>
               <IconButton
                         onClick = {this.handleBookmark}
@@ -222,6 +304,7 @@ export default class ProjectContainer extends Component {
                         style = {styles.largeIcon}
                         tooltipPosition = "top-center"
                         tooltip = "Bookmark project"
+                        disabled = {! (this.state.isOwner)}
                         iconStyle = {{fontSize : '24px'}}
                         >
                         <i className = "material-icons">
@@ -242,7 +325,7 @@ export default class ProjectContainer extends Component {
                 <IconButton
                           touch = {true}
                           style = {styles.largeIcon}
-                          disabled = {! (this.state.isOwner || this.state.isAdmin)}
+                          disabled = {! (this.state.isOwner || Backend.isAdmin())}
                           tooltipPosition = "top-center"
                           tooltip = "Edit project"
                           iconStyle = {{fontSize : '24px'}}
@@ -251,15 +334,15 @@ export default class ProjectContainer extends Component {
                 </IconButton>
               </Link>
               <IconButton
-                        onClick = {this.handleDelete}
+                        onClick ={() => this.setState({dialogOpen : true})}
                         touch = {true}
                         style = {styles.largeIcon}
-                        disabled = {! (this.state.isOwner || this.state.isAdmin)}
+                        disabled = {! (this.state.isOwner || Backend.isAdmin())}
                         tooltipPosition = "top-center"
-                        tooltip = "Delete project"
+                        tooltip = "Archive project"
                         iconStyle = {{fontSize : '24px'}}
                         >
-                        <i className = "material-icons">delete</i>
+                        <i className = "material-icons">archive</i>
               </IconButton>
             </div>
           </div>
@@ -267,4 +350,51 @@ export default class ProjectContainer extends Component {
       )
     }
   }
+}
+
+  class ConfirmationPane extends Component {
+    constructor(props) {
+      super(props)
+      this.state = {
+        open: false
+        }
+      this.handleDelete = this.handleDelete.bind(this)
+    }
+
+    handleDelete(event){
+      event.preventDefault()
+      this.props.handleDelete()
+    }
+
+
+    componentWillReceiveProps(props){
+      this.setState({open: props.dialogOpen})
+    }
+
+    render() {
+      const actions = [
+        <RaisedButton
+          label = "Cancel"
+          primary = {true}
+          onTouchTap = {this.props.handleClose}
+          />,
+        <RaisedButton
+          label="Archive project"
+          primary = {true}
+          onTouchTap = {this.handleDelete}
+          style = {{marginLeft:20}}
+          />,
+      ]
+
+      return (
+        <Dialog
+          title = {"Do you want to archive project: \n"+ this.props.projectTitle}
+          actions = {actions}
+          modal = {false}
+          open = {this.props.open}
+          onRequestClose = {this.props.handleClose}
+          >
+        </Dialog>
+      )
+    }
 }

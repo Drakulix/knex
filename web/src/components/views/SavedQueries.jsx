@@ -27,35 +27,35 @@ export default class SavedQueries extends Component {
 
 
     var queries =  [
-        { _id :"FDAF",
-          authors : [{email:"marko@knex", name :"Marko"},
-          {email:"marko@knex", name :"Marko"}
-        ],
-        title : "Test",
-        tags : ["DDSA"],
-        value : "0",
-        status : "DONE",
-        filter_date_from :"2009-12-07",
-        filter_date_to:"2015-05-06",
-        description:"ttt",
-        searchString :"RE",
-        shortName : "TEST",
-        userID:"av"
-      },
-      { _id :"FDAF",
+      {
         authors : [{email:"marko@knex", name :"Marko"},
-        {email:"marko@knex", name :"Marko"}
-      ],
+                      {email:"marko@knex", name :"Marko"}
+                    ],
+        title : "Testd",
+        tags : ["DDSA"],
+        status : "DONE",
+        date_from :"2009-12-07",
+        date_to:"2015-05-06",
+        description : "ttt",
+        searchString : "RE",
+        label : "TEST",
+        _id :"FDAF", //REMOVE
+        userID:"av" //REMOVE
+      },
+      {
+      authors : [{email:"marko@knex", name :"Marko"},
+                    {email:"marko@knex", name :"Marko"}
+                  ],
       title : "Test",
       tags : ["DDSA"],
-      value : "0",
       status : "DONE",
-      filter_date_from :"2012-12-12",
-      filter_date_to:"2011-05-11",
-      searchString :"RE",
-      shortName : "TEST",
-      description :"Fd",
-      userID:"av"
+      date_from :"2009-12-07",
+      date_to:"2015-05-06",
+      description : "ttt",
+      searchString : "RE",
+      label : "TEST",
+      _id :"FDAFs", //REMOVE
+      userID:"av" //REMOVE
     }];
 
     this.setState({
@@ -71,7 +71,7 @@ export default class SavedQueries extends Component {
           <div>
             {
               this.state.queries.map(item =>
-                <div><SavedQuery value={item}></SavedQuery>
+                <div key = {item._id}><SavedQuery value={item}></SavedQuery>
                 <hr></hr>
                 </div>
               )
