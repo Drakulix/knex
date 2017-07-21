@@ -26,13 +26,13 @@ class Test_notifications(object):
                                 headers={'Content-Type': 'application/json5'})
         projects_id = response.json()[0]
         # assert(response.json()== 33)
-        requests.post(
+        session.post(
             flask_api_url + '/api/projects/' + projects_id + '/comment',
             data='new comment')
-        requests.get(flask_api_url + '/api/users/logout')
-        requests.post(flask_api_url + '/api/users/login',
+        session.get(flask_api_url + '/api/users/logout')
+        session.post(flask_api_url + '/api/users/login',
                       data=dict(email='user@knex.com', password="user"))
-        user_notifications = requests.get(
+        user_notifications = session.get(
             flask_api_url + '/api/users/notifications').json()
         assert (
-            user_notifications['link'] == '/project/' + projects_id)
+            user_notifications[0]['link'] == '/project/' + projects_id)
