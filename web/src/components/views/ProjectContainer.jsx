@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 
+import Badge from 'material-ui/Badge'
 import Chip from 'material-ui/Chip'
 import styles from '../common/Styles'
 import {get, post, del, put} from '../common/Backend'
@@ -32,7 +33,8 @@ export default class ProjectContainer extends Component {
       dialogOpen : false,
       snackbar : false,
       sharePane : false,
-      snackbarText : ""
+      snackbarText : "",
+      comments_count: 0
     }
 
     this.handleEdit = this.handleEdit.bind(this)
@@ -42,11 +44,36 @@ export default class ProjectContainer extends Component {
     this.handleDelete = this.handleDelete.bind(this)
     this.handleSharedProject = this.handleSharedProject.bind(this)
     this.handleClosedSharePane = this.handleClosedSharePane.bind(this)
+    this.handleUpdateComments = this.handleUpdateComments.bind(this)
+
+  }
+
+  handleUpdateComments(event){
+    this.loadComments();
+  }
+
+  transformArray(dataArray) {
+    var filteredDataArray = []
+    for(let dataObject of dataArray) {
+      filteredDataArray.push(dataObject)
+    }
+    return filteredDataArray
+  }
+
+  loadComments(){
+    var fetchURL = "/api/projects/" + this.state.projectID + "/comment"
+    get(fetchURL).then(function(data) {
+      var filteredData = this.transformArray(data)
+      this.setState({
+        comments_count : filteredData.length
+      })
+    }.bind(this))
   }
 
   componentWillMount(){
     this.loadSiteInf(this.state.projectID)
     isAdmin((admin) =>{this.setState({isAdmin :  admin})})
+    this.loadComments()
   }
 
   componentWillReceiveProps(nextProps){
@@ -194,7 +221,7 @@ export default class ProjectContainer extends Component {
                         open = {this.state.sharePane}
                         handleClosedSharePane ={this.handleClosedSharePane}
                         />
-            <CommentSideBar value = {this.state.commentBar} uuid = {this.state.projectID}></CommentSideBar>
+            <CommentSideBar handleUpdateComments={this.handleUpdateComments} value = {this.state.commentBar} uuid = {this.state.projectID}></CommentSideBar>
             <ConfirmationPane open = {this.state.dialogOpen}
                               projectID = {this.state.projectID}
                               projectTitle = {this.state.projectInf.title}
@@ -272,6 +299,8 @@ export default class ProjectContainer extends Component {
                         iconStyle = {{fontSize : '24px'}}
                         >
                         <i className = "material-icons">comment</i>
+                        <Badge  badgeContent = {this.state.comments_count} primary = {true}
+                          badgeStyle = {{top : -30, height : 20, width : 20}} />
               </IconButton>
               <IconButton
                         onClick = {this.handleBookmark}
