@@ -332,7 +332,7 @@ class Backend {
             method: 'PUT',
             credentials: 'same-origin',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'text/plain'
             },
             body: message
         })
