@@ -3,6 +3,7 @@ import os
 import time
 import uuid
 import requests
+import docker
 
 from uuid import UUID
 

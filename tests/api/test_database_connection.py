@@ -1,6 +1,11 @@
 import time
+import os
+import json
 import uuid
 import requests
+import docker
+
+from uuid import UUID
 
 
 def test_no_mongo(flask_api_url, docker_client):
@@ -11,6 +16,51 @@ def test_no_mongo(flask_api_url, docker_client):
 def test_no_elastic(flask_api_url, docker_client):
     # TODO
     assert True
+
+
+def test_consistent_delete_no_elastic(session, flask_api_url, pytestconfig, elastic_client):
+    """Test if mongo-connector resyncs when elasticsearch is shortly down.
+    """
+    test_manifest = os.path.join(
+        str(pytestconfig.rootdir),
+        'tests',
+        'testmanifests',
+        'validexample0.json'
+    )
+    with open(test_manifest, 'r') as tf:
+        test_manifest_json = json.load(tf)
+    post_response = session.post(flask_api_url + "/api/projects", json=test_manifest_json)
+    print(post_response.text)
+    for id in post_response.json():
+        assert UUID(id, version=4)
+    project_id = post_response.json()[0]
+
+    client = docker.from_env()
+
+    # Not the best way to get the container but every time I try getting it otherwise
+    # it didn't work?
+    container = None
+    for x in client.containers.list():
+        if "elastic" in x.attrs['Config']['Image']:
+            container = x
+    if container is None:
+        print("Couldn't find elasticsearch container!")
+        assert False
+
+    container.kill()
+
+    delete_response = session.delete(flask_api_url + "/api/projects/" + project_id)
+    print(delete_response.text)
+    assert delete_response.status_code == 200
+
+    container.start()
+
+    time.sleep(20)
+    # to give elasticsearch and mongo-connector some time to get back to normal
+
+    es_d_result = elastic_client.get(index="knexdb", id=project_id, ignore=404)
+    print("es: ", es_d_result)
+    assert not es_d_result['found']
 
 
 def test_empty_database(flask_api_url, mongo_client):
@@ -27,6 +77,8 @@ def test_empty_database(flask_api_url, mongo_client):
 
 
 def test_consistency(mongo_client, elastic_client):
+    """Test if mongo-connector makes sure mongo and elasticsearch are consistent.
+    """
     project_id = uuid.uuid4()
     dummy_project = {"_id": project_id, "name": "dummy_file"}
     mongo_client.projects.insert_one(dummy_project)
