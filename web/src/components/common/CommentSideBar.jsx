@@ -1,10 +1,124 @@
 import React from 'react'
 import Drawer from 'material-ui/Drawer'
+import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton'
 import {List, ListItem} from 'material-ui/List'
 import Divider from 'material-ui/Divider'
-import {get} from './Backend'
+import {get, del, putPlainText} from './Backend'
+import {grey400, darkBlack, lightBlack} from 'material-ui/styles/colors';
+import IconButton from 'material-ui/IconButton';
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import TextField from 'material-ui/TextField'
+import IconMenu from 'material-ui/IconMenu';
+import MenuItem from 'material-ui/MenuItem';
+import FlatButton from 'material-ui/FlatButton';
+
+
+class CommentItem extends React.Component {
+  constructor(){
+    super();
+    this.state = {open : false}
+
+    this.handleChange = this.handleChange.bind(this)
+    this.handleSubmitEdit = this.handleSubmitEdit.bind(this)
+  }
+
+  handleDelete(event){
+    var fetchURL ="/api/projects/"+this.props.p_id+"/comment/"+this.props.comment.id
+    del(fetchURL)
+    this.props.handleUpdateList()
+    }
+
+  handleOpen = () => {
+    this.setState({open: true});
+  };
+
+  handleClose = () => {
+    this.setState({open: false});
+  };
+
+
+
+  handleEdit(event){
+    this.setState({
+      message : this.props.comment.message
+    })
+    this.handleOpen()
+  }
+
+  handleSubmitEdit(event){
+    var fetchURL ="/api/projects/"+this.props.p_id+"/comment/"+this.props.comment.id
+    putPlainText(fetchURL, this.state.message)
+    this.props.handleUpdateList()
+    this.handleClose()
+  }
+
+  handleChange(event) {
+    var value = event.target.value;
+    this.setState({message: value})
+
+  }
+
+  render(){
+    const actions = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onTouchTap={this.handleClose}
+      />,
+      <FlatButton
+        label="Submit"
+        primary={true}
+        keyboardFocused={true}
+        onTouchTap={this.handleSubmitEdit}
+      />,
+    ];
+
+    const iconButtonElement = (
+      <IconButton
+        touch={true}
+        tooltip="more"
+        tooltipPosition="bottom-left"
+      >
+        <MoreVertIcon color={grey400} />
+      </IconButton>
+    );
+
+    const rightIconMenu = (
+      <IconMenu iconButtonElement={iconButtonElement}>
+        <MenuItem onClick = {()=>this.handleEdit()}>Edit</MenuItem>
+        <MenuItem onClick = {()=>this.handleDelete()} >Delete</MenuItem>
+      </IconMenu>
+    );
+    return (
+    <div>
+    <Dialog
+          title="Edit Comment"
+          actions={actions}
+          modal={false}
+          open={this.state.open}
+          onRequestClose={this.handleClose}
+        >
+        <TextField  value = {this.state.message}
+          name = "Change Comment."
+          onChange = {this.handleChange}
+          hintText = "Change Comment."
+          style = {{width : '100%', marginTop : 6}}
+          multiLine = {true}
+          />
+
+        </Dialog>
+    <ListItem primaryText={this.props.comment.message}
+              secondaryText={<div>
+                <span style={{float : "left"}}>{this.props.comment.author.email}</span>
+                <span style={{float : "right"}}> {this.props.comment.datetime}</span>
+              </div>}
+              rightIconButton={rightIconMenu}
+    />
+    </div>
+  )
+  }
+}
 
 export default class CommentSideBar extends React.Component {
 
@@ -15,6 +129,7 @@ export default class CommentSideBar extends React.Component {
     comments : []}
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleUpdateList = this.handleUpdateList.bind(this)
   }
 
   transformArray(dataArray) {
@@ -30,6 +145,11 @@ export default class CommentSideBar extends React.Component {
     this.setState({
       comment : value
     })
+  }
+
+  handleUpdateList(event){
+    this.loadComments()
+    this.props.handleUpdateComments()
   }
 
   handleSubmit(event){
@@ -52,6 +172,7 @@ export default class CommentSideBar extends React.Component {
       comment : ""
     })
     this.loadComments()
+    this.props.handleUpdateComments()
   }
 
   handleToggle = () => this.setState({showCommentBar : !this.state.showCommentBar})
@@ -68,7 +189,6 @@ export default class CommentSideBar extends React.Component {
     var fetchURL = "/api/projects/" + this.props.uuid + "/comment"
     get(fetchURL).then(function(data) {
       var filteredData = this.transformArray(data)
-      console.log(data)
       this.setState({
         comments : filteredData
       })
@@ -100,9 +220,7 @@ export default class CommentSideBar extends React.Component {
         {this.state.comments.map(item =>
           <div>
             <Divider/>
-            <ListItem primaryText={item.message}
-                      secondaryText={<div><span style={{float : "left"}}>{item.author.email}</span><span style={{float : "right"}}> {item.datetime}</span></div>}
-            />
+            <CommentItem comment={item} p_id={this.props.uuid} handleUpdateList={this.handleUpdateList}/>
           </div>)
         }
       </List>
