@@ -39,14 +39,14 @@ def search_simple():
     query = request.get_json()
 
     try:
-        searchString = query['searchString']
+        search_string = query['searchString']
     except KeyError:
         return make_response('Invalid json', 400)
 
     request_json = {
         'query': {
             'multi_match': {
-                'query': searchString,
+                'query': search_string,
                 'fields': [
                     'tags^2',
                     'title^2',
@@ -83,7 +83,7 @@ def search_avanced():
     query = request.get_json()
 
     try:
-        searchString = query['searchString']
+        search_string = query['searchString']
         authors = query.get('authors', [])
         tags = query.get('tags', [])
         status = query.get('status')
@@ -96,7 +96,7 @@ def search_avanced():
     request_json = {
         'query': {
             'multi_match': {
-                'query': searchString,
+                'query': search_string,
                 'fields': [
                     'tags^2',
                     'title^2',
