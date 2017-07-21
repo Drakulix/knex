@@ -27,7 +27,7 @@ def prepare_es_results(res):
         raise ApiException(str(ke), 400)
 
 
-@search.route('/api/projects/search/simple/', methods=['GET'])
+@search.route('/api/projects/search/simple/', methods=['POST'])
 @login_required
 def search_simple():
     """Search projects
@@ -36,57 +36,41 @@ def search_simple():
         res (json): JSON containing Projects and metadata
 
     """
-    text = request.args.get("q", type=str)
-    sorting = request.args.get('sort', type=str)
-    order = request.args.get('order', type=str)
-    offset = request.args.get('offset', type=int)
-    if offset is None:
-        offset = 0
-    count = request.args.get('count', type=int)
-    if count is None:
-        count = 10
-    save = request.args.get('save', type=str)
+    query = request.get_json()
 
-    # ^2 is boosting the attribute, *_is allowing wildcards to be used
+    try:
+        searchString = query['searchString']
+    except KeyError:
+        return make_response('Invalid json', 400)
+
     request_json = {
         'query': {
             'multi_match': {
-                'query': text,
+                'query': searchString,
                 'fields': [
                     'tags^2',
                     'title^2',
                     'description',
                 ],
             },
-        },
-        'from': offset,
-        'size': count,
-    }
-    if (sorting is not None) and (order is not None):
-        request_json["sort"] = dict()
-        request_json["sort"][sorting] = {
-            'order': order,
         }
-
-    if save:
-        del request_json['from']
-        del request_json['size']
+    }
 
     try:
         projects = prepare_es_results(g.es.search(index="knexdb", body=request_json))
     except RequestError as e:
         raise ApiException(str(e), 400)
 
-    if save:
+    if 'label' in query:
         try:
-            return g.save_search(current_user, json.loads(save), request_json, len(projects))
+            return g.save_search(current_user, query, request_json, len(projects))
         except json.JSONDecodeError:
             return make_response('Invalid json', 400)
     else:
         return jsonify(projects)
 
 
-@search.route('/api/projects/search/advanced/', methods=['GET'])
+@search.route('/api/projects/search/advanced/', methods=['POST'])
 @login_required
 def search_avanced():
     """Advanced search with filters
@@ -95,44 +79,67 @@ def search_avanced():
         res (json): JSON containing Projects and metadata
 
     """
-    text = request.args.get("q", type=str)
-    sorting = request.args.get('sort', type=str)
-    order = request.args.get('order', type=str)
-    offset = request.args.get('offset', type=int)
-    if offset is None:
-        offset = 0
-    count = request.args.get('count', type=int)
-    if count is None:
-        count = 10
-    save = request.args.get('save', type=str)
+
+    query = request.get_json()
+
+    try:
+        searchString = query['searchString']
+        authors = query.get('authors', [])
+        tags = query.get('tags', [])
+        status = query.get('status')
+        date_from = query.get('date_from')
+        date_to = query.get('date_to')
+        description = query.get('description')
+    except KeyError:
+        return make_response('Invalid json', 400)
 
     request_json = {
         'query': {
-            'query_string': {
-                'query': text,
+            'multi_match': {
+                'query': searchString,
+                'fields': [
+                    'tags^2',
+                    'title^2',
+                    'description',
+                ],
+            },
+            'filter': [
+                { 'term': { 'authors': authors } },
+                { 'term': { 'tags': tags } },
             },
         },
-        'from': offset,
-        'size': count,
     }
-    if (sorting is not None) and (order is not None):
-        request_json["sort"] = dict()
-        request_json["sort"][sorting] = {
-            'order': order,
+
+    if status:
+        request_json['query']['filter'].append({
+            'term': { 'status': status  }
+        })
+
+    if date_from or date_to:
+        date_filter = {
+            'range': { 'date_creation': {} }
         }
 
-    if save:
-        del request_json['from']
-        del request_json['size']
+        if date_from:
+            date_filter['range']['date_creation']['gte'] = date_from
+        if date_to:
+            date_filter['range']['date_creation']['lte'] = date_to
+
+        request_json['query']['filter'].append(date_filter)
+
+    if description:
+        request_json['query']['filter'].append({
+            'wildcard': { 'description': '*'+description+'*' }
+        })
 
     try:
         projects = prepare_es_results(g.es.search(index="knexdb", body=request_json))
     except RequestError as e:
         raise ApiException(str(e), 400)
 
-    if save:
+    if 'label' in query:
         try:
-            return g.save_search(current_user, json.loads(save), request_json, len(projects))
+            return g.save_search(current_user, query, request_json, len(projects))
         except json.JSONDecodeError:
             return make_response('Invalid json', 400)
     else:

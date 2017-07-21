@@ -151,14 +151,14 @@ class Notification(DB.EmbeddedDocument):
 
 class SavedSearch(EmbeddedDocument):
     saved_search_id = DB.ObjectIdField(default=ObjectId)
-    metadata = DB.StringField(max_length=4096)
-    query = DB.StringField(max_length=4096)
+    metadata = DB.StringField()
+    query = DB.StringField()
     count = DB.LongField()
 
     def to_dict(self):
         dic = {}
         dic['id'] = str(self.saved_search_id)
-        dic['meta'] = json.loads(str(self.metadata))
+        dic['query'] = json.loads(str(self.metadata))
         dic['count'] = self.count
         return dic
 
