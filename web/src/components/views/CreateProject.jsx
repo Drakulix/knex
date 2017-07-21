@@ -7,7 +7,7 @@ import DropDownMenu from 'material-ui/DropDownMenu'
 import MenuItem from 'material-ui/MenuItem'
 import CircularProgress from 'material-ui/CircularProgress'
 import ChipInputList from '../common/ChipInputList'
-import {get} from '../common/Backend'
+import Backend from '../common/Backend'
 import Moment from 'moment'
 
 
@@ -100,7 +100,7 @@ export default class CreateProject extends Component {
 
   loadProjectInf(uuid) {
     // Load Project info into state
-    get('/api/projects/' + uuid).then(data => {
+    Backend.getProject(uuid).then(data => {
       this.setState({projectInf : data})
       if(!data){
         this.setState({ project_exists : false,
@@ -160,14 +160,21 @@ export default class CreateProject extends Component {
   }
 
   componentDidMount(){
-    get('/api/projects/tags').then(function(tags) {
+    /* Some bug resets this.state.status initialy to [].
+    * This happens inbetween the end of componentWillMount()
+    * and the beginning of the first time the component renders.
+    * This is a temporary workaround until the issue is resolved.
+    * Please don't remove this unless you know how to fix it.
+    */
+
+    Backend.getTags().then(function(tags) {
       this.setState({
         suggestedTags : tags
       })
     }.bind(this))
 
     //gets all the authors from the backend
-    get('/api/users').then(function(authors) {
+    Backend.getUsers().then(function(authors) {
       var suggestedAuthors = authors
       var suggestedAuthorsArray = []
       for (var i in suggestedAuthors) {

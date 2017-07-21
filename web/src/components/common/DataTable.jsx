@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import ReactTable from 'react-table'
-import {get, del, post} from './Backend'
+import Backend from './Backend'
 import Filters from './Filters'
 import IconButton from 'material-ui/IconButton'
 import Chip from 'material-ui/Chip'
@@ -50,14 +50,14 @@ export default class BookmarksTable extends Component {
       buttonText : "Delete",
       action : function (){
         this.setState({dialogOpen:false})
-        del("/api/projects/"+projectID)
+        Backend.deleteProject("/api/projects/"+projectID)
           .then(this.fetchData(this.state.url))
       }.bind(this)
       })
   }
 
   handleUnArchive(projectID){
-    get("/api/projects/"+projectID+"/archive/false").then(
+    Backend.getProjectArchived(projectID, false).then(
     this.fetchData(this.state.url))
   }
 
@@ -72,7 +72,7 @@ export default class BookmarksTable extends Component {
       buttonText : "archive",
       action : function (){
         this.setState({dialogOpen:false})
-        get("/api/projects/"+projectID+"/archive/true")
+        Backend.getProjectArchived(projectID, true)
           .then(this.fetchData(this.state.url))
       }.bind(this)
       })
@@ -91,7 +91,7 @@ export default class BookmarksTable extends Component {
         break
       }
     }
-    post("/api/users/bookmarks/"+projectID, {})
+    Backend.addBookmark(projectID)
       .then(this.fetchData(this.state.url))
   }
 
@@ -108,7 +108,7 @@ export default class BookmarksTable extends Component {
         break
       }
     }
-    del("/api/users/bookmarks/"+projectID)
+    Backend.deleteBookmark(projectID)
       .then(this.fetchData(this.state.url))
   }
 
@@ -127,7 +127,7 @@ export default class BookmarksTable extends Component {
 
   fetchData(url){
     this.setState({loading : true})
-    get(url).then(function(data) {
+    Backend.getJson(url).then(function(data) {
       var datas =[]
       if(data !== undefined)
         datas = data

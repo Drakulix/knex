@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react'
 import {
   Link,
@@ -9,8 +8,7 @@ import TextField from 'material-ui/TextField'
 import SelectField from 'material-ui/SelectField'
 import MenuItem from 'material-ui/MenuItem'
 import logo from '../../style/img/black_logo_title_below.svg'
-import {register, getUserInfo, getMyEmail} from '../common/Authentication.jsx'
-
+import Backend from '../common/Backend'
 
 export default class SignUp extends Component {
 
@@ -33,7 +31,7 @@ export default class SignUp extends Component {
       password: '',
       password_confirm: '',
       role: 'user',
-      myProfile: getMyEmail()
+      myProfile: Backend.getMail()
     }
     this.handleChangeFirstName = this.handleChangeFirstName.bind(this)
     this.handleChangeLastName = this.handleChangeLastName.bind(this)
@@ -108,7 +106,7 @@ export default class SignUp extends Component {
     }
 
     if(this.state.firstname_error === '' && this.state.lastname_error === '' &&this.state.email_error === '' && this.state.password_error === '' &&  this.state.password_confirm_error === ''){
-    register(this.state.firstname, this.state.lastname, this.state.email, this.state.password, this.state.password_confirm, this.state.role).then((success) => {
+    Backend.register(this.state.firstname, this.state.lastname, this.state.email, this.state.password, this.state.password_confirm, this.state.role).then((success) => {
 
       if(success){
         alert("Registration successfull!")
@@ -126,7 +124,7 @@ export default class SignUp extends Component {
   }
 
   loadProfileInf(e) {
-    getUserInfo(e).then(data => {
+    Backend.getProfile(e).then(data => {
       this.setState({profileInf: data})
       if(!data){
         this.setState({profile_exists: false})

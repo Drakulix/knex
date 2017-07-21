@@ -3,18 +3,16 @@ import { Link } from 'react-router-dom'
 
 import Badge from 'material-ui/Badge'
 import Chip from 'material-ui/Chip'
-import styles from '../common/Styles'
-import {get, post, del, put} from '../common/Backend'
+import styles from '../common/Styles.jsx'
+import Backend from '../common/Backend'
+import history from '../common/history'
 import IconButton from 'material-ui/IconButton'
 import SharePane from '../common/SharePane'
 import Dialog from 'material-ui/Dialog'
 import RaisedButton from 'material-ui/RaisedButton'
 import CircularProgress from 'material-ui/CircularProgress'
-import CommentSideBar from '../common/CommentSideBar'
-import {getMyEmail, getUserInfo, isAdmin} from '../common/Authentication'
 import Snackbar from 'material-ui/Snackbar'
-
-
+import CommentSideBar from '../common/CommentSideBar'
 
 export default class ProjectContainer extends Component {
   constructor(props) {
@@ -28,8 +26,7 @@ export default class ProjectContainer extends Component {
       project_exists : false,
       is_bookmark : false,
       canEdit : false,
-      myEmail : getMyEmail(),
-      isAdmin : false,
+      myEmail : Backend.getMail(),
       dialogOpen : false,
       snackbar : false,
       sharePane : false,
@@ -41,6 +38,7 @@ export default class ProjectContainer extends Component {
     this.handleComment = this.handleComment.bind(this)
     this.handleBookmark = this.handleBookmark.bind(this)
     this.handleShare = this.handleShare.bind(this)
+
     this.handleDelete = this.handleDelete.bind(this)
     this.handleSharedProject = this.handleSharedProject.bind(this)
     this.handleClosedSharePane = this.handleClosedSharePane.bind(this)
@@ -61,8 +59,7 @@ export default class ProjectContainer extends Component {
   }
 
   loadComments(){
-    var fetchURL = "/api/projects/" + this.state.projectID + "/comment"
-    get(fetchURL).then(function(data) {
+    Backend.getProjectComments(this.state.projectID).then(function(data) {
       var filteredData = this.transformArray(data)
       this.setState({
         comments_count : filteredData.length
@@ -72,7 +69,6 @@ export default class ProjectContainer extends Component {
 
   componentWillMount(){
     this.loadSiteInf(this.state.projectID)
-    isAdmin((admin) =>{this.setState({isAdmin :  admin})})
     this.loadComments()
   }
 
@@ -111,7 +107,7 @@ export default class ProjectContainer extends Component {
     delete project.is_bookmark
     delete project.is_owner
     project['archived'] = true
-    put("/api/projects/"+this.state.projectID, project)
+    Backend.updateProject(this.state.projectID, project)
     this.setState({
       dialogOpen : false,
       snackbar : true,
@@ -120,7 +116,7 @@ export default class ProjectContainer extends Component {
   }
 
   loadSiteInf(uuid) {
-    get('/api/projects/' + uuid).then(data => {
+    Backend.getProject(uuid).then(data => {
       var email = this.state.myEmail
       var isOwner = false
       for (let author in data.authors)
@@ -164,7 +160,7 @@ export default class ProjectContainer extends Component {
     })
     // HORRIBLE  and strange initialstate
     if(new String(this.state.projectInf.is_bookmark) == "true"){
-      del ("/api/users/bookmarks/"+this.state.projectID).then(res => {
+      Backend.deleteBookmark(this.state.projectID).then(res => {
         if(res){
           var projectInf = this.state.projectInf
           projectInf.is_bookmark = false
@@ -172,7 +168,7 @@ export default class ProjectContainer extends Component {
         }
       })
     } else {
-      post('/api/users/bookmarks/' + this.state.projectID).then(res => {
+      Backend.addBookmark(this.state.projectID).then(res => {
         if(res){
           var projectInf = this.state.projectInf
           projectInf.is_bookmark = true
@@ -184,7 +180,7 @@ export default class ProjectContainer extends Component {
 
   handleEdit(event){
     event.preventDefault()
-    window.location = '/update/'+  this.state.projectID
+    history.push('/update/'+  this.state.projectID)
   }
 
 
@@ -329,7 +325,7 @@ export default class ProjectContainer extends Component {
                 <IconButton
                           touch = {true}
                           style = {styles.largeIcon}
-                          disabled = {! (this.state.isOwner || this.state.isAdmin)}
+                          disabled = {! (this.state.isOwner || Backend.isAdmin())}
                           tooltipPosition = "top-center"
                           tooltip = "Edit project"
                           iconStyle = {{fontSize : '24px'}}
@@ -341,7 +337,7 @@ export default class ProjectContainer extends Component {
                         onClick ={() => this.setState({dialogOpen : true})}
                         touch = {true}
                         style = {styles.largeIcon}
-                        disabled = {! (this.state.isOwner || this.state.isAdmin)}
+                        disabled = {! (this.state.isOwner || Backend.isAdmin())}
                         tooltipPosition = "top-center"
                         tooltip = "Archive project"
                         iconStyle = {{fontSize : '24px'}}

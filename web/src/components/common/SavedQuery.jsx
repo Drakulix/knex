@@ -4,12 +4,7 @@ import Chip from 'material-ui/Chip'
 import IconButton from 'material-ui/IconButton'
 import styles from '../common/Styles.jsx'
 
-
-
-
 export default class SavedQuery extends Component {
-
-
 
     constructor(props) {
       super(props)
