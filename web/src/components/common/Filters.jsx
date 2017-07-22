@@ -22,9 +22,8 @@ export default class Filters extends Component{
   constructor(props){
     super(props)
     var filters = (props.value === undefined) ? {} : props.value
-    delete filters.searchString
     this.state = {
-      expanded : (Object.keys(filters).length <= 2) ? false : true,
+      expanded : (Object.keys(filters).length === 0) ? false : true,
       authors : filters.authors !== undefined ? filters.authors : [],
       title : filters.title !== undefined ? filters.title : "",
       tags : filters.tags !== undefined ? filters.tags : [],
@@ -94,13 +93,13 @@ export default class Filters extends Component{
         picker_date_to : null,
         date_to : ""
       })
-      this.props.onChange("date_to", '')
+      this.props.onChange("date_to", undefined)
     }else{
       this.setState({
         picker_date_from : null,
         date_from : ""
       })
-      this.props.onChange("date_from", '')
+      this.props.onChange("date_from", undefined)
     }
   }
 
