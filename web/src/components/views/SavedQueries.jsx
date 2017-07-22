@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import SavedQuery from "../common/SavedQuery"
-import { get } from '../common/Backend'
+import Backend from '../common/Backend'
 
 class Headline extends Component {
   render() {
@@ -16,7 +16,7 @@ export default class SavedQueries extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      queries:{}
+      queries:[]
     }
   }
 
@@ -24,37 +24,38 @@ export default class SavedQueries extends Component {
   componentWillMount(){
 
     var queries = []
-      get("api/users/saved_searches").then(function(data) {
+    Backend.getSavedSearches().then(function(data) {
 
-        var datas = []
+      var datas = []
 
-        if(data !== undefined){
-          datas = data
-        }
-        for(let entry of datas){
+      if(data !== undefined){
+        datas = data
+      }
+      for(let entry of datas){
 
 
-          var content = [];
-          content["authors"] = entry["meta"]["authors"]
+        var content = [];
+        content["authors"] = entry["meta"]["authors"]
 
-          content["_id"] = entry["id"]
-          content["tags"] = ["TAG"]
-          if(entry["meta"]["title"] !== undefined) content["title"] = entry["meta"]["title"];
-          if(entry["meta"]["value"] !== undefined) content["value"] = entry["meta"]["value"];
-          if(entry["meta"]["status"] !== undefined) content["status"] = entry["meta"]["status"];
-          if(entry["meta"]["filter_date_from"] !== undefined) content["filter_date_from"] = entry["meta"]["filter_date_from"];
-          if(entry["meta"]["filter_date_to"] !== undefined) content["filter_date_to"] = entry["meta"]["filter_date_to"];
-          if(entry["meta"]["description"] !== undefined) content["description"] = entry["meta"]["description"];
-          if(entry["meta"]["searchString"] !== undefined) content["searchString"] = entry["meta"]["searchString"];
-          if(entry["meta"]["shortName"] !== undefined) content["shortName"] = entry["meta"]["shortName"];
-          if(entry["meta"]["userID"] !== undefined) content["userID"] = entry["meta"]["userID"];
+        content["_id"] = entry["id"]
+        content["tags"] = ["TAG"]
+        if(entry["meta"]["title"] !== undefined) content["title"] = entry["meta"]["title"];
+        if(entry["meta"]["value"] !== undefined) content["value"] = entry["meta"]["value"];
+        if(entry["meta"]["status"] !== undefined) content["status"] = entry["meta"]["status"];
+        if(entry["meta"]["filter_date_from"] !== undefined) content["filter_date_from"] = entry["meta"]["filter_date_from"];
+        if(entry["meta"]["filter_date_to"] !== undefined) content["filter_date_to"] = entry["meta"]["filter_date_to"];
+        if(entry["meta"]["description"] !== undefined) content["description"] = entry["meta"]["description"];
+        if(entry["meta"]["searchString"] !== undefined) content["searchString"] = entry["meta"]["searchString"];
+        if(entry["meta"]["shortName"] !== undefined) content["shortName"] = entry["meta"]["shortName"];
+        if(entry["meta"]["userID"] !== undefined) content["userID"] = entry["meta"]["userID"];
 
-       queries.push(
-    content
+        queries.push(
+          content
 
-       )
+        )
       }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
                     ,
         title : "Testd",
@@ -124,9 +125,12 @@ export default class SavedQueries extends Component {
 
         var d = queries
         this.setState({
+=======
+      this.setState({
+>>>>>>> 44597e1... Merge and BF
         queries : queries
-    })
-        console.log(this.state.queries)
+      })
+      console.log(this.state.queries)
     }.bind(this));
   }
 
@@ -140,12 +144,12 @@ export default class SavedQueries extends Component {
               this.state.queries.map(item =>
                 <div key = {item._id}><SavedQuery query={item}></SavedQuery>
                 <hr></hr>
-                </div>
-              )
-            }
-          </div>
+              </div>
+            )
+          }
         </div>
       </div>
-    )
-  }
+    </div>
+  )
+}
 }

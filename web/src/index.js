@@ -61,13 +61,12 @@ const PageRoute = ({ component: Component, path, sitePath, ...rest }) => (
   }}/>
 )
 
-<<<<<<< HEAD
 init(() => {
   ReactDOM.render(
     <MuiThemeProvider  muiTheme={muiTheme}>
       <BrowserRouter history={history}>
         <div>
-          <PageRoute sitePath="/discovery" path="/discovery/:qID" component={SearchPage} />
+          <PageRoute sitePath="/discovery" path="/discovery/:query" component={SearchPage} />
           <PageRoute sitePath="/discovery" path="/discovery/" component={SearchPage} />
           <PageRoute sitePath="/admin" path="/admin" component={AdminOverview} />
           <PageRoute sitePath="/createNew" exact path="/createNew" component={CreateProject} />
@@ -89,29 +88,3 @@ init(() => {
   , document.getElementById('root'))
   registerServiceWorker()
 });
-=======
-ReactDOM.render(
-  <MuiThemeProvider  muiTheme={muiTheme}>
-    <BrowserRouter history={history}>
-      <div>
-        <PageRoute site_path="/discovery" path="/discovery/:query" component={SearchPage} />
-        <PageRoute site_path="/discovery" path="/discovery/" component={SearchPage} exact />
-        <PageRoute site_path="/admin" path="/admin" component={AdminOverview} />
-        <PageRoute site_path="/createNew" exact path="/createNew" component={CreateProject} />
-        <PageRoute site_path="/createNew" path="/createByURL/:getURL" component={CreateProjectByURL} />
-        <PageRoute site_path="/createNew" path="/createFromFile/:data" component={CreateProjectFromFile} />
-        <PageRoute site_path="/update" path="/update/:uuid" component={CreateProject} />
-        <PageRoute site_path="/createbylink" path="/createbylink" component={CreateProjectChoice} />
-        <PageRoute site_path="/project" path="/project/:uuid" component={ProjectContainer} />
-        <PageRoute site_path="/bookmarks" path="/bookmarks" component={BookmarksTable} />
-        <PageRoute site_path="/profile" path="/profile/:email" component={ProfileContainer} />
-        <PageRoute site_path="/yourprojects" path="/yourprojects" component={UserProjects} />
-        <PageRoute site_path="/queries" path="/queries" component={SavedQueries} />
-        <Route path="/register" component={SignUp} />
-        <Route exact path="/" component={SignIn} />
-     </div>
-    </BrowserRouter>
-  </MuiThemeProvider>
-, document.getElementById('root'))
-registerServiceWorker()
->>>>>>> af1da7a... WIP

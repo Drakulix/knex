@@ -5,12 +5,15 @@ import IconButton from 'material-ui/IconButton'
 import styles from '../common/Styles.jsx'
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 <<<<<<< HEAD
 >>>>>>> af1da7a... WIP
 =======
 >>>>>>> af1da7a... WIP
+=======
+>>>>>>> 44597e1... Merge and BF
 export default class SavedQuery extends Component {
 
     constructor(props) {
@@ -22,20 +25,26 @@ export default class SavedQuery extends Component {
       }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
       query.authors = (temp.length !== 0 ? temp : undefined)
       delete query.userID
 =======
+=======
+>>>>>>> 44597e1... Merge and BF
       query.authors = temp
       temp = []
       for (var i in query.tags) {
         temp = temp.concat([query.tags[i]])
       }
       query.tags = temp
+<<<<<<< HEAD
 >>>>>>> af1da7a... WIP
 =======
       query.authors = (temp.length !== 0 ? temp : undefined)
       delete query.userID
 >>>>>>> 2605f56... Filters prepared
+=======
+>>>>>>> 44597e1... Merge and BF
       this.state = {
         query : query
       }
@@ -85,10 +94,6 @@ export default class SavedQuery extends Component {
            </div>
          </div>
          <div className="row">
-           <div className="col-1 filter-label" style={{textAlign: "left"}}>Query</div>
-           <div className="col-5 query-value" style={{marginLeft:-40}}>
-             {this.state.query.searchString}
-           </div>
            <div className="col-1 filter-label" style={{textAlign: "left"}}>Title</div>
            <div className="col-5 query-value" style={{marginLeft:-40}}>
              {this.state.query.title}
@@ -98,6 +103,7 @@ export default class SavedQuery extends Component {
              {this.state.query.description}
            </div>
            </div>
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -123,6 +129,8 @@ export default class SavedQuery extends Component {
             </div>
 <<<<<<< HEAD
 =======
+=======
+>>>>>>> 44597e1... Merge and BF
            <div className="row">
              <div className="col-1 filter-label">Tags</div>
              <div  className="col-5  query-value" style={{marginLeft:-40}}>
@@ -140,9 +148,12 @@ export default class SavedQuery extends Component {
                      {item}</Chip>) }
                      </div>
              </div>
+<<<<<<< HEAD
 >>>>>>> af1da7a... WIP
 =======
 >>>>>>> 2605f56... Filters prepared
+=======
+>>>>>>> 44597e1... Merge and BF
            </div>
            <div className="row">
              <div className="col-1 filter-label" style={{textAlign: "left" , marginLeft:2}}>From</div>

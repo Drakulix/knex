@@ -83,50 +83,28 @@ export default class BookmarksTable extends Component {
   }
 
   handleAddBookmark(projectID){
-<<<<<<< HEAD
-<<<<<<< HEAD
-    for(let project of this.state.data) {
-      if(project._id === projectID){
-        project["is_bookmark"] = true
-        break
-      }
-    }
-    for(let project of this.state.filteredTable) {
-      if(project._id === projectID){
-        project["is_bookmark"] = true
-        break
-      }
-    }
     Backend.addBookmark(projectID)
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> 3d1dc9d... further bug fixing
     post("/api/users/bookmarks/"+projectID, {})
 >>>>>>> 3d1dc9d... further bug fixing
+=======
+>>>>>>> 44597e1... Merge and BF
       .then(this.fetchData(this.state.url))
   }
 
   handleRemoveBookmark(projectID){
-<<<<<<< HEAD
-<<<<<<< HEAD
-    for(let project of this.state.data) {
-      if(project._id === projectID){
-        project["is_bookmark"] = false
-        break
-      }
-    }
-    for(let project of this.state.filteredTable) {
-      if(project._id === projectID){
-        project["is_bookmark"] = false
-        break
-      }
-    }
     Backend.deleteBookmark(projectID)
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> 3d1dc9d... further bug fixing
     del("/api/users/bookmarks/"+projectID)
 >>>>>>> 3d1dc9d... further bug fixing
+=======
+>>>>>>> 44597e1... Merge and BF
       .then(this.fetchData(this.state.url))
   }
 
@@ -180,7 +158,6 @@ export default class BookmarksTable extends Component {
       var state = this.state.filters
       if(value === undefined || value ===""  || value.length === 0){
         delete state[key]
-        value = undefined
       }
       else  {
         state[key] = value
