@@ -7,12 +7,13 @@ import requests
 from uuid import UUID
 
 
-class Test_notifications(object):
-    def test_project_notification(self, session, flask_api_url, pytestconfig):
-        # login first
-        requests.post(flask_api_url + '/api/users/login',
-                      data=dict(email='admin@knex.com', password="admin"))
-        # add some project and save id
+class TestPOST(object):
+    projects_id=""
+
+    def test_setup(self, flask_api_url, pytestconfig):
+        session = requests.Session()
+        session.post(flask_api_url + '/api/users/login',
+                     data=dict(email='admin@knex.com', password="admin"))
         test_manifest = os.path.join(
             str(pytestconfig.rootdir),
             'tests',
@@ -24,15 +25,13 @@ class Test_notifications(object):
         response = session.post(flask_api_url + "/api/projects",
                                 data=data.encode('utf-8'),
                                 headers={'Content-Type': 'application/json5'})
+        # assert (response.json()[0] == 33)
         projects_id = response.json()[0]
-        # assert(response.json()== 33)
         session.post(
             flask_api_url + '/api/projects/' + projects_id + '/comment',
             data='new comment')
-        session.get(flask_api_url + '/api/users/logout')
-        session.post(flask_api_url + '/api/users/login',
-                      data=dict(email='user@knex.com', password="user"))
-        user_notifications = session.get(
-            flask_api_url + '/api/users/notifications').json()
+        user = session.get(
+            flask_api_url + '/api/users/' + 'user@knex.com').json()
         assert (
-            user_notifications[0]['link'] == '/project/' + projects_id)
+            user.notifications[0]['link'] == '/project/' + projects_id)
+
