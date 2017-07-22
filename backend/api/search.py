@@ -84,34 +84,51 @@ def search_avanced():
 
     try:
         search_string = query['searchString']
-        authors = query.get('authors', [])
-        tags = query.get('tags', [])
+        authors = query.get('authors')
+        tags = query.get('tags')
         status = query.get('status')
         date_from = query.get('date_from')
         date_to = query.get('date_to')
         description = query.get('description')
+        title = query.get('')
     except KeyError:
         return make_response('Invalid json', 400)
 
     request_json = {
         'query': {
-            'multi_match': {
-                'query': search_string,
-                'fields': [
-                    'tags^2',
-                    'title^2',
-                    'description',
-                ],
-            },
-            'filter': [
-                { 'term': { 'authors': authors } },
-                { 'term': { 'tags': tags } },
-            },
-        },
+            'bool': {
+                'must': {
+                    'multi_match': {
+                        'query': search_string,
+                        'fields': [
+                            'tags^2',
+                            'title^2',
+                            'description',
+                        ],
+                    }
+                },
+                'filter': {
+                    'bool': {
+                        'must': []
+                    }
+                }
+            }
+        }
     }
 
+    if authors:
+        request_json['query']['filter']['bool']['must'].append({
+            'terms': { 'authors': authors }
+        })
+
+    if tags:
+        request_json['query']['filter']['bool']['must'].append({
+            'terms': { 'tags': tags }
+        })
+
+
     if status:
-        request_json['query']['filter'].append({
+        request_json['query']['filter']['bool']['must'].append({
             'term': { 'status': status  }
         })
 
@@ -125,11 +142,16 @@ def search_avanced():
         if date_to:
             date_filter['range']['date_creation']['lte'] = date_to
 
-        request_json['query']['filter'].append(date_filter)
+        request_json['query']['filter']['bool']['must'].append(date_filter)
 
     if description:
-        request_json['query']['filter'].append({
+        request_json['query']['filter']['bool']['must'].append({
             'wildcard': { 'description': '*'+description+'*' }
+        })
+
+    if title:
+        request_json['query']['filter']['bool']['must'].append({
+            'wildcard': { 'title': '*'+title+'*' }
         })
 
     try:
