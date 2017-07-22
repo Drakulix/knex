@@ -43,7 +43,10 @@ export default class SavedQueries extends Component {
       },
       {
         label : "Empty",
+<<<<<<< HEAD
         searchString : "D",
+=======
+>>>>>>> af1da7a... WIP
         _id :"Empty", //REMOVE
         userID:"av" //REMOVE
       },
@@ -51,7 +54,11 @@ export default class SavedQueries extends Component {
       label : "TEST",
       tags : ["aa"],
       title : "a",
+<<<<<<< HEAD
       authors : [{email:"admin@knex.com", name :"Max Mustermann"}],
+=======
+      authors : [{email:"admin@knex.com", name :"Max Mustermanno"}],
+>>>>>>> af1da7a... WIP
       description :"a",
       status : "DONE",
       date_to : "2014-06-12",

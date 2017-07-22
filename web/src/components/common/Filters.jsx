@@ -22,6 +22,10 @@ export default class Filters extends Component{
   constructor(props){
     super(props)
     var filters = (props.value === undefined) ? {} : props.value
+<<<<<<< HEAD
+=======
+    alert(Object.keys(filters))
+>>>>>>> af1da7a... WIP
     this.state = {
       expanded : (Object.keys(filters).length === 0) ? false : true,
       authors : filters.authors !== undefined ? filters.authors : [],

@@ -7,6 +7,9 @@ import styles from '../common/Styles.jsx'
 <<<<<<< HEAD
 =======
 
+<<<<<<< HEAD
+>>>>>>> af1da7a... WIP
+=======
 >>>>>>> af1da7a... WIP
 export default class SavedQuery extends Component {
 
@@ -17,8 +20,17 @@ export default class SavedQuery extends Component {
       for (var i in query.authors) {
         temp = temp.concat([query.authors[i].name + " ("+query.authors[i].email+ ")"])
       }
+<<<<<<< HEAD
       query.authors = (temp.length !== 0 ? temp : undefined)
       delete query.userID
+=======
+      query.authors = temp
+      temp = []
+      for (var i in query.tags) {
+        temp = temp.concat([query.tags[i]])
+      }
+      query.tags = temp
+>>>>>>> af1da7a... WIP
       this.state = {
         query : query
       }
@@ -81,6 +93,7 @@ export default class SavedQuery extends Component {
              {this.state.query.description}
            </div>
            </div>
+<<<<<<< HEAD
           <div className="row">
             <div className="col-1 filter-label">Tags</div>
             <div  className="col-5  query-value" style={{marginLeft:-40}}>
@@ -100,6 +113,25 @@ export default class SavedQuery extends Component {
                         {item}</Chip>) : ""}
               </div>
             </div>
+=======
+           <div className="row">
+             <div className="col-1 filter-label">Tags</div>
+             <div  className="col-5  query-value" style={{marginLeft:-40}}>
+               <div style = {styles["wrapper"]}>
+                 { this.state.query.tags.map(item =>
+                   <Chip style= {styles["chipText"]}>
+                     {item}</Chip>) }
+                     </div>
+             </div>
+             <div className="col-1 filter-label"> Authors</div>
+             <div  className="col-5  query-value">
+               <div style = {styles["wrapper"]}>
+                 { this.state.query.authors.map(item =>
+                   <Chip style= {styles["chipText"]}>
+                     {item}</Chip>) }
+                     </div>
+             </div>
+>>>>>>> af1da7a... WIP
            </div>
            <div className="row">
              <div className="col-1 filter-label" style={{textAlign: "left" , marginLeft:2}}>From</div>
