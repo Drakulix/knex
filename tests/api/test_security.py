@@ -13,6 +13,7 @@ class TestPOST(object):
         assert response.status_code == 200
 
     def test_login_fake_user(self,session, flask_api_url):
+        session = requests.Session()
         response = session.post(flask_api_url + '/api/users/login',
                                  data=dict(email='user1', password='password'))
 
