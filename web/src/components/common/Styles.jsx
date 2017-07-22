@@ -32,7 +32,8 @@ export default {
     color: '#292b2c',
   },
   chipText:{
-    color : '#000000',
+    color : '#ffffff',
+    fontWeight: 'bold'
   },
   datePicker: {
       selectColor: mainColor

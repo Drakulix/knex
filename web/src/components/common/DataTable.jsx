@@ -49,7 +49,7 @@ export default class BookmarksTable extends Component {
 
   handleDelete(projectID, projectName){
     this.setState({dialogOpen : true,
-      dialogText : "Do you want to delete project " + projectName,
+      dialogText : "Do you want to delete project " + projectName +"?",
       projectID : projectID,
       buttonText : "Delete",
       action : function (){
@@ -71,7 +71,7 @@ export default class BookmarksTable extends Component {
 
   handleArchive(projectID, projectName){
     this.setState({dialogOpen : true,
-      dialogText : "Do you want to archive project " + projectName,
+      dialogText : "Do you want to archive project " + projectName +"?",
       projectID : projectID,
       buttonText : "archive",
       action : function (){
