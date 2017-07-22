@@ -24,14 +24,17 @@ export default class Filters extends Component{
     var filters = (props.value === undefined) ? {} : props.value
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     alert(Object.keys(filters))
 >>>>>>> af1da7a... WIP
 =======
     delete filters.searchString
 >>>>>>> 2605f56... Filters prepared
+=======
+>>>>>>> 3d1dc9d... further bug fixing
     this.state = {
-      expanded : (Object.keys(filters).length <= 2) ? false : true,
+      expanded : (Object.keys(filters).length === 0) ? false : true,
       authors : filters.authors !== undefined ? filters.authors : [],
       title : filters.title !== undefined ? filters.title : "",
       tags : filters.tags !== undefined ? filters.tags : [],

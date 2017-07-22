@@ -45,6 +45,7 @@ export default class SavedQueries extends Component {
         label : "Empty",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         searchString : "D",
 =======
 >>>>>>> af1da7a... WIP
@@ -52,6 +53,9 @@ export default class SavedQueries extends Component {
         searchString : "RE",
 
 >>>>>>> 2605f56... Filters prepared
+=======
+        searchString : "D",
+>>>>>>> 3d1dc9d... further bug fixing
         _id :"Empty", //REMOVE
         userID:"av" //REMOVE
       },
@@ -60,10 +64,14 @@ export default class SavedQueries extends Component {
       tags : ["aa"],
       title : "a",
 <<<<<<< HEAD
+<<<<<<< HEAD
       authors : [{email:"admin@knex.com", name :"Max Mustermann"}],
 =======
       authors : [{email:"admin@knex.com", name :"Max Mustermanno"}],
 >>>>>>> af1da7a... WIP
+=======
+      authors : [{email:"admin@knex.com", name :"Max Mustermann"}],
+>>>>>>> 3d1dc9d... further bug fixing
       description :"a",
       status : "DONE",
       date_to : "2014-06-12",

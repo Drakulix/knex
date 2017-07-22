@@ -84,6 +84,7 @@ export default class BookmarksTable extends Component {
 
   handleAddBookmark(projectID){
 <<<<<<< HEAD
+<<<<<<< HEAD
     for(let project of this.state.data) {
       if(project._id === projectID){
         project["is_bookmark"] = true
@@ -98,12 +99,15 @@ export default class BookmarksTable extends Component {
     }
     Backend.addBookmark(projectID)
 =======
+=======
+>>>>>>> 3d1dc9d... further bug fixing
     post("/api/users/bookmarks/"+projectID, {})
 >>>>>>> 3d1dc9d... further bug fixing
       .then(this.fetchData(this.state.url))
   }
 
   handleRemoveBookmark(projectID){
+<<<<<<< HEAD
 <<<<<<< HEAD
     for(let project of this.state.data) {
       if(project._id === projectID){
@@ -119,6 +123,8 @@ export default class BookmarksTable extends Component {
     }
     Backend.deleteBookmark(projectID)
 =======
+=======
+>>>>>>> 3d1dc9d... further bug fixing
     del("/api/users/bookmarks/"+projectID)
 >>>>>>> 3d1dc9d... further bug fixing
       .then(this.fetchData(this.state.url))
@@ -179,6 +185,7 @@ export default class BookmarksTable extends Component {
       else  {
         state[key] = value
       }
+      alert(Object.keys(state))
       this.setState({filters : state})
       this.filter(state)
       if(this.props.handleFilter !== undefined)
