@@ -21,6 +21,7 @@ export default class SavedQuery extends Component {
         temp = temp.concat([query.authors[i].name + " ("+query.authors[i].email+ ")"])
       }
 <<<<<<< HEAD
+<<<<<<< HEAD
       query.authors = (temp.length !== 0 ? temp : undefined)
       delete query.userID
 =======
@@ -31,6 +32,10 @@ export default class SavedQuery extends Component {
       }
       query.tags = temp
 >>>>>>> af1da7a... WIP
+=======
+      query.authors = (temp.length !== 0 ? temp : undefined)
+      delete query.userID
+>>>>>>> 2605f56... Filters prepared
       this.state = {
         query : query
       }
@@ -94,6 +99,9 @@ export default class SavedQuery extends Component {
            </div>
            </div>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 2605f56... Filters prepared
           <div className="row">
             <div className="col-1 filter-label">Tags</div>
             <div  className="col-5  query-value" style={{marginLeft:-40}}>
@@ -113,6 +121,7 @@ export default class SavedQuery extends Component {
                         {item}</Chip>) : ""}
               </div>
             </div>
+<<<<<<< HEAD
 =======
            <div className="row">
              <div className="col-1 filter-label">Tags</div>
@@ -132,6 +141,8 @@ export default class SavedQuery extends Component {
                      </div>
              </div>
 >>>>>>> af1da7a... WIP
+=======
+>>>>>>> 2605f56... Filters prepared
            </div>
            <div className="row">
              <div className="col-1 filter-label" style={{textAlign: "left" , marginLeft:2}}>From</div>

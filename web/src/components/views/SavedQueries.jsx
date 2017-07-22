@@ -44,9 +44,14 @@ export default class SavedQueries extends Component {
       {
         label : "Empty",
 <<<<<<< HEAD
+<<<<<<< HEAD
         searchString : "D",
 =======
 >>>>>>> af1da7a... WIP
+=======
+        searchString : "RE",
+
+>>>>>>> 2605f56... Filters prepared
         _id :"Empty", //REMOVE
         userID:"av" //REMOVE
       },
