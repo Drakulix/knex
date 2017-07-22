@@ -83,6 +83,7 @@ export default class BookmarksTable extends Component {
   }
 
   handleAddBookmark(projectID){
+<<<<<<< HEAD
     Backend.addBookmark(projectID)
 <<<<<<< HEAD
 =======
@@ -92,10 +93,33 @@ export default class BookmarksTable extends Component {
 >>>>>>> 3d1dc9d... further bug fixing
 =======
 >>>>>>> 44597e1... Merge and BF
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+    for(let project of this.state.data) {
+      if(project._id === projectID){
+        project["is_bookmark"] = true
+        break
+      }
+    }
+    for(let project of this.state.filteredTable) {
+      if(project._id === projectID){
+        project["is_bookmark"] = true
+        break
+      }
+    }
+    Backend.addBookmark(projectID)
+=======
+=======
+>>>>>>> f7d84cc96440d14494cdecf50497516ee160b907
+    post("/api/users/bookmarks/"+projectID, {})
+>>>>>>> 3d1dc9d... further bug fixing
+>>>>>>> f5b8ae9d84b31bb9e00c894f7ccdfb34bda2af22
       .then(this.fetchData(this.state.url))
   }
 
   handleRemoveBookmark(projectID){
+<<<<<<< HEAD
     Backend.deleteBookmark(projectID)
 <<<<<<< HEAD
 =======
@@ -105,6 +129,28 @@ export default class BookmarksTable extends Component {
 >>>>>>> 3d1dc9d... further bug fixing
 =======
 >>>>>>> 44597e1... Merge and BF
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+    for(let project of this.state.data) {
+      if(project._id === projectID){
+        project["is_bookmark"] = false
+        break
+      }
+    }
+    for(let project of this.state.filteredTable) {
+      if(project._id === projectID){
+        project["is_bookmark"] = false
+        break
+      }
+    }
+    Backend.deleteBookmark(projectID)
+=======
+=======
+>>>>>>> f7d84cc96440d14494cdecf50497516ee160b907
+    del("/api/users/bookmarks/"+projectID)
+>>>>>>> 3d1dc9d... further bug fixing
+>>>>>>> f5b8ae9d84b31bb9e00c894f7ccdfb34bda2af22
       .then(this.fetchData(this.state.url))
   }
 
@@ -158,6 +204,7 @@ export default class BookmarksTable extends Component {
       var state = this.state.filters
       if(value === undefined || value ===""  || value.length === 0){
         delete state[key]
+        value = undefined
       }
       else  {
         state[key] = value

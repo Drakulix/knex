@@ -6,14 +6,21 @@ import styles from '../common/Styles.jsx'
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f5b8ae9d84b31bb9e00c894f7ccdfb34bda2af22
 =======
 
 <<<<<<< HEAD
 >>>>>>> af1da7a... WIP
 =======
+<<<<<<< HEAD
 >>>>>>> af1da7a... WIP
 =======
 >>>>>>> 44597e1... Merge and BF
+=======
+>>>>>>> f7d84cc96440d14494cdecf50497516ee160b907
+>>>>>>> f5b8ae9d84b31bb9e00c894f7ccdfb34bda2af22
 export default class SavedQuery extends Component {
 
     constructor(props) {
@@ -23,6 +30,7 @@ export default class SavedQuery extends Component {
       for (var i in query.authors) {
         temp = temp.concat([query.authors[i].name + " ("+query.authors[i].email+ ")"])
       }
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -45,6 +53,10 @@ export default class SavedQuery extends Component {
 >>>>>>> 2605f56... Filters prepared
 =======
 >>>>>>> 44597e1... Merge and BF
+=======
+      query.authors = (temp.length !== 0 ? temp : undefined)
+      delete query.userID
+>>>>>>> f5b8ae9d84b31bb9e00c894f7ccdfb34bda2af22
       this.state = {
         query : query
       }
@@ -94,6 +106,10 @@ export default class SavedQuery extends Component {
            </div>
          </div>
          <div className="row">
+           <div className="col-1 filter-label" style={{textAlign: "left"}}>Query</div>
+           <div className="col-5 query-value" style={{marginLeft:-40}}>
+             {this.state.query.searchString}
+           </div>
            <div className="col-1 filter-label" style={{textAlign: "left"}}>Title</div>
            <div className="col-5 query-value" style={{marginLeft:-40}}>
              {this.state.query.title}
@@ -106,8 +122,11 @@ export default class SavedQuery extends Component {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 2605f56... Filters prepared
+=======
+>>>>>>> f5b8ae9d84b31bb9e00c894f7ccdfb34bda2af22
           <div className="row">
             <div className="col-1 filter-label">Tags</div>
             <div  className="col-5  query-value" style={{marginLeft:-40}}>
@@ -127,6 +146,7 @@ export default class SavedQuery extends Component {
                         {item}</Chip>) : ""}
               </div>
             </div>
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 =======
@@ -154,6 +174,8 @@ export default class SavedQuery extends Component {
 >>>>>>> 2605f56... Filters prepared
 =======
 >>>>>>> 44597e1... Merge and BF
+=======
+>>>>>>> f5b8ae9d84b31bb9e00c894f7ccdfb34bda2af22
            </div>
            <div className="row">
              <div className="col-1 filter-label" style={{textAlign: "left" , marginLeft:2}}>From</div>

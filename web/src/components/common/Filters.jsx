@@ -25,6 +25,7 @@ export default class Filters extends Component{
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     alert(Object.keys(filters))
 >>>>>>> af1da7a... WIP
@@ -33,6 +34,8 @@ export default class Filters extends Component{
 >>>>>>> 2605f56... Filters prepared
 =======
 >>>>>>> 3d1dc9d... further bug fixing
+=======
+>>>>>>> f5b8ae9d84b31bb9e00c894f7ccdfb34bda2af22
     this.state = {
       expanded : (Object.keys(filters).length === 0) ? false : true,
       authors : filters.authors !== undefined ? filters.authors : [],
