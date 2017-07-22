@@ -4,10 +4,28 @@ import Chip from 'material-ui/Chip'
 import IconButton from 'material-ui/IconButton'
 import styles from '../common/Styles.jsx'
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> af1da7a... WIP
 export default class SavedQuery extends Component {
 
     constructor(props) {
       super(props)
+      var query = this.props.query
+      var temp = []
+      for (var i in query.authors) {
+        temp = temp.concat([query.authors[i].name + " ("+query.authors[i].email+ ")"])
+      }
+      query.authors = temp
+      temp = []
+      for (var i in query.tags) {
+        temp = temp.concat([query.tags[i]])
+      }
+      query.tags = temp
+      this.state = {
+        query : query
+      }
       this.deleteQuery = this.deleteQuery.bind(this)
       this.runQuery = this.runQuery.bind(this)
     }
@@ -23,18 +41,18 @@ export default class SavedQuery extends Component {
         <div style={{marginBottom:20}}>
          <div className="row" >
           <div className="col-2 filter-label">
-             {this.props.value.label}
+             {this.state.query.label}
           </div>
           <div className="col-8"></div>
            <div className="col-1" style={{textAlign:"center",marginTop: 0, marginBottom: 20}}>
-            <Link to={"/discovery/"+this.props.value._id}>
+            <Link to={"/discovery/"+ JSON.stringify(this.state.query)}>
               <IconButton
                onClick={this.runQuery}
                touch={true}
                style = {styles.largeIcon}
                tooltipPosition="top-center"
                tooltip="Execute Query"
-               iconStyle={{fontSize: '24px'}}
+               iconStyle={{fontSize: '36px'}}
                >
                <i className="material-icons">search</i>
              </IconButton>
@@ -47,7 +65,7 @@ export default class SavedQuery extends Component {
                style = {styles.largeIcon}
                tooltipPosition="top-center"
                tooltip="Delete Query"
-               iconStyle={{fontSize: '24px'}}
+               iconStyle={{fontSize: '36px'}}
                >
                <i className="material-icons">delete</i>
              </IconButton>
@@ -56,18 +74,18 @@ export default class SavedQuery extends Component {
          <div className="row">
            <div className="col-1 filter-label" style={{textAlign: "left"}}>Title</div>
            <div className="col-5 query-value" style={{marginLeft:-40}}>
-             {this.props.value.title}
+             {this.state.query.title}
            </div>
            <div className="col-1 filter-label" style={{textAlign: "left"}}>Description</div>
            <div className="col-5 query-value">
-             {this.props.value.description}
+             {this.state.query.description}
            </div>
            </div>
            <div className="row">
              <div className="col-1 filter-label">Tags</div>
              <div  className="col-5  query-value" style={{marginLeft:-40}}>
                <div style = {styles["wrapper"]}>
-                 { this.props.value.tags.map(item =>
+                 { this.state.query.tags.map(item =>
                    <Chip style= {styles["chipText"]}>
                      {item}</Chip>) }
                      </div>
@@ -75,24 +93,24 @@ export default class SavedQuery extends Component {
              <div className="col-1 filter-label"> Authors</div>
              <div  className="col-5  query-value">
                <div style = {styles["wrapper"]}>
-                 { this.props.value.authors.map(item =>
+                 { this.state.query.authors.map(item =>
                    <Chip style= {styles["chipText"]}>
-                     {item.name}</Chip>) }
+                     {item}</Chip>) }
                      </div>
              </div>
            </div>
            <div className="row">
              <div className="col-1 filter-label" style={{textAlign: "left" , marginLeft:2}}>From</div>
              <div className="col-2  query-value" style={{marginLeft:-40}} >
-               {this.props.value.date_from}
+               {this.state.query.date_from}
              </div>
              <div className="col-1 filter-label" style={{textAlign: "left"}}>Till</div>
              <div className="col-2  query-value" style={{marginLeft:-40}}>
-               {this.props.value.date_to}
+               {this.state.query.date_to}
              </div>
              <div className="col-1 filter-label" style={{textAlign: "left", marginLeft:37}} >Status</div>
              <div className="col-2  query-value">
-               {this.props.value.status}
+               {this.state.query.status}
              </div>
            </div>
          </div>
