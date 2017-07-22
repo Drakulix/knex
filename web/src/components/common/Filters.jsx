@@ -22,18 +22,10 @@ export default class Filters extends Component{
   constructor(props){
     super(props)
     var filters = (props.value === undefined) ? {} : props.value
-
-    var authors = []
-    if(filters.authors !== undefined){
-      var dataAuthors = filters.authors
-      for (var i in dataAuthors) {
-        authors = authors.concat([dataAuthors[i].name + " ("+ dataAuthors[i].email+ ")"])
-      }
-    }
-
+    alert(Object.keys(filters))
     this.state = {
-      expanded : false,
-      authors : authors,
+      expanded : (Object.keys(filters).length === 0) ? false : true,
+      authors : filters.authors !== undefined ? filters.authors : [],
       title : filters.title !== undefined ? filters.title : "",
       tags : filters.tags !== undefined ? filters.tags : [],
       status : filters.status !== undefined ? filters.status : "",
@@ -119,9 +111,11 @@ export default class Filters extends Component{
     this.props.onChange("status", value)
   }
 
+
+
   render(){
     return   <div style = {{marginBottom : 20}}>
-    <Card>
+    <Card  expanded = {this.state.expanded} onExpandChange={() => this.setState({expanded : !this.state.expanded})}>
       <CardHeader
         title = "Filters"
         subtitle = "Define filters for your search."
@@ -199,7 +193,7 @@ export default class Filters extends Component{
                 onChange = {this.handleChangeDateFrom}
                 />
             </div>
-            <IconButton style = {{color : 'gray', marginLeft : -30, visibility : (this.state.date_from != null) ? "visible" : "hidden"}} onClick = {()=> this.handleDateDelete('from')}>
+            <IconButton style = {{color : 'gray', marginLeft : -30, visibility : (this.state.picker_date_from != null) ? "visible" : "hidden"}} onClick = {()=> this.handleDateDelete('from')}>
               <i className = "material-icons">cancel</i>
             </IconButton>
             <div className = "col-1 filter-label" style = {{textAlign : "left", marginLeft : -20}}>To</div>
@@ -214,7 +208,7 @@ export default class Filters extends Component{
                 onChange = {this.handleChangeDateTill}
                 />
             </div>
-            <IconButton style = {{color : 'gray', marginLeft : -60, visibility : (this.state.date_to != null) ? "visible" : "hidden"}} onClick = {() => this.handleDateDelete('until')}>
+            <IconButton style = {{color : 'gray', marginLeft : -60, visibility : (this.state.picker_date_to != null) ? "visible" : "hidden"}} onClick = {() => this.handleDateDelete('until')}>
               <i className = "material-icons" style = {{color : 'gray', marginLeft : -30}}>cancel</i>
             </IconButton>
             <div className = "col-1 filter-label" style = {{textAlign : "left", marginLeft : -8}} >Status</div>

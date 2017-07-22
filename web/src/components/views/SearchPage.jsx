@@ -20,17 +20,20 @@ class Headline extends Component {
 export default class SearchPage extends Component {
   constructor(props) {
     super(props)
+
+    var query  = this.props.match.params.query !== undefined ? JSON.parse(this.props.match.params.query) : {}
+
     this.state = {
-      query : {searchString :"",
-        shortName : "" },
+        query : query,
         fetchURL : "/api/projects",
-        open :false
+        open : false,
+
       }
       this.handleFilterChange = this.handleFilterChange.bind(this)
       this.saveSearch = this.saveSearch.bind(this)
       this.handleChange = this.handleChange.bind(this)
       this.handleOpen = this.handleOpen.bind(this)
-      this.handleCommentChange = this.handleCommentChange.bind(this)
+      this.handleLabelChange = this.handleLabelChange.bind(this)
     }
 
 
@@ -65,7 +68,7 @@ export default class SearchPage extends Component {
   saveSearch(){
     this.setState({open: false})
     var temp = []
-    var authors = this.state.query["authors"]
+/*    var authors = this.state.query["authors"]
     for (var i in authors) {
       var string = authors[i]
       var name = string.substring(0, string.lastIndexOf("(")-1)
@@ -73,7 +76,9 @@ export default class SearchPage extends Component {
       temp.push({"name" : name, "email" :id})
     }
     var query = this.state.query
-    query["authors"] = temp
+    query["authors"] = temp*/
+
+    alert(JSON.stringify(this.state.query))
   }
 
   handleClose = () => {
@@ -84,10 +89,10 @@ export default class SearchPage extends Component {
     this.setState({open: true})
   }
 
-  handleCommentChange(event){
+  handleLabelChange(event){
     const value = event.target.value
     var query = this.state.query
-    query["shortName"] = value
+    query["label"] = value
     this.setState({query : query})
   }
 
@@ -103,7 +108,7 @@ export default class SearchPage extends Component {
         primary={true}
         onTouchTap={this.saveSearch}
         style={{marginLeft:20}}
-        disabled= {(this.state.query["shortName"] === "" ) ? true : false}
+        disabled= {(this.state.query["label"] === "" ) ? true : false}
         />,
     ]
 
@@ -117,10 +122,10 @@ export default class SearchPage extends Component {
             open={this.state.open}
             onRequestClose={this.saveSearch}
             >
-            <TextField value = {this.state.query.shortName}
+            <TextField value = {this.state.query.label}
               placeholder="Enter a title here ... "
-              errorText={(this.state.query["shortName"] === "") ? "Please provide a title " : ""}
-              onChange={this.handleCommentChange}
+              errorText={(this.state.query["label"] === "") ? "Please provide a title " : ""}
+              onChange={this.handleLabelChange}
               ></TextField>
             </Dialog>
           <Headline />
