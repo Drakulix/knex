@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import CircularProgress from 'material-ui/CircularProgress'
-import {getMyEmail, getUserInfo, isAdmin} from '../common/Authentication.jsx'
-import {get} from '../common/Backend'
+import Backend from '../common/Backend'
 import Snackbar from 'material-ui/Snackbar'
 
 import ProfileView from '../common/userComponents/ProfileView'
@@ -17,9 +16,8 @@ export default class ProfileContainer extends Component {
       email : this.props.match.params.email,
       profile_exists : false,
       site_loaded : false,
-      isAdmin : false,
-      isMe : this.props.match.params.email === getMyEmail(),
-      profileInf : {},
+      isMe : this.props.match.params.email === Backend.getMail(),
+      profileInf: {},
       value : 'a',
       topTenTags : [],
       snackbar : false,
@@ -41,17 +39,17 @@ export default class ProfileContainer extends Component {
 
   componentWillMount(){
     this.loadProfileInf(this.state.email)
-    isAdmin((admin) =>{this.setState({isAdmin :  admin})})
   }
 
   loadProfileInf(e) {
-    getUserInfo(e).then(data => {
+    Backend.getProfile(e).then(data => {
       if(!data){
         this.setState({
           profile_exists : false,
-          site_loaded : true})
+          site_loaded : true
+        })
       }else{
-        get("/api/users/"+e+"/tags").then(tags => {
+        Backend.getTagsOfUser(e).then(tags => {
             this.setState({
               topTenTags : tags
             })
@@ -109,7 +107,7 @@ export default class ProfileContainer extends Component {
               <ProfileView profileInf = {this.state.profileInf}
                           topTenTags = {this.state.topTenTags}/>
             </Tab>
-            {(this.state.isAdmin || this.state.isMe)?
+            {(Backend.isAdmin() || this.state.isMe)?
               <Tab label = "Edit Profile" value = "b">
                 <ProfileEditor email = {this.state.email}
                   profileInf = {this.state.profileInf}
@@ -117,9 +115,7 @@ export default class ProfileContainer extends Component {
               </Tab> : ""
             }
             <Tab label = "Projects" value = "c">
-              <ProfileProjects profileInf = {this.state.profileInf}
-                isMe = {this.state.isMe}
-                isAdmin = {this.state.isAdmin}/>
+              <ProfileProjects profileInf={this.state.profileInf} />
             </Tab>
           </Tabs>
           <Snackbar

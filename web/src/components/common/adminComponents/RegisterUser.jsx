@@ -3,7 +3,7 @@ import TextField from "material-ui/TextField"
 import RaisedButton from "material-ui/RaisedButton"
 import MenuItem from "material-ui/MenuItem"
 import SelectField from "material-ui/SelectField"
-import {register} from '../../common/Authentication.jsx'
+import Backend from '../../common/Backend.jsx'
 
 
 export default class RegisterUser extends Component {
@@ -56,7 +56,7 @@ export default class RegisterUser extends Component {
 
   handleRegister(event){
     event.preventDefault()
-    register(this.state.first_name, this.state.last_name, this.state.email, this.state.password, this.state.password_confirm, this.state.role).then((success) => {
+    Backend.register(this.state.first_name, this.state.last_name, this.state.email, this.state.password, this.state.password_confirm, this.state.role).then((success) => {
       if(success){
         this.props.handleUserUpdate('Registration successfull!')
       }else{

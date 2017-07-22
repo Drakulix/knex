@@ -2,9 +2,8 @@ import React, { Component } from 'react'
 import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
 import FlatButton from 'material-ui/FlatButton'
-import {changePassword, changeProfile} from '../../common/Authentication'
 import styles from '../../common/Styles'
-import {putImage} from '../../common/Backend'
+import Backend from '../Backend'
 
 export default class ProfileEditor extends Component {
 
@@ -39,7 +38,7 @@ export default class ProfileEditor extends Component {
 
   handlePwChangeSubmit(event){
     event.preventDefault()
-    changePassword(this.state.email, this.state.pw_old, this.state.pw_new).then((success) => {
+    Backend.updatePassword(this.state.email, this.state.pw_old, this.state.pw_new).then((success) => {
       if(success){
         this.setState({
           snackbar : true,
@@ -56,7 +55,7 @@ export default class ProfileEditor extends Component {
 
   handleProfileChangeSubmit(event){
     event.preventDefault()
-    changeProfile(this.state.email,
+    Backend.updateProfile(this.state.email,
       this.state.first_name,
       this.state.last_name,
       this.state.bio ).then((success) => {
@@ -77,11 +76,13 @@ export default class ProfileEditor extends Component {
     if (file.name.substring(file.name.lastIndexOf(".")+1) === "png"){
       reader.onload = () => {
         try {
+          /*
           putImage("/api/users/"+this.props.profileInf.email+"/avatar" , {}
           )
           .then(
             this.props.profileChangeHandler("Avatar changed",true)
           )
+          */
         } catch(e) {
           alert(e)
         }

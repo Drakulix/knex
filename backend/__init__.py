@@ -5,11 +5,11 @@ import time
 import uuid
 import base64
 
+import yaml
 from elasticsearch import Elasticsearch
 from flask import Flask, g, jsonify, request
 from flask.helpers import make_response
 from flask_cors import CORS
-from flask_login import LoginManager
 from flask_mongoengine import MongoEngine
 from flask_security import Security, MongoEngineUserDatastore, UserMixin, RoleMixin, current_user
 from flask_security.utils import hash_password
@@ -27,30 +27,68 @@ from api.users import users
 from api.search import search, prepare_es_results
 from api.helper.apiexception import ApiException
 
+config_file_path = os.path.dirname(os.path.abspath(__file__))
+config = {}
+default_config = {
+    "flask": {
+        "hostname": "0.0.0.0",
+        "port": 5000,
+        "debug": False
+    },
+    "mongo_db": {
+        "secret_key": "super-secret",
+        "hostname": "mongodb",
+        "port": 27017,
+        "security_password_hash": 'pbkdf2_sha512',
+        "security_password_salt": 'THISISMYOWNSALT'
+    },
+    "elasticsearch": {
+        "hostname": "elasticsearch",
+        "port": 9200
+    },
+    "administration_user": {
+        "username": "admin",
+        "password": "admin",
+        "email": "admin@knex.com"
+    }
+}
+
+if os.path.isfile(os.path.join(config_file_path, "config.yml")):
+    print("Starting flask server (Backend/Api) using config file")
+    with open(os.path.join(config_file_path, "config.yml"), 'r') as config_file:
+        config = yaml.load(config_file)
+        if "flask" in config:
+            default_config["flask"].update(config["flask"])
+        if "mongo_db" in config:
+            default_config["mongo_db"].update(config["mongo_db"])
+        if "elasticsearch" in config:
+            default_config["elasticsearch"].update(config["elasticsearch"])
+        if "administration_user" in config:
+            default_config["administration_user"].update(config["administration_user"])
+
+config = default_config
 
 app = Flask(__name__, static_url_path='')
 CORS(app)
 
 app.config['DEBUG'] = True
 app.config['TESTING'] = False
-app.config['SECRET_KEY'] = 'super-secret'
-app.config['MONGODB_DB'] = 'knexdb'
-app.config['MONGODB_HOST'] = 'mongodb'
-app.config['MONGODB_PORT'] = 27017
-app.config['SECURITY_PASSWORD_HASH'] = 'pbkdf2_sha512'
-app.config['SECURITY_PASSWORD_SALT'] = 'THISISMYOWNSALT'
+app.config['SECRET_KEY'] = config["mongo_db"]["secret_key"]
+app.config['MONGODB_DB'] = "knexdb"
+app.config['MONGODB_HOST'] = config["mongo_db"]["hostname"]
+app.config['MONGODB_PORT'] = config["mongo_db"]["port"]
+app.config['SECURITY_PASSWORD_HASH'] = config["mongo_db"]["security_password_hash"]
+app.config['SECURITY_PASSWORD_SALT'] = config["mongo_db"]["security_password_salt"]
 app.config['MAX_CONTENT_PATH'] = 1000000  # 1.000.000 byte = 1mb
 
 DB = MongoEngine(app)
-
-LOGINMANAGER = LoginManager()
-LOGINMANAGER.init_app(app)
 
 
 @app.before_first_request
 def init_global_elasticsearch():
     global ES
-    ES = Elasticsearch([{'host': 'elasticsearch', 'port': 9200}])
+    ES = Elasticsearch([{'host': config["elasticsearch"]["hostname"],
+                         'port': config["elasticsearch"]["port"]}])
     ES.indices.create(index='knexdb', ignore=400)
 
 
@@ -62,23 +100,14 @@ def set_global_elasticsearch():
 @app.before_first_request
 def init_global_mongoclient():
     global MONGOCLIENT
-    MONGOCLIENT = MongoClient('mongodb:27017')
+    mongo_address = config["mongo_db"]["hostname"] + ":" + str(config["mongo_db"]["port"])
+    MONGOCLIENT = MongoClient(mongo_address)
 
 
 @app.before_request
 def set_global_mongoclient():
     g.knexdb = MONGOCLIENT.knexdb
     g.projects = g.knexdb.projects
-
-
-@LOGINMANAGER.user_loader
-def load_user(user_id):
-    return User.get(user_id)
-
-
-@LOGINMANAGER.unauthorized_handler
-def handle_unauthorized_access():
-    return make_response("Forbidden", 403)
 
 
 @app.before_first_request
@@ -175,6 +204,11 @@ USER_DATASTORE = MongoEngineUserDatastore(DB, User, Role)
 SECURITY = Security(app, USER_DATASTORE)
 
 
+@SECURITY.login_manager.unauthorized_handler
+def handle_unauthorized_access():
+    return make_response("Forbidden", 403)
+
+
 # internal function to append notifications to the given userlist
 def notify_users(useremail_list, n_description, n_title, n_link):
     n = Notification(description=n_description, title=n_title, link=n_link)
@@ -243,10 +277,10 @@ def on_project_deletion():
         user.bookmarks = [x for x in user.bookmarks if g.projects.find_one({'_id': x})]
         user.notifications = [x for x in user.notifications if
                               '/project/' not in str(x.link) or g.projects.find_one(
-                               {'_id': uuid.UUID(
+                                  {'_id': uuid.UUID(
                                    str(x.link)[str(x.link).index('/project/') + len('/project/'):]
                                    )
-                                })]
+                                   })]
         user.save()
 
 
@@ -259,18 +293,13 @@ def project_deleted_func():
 def initialize_users():
     user_role = USER_DATASTORE.find_or_create_role('user')
     admin_role = USER_DATASTORE.find_or_create_role('admin')
-    userpw = hash_password("user")
-    adminpw = hash_password("admin")
-    try:
-        USER_DATASTORE.create_user(
-            email="user@knex.com", password=userpw, roles=[user_role])
-    except NotUniqueError:
-        pass
+    adminpw = hash_password(config["administration_user"]["password"])
     try:
         with open(os.path.join(sys.path[0], "default_avatar.png"), 'rb') as tf:
             imgtext = base64.b64encode(tf.read()).decode()
         USER_DATASTORE.create_user(
-            email="admin@knex.com", password=adminpw, first_name="Max", last_name="Mustermann",
+            email=config["administration_user"]["email"], password=adminpw,
+            first_name="", last_name=config["administration_user"]["username"],
             bio="Lead developer proxy of knex.", roles=[user_role, admin_role],
             avatar_name="default_avatar.png", avatar=imgtext)
 
@@ -322,7 +351,7 @@ app.register_blueprint(projects)
 app.register_blueprint(users)
 app.register_blueprint(search)
 
-
 if __name__ == "__main__":
     # remove debug for production
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host=config["flask"]["hostname"], port=config["flask"]["port"],
+            debug=config["flask"]["debug"])

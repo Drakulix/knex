@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
 import {Redirect} from 'react-router-dom'
-import { logout } from '../common/Authentication.jsx'
 import Badge from 'material-ui/Badge'
 import IconButton from 'material-ui/IconButton'
 import Snackbar from 'material-ui/Snackbar'
 import NotificationPane from '../common/NotificationPane'
-import { get, del } from '../common/Backend'
+import Backend from '../common/Backend'
 
 export default class TopBar extends Component {
   constructor(props) {
@@ -29,7 +28,7 @@ export default class TopBar extends Component {
   }
 
   loadNotifications() {
-    get("/api/users/notifications").then(function (data) {
+    Backend.getNotifications().then(function (data) {
       this.setState({
           notifications : data
           })
@@ -40,7 +39,7 @@ export default class TopBar extends Component {
     var list = this.state.notifications.filter((c) => c.id !== notificationID)
     this.setState({notifications : list,
                   popover : false})
-    del("/api/users/notifications/"+ notificationID)
+    Backend.deleteNotification(notificationID)
   }
 
   handleNotificationClick(event){
@@ -57,7 +56,7 @@ export default class TopBar extends Component {
 
   handleLogout(event){
     event.preventDefault()
-    logout().then((success) => {
+    Backend.logout().then((success) => {
       if(success){
         this.setState({ redirect : true })
       }else{

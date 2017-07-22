@@ -3,7 +3,7 @@ import {Tabs, Tab} from 'material-ui/Tabs'
 import ShowUsers from '../common/adminComponents/ShowUsers'
 import RegisterUser from '../common/adminComponents/RegisterUser'
 import ShowProjects from '../common/adminComponents/ShowProjects'
-import {get} from '../common/Backend'
+import Backend from '../common/Backend'
 import Snackbar from 'material-ui/Snackbar'
 
 export default class AdminOverview extends Component {
@@ -15,7 +15,7 @@ export default class AdminOverview extends Component {
       userList : [],
       loading : false,
       snackbar : false,
-      snackbarText :""
+      snackbarText :"",
     }
     this.handleUserUpdate = this.handleUserUpdate.bind(this)
     this.loadUsers = this.loadUsers.bind(this)
@@ -33,7 +33,7 @@ export default class AdminOverview extends Component {
 
   loadUsers(){
     this.setState({loading : true})
-    return get("/api/users").then(function(data) {
+    return Backend.getUsers().then(function(data) {
       this.setState({
         userList : data,
         loading : false
@@ -62,7 +62,7 @@ export default class AdminOverview extends Component {
           value = {this.state.value}
           onChange = {this.handleChange}
           style = {{marginBottom : "40px"}}
-          >
+        >
           <Tab label = "Manage Projects" value = "1">
             <ShowProjects/>
           </Tab>
