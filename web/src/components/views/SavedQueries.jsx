@@ -28,24 +28,22 @@ export default class SavedQueries extends Component {
 
     var queries =  [
       {
-        authors : [{email:"marko@knex", name :"Marko"},
-                      {email:"marko@knex", name :"Marko"}
-                    ],
+        authors : [{email:"admin@knex.com", name :"Max Mustermann"}]
+
+                    ,
         title : "Testd",
         tags : ["DDSA"],
         status : "DONE",
         date_from :"2009-12-07",
         date_to:"2015-05-06",
         description : "ttt",
-        searchString : "RE",
         label : "TEST",
         _id :"FDAF", //REMOVE
         userID:"av" //REMOVE
       },
       {
         label : "Empty",
-        searchString : "RE",
-
+        searchString : "D",
         _id :"Empty", //REMOVE
         userID:"av" //REMOVE
       },
@@ -53,7 +51,7 @@ export default class SavedQueries extends Component {
       label : "TEST",
       tags : ["aa"],
       title : "a",
-      authors : [{email:"admin@knex.com", name :"Max Mustermanno"}],
+      authors : [{email:"admin@knex.com", name :"Max Mustermann"}],
       description :"a",
       status : "DONE",
       date_to : "2014-06-12",
