@@ -7,7 +7,10 @@ import styles from '../common/Styles.jsx'
 <<<<<<< HEAD
 =======
 
+<<<<<<< HEAD
 >>>>>>> af1da7a... WIP
+=======
+>>>>>>> f7d84cc96440d14494cdecf50497516ee160b907
 export default class SavedQuery extends Component {
 
     constructor(props) {
