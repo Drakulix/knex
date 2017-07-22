@@ -62,10 +62,14 @@ export default class SearchPage extends Component {
   handleFilterChange(key, value){
     var query = this.state.query
 <<<<<<< HEAD
+<<<<<<< HEAD
     if(value === undefined){
 =======
     if(value === undefined || value ===""  || value.length === 0){
 >>>>>>> 3d1dc9d... further bug fixing
+=======
+    if(value === undefined){
+>>>>>>> 40d3482... further bugfixing
       delete query[key]
     } else {
       query[key] = value
