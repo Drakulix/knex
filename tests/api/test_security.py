@@ -21,6 +21,7 @@ class TestPOST(object):
         assert response.status_code == 403
 
     def test_login_real_user(self, session, flask_api_url):
+        session = requests.Session()
         response = session.post(flask_api_url + '/api/users/login',
                                 data=dict(email='admin@knex.com', password="admin"))
         assert response.reason == 'OK'
@@ -33,6 +34,7 @@ class TestPOST(object):
         assert response.status_code == 403
 
     def test_logout(self, flask_api_url, session):
+        session = requests.Session()
         response = session.get(flask_api_url + '/api/users/login',
                                data=dict(email='user@knex.com', password="user"))
         response = session.get(flask_api_url + '/api/users/logout')
@@ -76,7 +78,10 @@ class TestPOST(object):
         assert response.status_code == 404  # 200?
 
     def test_update_user_nonexistent(self, session, flask_api_url):
+        session = requests.Session()
         response = session.get(flask_api_url + '/api/users/',
                                data=dict(email='unknownuser@knex.com'))
         assert response.status_code == 404
         session = requests.Session()
+        session.post(flask_api_url + '/api/users/login',
+                     data=dict(email='admin@knex.com', password="admin"))
