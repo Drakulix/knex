@@ -8,11 +8,11 @@ class TestPOST(object):
         # self.app = app.test_client()
         pass
 
-    def test_main_page(self, session, flask_api_url):
-        response = session.get(flask_api_url + '/')
+    def test_main_page(self,  flask_api_url):
+        response = requests.get(flask_api_url + '/')
         assert response.status_code == 200
 
-    def test_login_fake_user(self, session, flask_api_url):
+    def test_login_fake_user(self, flask_api_url):
         session = requests.Session()
         response = session.post(flask_api_url + '/api/users/login',
                                 data=dict(email='user1', password='password'))
@@ -20,14 +20,15 @@ class TestPOST(object):
         assert response.reason == 'FORBIDDEN'
         assert response.status_code == 403
 
-    def test_login_real_user(self, session, flask_api_url):
+    def test_login_real_user(self, flask_api_url):
         session = requests.Session()
         response = session.post(flask_api_url + '/api/users/login',
                                 data=dict(email='admin@knex.com', password="admin"))
         assert response.reason == 'OK'
         assert response.status_code == 200
 
-    def test_login_real_user_wrong_psswd(self, session, flask_api_url):
+    def test_login_real_user_wrong_psswd(self, flask_api_url):
+        session = requests.Session()
         response = session.post(flask_api_url + '/api/users/login',
                                 data=dict(email='admin', password='a'))
         assert response.reason == 'FORBIDDEN'
@@ -41,7 +42,7 @@ class TestPOST(object):
         assert response.reason == 'OK'
         assert response.status_code == 200
 
-    def test_access_login_required_logged(self, session, pytestconfig, flask_api_url):
+    def test_access_login_required_logged(self, pytestconfig, flask_api_url):
         test_manifest = os.path.join(
             str(pytestconfig.rootdir),
             'tests',
@@ -50,14 +51,14 @@ class TestPOST(object):
         )
         with open(test_manifest, 'r', encoding='utf-8') as tf:
             data = str(tf.read().replace('\n', ''))
-        response = session.post(flask_api_url + "/api/projects",
+        response = requests.post(flask_api_url + "/api/projects",
                                 data=data.encode('utf-8'),
                                 headers={'Content-Type': 'application/json5'})
 
         assert response.status_code == 403
 
-    def test_access_login_required_not_logged(self, session, pytestconfig, flask_api_url):
-        response = session.get(flask_api_url + '/api/users/logout')
+    def test_access_login_required_not_logged(self,pytestconfig, flask_api_url):
+        response = requests.get(flask_api_url + '/api/users/logout')
         test_manifest = os.path.join(
             str(pytestconfig.rootdir),
             'tests',
@@ -66,7 +67,7 @@ class TestPOST(object):
         )
         with open(test_manifest, 'r', encoding='utf-8') as tf:
             data = str(tf.read().replace('\n', ''))
-        response = session.post(flask_api_url + "/api/projects",
+        response = requests.post(flask_api_url + "/api/projects",
                                 data=data.encode('utf-8'),
                                 headers={'Content-Type': 'application/json5'})
 
@@ -77,11 +78,10 @@ class TestPOST(object):
                                data=dict(email='user@knex.com'))
         assert response.status_code == 404  # 200?
 
-    def test_update_user_nonexistent(self, session, flask_api_url):
+    def test_update_user_nonexistent(self, flask_api_url):
         session = requests.Session()
-        response = session.get(flask_api_url + '/api/users/',
+        response = requests.get(flask_api_url + '/api/users/',
                                data=dict(email='unknownuser@knex.com'))
         assert response.status_code == 404
-        session = requests.Session()
-        session.post(flask_api_url + '/api/users/login',
-                     data=dict(email='admin@knex.com', password="admin"))
+
+
