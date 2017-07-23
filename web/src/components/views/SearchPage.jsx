@@ -4,6 +4,7 @@ import RaisedButton from 'material-ui/RaisedButton'
 import DataTable from '../common/DataTable'
 import Dialog from 'material-ui/Dialog'
 import Backend from '../common/Backend'
+import Snackbar from 'material-ui/Snackbar'
 
 
 class Headline extends Component {
@@ -27,6 +28,8 @@ export default class SearchPage extends Component {
         query : query,
         fetchURL : "/api/projects",
         open : false,
+        snackbar : false,
+        snackbarText : "",
       }
       this.handleFilterChange = this.handleFilterChange.bind(this)
       this.saveSearch = this.saveSearch.bind(this)
@@ -71,7 +74,10 @@ export default class SearchPage extends Component {
   }
 
   saveSearch(){
-    this.setState({open: false})
+    this.setState({open: false,
+      snackbar : true,
+      snackbarText : "Query saved"
+    })
     var temp = []
 /*    var authors = this.state.query["authors"]
     for (var i in authors) {
@@ -89,11 +95,17 @@ export default class SearchPage extends Component {
   }
 
   handleClose = () => {
-    this.setState({open: false})
+    this.setState({
+      open: false,
+      snackbar : false
+    })
   }
 
   handleOpen = () => {
-    this.setState({open: true})
+    this.setState({
+      open: true,
+      snackbar : false
+    })
   }
 
   handleLabelChange(event){
@@ -122,6 +134,10 @@ export default class SearchPage extends Component {
     return(
       <div className="container">
         <div className="innerContainer">
+          <Snackbar
+            open = {this.state.snackbar}
+            message = {this.state.snackbarText}
+            autoHideDuration = {10000}/>
           <Dialog
             title="Enter a label for your query"
             actions={actions}
