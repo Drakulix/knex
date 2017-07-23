@@ -90,7 +90,7 @@ def search_avanced():
         date_from = query.get('date_from')
         date_to = query.get('date_to')
         description = query.get('description')
-        title = query.get('')
+        title = query.get('title')
     except KeyError:
         return make_response('Invalid json', 400)
 
