@@ -10,11 +10,11 @@ export default class ProfileView extends Component {
     return (
       <div className="row padding">
         <div className="col-9">
-          <div className="profile-header">Information</div>
+          <div className="profile-header">Name</div>
           <div className="profile-info">
             {this.props.profileInf.first_name} {this.props.profileInf.last_name}
           </div>
-          <div className="profile-header">Email</div>
+          <div className="profile-header">E-Mail</div>
           <div className="profile-info">
             {this.props.profileInf.email}
           </div>
@@ -25,7 +25,7 @@ export default class ProfileView extends Component {
             </td></tr></tbody></table>
           </div>
           <div>
-            <div className="profile-header">Expertise</div>
+            <div className="profile-header">Knowledge in</div>
             <div style = {styles["wrapper"]}>
               { this.props.topTenTags.map(item =>
                 <Chip style= {styles["chip"]} key={item}>

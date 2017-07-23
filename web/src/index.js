@@ -66,7 +66,7 @@ init(() => {
     <MuiThemeProvider  muiTheme={muiTheme}>
       <BrowserRouter history={history}>
         <div>
-          <PageRoute sitePath="/discovery" path="/discovery/:qID" component={SearchPage} />
+        <PageRoute site_path="/discovery" path="/discovery/:query" component={SearchPage} />
           <PageRoute sitePath="/discovery" path="/discovery/" component={SearchPage} />
           <PageRoute sitePath="/admin" path="/admin" component={AdminOverview} />
           <PageRoute sitePath="/createNew" exact path="/createNew" component={CreateProject} />
