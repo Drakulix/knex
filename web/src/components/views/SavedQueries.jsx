@@ -28,20 +28,36 @@ export default class SavedQueries extends Component {
 
     var queries =  [
       {
-        authors : [{email:"marko@knex", name :"Marko"},
-                      {email:"marko@knex", name :"Marko"}
-                    ],
+        authors : [{email:"admin@knex.com", name :"Max Mustermann"}]
+
+                    ,
         title : "Testd",
         tags : ["DDSA"],
         status : "DONE",
         date_from :"2009-12-07",
         date_to:"2015-05-06",
         description : "ttt",
-        searchString : "RE",
         label : "TEST",
         _id :"FDAF", //REMOVE
         userID:"av" //REMOVE
       },
+      {
+        label : "Empty",
+        searchString : "D",
+        _id :"Empty", //REMOVE
+        userID:"av" //REMOVE
+      },
+      {
+      label : "TEST",
+      tags : ["aa"],
+      title : "a",
+      authors : [{email:"admin@knex.com", name :"Max Mustermann"}],
+      description :"a",
+      status : "DONE",
+      date_to : "2014-06-12",
+      _id :"FDfAFs", //REMOVE
+      userID:"av" //REMOVE
+    },
       {
       authors : [{email:"marko@knex", name :"Marko"},
                     {email:"marko@knex", name :"Marko"}
@@ -71,7 +87,7 @@ export default class SavedQueries extends Component {
           <div>
             {
               this.state.queries.map(item =>
-                <div key = {item._id}><SavedQuery value={item}></SavedQuery>
+                <div key = {item._id}><SavedQuery query={item}></SavedQuery>
                 <hr></hr>
                 </div>
               )

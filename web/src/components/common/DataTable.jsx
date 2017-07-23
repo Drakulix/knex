@@ -17,6 +17,10 @@ export default class BookmarksTable extends Component {
     var filters = {}
     if(props.predefinedFilter !== undefined){
       filters = props.predefinedFilter
+      delete filters.searchString
+      delete filters._id
+      delete filters.userID
+      delete filters.label
     }
     this.state = {
       data: [{
@@ -45,7 +49,7 @@ export default class BookmarksTable extends Component {
 
   handleDelete(projectID, projectName){
     this.setState({dialogOpen : true,
-      dialogText : "Do you want to delete project " + projectName,
+      dialogText : "Do you want to delete project " + projectName +"?",
       projectID : projectID,
       buttonText : "Delete",
       action : function (){
@@ -67,7 +71,7 @@ export default class BookmarksTable extends Component {
 
   handleArchive(projectID, projectName){
     this.setState({dialogOpen : true,
-      dialogText : "Do you want to archive project " + projectName,
+      dialogText : "Do you want to archive project " + projectName +"?",
       projectID : projectID,
       buttonText : "archive",
       action : function (){
@@ -79,35 +83,11 @@ export default class BookmarksTable extends Component {
   }
 
   handleAddBookmark(projectID){
-    for(let project of this.state.data) {
-      if(project._id === projectID){
-        project["is_bookmark"] = true
-        break
-      }
-    }
-    for(let project of this.state.filteredTable) {
-      if(project._id === projectID){
-        project["is_bookmark"] = true
-        break
-      }
-    }
     Backend.addBookmark(projectID)
       .then(this.fetchData(this.state.url))
   }
 
   handleRemoveBookmark(projectID){
-    for(let project of this.state.data) {
-      if(project._id === projectID){
-        project["is_bookmark"] = false
-        break
-      }
-    }
-    for(let project of this.state.filteredTable) {
-      if(project._id === projectID){
-        project["is_bookmark"] = false
-        break
-      }
-    }
     Backend.deleteBookmark(projectID)
       .then(this.fetchData(this.state.url))
   }
@@ -160,8 +140,9 @@ export default class BookmarksTable extends Component {
 
     handleFilterChange(key, value){
       var state = this.state.filters
-      if(value === ""){
+      if(value === undefined || value ===""  || value.length === 0){
         delete state[key]
+        value = undefined
       }
       else  {
         state[key] = value
