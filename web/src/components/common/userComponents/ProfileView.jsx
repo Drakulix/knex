@@ -14,6 +14,10 @@ export default class ProfileView extends Component {
           <div className="profile-info">
             {this.props.profileInf.first_name} {this.props.profileInf.last_name}
           </div>
+          <div className="profile-header">Email</div>
+          <div className="profile-info">
+            {this.props.profileInf.email}
+          </div>
           <div className="profile-header">Biography</div>
           <div className="profile-info" style={{width:"100%"}}>
             <table style={{tableLayout: "fixed", width: "80%" ,wordWrap: "break-word"}}><tbody><tr><td>
