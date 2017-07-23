@@ -117,18 +117,18 @@ def search_avanced():
     }
 
     if authors:
-        request_json['query']['filter']['bool']['must'].append({
+        request_json['query']['bool']['filter']['bool']['must'].append({
             'terms': { 'authors': authors }
         })
 
     if tags:
-        request_json['query']['filter']['bool']['must'].append({
+        request_json['query']['bool']['filter']['bool']['must'].append({
             'terms': { 'tags': tags }
         })
 
 
     if status:
-        request_json['query']['filter']['bool']['must'].append({
+        request_json['query']['bool']['filter']['bool']['must'].append({
             'term': { 'status': status  }
         })
 
@@ -142,15 +142,15 @@ def search_avanced():
         if date_to:
             date_filter['range']['date_creation']['lte'] = date_to
 
-        request_json['query']['filter']['bool']['must'].append(date_filter)
+        request_json['query']['bool']['filter']['bool']['must'].append(date_filter)
 
     if description:
-        request_json['query']['filter']['bool']['must'].append({
+        request_json['query']['bool']['filter']['bool']['must'].append({
             'wildcard': { 'description': '*'+description+'*' }
         })
 
     if title:
-        request_json['query']['filter']['bool']['must'].append({
+        request_json['query']['bool']['filter']['bool']['must'].append({
             'wildcard': { 'title': '*'+title+'*' }
         })
 
