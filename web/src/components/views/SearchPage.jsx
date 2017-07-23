@@ -3,7 +3,7 @@ import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
 import DataTable from '../common/DataTable'
 import Dialog from 'material-ui/Dialog'
-
+import Backend from '../common/Backend'
 
 
 class Headline extends Component {
@@ -27,7 +27,6 @@ export default class SearchPage extends Component {
         query : query,
         fetchURL : "/api/projects",
         open : false,
-
       }
       this.handleFilterChange = this.handleFilterChange.bind(this)
       this.saveSearch = this.saveSearch.bind(this)
@@ -55,7 +54,8 @@ export default class SearchPage extends Component {
     }
     else{
       this.setState({query : vquery})
-      this.setState({fetchURL : end+"simple/?q=" + vquery["searchString"] + "*"})
+        this.setState({fetchURL : "/api/projects"})
+  //    this.setState({fetchURL : end+"simple/?q=" + vquery["searchString"] + "*"})
     }
   }
 
@@ -83,6 +83,8 @@ export default class SearchPage extends Component {
     query["authors"] = temp*/
 
     alert(JSON.stringify(this.state.query))
+
+    Backend.searchAdvanced(this.state.query)
   }
 
   handleClose = () => {
@@ -112,7 +114,7 @@ export default class SearchPage extends Component {
         primary={true}
         onTouchTap={this.saveSearch}
         style={{marginLeft:20}}
-        disabled= {(this.state.query["label"] === "" ) ? true : false}
+        disabled= {(this.state.query["label"] === ""  || this.state.query["label"] === undefined) ? true : false}
         />,
     ]
 
@@ -120,15 +122,15 @@ export default class SearchPage extends Component {
       <div className="container">
         <div className="innerContainer">
           <Dialog
-            title="Add a title for your search"
+            title="Enter a label for your query"
             actions={actions}
             modal={false}
             open={this.state.open}
             onRequestClose={this.saveSearch}
             >
             <TextField value = {this.state.query.label}
-              placeholder="Enter a title here ... "
-              errorText={(this.state.query["label"] === "") ? "Please provide a title " : ""}
+              placeholder="Enter label here ... "
+              errorText={(this.state.query["label"] === "" || this.state.query["label"] === undefined) ? "Please provide a label " : ""}
               onChange={this.handleLabelChange}
               ></TextField>
             </Dialog>

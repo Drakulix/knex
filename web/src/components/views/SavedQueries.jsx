@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import SavedQuery from "../common/SavedQuery"
-
+import Backend from '../common/Backend'
 
 class Headline extends Component {
   render() {
@@ -16,7 +16,7 @@ export default class SavedQueries extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      queries:{}
+      queries:[]
     }
   }
 
@@ -73,9 +73,15 @@ export default class SavedQueries extends Component {
       userID:"av" //REMOVE
     }];
 
+
+
+Backend.getSavedSearches().then(
+  function (queries)  {
     this.setState({
-    queries : queries
+      queries : queries
     })
+}.bind(this))
+
   }
 
   render() {
