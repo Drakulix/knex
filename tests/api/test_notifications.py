@@ -30,8 +30,8 @@ class TestPOST(object):
         session.post(
             flask_api_url + '/api/projects/' + projects_id + '/comment',
             data='new comment')
-        notifications = session.get(
-            flask_api_url + '/api/users/notifications').json()
+        user = session.get(
+            flask_api_url + '/api/users/' + 'admin@knex.com').json()
         assert (
-            notifications == '/project/' + projects_id)
+            user['notifications'] == '/project/' + projects_id)
 
