@@ -29,8 +29,8 @@ export default class SavedQuery extends Component {
     }
 
     deleteQuery(){
-      this.props.snackbarHandler("Query deleted")
-      Backend.deleteSavedSearch(this.props.saveSearch.id)
+      Backend.deleteSavedSearch(this.props.savedSearch.id)
+      .then(this.props.snackbarHandler("Query deleted"))
     }
 
     runQuery(){

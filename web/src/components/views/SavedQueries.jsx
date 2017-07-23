@@ -29,13 +29,18 @@ export default class SavedQueries extends Component {
 
   snackbarHandler(text){
     this.setState({
-      snackbar : false,
+      snackbar : true,
       snackbarText : text
     })
+    this.loadQueries()
   }
 
 
   componentWillMount(){
+    this.loadQueries()
+  }
+
+  loadQueries(){
     this.setState({
       loading : true,
     })

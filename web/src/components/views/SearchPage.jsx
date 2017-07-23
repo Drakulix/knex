@@ -74,10 +74,7 @@ export default class SearchPage extends Component {
   }
 
   saveSearch(){
-    this.setState({open: false,
-      snackbar : true,
-      snackbarText : "Query saved"
-    })
+
     var temp = []
 /*    var authors = this.state.query["authors"]
     for (var i in authors) {
@@ -89,9 +86,12 @@ export default class SearchPage extends Component {
     var query = this.state.query
     query["authors"] = temp*/
 
-    alert(JSON.stringify(this.state.query))
-
-    Backend.searchAdvanced(this.state.query)
+    Backend.searchAdvanced(this.state.query).then(
+      this.setState({open: false,
+        snackbar : true,
+        snackbarText : "Query saved"
+      })
+    )
   }
 
   handleClose = () => {
