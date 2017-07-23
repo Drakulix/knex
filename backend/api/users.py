@@ -132,7 +132,7 @@ def update_password():
                              user['email'], 404)
 
     if current_user.has_role('admin') or verify_password(user["old_password"], res.password):
-        new_password = user["new password"]
+        new_password = user["new_password"]
         res.password = hash_password(new_password)
         res.save()
         return make_response("Password restored!", 200)

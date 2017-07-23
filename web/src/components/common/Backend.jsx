@@ -440,9 +440,14 @@ class Backend {
         return this.getJson('/api/users');
     }
 
-    async updateProfile(user) {
-        if (await this.putJson('/api/users', user)) {
-          if (this.mail == user.mail) {
+    async updateProfile(mail, firstName, lastName, bio) {
+        if (await this.putJson('/api/users', {
+          'email': mail,
+          'first_name': firstName,
+          'last_name': lastName,
+          'bio': bio,
+        })) {
+          if (this.mail == mail) {
             await this.getProfile();
           }
           return true;
@@ -451,8 +456,12 @@ class Backend {
         }
     }
 
-    updatePassword(user) {
-        return this.putJson('/api/users/password', user);
+    updatePassword(mail, old_pass, new_pass) {
+        return this.putJson('/api/users/password', {
+          'email': mail,
+          'old_password': old_pass,
+          'new_password': new_pass,
+        });
     }
 
     deleteUser(mail) {
