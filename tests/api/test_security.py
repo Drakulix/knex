@@ -65,7 +65,7 @@ class TestPOST(object):
     def test_get_user(self, session, flask_api_url):
         response = session.get(flask_api_url + '/api/users/',
                                data=dict(email='user@knex.com'))
-        assert response.status_code == 404
+        assert response.status_code == 200
 
     def test_user_nonexistent(self, flask_api_url):
         response = requests.get(flask_api_url + '/api/users/',
