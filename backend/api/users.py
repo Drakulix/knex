@@ -68,7 +68,9 @@ def create_user():
         if user['roles'] == 'admin' and not current_user.has_role('admin'):
             raise ApiException("Cannot create admin user. Insufficient permission.", 403)
 
-        role = g.user_datastore.find_or_create_role(user['roles'])
+        roles = [g.user_datastore.find_or_create_role(user['roles'])]
+        if user['roles'] == "admin":
+            roles.append(g.user_datastore.find_or_create_role("user"))
 
         with open(os.path.join(sys.path[0], "default_avatar.png"), 'rb') as tf:
             imgtext = base64.b64encode(tf.read()).decode()
@@ -77,7 +79,7 @@ def create_user():
                                      last_name=user['last_name'],
                                      email=user['email'],
                                      password=hash_password(user['password']),
-                                     bio=user['bio'], roles=[role],
+                                     bio=user['bio'], roles=roles,
                                      avatar_name="default_avatar.png",
                                      avatar=imgtext)
 
