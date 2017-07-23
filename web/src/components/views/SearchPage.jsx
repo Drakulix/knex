@@ -33,6 +33,7 @@ export default class SearchPage extends Component {
       this.handleChange = this.handleChange.bind(this)
       this.handleOpen = this.handleOpen.bind(this)
       this.handleLabelChange = this.handleLabelChange.bind(this)
+
     }
 
 
