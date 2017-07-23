@@ -476,11 +476,11 @@ class Backend {
     }
 
     addBookmark(id) {
-        return this.postJson('/api/users/bookmarks'+encodeURIComponent(id));
+        return this.postJson('/api/users/bookmarks/'+encodeURIComponent(id));
     }
 
     deleteBookmark(id) {
-        return this.delete('/api/users/bookmarks'+encodeURIComponent(id));
+        return this.delete('/api/users/bookmarks/'+encodeURIComponent(id));
     }
 
     getBookmarks() {
