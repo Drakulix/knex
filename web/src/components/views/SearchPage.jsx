@@ -3,7 +3,8 @@ import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
 import DataTable from '../common/DataTable'
 import Dialog from 'material-ui/Dialog'
-
+import Backend from '../common/Backend'
+import Snackbar from 'material-ui/Snackbar'
 
 
 class Headline extends Component {
@@ -27,13 +28,15 @@ export default class SearchPage extends Component {
         query : query,
         fetchURL : "/api/projects",
         open : false,
-
+        snackbar : false,
+        snackbarText : "",
       }
       this.handleFilterChange = this.handleFilterChange.bind(this)
       this.saveSearch = this.saveSearch.bind(this)
       this.handleChange = this.handleChange.bind(this)
       this.handleOpen = this.handleOpen.bind(this)
       this.handleLabelChange = this.handleLabelChange.bind(this)
+
     }
 
 
@@ -55,7 +58,8 @@ export default class SearchPage extends Component {
     }
     else{
       this.setState({query : vquery})
-      this.setState({fetchURL : end+"simple/?q=" + vquery["searchString"] + "*"})
+        this.setState({fetchURL : "/api/projects"})
+  //    this.setState({fetchURL : end+"simple/?q=" + vquery["searchString"] + "*"})
     }
   }
 
@@ -70,7 +74,7 @@ export default class SearchPage extends Component {
   }
 
   saveSearch(){
-    this.setState({open: false})
+
     var temp = []
 /*    var authors = this.state.query["authors"]
     for (var i in authors) {
@@ -82,15 +86,26 @@ export default class SearchPage extends Component {
     var query = this.state.query
     query["authors"] = temp*/
 
-    alert(JSON.stringify(this.state.query))
+    Backend.searchAdvanced(this.state.query).then(
+      this.setState({open: false,
+        snackbar : true,
+        snackbarText : "Query saved"
+      })
+    )
   }
 
   handleClose = () => {
-    this.setState({open: false})
+    this.setState({
+      open: false,
+      snackbar : false
+    })
   }
 
   handleOpen = () => {
-    this.setState({open: true})
+    this.setState({
+      open: true,
+      snackbar : false
+    })
   }
 
   handleLabelChange(event){
@@ -112,23 +127,27 @@ export default class SearchPage extends Component {
         primary={true}
         onTouchTap={this.saveSearch}
         style={{marginLeft:20}}
-        disabled= {(this.state.query["label"] === "" ) ? true : false}
+        disabled= {(this.state.query["label"] === ""  || this.state.query["label"] === undefined) ? true : false}
         />,
     ]
 
     return(
       <div className="container">
         <div className="innerContainer">
+          <Snackbar
+            open = {this.state.snackbar}
+            message = {this.state.snackbarText}
+            autoHideDuration = {10000}/>
           <Dialog
-            title="Add a title for your search"
+            title="Enter a label for your query"
             actions={actions}
             modal={false}
             open={this.state.open}
             onRequestClose={this.saveSearch}
             >
             <TextField value = {this.state.query.label}
-              placeholder="Enter a title here ... "
-              errorText={(this.state.query["label"] === "") ? "Please provide a title " : ""}
+              placeholder="Enter label here ... "
+              errorText={(this.state.query["label"] === "" || this.state.query["label"] === undefined) ? "Please provide a label " : ""}
               onChange={this.handleLabelChange}
               ></TextField>
             </Dialog>
