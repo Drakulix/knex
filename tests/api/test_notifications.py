@@ -11,5 +11,5 @@ class TestPOST(object):
         project_id = enter_data_using_post.json()[0]
         sessionB.post(flask_api_url + '/api/projects/' + project_id + '/comment',
                       data='new comment')
-        notifications = sessionA.get(flask_api_url + '/api/users/notifications').json()
+        notifications = session.get(flask_api_url + '/api/users/notifications').json()
         assert notifications[-1] == '/project/' + project_id
