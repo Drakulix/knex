@@ -440,6 +440,10 @@ class Backend {
         return this.getJson('/api/users');
     }
 
+    setUserRoles(mail, roles){
+      return Promise.resolve().then(alert( "PLEASE CODE "+ mail + " " + roles))
+    }
+
     async updateProfile(mail, firstName, lastName, bio) {
         if (await this.putJson('/api/users', {
           'email': mail,
