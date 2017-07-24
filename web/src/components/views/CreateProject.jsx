@@ -140,7 +140,7 @@ export default class CreateProject extends Component {
           window.location = "/project/" + this.state.projectID
         }
       }
-    })
+    }.bind(this))
 
     if( this.state.projectID === undefined){
       xhr.open("POST", "/api/projects")

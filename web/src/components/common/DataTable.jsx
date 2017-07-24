@@ -29,7 +29,6 @@ export default class BookmarksTable extends Component {
       projectTitle : "",
       projectID : "",
       action : null,
-      url : "/api/projects",
       loading : true,
       buttonText : "DELETE"
     }
@@ -103,69 +102,48 @@ export default class BookmarksTable extends Component {
 
   fetchData(url){
     this.setState({loading : true})
-    alert(typeof url)
     Backend.getJson(url).then(function(data) {
       var datas =[]
       if(data !== undefined)
         datas = data
-      var filteredDataArray = []
       var dataArray = []
       for(let dataObject of datas) {
         var transformedObject = dataObject
-        var t = new String(dataObject.tags)
-        t = t.substring(0,t.length)
-        var array = t.split(",")
-        array.sort()
-        transformedObject["tagString"] =array.join()
-        var temp = []
-        for (var i in  dataObject.authors) {
-          temp = temp.concat([dataObject.authors[i].name + " ##"+dataObject.authors[i].email] )
-        }
-        temp.sort()
-        transformedObject["authorString"] = temp.join()
-        filteredDataArray.push(transformedObject)
+        dataObject.tags.sort()
+        dataObject.authors.sort( function (a,b){ return a.name > b.name})
         dataArray.push(transformedObject)
       }
       this.setState({
         data: dataArray,
-        filteredTable : filteredDataArray
+        filteredTable : []
       })
-        this.filter(this.state.filters)
-        this.setState({loading : false})
-      }.bind(this))
-    }
+      this.filter(this.state.filters)
+      this.setState({loading : false})
+    }.bind(this))
+  }
 
-    handleFilterChange(key, value){
-      var state = this.state.filters
-      if(value === undefined || value ===""  || value.length === 0){
-        delete state[key]
-      }
-      else  {
-        state[key] = value
-      }
-      this.setState({filters : state})
-      this.filter(state)
-      if(this.props.handleFilter !== undefined)
-        this.props.handleFilter(key,value)
+  handleFilterChange(key, value){
+    var state = this.state.filters
+    if(value === undefined || value ===""  || value.length === 0){
+      delete state[key]
     }
+    else  {
+      state[key] = value
+    }
+    this.setState({filters : state})
+    this.filter(state)
+    if(this.props.handleFilter !== undefined)
+      this.props.handleFilter(key,value)
+  }
 
-    filter(filters){
-      this.setState({loading : true})
-      var array = []
-      for(let dataObject of this.state.data) {
-        var discard = false
-        for(let key of Object.keys(filters)){
-          var value = filters[key]
-          switch (key){
-            case "title":
-              discard = dataObject.title.toLowerCase().indexOf(value.toLowerCase()) === -1
-              break
-            case "description":
-              discard = dataObject.description.toLowerCase().indexOf(value.toLowerCase()) === -1
-              break
-            case "status":
-              discard = dataObject.status.toLowerCase().indexOf(value.toLowerCase()) === -1
-              break
+  filter(filters){
+    this.setState({loading : true})
+    var array = []
+    for(let dataObject of this.state.data) {
+      var discard = false
+      for(let key of Object.keys(filters)){
+        var value = filters[key]
+        switch (key){
             case "date_to":
               discard = dataObject.date_creation  > value
               break
@@ -175,8 +153,7 @@ export default class BookmarksTable extends Component {
             case "tags":
               var temp = dataObject.tags.join().toLowerCase()
               for(let i in value){
-                var tag = value[i]
-                discard = temp.indexOf(tag.toLowerCase()) === -1
+                discard = temp.indexOf(value[i].toLowerCase()) === -1
                 if(discard)
                   break
               }
@@ -188,26 +165,26 @@ export default class BookmarksTable extends Component {
               }
               temp = temp.join().toLowerCase()
               for(let i in value){
-                var author = value[i]
-                discard = temp.indexOf(author.toLowerCase()) === -1
+                discard = temp.indexOf(value[i].toLowerCase()) === -1
                 if(discard)
                   break
               }
               break
             default:
+              discard = dataObject[key].toLowerCase().indexOf(value.toLowerCase()) === -1
               break
           }
-          if(discard){
-            break
-          }
-        }
-        if(!discard){
-          array.push(dataObject)
+        if(discard){
+          break
         }
       }
-      this.setState({filteredTable : array,
-      loading : false})
+      if(!discard){
+        array.push(dataObject)
+      }
     }
+    this.setState({filteredTable : array,
+    loading : false})
+  }
 
   render() {
     const columns = []
@@ -268,12 +245,12 @@ export default class BookmarksTable extends Component {
     if(this.props.columns.indexOf("tags") !== -1){
       columns.push({
         Header: 'Tags',
-        accessor: "tagString",
-        id : 'tagString',
+        accessor: "tags",
+        id : 'tags',
         width: 220,
         style: {textAlign:"center"},
         Cell: props =>{
-          var array = props.value === undefined ? [] : new String(props.value).split(",")
+          var array = props.value === undefined ? [] : props.value
           return(
               array.map(item =>
                 <Chip key={item} style= {styles["chip"]}>
@@ -285,18 +262,17 @@ export default class BookmarksTable extends Component {
     if(this.props.columns.indexOf("authors") !== -1){
       columns.push({
         Header: 'Authors',
-        accessor: "authorString",
+        accessor: "authors",
         width: 150,
-        id : 'authorString',
+        id : 'authors',
         Cell: props =>{
-          var array = props.value === undefined ? [] : new String(props.value).split(",")
+          var array = props.value === undefined ? [] : props.value
           return(
             <div>
             {array.map(item =>
-              <Chip key={item.substring(item.indexOf(" ##")+3)} style= {styles["chip"]}>
-                <Link to={"/profile/"+item.substring(
-                    item.indexOf(" ##")+3
-                  )} style= {styles["chipText"]} >{item.substring(0,item.indexOf(" ##"))}</Link><br></br></Chip>) }
+              <Chip key={item.email} style= {styles["chip"]}>
+                <Link to={"/profile/"+item.email
+                } style= {styles["chipText"]} >{item.name}</Link><br></br></Chip>) }
             </div>
           )
         },
@@ -309,8 +285,8 @@ export default class BookmarksTable extends Component {
         style: {width: "100%"},
         accessor: d => d,
         Cell: props =>{
-
-          var text = (props.value.description !== undefined) ? new String(props.value.description).substring(0,250).trim()+"..." : "";
+          var text = (props.value.description !== undefined) ? props.value.description.substring(0,250).trim(): "";
+          text = text + ((text.length >= 250) ? "..." : "")
           return(
             <div style ={{whiteSpace : "normal"}}>
               {text}

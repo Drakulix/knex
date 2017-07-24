@@ -57,7 +57,6 @@ export default class SearchPage extends Component {
     this.setState({searchString : value})
 
 
-    var end = "/api/projects/search/"
     if(value === ""){
       this.setState({fetchURL : "/api/projects"})
     }
