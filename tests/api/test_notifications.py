@@ -9,7 +9,8 @@ class TestPOST(object):
         sessionB.post(flask_api_url + '/api/users/login',
                       data=dict(email='user@knex.com', password="user"))
         project_id = enter_data_using_post.json()[0]
-        sessionB.post(flask_api_url + '/api/projects/' + project_id + '/comment',
-                      data='new comment')
+        res = sessionB.post(flask_api_url + '/api/projects/' + project_id + '/comment',
+                            data="new comment", headers={'Content-type': "plain/text"})
+        assert res.status_code == 200
         notifications = session.get(flask_api_url + '/api/users/notifications').json()
-        assert notifications[-1] == '/project/' + project_id
+        assert notifications[-1]['link'] == '/project/' + project_id
