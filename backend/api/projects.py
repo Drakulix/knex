@@ -56,7 +56,7 @@ def add_projects():
     else:
         try:
             return_ids = []
-            if ('application/json' in request.content_type) and \
+            if ('application/json' in request.content_type) and\
                     ('application/json5' not in request.content_type):
                 return_ids = uploader.save_manifest_to_db(request.get_json())
             elif 'application/json5' in request.content_type:
