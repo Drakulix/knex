@@ -92,7 +92,7 @@ export default class RegisterUser extends Component {
                   value={this.state.last_name}
                   name="last_name"
                   onChange={this.handleInputChange}
-                  hintText="Enter the given name..."
+                  hintText="Enter the last name..."
                   errorText={(this.state.last_name === "") ? "Field is required" : ""}
 
                   />
