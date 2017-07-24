@@ -282,7 +282,7 @@ class Backend {
     }
 
     updateProject(id, payload) {
-        return this.putJson('/api/projects'+id, payload);
+        return this.putJson('/api/projects/'+id, payload);
     }
 
     deleteProject(id) {

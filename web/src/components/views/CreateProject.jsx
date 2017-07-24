@@ -47,7 +47,7 @@ export default class CreateProject extends Component {
         },
         date : Moment().toDate(),
         snackbar : false,
-        site_loaded : false,
+        site_loaded : true,
         project_exists : false,
       }
     }
@@ -95,6 +95,7 @@ export default class CreateProject extends Component {
 
   componentWillMount(){
     if(this.state.projectID !== undefined){
+      this.setState({site_loaded : false})
       this.loadProjectInf(this.state.projectID)
     }
   }
@@ -128,32 +129,19 @@ export default class CreateProject extends Component {
     var projectInf = this.state.projectInf
     delete projectInf.is_bookmark
     delete projectInf.is_owner
-    var data = JSON.stringify(projectInf)
     var projectID = this.state.projectID
-    var xhr = new XMLHttpRequest()
-    xhr.withCredentials = true
-    xhr.addEventListener("readystatechange", function () {
-      if (this.readyState === 4) {
-        if(projectID === undefined){
-          history.push("/project/"+ JSON.parse(this.responseText)[0])
-        }
-        else{
-          history.push("/project/" + projectID)
-        }
-      }
-    })
-
+    this.setState({site_loaded : false})
     if( this.state.projectID === undefined){
-      xhr.open("POST", "/api/projects")
+      Backend.addProject(projectInf)
+      .then( (id) =>{
+        history.push("/project/"+ JSON.parse(id)[0])
+      })
     }
     else{
-      /*Some strange bug with missing email here */
-      xhr.open("PUT", "/api/projects/"+this.state.projectID)
+      Backend.updateProject(this.state.projectID, projectInf).then(
+        history.push("/project/" + projectID)
+      )
     }
-
-    xhr.setRequestHeader("content-type", "application/json")
-    xhr.send(data)
-    this.setState({snackbar : true})
   }
 
   isInValid(){
@@ -200,7 +188,7 @@ export default class CreateProject extends Component {
     }
 
     render() {
-      if(!this.state.site_loaded && this.state.projectID){
+      if(!this.state.site_loaded ){
         return (
           <div className = "container">
             <div className = "header"><CircularProgress size = {80} thickness = {5} /></div>
