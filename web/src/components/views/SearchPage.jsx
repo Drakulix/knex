@@ -23,10 +23,9 @@ export default class SearchPage extends Component {
     super(props)
 
     var query  = this.props.match.params.query !== undefined ? JSON.parse(this.props.match.params.query) : {}
-
     this.state = {
-        searchString : "",
-        label : "",
+        searchString : query.searchString !== undefined ? query.searchString : "" ,
+        label : query.label !== undefined ? query.label : "",
         query : query,
         fetchURL : "/api/projects",
         open : false,
@@ -34,6 +33,8 @@ export default class SearchPage extends Component {
         snackbarText : "",
       }
 
+      delete query.label
+      delete query.searchString
 
       this.handleFilterChange = this.handleFilterChange.bind(this)
       this.saveSearch = this.saveSearch.bind(this)
@@ -95,8 +96,7 @@ export default class SearchPage extends Component {
       this.setState({open: false,
         snackbar : true,
         snackbarText : "Query saved"
-      })
-      alert(this.state.query.authors)}.bind(this)
+      })}.bind(this)
     )
   }
 

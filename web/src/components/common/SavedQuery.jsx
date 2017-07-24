@@ -15,14 +15,9 @@ export default class SavedQuery extends Component {
         authors = authors.concat([query.authors[i].name + " ("+query.authors[i].email+ ")"])
       }
       query.authors = authors
-      var tags = []
-      for (let i in query.tags){
-        tags.push(query.tags[i])
-      }
 
       this.state = {
         query : query,
-        tags : tags,
         authors : authors
       }
       this.deleteQuery = this.deleteQuery.bind(this)
@@ -93,18 +88,20 @@ export default class SavedQuery extends Component {
             <div className="col-1 filter-label">Tags</div>
             <div  className="col-5  query-value"  style={{marginTop:0}}>
               <div style = {styles["wrapper"]}>
-                 { this.state.tags.map(item =>
-                   <Chip style= {styles["chip"]}>
-                     {item}</Chip>) }
-                     </div>
+                { this.state.query.tags !== undefined ?
+                    this.state.query.tags.map(item =>
+                     <Chip style= {styles["chip"]}>
+                       {item}</Chip>) : "" }
               </div>
+            </div>
             <div className="col-1 filter-label"  style={{marginLeft:-40}}> Authors</div>
             <div  className="col-5  query-value" style={{marginTop:0}}>
               <div style = {styles["wrapper"]}>
-                 { this.state.authors.map(item =>
+                 {  this.state.autors !== undefined ?
+                    this.state.authors.map(item =>
                    <Chip style= {styles["chip"]}>
-                     {item}</Chip>) }
-                     </div>
+                     {item}</Chip>)  : "" }
+              </div>
             </div>
           </div>
           <div className="row">

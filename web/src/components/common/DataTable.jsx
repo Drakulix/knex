@@ -18,12 +18,14 @@ export default class BookmarksTable extends Component {
     if(props.predefinedFilter !== undefined){
       filters = props.predefinedFilter
     }
+  
     this.state = {
       data: [{
       }],
       filters : filters,
       filteredTable : [{
       }],
+      url : props.fetchURL,
       dialogOpen : false,
       dialogText : "",
       projectTitle : "",
@@ -151,12 +153,9 @@ export default class BookmarksTable extends Component {
               discard = dataObject.date_creation  < value
               break
             case "tags":
-              var temp = dataObject.tags.join().toLowerCase()
-              for(let i in value){
-                discard = temp.indexOf(value[i].toLowerCase()) === -1
-                if(discard)
-                  break
-              }
+              var temp = dataObject[key].join().toLowerCase()
+              discard = value.some(function notContains(element){
+                            return temp.indexOf(element) === -1})
               break
             case "authors":
               temp = []
@@ -164,11 +163,9 @@ export default class BookmarksTable extends Component {
                 temp = temp.concat([dataObject.authors[i].name + " ("+dataObject.authors[i].email+ ")"])
               }
               temp = temp.join().toLowerCase()
-              for(let i in value){
-                discard = temp.indexOf(value[i].toLowerCase()) === -1
-                if(discard)
-                  break
-              }
+              discard = value.some( function notContains(element){
+                return temp.indexOf(element) === -1
+              })
               break
             default:
               discard = dataObject[key].toLowerCase().indexOf(value.toLowerCase()) === -1
