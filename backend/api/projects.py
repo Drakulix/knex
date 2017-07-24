@@ -19,18 +19,17 @@ from globals import ADMIN_PERMISSION
 projects = Blueprint('api_projects', __name__)
 
 
-def is_permitted(user, entry):
+def is_permitted(user, entry) -> bool:
     """Return boolean value if user has admin permission, arg->list with roles
 
         Returns:
             res: true if user has admin role
         """
-
     if user.has_role('admin'):
         return True
     elif 'author' in entry:
         return user['email'] == entry['author']['email']
-    return user['email'] in entry['authors']
+    return user['email'] in [author['email'] for author in entry['authors']]
 
 
 @projects.route('/api/projects', methods=['POST'])
