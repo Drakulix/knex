@@ -9,6 +9,7 @@ import CircularProgress from 'material-ui/CircularProgress'
 import ChipInputList from '../common/ChipInputList'
 import Backend from '../common/Backend'
 import Moment from 'moment'
+import history from '../common/history'
 
 
 const statusString = [
@@ -128,12 +129,17 @@ export default class CreateProject extends Component {
     delete projectInf.is_bookmark
     delete projectInf.is_owner
     var data = JSON.stringify(projectInf)
-
+    var projectID = this.state.projectID
     var xhr = new XMLHttpRequest()
     xhr.withCredentials = true
     xhr.addEventListener("readystatechange", function () {
       if (this.readyState === 4) {
-        window.location = "/project/" + JSON.parse(this.responseText)[0];
+        if(projectID === undefined){
+          history.push("/project/"+ JSON.parse(this.responseText)[0])
+        }
+        else{
+          history.push("/project/" + projectID)
+        }
       }
     })
 

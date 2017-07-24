@@ -10,6 +10,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {
   BrowserRouter,
   Route,
+  Router
 
 } from 'react-router-dom'
 
@@ -65,7 +66,7 @@ const PageRoute = ({ component: Component, path, sitePath, ...rest }) => (
 init(() => {
   ReactDOM.render(
     <MuiThemeProvider  muiTheme={muiTheme}>
-      <BrowserRouter history={history}>
+      <Router history={history}>
         <Switch>
           <PageRoute sitePath="/discovery" path="/discovery/:query" component={SearchPage} />
           <PageRoute sitePath="/discovery" path="/discovery/" component={SearchPage} />
@@ -84,7 +85,7 @@ init(() => {
           <Route exact path="/" component={SignIn} />
           <Route component={() => (<Redirect to="/"/>)} />
        </Switch>
-      </BrowserRouter>
+      </Router>
     </MuiThemeProvider>
   , document.getElementById('root'))
   registerServiceWorker()

@@ -268,6 +268,7 @@ class ConfirmationPane extends Component {
     )
   }
 
+
   componentWillReceiveProps(props){
     this.setState({open : props.open})
   }
