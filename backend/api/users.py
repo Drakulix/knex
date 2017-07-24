@@ -65,12 +65,10 @@ def create_user():
         if 'roles' not in user:
             raise ApiException("Passed json has no roles, please fix your request.", 400)
 
-        if user['roles'] == 'admin' and not current_user.has_role('admin'):
+        if 'admin' in user['roles'] and not current_user.has_role('admin'):
             raise ApiException("Cannot create admin user. Insufficient permission.", 403)
 
-        roles = [g.user_datastore.find_or_create_role(user['roles'])]
-        if user['roles'] == "admin":
-            roles.append(g.user_datastore.find_or_create_role("user"))
+        roles = [g.user_datastore.find_or_create_role(role) for role in user['roles']]
 
         with open(os.path.join(sys.path[0], "default_avatar.png"), 'rb') as tf:
             imgtext = base64.b64encode(tf.read()).decode()
@@ -111,7 +109,13 @@ def update_user():
             newname = firstname + " " if firstname else "" + lastname
             g.projects.update_many({'authors.email': user['email']},
                                    {'$set': {'authors.$.name': newname}})
-        res.bio = user['bio']
+
+        if 'bio' in user:
+            res.bio = user['bio']
+        if 'roles' in user:
+            if 'admin' in user['roles'] and not current_user.has_role('admin'):
+                raise ApiException("Current user has no permission to assign admin role.", 403)
+            res.roles = [g.user_datastore.find_or_create_role(role) for role in user['roles']]
 
         res.save()
 
@@ -327,13 +331,13 @@ def get_bookmarks():
     if not user:
         raise ApiException("Couldn't find current_user in datastore", 500)
     projects = [g.projects.find_one({'_id': project_id}) for project_id in user['bookmarks']]
-
+    projects = list(filter(None.__ne__, projects))
     try:
         for project in projects:
             project['is_bookmark'] = 'true'
-            project['is_owner'] = 'true' \
-                if current_user['email'] in [author['email']
-                                             for author in project['authors']] else 'false'
+            project['is_owner'] = 'true'\
+                if current_user['email'] in\
+                [author['email'] for author in project['authors']] else 'false'
 
         return jsonify(projects)
 
