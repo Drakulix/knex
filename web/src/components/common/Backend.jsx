@@ -282,7 +282,7 @@ class Backend {
     }
 
     updateProject(id, payload) {
-        return this.putJson('/api/projects'+id, payload);
+        return this.putJson('/api/projects/'+id, payload);
     }
 
     deleteProject(id) {
@@ -440,7 +440,11 @@ class Backend {
         return this.getJson('/api/users');
     }
 
-    async updateProfile(mail, firstName, lastName, bio) {
+    setUserRoles(userInf){
+      return this.putJson('/api/users', userInf)
+    }
+
+    async updateProfile(mail, firstName, lastName, bio, roles) {
         if (await this.putJson('/api/users', {
           'email': mail,
           'first_name': firstName,
