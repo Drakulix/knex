@@ -52,7 +52,7 @@ export default class ShowUsers extends Component {
       userInf.roles.push("admin")
       text = text + " is now Admin"
     }
-    Backend.setUserRoles(userInf.email, userInf.roles)
+    Backend.setUserRoles(userInf)
     .then(this.props.handleUserUpdate(text))
   }
 
