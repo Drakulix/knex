@@ -14,6 +14,7 @@ export default class SavedQuery extends Component {
       for (let i in query.authors) {
         authors = authors.concat([query.authors[i].name + " ("+query.authors[i].email+ ")"])
       }
+      query.authors = authors
       var tags = []
       for (let i in query.tags){
         tags.push(query.tags[i])
@@ -41,7 +42,7 @@ export default class SavedQuery extends Component {
         <div style={{marginBottom:20}}>
           <div className="row">
             <div className="col-2 filter-label">
-              {this.state.query.label}
+              Label {this.state.query.label}
             </div>
             <div className="col-4"></div>
             <div className="col-1 filter-label" style={{marginLeft:-40}}>Hits</div>
@@ -90,15 +91,15 @@ export default class SavedQuery extends Component {
           </div>
           <div className="row">
             <div className="col-1 filter-label">Tags</div>
-            <div  className="col-5  query-value" style={{marginLeft:-40}}>
+            <div  className="col-5  query-value"  style={{marginTop:0}}>
               <div style = {styles["wrapper"]}>
                  { this.state.tags.map(item =>
                    <Chip style= {styles["chip"]}>
                      {item}</Chip>) }
                      </div>
               </div>
-            <div className="col-1 filter-label"> Authors</div>
-            <div  className="col-5  query-value">
+            <div className="col-1 filter-label"  style={{marginLeft:-40}}> Authors</div>
+            <div  className="col-5  query-value" style={{marginTop:0}}>
               <div style = {styles["wrapper"]}>
                  { this.state.authors.map(item =>
                    <Chip style= {styles["chip"]}>

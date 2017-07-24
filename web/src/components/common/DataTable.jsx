@@ -17,10 +17,6 @@ export default class BookmarksTable extends Component {
     var filters = {}
     if(props.predefinedFilter !== undefined){
       filters = props.predefinedFilter
-      delete filters.searchString
-      delete filters._id
-      delete filters.userID
-      delete filters.label
     }
     this.state = {
       data: [{
@@ -55,14 +51,14 @@ export default class BookmarksTable extends Component {
       action : function (){
         this.setState({dialogOpen:false})
         Backend.deleteProject("/api/projects/"+projectID)
-          .then(this.fetchData(this.state.url))
+          .then(this.fetchData(this.props.fetchURL))
       }.bind(this)
       })
   }
 
   handleUnArchive(projectID){
     Backend.getProjectArchived(projectID, false).then(
-    this.fetchData(this.state.url))
+    this.fetchData(this.props.fetchURL))
   }
 
   handleClose(){
@@ -77,19 +73,19 @@ export default class BookmarksTable extends Component {
       action : function (){
         this.setState({dialogOpen:false})
         Backend.getProjectArchived(projectID, true)
-          .then(this.fetchData(this.state.url))
+          .then(this.fetchData(this.props.fetchURL))
       }.bind(this)
       })
   }
 
   handleAddBookmark(projectID){
     Backend.addBookmark(projectID)
-      .then(this.fetchData(this.state.url))
+      .then(this.fetchData(this.props.fetchURL))
   }
 
   handleRemoveBookmark(projectID){
     Backend.deleteBookmark(projectID)
-      .then(this.fetchData(this.state.url))
+      .then(this.fetchData(this.props.fetchURL))
   }
 
   componentDidMount() {
@@ -107,6 +103,7 @@ export default class BookmarksTable extends Component {
 
   fetchData(url){
     this.setState({loading : true})
+    alert(typeof url)
     Backend.getJson(url).then(function(data) {
       var datas =[]
       if(data !== undefined)

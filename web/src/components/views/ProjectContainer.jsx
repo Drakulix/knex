@@ -304,7 +304,7 @@ export default class ProjectContainer extends Component {
                         style = {styles.largeIcon}
                         tooltipPosition = "top-center"
                         tooltip = "Bookmark project"
-                        disabled = {! (this.state.isOwner)}
+                        disabled = {this.state.isOwner}
                         iconStyle = {{fontSize : '24px'}}
                         >
                         <i className = "material-icons">

@@ -133,7 +133,12 @@ export default class CreateProject extends Component {
     xhr.withCredentials = true
     xhr.addEventListener("readystatechange", function () {
       if (this.readyState === 4) {
-        window.location = "/project/" + JSON.parse(this.responseText)[0];
+        if( this.state.projectID === undefined){
+          window.location = "/project/" + JSON.parse(this.responseText)[0]
+        }
+        else{
+          window.location = "/project/" + this.state.projectID
+        }
       }
     })
 

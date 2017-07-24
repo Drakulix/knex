@@ -25,40 +25,44 @@ export default class SearchPage extends Component {
     var query  = this.props.match.params.query !== undefined ? JSON.parse(this.props.match.params.query) : {}
 
     this.state = {
+        searchString : "",
+        label : "",
         query : query,
         fetchURL : "/api/projects",
         open : false,
         snackbar : false,
         snackbarText : "",
       }
+
+
       this.handleFilterChange = this.handleFilterChange.bind(this)
       this.saveSearch = this.saveSearch.bind(this)
       this.handleChange = this.handleChange.bind(this)
       this.handleOpen = this.handleOpen.bind(this)
       this.handleLabelChange = this.handleLabelChange.bind(this)
-
     }
 
 
-    componentWillMount(){
-      if (this.props.match.params.qID !== undefined){
+  componentWillMount(){
+    if (this.props.match.params.qID !== undefined){
         //FETCH QUERY FROM DB with ID QID
-        var query = {}
-        this.setState({query: query})
+      var query = {}
+      this.setState({query: query})
     }
   }
 
   handleChange(event) {
     const value = event.target.value
-    var vquery = this.state.query
-    vquery["searchString"] = value
+
+    this.setState({searchString : value})
+
+
     var end = "/api/projects/search/"
     if(value === ""){
       this.setState({fetchURL : "/api/projects"})
     }
     else{
-      this.setState({query : vquery})
-        this.setState({fetchURL : "/api/projects"})
+      this.setState({fetchURL : "/api/projects"})
   //    this.setState({fetchURL : end+"simple/?q=" + vquery["searchString"] + "*"})
     }
   }
@@ -74,9 +78,11 @@ export default class SearchPage extends Component {
   }
 
   saveSearch(){
-
     var temp = []
-/*    var authors = this.state.query["authors"]
+    var xquery = this.state.query
+    xquery.searchString = this.state.searchString
+    xquery.label = this.state.label
+    var authors = this.state.query["authors"]
     for (var i in authors) {
       var string = authors[i]
       var name = string.substring(0, string.lastIndexOf("(")-1)
@@ -84,13 +90,14 @@ export default class SearchPage extends Component {
       temp.push({"name" : name, "email" :id})
     }
     var query = this.state.query
-    query["authors"] = temp*/
+    query["authors"] = temp
 
-    Backend.searchAdvanced(this.state.query).then(
+    Backend.searchAdvanced(this.state.query).then( function () {
       this.setState({open: false,
         snackbar : true,
         snackbarText : "Query saved"
       })
+      alert(this.state.query.authors)}.bind(this)
     )
   }
 
@@ -110,9 +117,7 @@ export default class SearchPage extends Component {
 
   handleLabelChange(event){
     const value = event.target.value
-    var query = this.state.query
-    query["label"] = value
-    this.setState({query : query})
+    this.setState({label : value})
   }
 
   render() {
@@ -127,7 +132,7 @@ export default class SearchPage extends Component {
         primary={true}
         onTouchTap={this.saveSearch}
         style={{marginLeft:20}}
-        disabled= {(this.state.query["label"] === ""  || this.state.query["label"] === undefined) ? true : false}
+        disabled= {(this.state.label === ""  || this.state.label === undefined) ? true : false}
         />,
     ]
 
@@ -145,9 +150,9 @@ export default class SearchPage extends Component {
             open={this.state.open}
             onRequestClose={this.saveSearch}
             >
-            <TextField value = {this.state.query.label}
+            <TextField value = {this.state.label}
               placeholder="Enter label here ... "
-              errorText={(this.state.query["label"] === "" || this.state.query["label"] === undefined) ? "Please provide a label " : ""}
+              errorText={(this.state.label === "" || this.state.label === undefined) ? "Please provide a label " : ""}
               onChange={this.handleLabelChange}
               ></TextField>
             </Dialog>
@@ -156,7 +161,7 @@ export default class SearchPage extends Component {
             <div className="col-10">
               <TextField  style={{width:"100%"}}
                 name="searchString"
-                value={this.state.query.searchString}
+                value = {this.state.searchString}
                 placeholder="Enter your query here..."
                 onChange={this.handleChange} />
             </div>
