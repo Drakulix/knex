@@ -331,9 +331,9 @@ def get_bookmarks():
     try:
         for project in projects:
             project['is_bookmark'] = 'true'
-            project['is_owner'] = 'true' \
-                if current_user['email'] in [author['email']
-                                             for author in project['authors']] else 'false'
+            project['is_owner'] = 'true'\
+                if current_user['email'] in\
+                [author['email'] for author in project['authors']] else 'false'
 
         return jsonify(projects)
 
