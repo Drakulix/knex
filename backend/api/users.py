@@ -68,7 +68,9 @@ def create_user():
         if user['roles'] == 'admin' and not current_user.has_role('admin'):
             raise ApiException("Cannot create admin user. Insufficient permission.", 403)
 
-        role = g.user_datastore.find_or_create_role(user['roles'])
+        roles = [g.user_datastore.find_or_create_role(user['roles'])]
+        if user['roles'] == "admin":
+            roles.append(g.user_datastore.find_or_create_role("user"))
 
         with open(os.path.join(sys.path[0], "default_avatar.png"), 'rb') as tf:
             imgtext = base64.b64encode(tf.read()).decode()
@@ -77,7 +79,7 @@ def create_user():
                                      last_name=user['last_name'],
                                      email=user['email'],
                                      password=hash_password(user['password']),
-                                     bio=user['bio'], roles=[role],
+                                     bio=user['bio'], roles=roles,
                                      avatar_name="default_avatar.png",
                                      avatar=imgtext)
 
@@ -130,7 +132,7 @@ def update_password():
                              user['email'], 404)
 
     if current_user.has_role('admin') or verify_password(user["old_password"], res.password):
-        new_password = user["new password"]
+        new_password = user["new_password"]
         res.password = hash_password(new_password)
         res.save()
         return make_response("Password restored!", 200)
@@ -173,7 +175,6 @@ def get_user(mail):
         return make_response("Unknown User with Email-address: " + str(mail), 404)
 
     res = user.to_dict()
-    res['roles'] = [role for role in ['admin', 'user'] if user.has_role(role)]
     return jsonify(res)
 
 

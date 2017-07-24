@@ -62,9 +62,10 @@ class TestPOST(object):
 
         assert response.status_code == 403
 
-    def test_get_user(self, session, flask_api_url):
-        response = session.get(flask_api_url + '/api/users/',
-                               data=dict(email='user@knex.com'))
+    def test_get_user(self, session, enter_default_user_users, flask_api_url):
+        response = enter_default_user_users
+        assert response.status_code == 200
+        response = session.get(flask_api_url + '/api/users/' + 'user@knex.com')
         assert response.status_code == 200
 
     def test_user_nonexistent(self, flask_api_url):

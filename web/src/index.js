@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { withRouter, Redirect } from 'react-router';
+import { Redirect } from 'react-router';
+import { Switch } from 'react-router-dom';
 import registerServiceWorker from './registerServiceWorker';
 import './style/style.css';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -65,8 +66,8 @@ init(() => {
   ReactDOM.render(
     <MuiThemeProvider  muiTheme={muiTheme}>
       <BrowserRouter history={history}>
-        <div>
-        <PageRoute site_path="/discovery" path="/discovery/:query" component={SearchPage} />
+        <Switch>
+          <PageRoute sitePath="/discovery" path="/discovery/:query" component={SearchPage} />
           <PageRoute sitePath="/discovery" path="/discovery/" component={SearchPage} />
           <PageRoute sitePath="/admin" path="/admin" component={AdminOverview} />
           <PageRoute sitePath="/createNew" exact path="/createNew" component={CreateProject} />
@@ -82,7 +83,7 @@ init(() => {
           <Route path="/register" component={SignUp} />
           <Route exact path="/" component={SignIn} />
           <Route component={() => (<Redirect to="/"/>)} />
-       </div>
+       </Switch>
       </BrowserRouter>
     </MuiThemeProvider>
   , document.getElementById('root'))

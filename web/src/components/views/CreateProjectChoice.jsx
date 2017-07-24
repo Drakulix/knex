@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Redirect } from 'react-router'
+import { Link } from 'react-router-dom'
 import 'isomorphic-fetch'
 import RaisedButton from 'material-ui/RaisedButton'
 import TextField from 'material-ui/TextField'
@@ -182,11 +183,12 @@ export default class CreateProjectChoice extends Component {
         </div>
         <div className = "text" >or</div>
         <div>
-          <RaisedButton label = "Use online formular"
+          <Link to="/createNew">
+            <RaisedButton label = "Use online formular"
                       icon = {<i className = "material-icons" style = {{color: "#ffffff", marginTop:-3}}>keyboard</i>}
-                      href = "/createNew/"
                       primary = {true}
                       style = {{ width:'300px'}}/>
+          </Link>
         </div>
       </div>
     )
