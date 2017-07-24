@@ -1,19 +1,15 @@
-import json
 import os
-import time
-import uuid
 import requests
-
-from uuid import UUID
 
 
 class TestPOST(object):
-    projects_id=""
-
     def test_setup(self, flask_api_url, pytestconfig):
-        session = requests.Session()
-        session.post(flask_api_url + '/api/users/login',
-                     data=dict(email='admin@knex.com', password="admin"))
+        sessionA = requests.Session()
+        sessionB = requests.Session()
+        sessionA.post(flask_api_url + '/api/users/login',
+                      data=dict(email='admin@knex.com', password="admin"))
+        sessionB.post(flask_api_url + '/api/users/login',
+                      data=dict(email='user@knex.com', password="user"))
         test_manifest = os.path.join(
             str(pytestconfig.rootdir),
             'tests',
@@ -25,13 +21,8 @@ class TestPOST(object):
         response = session.post(flask_api_url + "/api/projects",
                                 data=data.encode('utf-8'),
                                 headers={'Content-Type': 'application/json5'})
-        # assert (response.json()[0] == 33)
-        projects_id = response.json()[0]
-        session.post(
-            flask_api_url + '/api/projects/' + projects_id + '/comment',
-            data='new comment')
-        user = session.get(
-            flask_api_url + '/api/users/' + 'admin@knex.com').json()
-        assert (
-            user['notifications'] == '/project/' + projects_id)
-
+        project_id = str(response.json()[0])
+        sessionB.post(flask_api_url + '/api/projects/' + project_id + '/comment',
+                      data='new comment')
+        notifications = sessionA.get(flask_api_url + '/api/users/notifications').json()
+        assert notifications[-1] == '/project/' + project_id
