@@ -291,10 +291,10 @@ def add_comment(project_id):
             raise ApiException("Project not found", 404)
         if "text/plain" not in request.content_type:
             raise ApiException("'text/plain' must be in Content-Type", 400)
-        comment = dict()
-        author = dict()
-        firstname = current_user['first_name'] if 'first_name' in current_user else ""
-        lastname = current_user['last_name'] if 'last_name' in current_user else ""
+        comment = {}
+        author = {}
+        firstname = current_user.to_dict().get('first_name', "")
+        lastname = current_user.to_dict().get('last_name', "")
         author['name'] = firstname + " " if firstname else "" + lastname
         author['email'] = current_user['email']
         comment['author'] = author
