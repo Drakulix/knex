@@ -186,6 +186,7 @@ class User(DB.Document, UserMixin):
         # dic['password'] = str(self.password)
         dic['active'] = str(self.active)
         dic['bio'] = str(self.bio)
+        dic['notifications'] = self.notifications
         dic['bookmarks'] = [str(bookmark) for bookmark in self.bookmarks]
         dic['roles'] = [str(role.name) for role in self.roles]
         return dic
