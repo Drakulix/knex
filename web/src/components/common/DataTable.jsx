@@ -317,7 +317,7 @@ export default class BookmarksTable extends Component {
           var text = (props.value.description !== undefined) ? new String(props.value.description).substring(0,250).trim()+"..." : "";
           return(
             <div style ={{whiteSpace : "normal"}}>
-              {text}
+            {text}
             </div>
           )
         }
@@ -351,33 +351,21 @@ export default class BookmarksTable extends Component {
         }
       })
     }
-    if(this.props.columns.indexOf("archive") !== -1){
-      columns.push({
-        Header: 'Archive',
-        accessor: d => d,
-        id: 'archive',
-        sortable:false,
-        width: 80,
-        style: {textAlign:"center"},
-        Cell: props => <IconButton
-          onClick = {()=>this.handleArchive(props.value._id, props.value.title)}
-          touch = {true}
-          style = {styles.largeIcon}
-          iconStyle = {{fontSize: '24px'}}
-          value = {props.value._id}>
-            <i className="material-icons">archive</i>
-          </IconButton>
-      })
-    }
     if(this.props.columns.indexOf("dearchive") !== -1){
       columns.push({
         Header: 'Unarchive',
         accessor: d => d,
-        id: 'dearchive',
-        sortable:false,
+        id: 'archived',
+        sortable:true,
+        sortMethod: (a,b) => {
+          return  a.archived === b.archived ?
+          (a.title < b.title ? 1 : -1)
+           :
+          (a.archived  ? 1 : -1)},
         width: 100,
         style: {textAlign:"center"},
-        Cell: props => <IconButton
+        Cell: props => { return props.value.archived  ?
+          <IconButton
           onClick = {()=>this.handleUnArchive(props.value._id)}
           touch = {true}
           style = {styles.largeIcon}
@@ -385,8 +373,35 @@ export default class BookmarksTable extends Component {
           value = {props.value._id}>
             <i className="material-icons">unarchive</i>
           </IconButton>
+          : ""}
       })
     }
+    if(this.props.columns.indexOf("archive") !== -1){
+      columns.push({
+        Header: 'Archive',
+        accessor: d => d,
+        id: 'archive',
+        sortable:true,
+        sortMethod: (a,b) => {
+          return  a.archived === b.archived ?
+          (a.title < b.title ? -1 : 1)
+           :
+          (a.archived  ? 1 : -1)},
+        width: 80,
+        style: {textAlign:"center"},
+        Cell: props => { return !props.value.archived  ?
+          <IconButton
+          onClick = {()=>this.handleArchive(props.value._id, props.value.title)}
+          touch = {true}
+          style = {styles.largeIcon}
+          iconStyle = {{fontSize: '24px'}}
+          value = {props.value._id}>
+            <i className="material-icons">archive</i>
+          </IconButton>
+          : "" }
+      })
+    }
+
     if(this.props.columns.indexOf("delete") !== -1){
       columns.push({
         Header: 'Delete',
