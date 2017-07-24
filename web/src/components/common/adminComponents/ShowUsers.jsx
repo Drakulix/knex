@@ -26,6 +26,7 @@ export default class ShowUsers extends Component {
     this.handleDelete = this.handleDelete.bind(this)
     this.handleClose = this.handleClose.bind(this)
     this.handleChange = this.handleChange.bind(this)
+    this.handleSetAdmin = this.handleSetAdmin.bind(this)
   }
 
   handleClose(){
@@ -39,6 +40,20 @@ export default class ShowUsers extends Component {
     const value = event.target.value
     this.setState({ [name] : value})
     this.filter(name, value)
+  }
+
+  handleSetAdmin(userInf){
+    var text = "User " + userInf.first_name + " " + userInf.last_name + " ";
+    if(userInf.roles.includes("admin")){
+      userInf.roles.splice(userInf.roles.indexOf("admin"))
+      text = text + " is not Admin anymore"
+    }
+    else {
+      userInf.roles.push("admin")
+      text = text + " is now Admin"
+    }
+    Backend.setUserRoles(userInf)
+    .then(this.props.handleUserUpdate(text))
   }
 
   componentWillReceiveProps(props){
@@ -129,8 +144,8 @@ export default class ShowUsers extends Component {
       Cell : props =>{
         //Horrible hack as long the Role issue is not fixed... can deliver horrible results
         return(
-          <div><i className="material-icons" style={{fontSize : '24px',padding:3}}>
-            {(props.value.roles.length === 2) ?  "done" : "clear"}
+          <div onClick = {() => this.handleSetAdmin(props.value)}><i className="material-icons" style={{fontSize : '24px',padding:3}}>
+            {(props.value.roles.includes("admin")) ?  "done" : "clear"}
           </i></div>)
       }
     })
@@ -252,6 +267,7 @@ class ConfirmationPane extends Component {
       this.props.handleUserUpdate(text)
     )
   }
+
 
   componentWillReceiveProps(props){
     this.setState({open : props.open})
