@@ -40,6 +40,7 @@ def search_api():
     query = request.get_json()
 
     search_string = query.get('searchString', '')
+    archived = query.get('archived')
     authors = query.get('authors')
     tags = query.get('tags')
     status = query.get('status')
@@ -83,6 +84,11 @@ def search_api():
     if status:
         request_json['query']['bool']['filter']['bool']['must'].append({
             'term': {'status': status}
+        })
+
+    if archived:
+        request_json['query']['bool']['filter']['bool']['must'].append({
+            'term': {'archived': archived in ['true', 'True', '1', 'yes', 'y']}
         })
 
     if date_from or date_to:

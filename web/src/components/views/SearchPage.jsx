@@ -3,7 +3,8 @@ import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
 import DataTable from '../common/DataTable'
 import Dialog from 'material-ui/Dialog'
-
+import Backend from '../common/Backend'
+import Snackbar from 'material-ui/Snackbar'
 
 
 class Headline extends Component {
@@ -22,13 +23,19 @@ export default class SearchPage extends Component {
     super(props)
 
     var query  = this.props.match.params.query !== undefined ? JSON.parse(this.props.match.params.query) : {}
-
     this.state = {
+        searchString : query.searchString !== undefined ? query.searchString : "" ,
+        label : query.label !== undefined ? query.label : "",
         query : query,
         fetchURL : "/api/projects",
         open : false,
-
+        snackbar : false,
+        snackbarText : "",
       }
+
+      delete query.label
+      delete query.searchString
+
       this.handleFilterChange = this.handleFilterChange.bind(this)
       this.saveSearch = this.saveSearch.bind(this)
       this.handleChange = this.handleChange.bind(this)
@@ -37,25 +44,26 @@ export default class SearchPage extends Component {
     }
 
 
-    componentWillMount(){
-      if (this.props.match.params.qID !== undefined){
+  componentWillMount(){
+    if (this.props.match.params.qID !== undefined){
         //FETCH QUERY FROM DB with ID QID
-        var query = {}
-        this.setState({query: query})
+      var query = {}
+      this.setState({query: query})
     }
   }
 
   handleChange(event) {
     const value = event.target.value
-    var vquery = this.state.query
-    vquery["searchString"] = value
-    var end = "/api/projects/search/"
+
+    this.setState({searchString : value})
+
+
     if(value === ""){
       this.setState({fetchURL : "/api/projects"})
     }
     else{
-      this.setState({query : vquery})
-      this.setState({fetchURL : end+"simple/?q=" + vquery["searchString"] + "*"})
+      this.setState({fetchURL : "/api/projects"})
+  //    this.setState({fetchURL : end+"simple/?q=" + vquery["searchString"] + "*"})
     }
   }
 
@@ -70,9 +78,11 @@ export default class SearchPage extends Component {
   }
 
   saveSearch(){
-    this.setState({open: false})
     var temp = []
-/*    var authors = this.state.query["authors"]
+    var xquery = this.state.query
+    xquery.searchString = this.state.searchString
+    xquery.label = this.state.label
+    var authors = this.state.query["authors"]
     for (var i in authors) {
       var string = authors[i]
       var name = string.substring(0, string.lastIndexOf("(")-1)
@@ -80,24 +90,33 @@ export default class SearchPage extends Component {
       temp.push({"name" : name, "email" :id})
     }
     var query = this.state.query
-    query["authors"] = temp*/
+    query["authors"] = temp
 
-    alert(JSON.stringify(this.state.query))
+    Backend.search(this.state.query).then( function () {
+      this.setState({open: false,
+        snackbar : true,
+        snackbarText : "Query saved"
+      })}.bind(this)
+    )
   }
 
   handleClose = () => {
-    this.setState({open: false})
+    this.setState({
+      open: false,
+      snackbar : false
+    })
   }
 
   handleOpen = () => {
-    this.setState({open: true})
+    this.setState({
+      open: true,
+      snackbar : false
+    })
   }
 
   handleLabelChange(event){
     const value = event.target.value
-    var query = this.state.query
-    query["label"] = value
-    this.setState({query : query})
+    this.setState({label : value})
   }
 
   render() {
@@ -112,23 +131,27 @@ export default class SearchPage extends Component {
         primary={true}
         onTouchTap={this.saveSearch}
         style={{marginLeft:20}}
-        disabled= {(this.state.query["label"] === "" ) ? true : false}
+        disabled= {(this.state.label === ""  || this.state.label === undefined) ? true : false}
         />,
     ]
 
     return(
       <div className="container">
         <div className="innerContainer">
+          <Snackbar
+            open = {this.state.snackbar}
+            message = {this.state.snackbarText}
+            autoHideDuration = {10000}/>
           <Dialog
-            title="Add a title for your search"
+            title="Enter a label for your query"
             actions={actions}
             modal={false}
             open={this.state.open}
             onRequestClose={this.saveSearch}
             >
-            <TextField value = {this.state.query.label}
-              placeholder="Enter a title here ... "
-              errorText={(this.state.query["label"] === "") ? "Please provide a title " : ""}
+            <TextField value = {this.state.label}
+              placeholder="Enter label here ... "
+              errorText={(this.state.label === "" || this.state.label === undefined) ? "Please provide a label " : ""}
               onChange={this.handleLabelChange}
               ></TextField>
             </Dialog>
@@ -137,7 +160,7 @@ export default class SearchPage extends Component {
             <div className="col-10">
               <TextField  style={{width:"100%"}}
                 name="searchString"
-                value={this.state.query.searchString}
+                value = {this.state.searchString}
                 placeholder="Enter your query here..."
                 onChange={this.handleChange} />
             </div>
