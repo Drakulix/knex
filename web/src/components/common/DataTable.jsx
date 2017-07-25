@@ -9,6 +9,7 @@ import styles from '../common/Styles.jsx'
 import RaisedButton from 'material-ui/RaisedButton'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
+import Snackbar from 'material-ui/Snackbar'
 
 export default class BookmarksTable extends Component {
 
@@ -32,7 +33,9 @@ export default class BookmarksTable extends Component {
       projectID : "",
       action : null,
       loading : true,
-      buttonText : "DELETE"
+      buttonText : "DELETE",
+      snackbar : false,
+      snackbarText : ""
     }
 
     this.handleFilterChange = this.handleFilterChange.bind(this)
@@ -46,6 +49,7 @@ export default class BookmarksTable extends Component {
 
   handleDelete(projectID, projectName){
     this.setState({dialogOpen : true,
+      snackbar : false,
       dialogText : "Do you want to delete project " + projectName +"?",
       projectID : projectID,
       buttonText : "Delete",
@@ -53,13 +57,20 @@ export default class BookmarksTable extends Component {
         this.setState({dialogOpen:false})
            Backend.deleteProject(projectID)
           .then(this.fetchData(this.state.url))
+          .then(this.setState({snackbar :true,
+            snackbarText : "Project "+ projectName + " deleted"})
+          )
       }.bind(this)
       })
   }
 
-  handleUnArchive(projectID){
-    Backend.getProjectArchived(projectID, false).then(
-    this.fetchData(this.props.fetchURL))
+
+  handleUnArchive(projectID, projectTitle){
+    Backend.getProjectArchived(projectID, false)
+    .then(this.fetchData(this.state.url))
+    .then(this.setState({snackbar :true,
+      snackbarText : "Project " + projectTitle + " unarchived"})
+    )
   }
 
   handleClose(){
@@ -68,13 +79,17 @@ export default class BookmarksTable extends Component {
 
   handleArchive(projectID, projectName){
     this.setState({dialogOpen : true,
+      snackbar : false,
       dialogText : "Do you want to archive project " + projectName +"?",
       projectID : projectID,
       buttonText : "archive",
       action : function (){
         this.setState({dialogOpen:false})
         Backend.getProjectArchived(projectID, true)
-          .then(this.fetchData(this.props.fetchURL))
+          .then(this.fetchData(this.state.url))
+          .then(this.setState({snackbar :true,
+            snackbarText : "Project "+projectName +" archived"})
+          )
       }.bind(this)
       })
   }
@@ -104,7 +119,7 @@ export default class BookmarksTable extends Component {
 
   fetchData(url){
     this.setState({loading : true})
-    Backend.getJson(url).then(function(data) {
+    return Backend.getJson(url).then(function(data) {
       var datas =[]
       if(data !== undefined)
         datas = data
@@ -123,6 +138,7 @@ export default class BookmarksTable extends Component {
       this.setState({loading : false})
     }.bind(this))
   }
+
 
   handleFilterChange(key, value){
     var state = this.state.filters
@@ -194,7 +210,7 @@ export default class BookmarksTable extends Component {
         Cell: props =>{
           return(
             <div style={{whiteSpace : "normal"}}>
-              <Link to={`project/${props.value._id}`}
+              <Link to={`/project/${props.value._id}`}
                 className="table-link-text">
                 {props.value.title}
               </Link>
@@ -286,7 +302,7 @@ export default class BookmarksTable extends Component {
           text = text + ((text.length >= 250) ? "..." : "")
           return(
             <div style ={{whiteSpace : "normal"}}>
-              {text}
+            {text}
             </div>
           )
         }
@@ -320,15 +336,46 @@ export default class BookmarksTable extends Component {
         }
       })
     }
+    if(this.props.columns.indexOf("unarchive") !== -1){
+      columns.push({
+        Header: 'Unarchive',
+        accessor: d => d,
+        id: 'archived',
+        sortable:true,
+        sortMethod: (a,b) => {
+          return  a.archived === b.archived ?
+          (a.title < b.title ? 1 : -1)
+           :
+          (a.archived  ? 1 : -1)},
+        width: 100,
+        style: {textAlign:"center"},
+        Cell: props => { return props.value.archived  ?
+          <IconButton
+          onClick = {()=>this.handleUnArchive(props.value._id, props.value.title)}
+          touch = {true}
+          style = {styles.largeIcon}
+          iconStyle = {{fontSize: '24px'}}
+          value = {props.value._id}>
+            <i className="material-icons">unarchive</i>
+          </IconButton>
+          : ""}
+      })
+    }
     if(this.props.columns.indexOf("archive") !== -1){
       columns.push({
         Header: 'Archive',
         accessor: d => d,
         id: 'archive',
-        sortable:false,
+        sortable:true,
+        sortMethod: (a,b) => {
+          return  a.archived === b.archived ?
+          (a.title < b.title ? -1 : 1)
+           :
+          (a.archived  ? 1 : -1)},
         width: 80,
         style: {textAlign:"center"},
-        Cell: props => <IconButton
+        Cell: props => { return !props.value.archived  ?
+          <IconButton
           onClick = {()=>this.handleArchive(props.value._id, props.value.title)}
           touch = {true}
           style = {styles.largeIcon}
@@ -336,26 +383,10 @@ export default class BookmarksTable extends Component {
           value = {props.value._id}>
             <i className="material-icons">archive</i>
           </IconButton>
+          : "" }
       })
     }
-    if(this.props.columns.indexOf("dearchive") !== -1){
-      columns.push({
-        Header: 'Unarchive',
-        accessor: d => d,
-        id: 'dearchive',
-        sortable:false,
-        width: 100,
-        style: {textAlign:"center"},
-        Cell: props => <IconButton
-          onClick = {()=>this.handleUnArchive(props.value._id)}
-          touch = {true}
-          style = {styles.largeIcon}
-          iconStyle = {{fontSize: '24px'}}
-          value = {props.value._id}>
-            <i className="material-icons">unarchive</i>
-          </IconButton>
-      })
-    }
+
     if(this.props.columns.indexOf("delete") !== -1){
       columns.push({
         Header: 'Delete',
@@ -384,6 +415,10 @@ export default class BookmarksTable extends Component {
                           buttonText = {this.state.buttonText}
                           handleAction= {this.state.action}
         />
+      <Snackbar open={this.state.snackbar}
+                message={this.state.snackbarText}
+                autoHideDuration={10000}
+      />
       <div className = "container" style = {{display : (this.state.loading ? "block" : "none")}}>
         <div className = "header"><CircularProgress size = {80} thickness = {5} /></div>
       </div>

@@ -422,19 +422,19 @@ class Backend {
 
     async setUserRoles(mail, firstName, lastName, bio, roles){
       if (await this.putJson('/api/users', {
-        'email': mail,
-        'first_name': firstName,
-        'last_name': lastName,
-        'bio': bio,
-        'roles' : roles
-      })) {
-        if (this.mail == mail) {
-          await this.getProfile();
+          'email': mail,
+          'first_name': firstName,
+          'last_name': lastName,
+          'bio': bio,
+          'roles' : roles
+        })) {
+          if (this.mail == mail) {
+            await this.getProfile();
+          }
+          return true;
+        } else {
+            return false;
         }
-        return true;
-      } else {
-          return false;
-      }
     }
 
     async updateProfile(mail, firstName, lastName, bio) {
