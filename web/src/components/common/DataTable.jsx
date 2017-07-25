@@ -136,6 +136,9 @@ export default class BookmarksTable extends Component {
       delete state[key]
     }
     else  {
+      if(key == "authors"){
+          var value = value.map(item => {return item.email})
+      }
       state[key] = value
     }
     this.setState({filters : state})
