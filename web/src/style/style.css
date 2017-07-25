@@ -260,6 +260,10 @@ a:hover {
   margin-bottom: 50px;
 }
 
+.ReactTable {
+  display: block;
+}
+
 .ReactTable .rt-thead{
   background-color: #292b2c;
   color: #ffffff;
