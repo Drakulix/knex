@@ -14,7 +14,7 @@ export default class ProfileEditor extends Component {
       last_name: props.profileInf.last_name,
       bio: props.profileInf.bio,
       email : props.profileInf.email,
-      pw_old: props.profileInf.password,
+      pw_old: '',
       pw_new: '',
       pw_new_confirm: '',
       snackbar : false,
@@ -164,29 +164,47 @@ export default class ProfileEditor extends Component {
             </FlatButton>
         </div>
       </div>
-      <div className="change-password">
+      <div className = "row">
+        <div className ="col-9">
+          <div className="change-password">
         <form onSubmit={this.handlePwChangeSubmit}>
           <div className="row">
-            <label className="col-2 col-form-label">Email</label>
-            <div className="col-10">
+            <label className="col-3 col-form-label">Email</label>
+            <div className="col-9">
               <div className="form-control-static">{ this.props.profileInf.email }</div>
             </div>
           </div>
+          {(Backend.isAdmin()) ? "" :
           <div className="row">
-            <label className="col-2">New Password</label>
-            <div className="col-4">
+            <label className="col-3">Old password</label>
+            <div className="col-3">
+              <TextField
+                          value={this.state.pw_old}
+                          type="password"
+                          name="pw_old"
+                          hintText="Your old password"
+                          onChange={this.handleInputChange}
+                          errorText ={this.state.pw_old.length === 0 ? "Password can not be empty" :""}
+              />
+            </div>
+          </div>
+          }
+          <div className="row">
+            <label className="col-3">New password</label>
+            <div className="col-3">
               <TextField
                           value={this.state.pw_new}
                           type="password"
                           name="pw_new"
                           hintText="Your new password"
                           onChange={this.handleInputChange}
-                          />
+                          errorText ={this.state.pw_new.length === 0 ? "Password can not be empty" :""}
+              />
             </div>
           </div>
           <div className="row">
-            <label className="col-2">Confirm password</label>
-            <div className="col-4">
+            <label className="col-3">Confirm password</label>
+            <div className="col-3">
               <TextField
                           value={this.state.pw_new_confirm}
                           type="password"
@@ -197,16 +215,20 @@ export default class ProfileEditor extends Component {
             </div>
           </div>
           <div className="row">
-            <div className="col-10">
+            <div className="col-8"></div>
+            <div className="col-4">
               <RaisedButton
                           type="Submit"
                           label="Change Password"
                           primary={true}
-                          disabled= {(this.state.pw_new !== this.state.pw_new_confirm || this.state.pw_new === "") ? true : false}
+                          style={{width: "100%"}}
+                          disabled= {(this.state.pw_new !== this.state.pw_new_confirm || this.state.pw_new === "" || !(Backend.isAdmin() || this.state.pw_old !== "")) ? true : false}
                           />
             </div>
           </div>
         </form>
+      </div>
+        </div>
       </div>
     </div>
     )

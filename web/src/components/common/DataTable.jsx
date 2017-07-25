@@ -51,8 +51,8 @@ export default class BookmarksTable extends Component {
       buttonText : "Delete",
       action : function (){
         this.setState({dialogOpen:false})
-        Backend.deleteProject("/api/projects/"+projectID)
-          .then(this.fetchData(this.props.fetchURL))
+           Backend.deleteProject(projectID)
+          .then(this.fetchData(this.state.url))
       }.bind(this)
       })
   }

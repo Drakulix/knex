@@ -14,6 +14,7 @@ import CircularProgress from 'material-ui/CircularProgress'
 import Snackbar from 'material-ui/Snackbar'
 import CommentSideBar from '../common/CommentSideBar'
 
+
 export default class ProjectContainer extends Component {
   constructor(props) {
     super(props)
@@ -43,6 +44,7 @@ export default class ProjectContainer extends Component {
     this.handleSharedProject = this.handleSharedProject.bind(this)
     this.handleClosedSharePane = this.handleClosedSharePane.bind(this)
     this.handleUpdateComments = this.handleUpdateComments.bind(this)
+    this.handleEdit = this.handleEdit.bind(this)
 
   }
 
@@ -75,6 +77,10 @@ export default class ProjectContainer extends Component {
   componentWillReceiveProps(nextProps){
     this.setState({projectID : nextProps.uuid})
     this.loadSiteInf(this.state.projectID)
+  }
+
+  handleEdit(){
+    history.push("/update/" + this.state.projectID)
   }
 
   handleClosedSharePane(){
@@ -321,18 +327,17 @@ export default class ProjectContainer extends Component {
                         >
                         <i className = "material-icons">share</i>
               </IconButton>
-              <Link to = {"/update/" + this.state.projectID}  >
-                <IconButton
+              <IconButton
                           touch = {true}
                           style = {styles.largeIcon}
                           disabled = {! (this.state.isOwner || Backend.isAdmin())}
                           tooltipPosition = "top-center"
                           tooltip = "Edit project"
+                          onClick = {this.handleEdit}
                           iconStyle = {{fontSize : '24px'}}
                           >
                           <i className = "material-icons">mode_edit</i>
-                </IconButton>
-              </Link>
+              </IconButton>
               <IconButton
                         onClick ={() => this.setState({dialogOpen : true})}
                         touch = {true}

@@ -7,6 +7,8 @@ import RaisedButton from 'material-ui/RaisedButton'
 import Dialog from 'material-ui/Dialog'
 import Backend from '../../common/Backend'
 import CircularProgress from 'material-ui/CircularProgress'
+import {Card, CardHeader, CardText} from 'material-ui/Card'
+import TextField from 'material-ui/TextField'
 
 
 export default class ShowUsers extends Component {
@@ -14,10 +16,17 @@ export default class ShowUsers extends Component {
     super(props)
     this.state = {
       open : false,
-      loading : false
+      loading : false,
+      expanded : true,
+      data : this.props.userList,
+      filteredList : this.props.userList,
+      email : "",
+      name : ""
     }
     this.handleDelete = this.handleDelete.bind(this)
     this.handleClose = this.handleClose.bind(this)
+    this.handleChange = this.handleChange.bind(this)
+    this.handleSetAdmin = this.handleSetAdmin.bind(this)
   }
 
   handleClose(){
@@ -26,12 +35,68 @@ export default class ShowUsers extends Component {
     })
   }
 
+  handleChange(event) {
+    const name = event.target.name
+    const value = event.target.value
+    this.setState({ [name] : value})
+    this.filter(name, value)
+  }
+
+  handleSetAdmin(userInf){
+    var text = "User " + userInf.first_name + " " + userInf.last_name + " ";
+    if(userInf.roles.includes("admin")){
+      userInf.roles.splice(userInf.roles.indexOf("admin"))
+      text = text + " is not Admin anymore"
+    }
+    else {
+      userInf.roles.push("admin")
+      text = text + " is now Admin"
+    }
+    Backend.setUserRoles(userInf.email,
+                         userInf.first_name,
+                         userInf.last_name,
+                         userInf.bio,
+                         userInf.roles)
+    .then(this.props.handleUserUpdate(text))
+  }
+
   componentWillReceiveProps(props){
     this.setState({
       loading : props.loading,
-      open:false
+      open : false,
+      data : props.userList,
+      filteredList : props.userList
+    })
+    this.filter("default", "")
+  }
+
+  filter(name, value){
+    var temp = []
+    for(let dataObject of this.state.data) {
+      var discard = true
+      var userName = dataObject.first_name + " " + dataObject.last_name
+      switch (name) {
+        case "email":
+          discard = value !== "" && dataObject.email.indexOf(value) === -1
+          discard = discard || (this.state.name !== "" && userName.indexOf(this.state.name) === -1)
+          break;
+        case "name":
+          discard = value !== "" && userName.indexOf(value) === -1
+          discard = discard || (this.state.email !== "" && dataObject.email.indexOf(this.state.email) === -1)
+          break;
+        default:
+          discard = this.state.name !== "" && userName.indexOf(this.state.name) === -1
+          discard = discard || (this.state.email !== "" && dataObject.email.indexOf(this.state.email) === -1)
+          break
+        }
+        if(!discard)
+          temp.push(dataObject)
+      }
+    this.setState({
+      filteredList : temp
     })
   }
+
 
   handleDelete(userID){
     this.setState({
@@ -42,14 +107,10 @@ export default class ShowUsers extends Component {
   render(){
     var columns = []
     columns.push({
-      Header: 'Users',
-      id: 'userID',
-      accessor: d => d,
-      filterMethod: (filter, row) => {
-                  return (row[filter.id].first_name + " "
-                        + row[filter.id].first_name).indexOf(filter.value) !== -1
-                },
-      Cell: props =>{
+      Header : 'Users',
+      id : 'userID',
+      accessor : d => d,
+      Cell : props =>{
         return(
           <div style = {{whiteSpace : "normal"}}>
             <Link to = {`profile/${props.value.email}`}
@@ -62,13 +123,10 @@ export default class ShowUsers extends Component {
     })
 
     columns.push({
-      Header: 'Email',
-      id: 'email',
-      accessor: d => d,
-      filterMethod: (filter, row) => {
-                  return row[filter.id].email.indexOf(filter.value) !== -1
-                },
-      Cell: props =>{
+      Header : 'Email',
+      id : 'email',
+      accessor : d => d,
+      Cell : props =>{
         return(
           <div style = {{whiteSpace : "normal"}}>
             <Link to = {`profile/${props.value.email}`}
@@ -81,85 +139,123 @@ export default class ShowUsers extends Component {
     })
 
     columns.push({
-      Header: 'Admin',
-      id: 'admin',
-      width:100,
-      filterable:false,
-      style:{textAlign:"center"},
-      accessor: d => d,
-      Cell: props =>{
-        return(<div></div>)
+      Header : 'Admin',
+      id : 'admin',
+      width : 100,
+      filterable : false,
+      style : {textAlign : "center"},
+      accessor : d => d,
+      Cell : props =>{
+        //Horrible hack as long the Role issue is not fixed... can deliver horrible results
+        return(
+          <div onClick = {() => this.handleSetAdmin(props.value)}><i className="material-icons" style={{fontSize : '24px',padding:3}}>
+            {(props.value.roles.includes("admin")) ?  "done" : "clear"}
+          </i></div>)
       }
     })
 
     columns.push({
-      Header: 'Edit',
-      accessor: d => d,
-      id: 'delete',
-      sortable:false,
-      filterable:false,
-      width: 60,
-      style: {textAlign:"center"},
-      Cell: props => <Link
-                      to={"/profile/"+props.value.email}>
+      Header : 'Edit',
+      accessor : d => d,
+      id : 'delete',
+      sortable : false,
+      width : 60,
+      style : {textAlign : "center"},
+      Cell : props => <Link
+                      to = {"/profile/"+props.value.email}>
                       <IconButton
-                          touch={true}
+                          touch = {true}
                           style = {styles.largeIcon}
-                          iconStyle={{fontSize: '24px'}}
-                          value={props.value._id}
+                          iconStyle = {{fontSize : '24px'}}
+                          value = {props.value._id}
                           >
-                            <i className="material-icons">mode_edit</i>
+                            <i className = "material-icons">mode_edit</i>
                           </IconButton>
                     </Link>
     })
 
     columns.push({
-      Header: 'Delete',
-      accessor: d => d,
-      id: 'delete',
-      sortable:false,
-      filterable:false,
-      width: 60,
-      style: {textAlign:"center"},
-      Cell: props => <IconButton
-            onClick={()=>this.handleDelete(props.value.email)}
-            touch={true}
+      Header : 'Delete',
+      accessor : d => d,
+      id : 'delete',
+      sortable : false,
+      width : 60,
+      style : {textAlign : "center"},
+      Cell : props => <IconButton
+            onClick = {()=>this.handleDelete(props.value.email)}
+            touch = {true}
             style = {styles.largeIcon}
-            iconStyle={{fontSize: '24px'}}
-            value={props.value._id}
+            iconStyle = {{fontSize : '24px'}}
+            value = {props.value._id}
             >
-              <i className="material-icons">delete</i>
+              <i className = "material-icons">delete</i>
             </IconButton>
       })
 
     return (
-      <div className="padding">
-        <ConfirmationPane open={this.state.open}
-                          userID={this.state.userID}
-                          handleUserUpdate={this.props.handleUserUpdate}
-                          handleClose={this.handleClose}/>
-        <div className="header-tab" style={{textAlign:"center"}}>List users</div>
+      <div className = "padding">
+        <ConfirmationPane open = {this.state.open}
+                          userID = {this.state.userID}
+                          handleUserUpdate = {this.props.handleUserUpdate}
+                          handleClose = {this.handleClose}/>
+        <div className = "header-tab" style = {{textAlign : "center"}}>List users</div>
           <div className = "container" style = {{display : (this.state.loading ? "block" : "none")}}>
             <div className = "header"><CircularProgress size = {80} thickness = {5} /></div>
           </div>
           <div style = {{display : (!this.state.loading ? "block" : "none")}}>
-            <div className="row">
-              <div className="col-1"></div>
-              <div className="col-10">
+            <div className = "row" style = {{marginBottom : 20}}>
+              <div className = "col-1"></div>
+              <div className = "col-10">
+                <Card   onExpandChange = {() => this.setState({expanded : !this.state.expanded})}>
+                  <CardHeader
+                    title = "Filter users by"
+                    subtitle = "Define filters for your list"
+                    actAsExpander = {true}
+                    showExpandableButton = {true}
+                  />
+                  <CardText expandable = {true}>
+                    <div className = "row">
+                      <div className = "col-1 filter-label">Name</div>
+                      <div className = "col-5">
+                          <TextField style = {{width : '100%'}}
+                            value = {this.state.name}
+                            name = "name"
+                            onChange = {this.handleChange}
+                            type = "text" placeholder = "Enter username..."
+                          />
+                      </div>
+                      <div className = "col-1 filter-label">Email</div>
+                      <div className = "col-5">
+                          <TextField style = {{width : '100%'}}
+                            value = {this.state.email}
+                            name = "email"
+                            onChange = {this.handleChange}
+                            type = "text" placeholder = "Enter email adress..."
+                          />
+                      </div>
+                    </div>
+                  </CardText>
+                </Card>
+              </div>
+              <div className = "col-1"></div>
+            </div>
+            <div className = "row">
+              <div className = "col-1"></div>
+              <div className = "col-10">
                 <ReactTable style = {{width : "100%"}}
-                     data={this.props.userList}
-                     columns={columns}
-                     defaultExpanded={{1: true}}
-                     filterable={true}
-                     showPageSizeOptions={false}
-                     defaultPageSize={10}
-                     defaultSorted={[{
-                        id: 'userID',
-                        desc: true
+                     data = {this.state.filteredList}
+                     columns = {columns}
+                     defaultExpanded = {{1 : true}}
+                     filterable = {false}
+                     showPageSizeOptions = {false}
+                     defaultPageSize = {10}
+                     defaultSorted = {[{
+                        id : 'userID',
+                        desc : true
                       }]}
                      />
               </div>
-              <div className="col-1"></div>
+              <div className = "col-1"></div>
             </div>
           </div>
         </div>
@@ -176,8 +272,9 @@ class ConfirmationPane extends Component {
     )
   }
 
+
   componentWillReceiveProps(props){
-    this.setState({open: props.open})
+    this.setState({open : props.open})
   }
 
   render() {
@@ -188,10 +285,10 @@ class ConfirmationPane extends Component {
         onTouchTap = {this.props.handleClose}
         />,
       <RaisedButton
-        label="DELETE USER"
+        label = "DELETE USER"
         primary = {true}
         onTouchTap = {this.handleDelete}
-        style = {{marginLeft:20}}
+        style = {{marginLeft : 20}}
         />,
     ]
 

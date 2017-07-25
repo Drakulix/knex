@@ -19,12 +19,8 @@
   "authors": [
     {
       "name": "test_owner0",
-      "email": "email@address.com"
-    },
-	{
-	  "name": "Knex Admin",
-	  "email": "admin@knex.com"
-	}
+      "email": "admin@knex.com"
+    }
   ],
   /* the team name  */
   "team": {
