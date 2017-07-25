@@ -120,11 +120,11 @@ export default class BookmarksTable extends Component {
 
   fetchData(url){
     this.setState({loading : true})
-    //return Backend.getJson(url).
     return this.props.fetchHandler.then(function(data) {
       var datas =[]
-      if(data !== undefined)
-        datas = data
+      if(data !== undefined){
+        datas = JSON.parse(data)
+      }
       var dataArray = []
       for(let dataObject of datas) {
         var transformedObject = dataObject
@@ -136,11 +136,10 @@ export default class BookmarksTable extends Component {
         data: dataArray,
         filteredTable : []
       })
-        this.filter(this.state.filters)
-        this.setState({loading : false})
-
-      }.bind(this))
-    }
+      this.filter(this.state.filters)
+      this.setState({loading : false})
+    }.bind(this))
+  }
 
   handleFilterChange(key, value){
     var state = this.state.filters
@@ -148,6 +147,9 @@ export default class BookmarksTable extends Component {
       delete state[key]
     }
     else  {
+      if(key == "authors"){
+          var value = value.map(item => {return item.email})
+      }
       state[key] = value
     }
     this.setState({filters : state})
@@ -176,11 +178,7 @@ export default class BookmarksTable extends Component {
                             return temp.indexOf(element) === -1})
               break
             case "authors":
-              temp = []
-              for (var i in  dataObject.authors) {
-                temp = temp.concat([dataObject.authors[i].name + " ("+dataObject.authors[i].email+ ")"])
-              }
-              temp = temp.join().toLowerCase()
+              temp = dataObject.authors.map((item) => {return item.email}).join().toLowerCase()
               discard = value.some( function notContains(element){
                 return temp.indexOf(element) === -1
               })

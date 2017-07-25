@@ -10,7 +10,10 @@ render(){
       <div className = "container">
         <div className = "header">Your archived projects</div>
           <DataTable  columns = {['title', 'status', 'tags', 'authors', 'description', '_id', 'unarchive']}
-            fetchHandler = {Backend.getProjects()} />
+            fetchHandler = {Backend.search({
+
+
+               })} />
 
 
       </div>

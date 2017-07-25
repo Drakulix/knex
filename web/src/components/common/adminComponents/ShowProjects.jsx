@@ -10,7 +10,7 @@ export default class ShowProjects extends Component {
       <div>
         <div className = "header-tab" style = {{textAlign : "center"}}>Archived projects</div>
         <DataTable columns = {['title', 'status', 'tags', 'authors', 'description', '_id', 'unarchive', 'delete']}
-                  fetchHandler = {Backend.getProjects()} />
+                  fetchHandler = {Backend.search({archived : "true"})} />
       </div>
     )
   }

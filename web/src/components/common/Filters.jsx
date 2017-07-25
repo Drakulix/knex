@@ -7,6 +7,7 @@ import MenuItem from 'material-ui/MenuItem'
 import {Card, CardHeader, CardText} from 'material-ui/Card'
 import Backend from '../common/Backend.jsx'
 import Moment from 'moment'
+import AuthorInputList from '../common/AuthorInputList'
 
 import ChipInputList from '../common/ChipInputList'
 
@@ -53,7 +54,7 @@ export default class Filters extends Component{
 
     //gets all the authors from the backend
     Backend.getAuthors().then(function(authors) {
-      var suggestedAuthors = authors
+    /*  var suggestedAuthors = authors
       var suggestedAuthorsArray = []
       for (var i in suggestedAuthors) {
         suggestedAuthorsArray = suggestedAuthorsArray.concat([suggestedAuthors[i].name + " ("+suggestedAuthors[i].email+ ")"])
@@ -61,7 +62,10 @@ export default class Filters extends Component{
       console.log(suggestedAuthorsArray)
       this.setState({
         suggestedAuthors : suggestedAuthorsArray
-      })
+      })*/
+      this.setState({suggestedAuthors : authors})
+
+
     }.bind(this))
   }
 
@@ -168,7 +172,7 @@ export default class Filters extends Component{
             </IconButton>
             <div className = "col-1 filter-label"> Authors</div>
             <div  className = "col-5">
-              <ChipInputList suggestions = {this.state.suggestedAuthors}
+              <AuthorInputList suggestions = {this.state.suggestedAuthors}
                 onChange = {this.handleChange}
                 filtered = {true}
                 name = "authors"

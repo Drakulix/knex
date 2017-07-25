@@ -10,26 +10,16 @@ export default class SavedQuery extends Component {
     constructor(props) {
       super(props)
       var query = this.props.savedSearch.query
-      var authors = []
-      for (let i in query.authors) {
-        authors = authors.concat([query.authors[i].name + " ("+query.authors[i].email+ ")"])
-      }
-      query.authors = authors
 
       this.state = {
         query : query,
-        authors : authors
       }
       this.deleteQuery = this.deleteQuery.bind(this)
-      this.runQuery = this.runQuery.bind(this)
     }
 
     deleteQuery(){
       Backend.deleteSavedSearch(this.props.savedSearch.id)
       .then(this.props.snackbarHandler("Query deleted"))
-    }
-
-    runQuery(){
     }
 
     render() {
@@ -97,8 +87,8 @@ export default class SavedQuery extends Component {
             <div className="col-1 filter-label"  style={{marginLeft:-40}}> Authors</div>
             <div  className="col-5  query-value" style={{marginTop:0}}>
               <div style = {styles["wrapper"]}>
-                 {  this.state.autors !== undefined ?
-                    this.state.authors.map(item =>
+                 {  this.state.query.authors !== undefined ?
+                    this.state.query.authors.map(item =>
                    <Chip style= {styles["chip"]}>
                      {item}</Chip>)  : "" }
               </div>

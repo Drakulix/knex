@@ -10,6 +10,9 @@ import ChipInputList from '../common/ChipInputList'
 import Backend from '../common/Backend'
 import Moment from 'moment'
 import history from '../common/history'
+import AuthorInputList from '../common/AuthorInputList'
+
+
 
 
 const statusString = [
@@ -63,14 +66,8 @@ export default class CreateProject extends Component {
     var value = event.target.value
     var projectInf = this.state.projectInf
     if(name === "authors"){
-      this.setState({authors : value})
-      value = []
-      for (var i in event.target.value) {
-        var string = event.target.value[i]
-        var authorName = string.substring(0, string.lastIndexOf("(")-1)
-        var authorId = string.substring(string.lastIndexOf("(")+1, string.length-1)
-        value.push({name : authorName, email : authorId})
-      }
+      this.setState({authors:value})
+      value = value.map(item => {return item.email})
     }
     projectInf[name] = value
     this.setState({ projectInf : projectInf})
@@ -126,12 +123,13 @@ export default class CreateProject extends Component {
 
   handleUpload(event){
     event.preventDefault()
+    this.setState({site_loaded : false})
     var projectInf = this.state.projectInf
     delete projectInf.is_bookmark
     delete projectInf.is_owner
     if( this.state.projectID === undefined){
       Backend.addProject(projectInf)
-      .then( (id) =>{
+      .then((id) =>{
         history.push("/project/"+ JSON.parse(id)[0])
       })
     }
@@ -167,17 +165,13 @@ export default class CreateProject extends Component {
 
     //gets all the authors from the backend
     Backend.getUsers().then(function(authors) {
-      var suggestedAuthors = authors
-      var suggestedAuthorsArray = []
-      for (var i in suggestedAuthors) {
-        suggestedAuthorsArray = suggestedAuthorsArray.concat([
-          suggestedAuthors[i].first_name + " "
-          +suggestedAuthors[i].last_name +
-          " ("+suggestedAuthors[i].email+ ")"])
-        }
-        console.log(suggestedAuthorsArray)
+      authors = authors.map(item => {
+        return {
+          name : item.first_name + " " + item.last_name,
+          email : item.email
+      }})
         this.setState({
-          suggestedAuthors : suggestedAuthorsArray
+          suggestedAuthors : authors
         })
       }.bind(this))
       if(this.props.fromURL&&(this.state.status!==this.props.status)){
@@ -256,7 +250,7 @@ export default class CreateProject extends Component {
                       </div>
                     </div>
                     <div className = "profile-info">Authors</div>
-                    <ChipInputList suggestions = {this.state.suggestedAuthors}
+                    <AuthorInputList suggestions = {this.state.suggestedAuthors}
                       onChange = {this.handleChange}
                       name = "authors"
                       filtered = {true}
