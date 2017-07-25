@@ -103,10 +103,10 @@ def update_user():
                                  user['email'], 400)
         if res.first_name != user.get('first_name', res.first_name) or\
                 res.last_name != user.get('last_name', res.last_name):
-            res.first_name = user['first_name']
-            res.last_name = user['last_name']
-            firstname = current_user['first_name'] if 'first_name' in current_user else ""
-            lastname = current_user['last_name'] if 'last_name' in current_user else ""
+            res.first_name = user.get('first_name', res.first_name)
+            res.last_name = user.get('last_name', res.last_name)
+            firstname = res.get('first_name', "")
+            lastname = res.get('last_name', "")
             newname = firstname + " " if firstname else "" + lastname
             g.projects.update_many({'authors.email': user['email']},
                                    {'$set': {'authors.$.name': newname}})
@@ -122,6 +122,7 @@ def update_user():
                     if usr.has_role('admin') and usr['email'] != user['email']:
                         res.roles = [g.user_datastore.find_or_create_role(role)
                                      for role in user['roles']]
+                        break
             else:
                 res.roles = [g.user_datastore.find_or_create_role(role) for role in user['roles']]
 
