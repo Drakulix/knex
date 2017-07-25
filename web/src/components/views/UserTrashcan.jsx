@@ -3,7 +3,7 @@ import 'react-table/react-table.css'
 import DataTable from '../common/DataTable'
 import Backend from '../common/Backend'
 
-export default class UserProjects extends Component {
+export default class UserTrashcan extends Component {
 
 render(){
     return (
