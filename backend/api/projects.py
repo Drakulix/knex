@@ -19,18 +19,17 @@ from globals import ADMIN_PERMISSION
 projects = Blueprint('api_projects', __name__)
 
 
-def is_permitted(user, entry):
+def is_permitted(user, entry) -> bool:
     """Return boolean value if user has admin permission, arg->list with roles
 
         Returns:
             res: true if user has admin role
         """
-
     if user.has_role('admin'):
         return True
     elif 'author' in entry:
         return user['email'] == entry['author']['email']
-    return user['email'] in entry['authors']
+    return user['email'] in [author['email'] for author in entry['authors']]
 
 
 @projects.route('/api/projects', methods=['POST'])
@@ -56,7 +55,7 @@ def add_projects():
     else:
         try:
             return_ids = []
-            if ('application/json' in request.content_type) and \
+            if ('application/json' in request.content_type) and\
                     ('application/json5' not in request.content_type):
                 return_ids = uploader.save_manifest_to_db(request.get_json())
             elif 'application/json5' in request.content_type:

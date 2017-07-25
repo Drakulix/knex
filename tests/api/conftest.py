@@ -83,7 +83,6 @@ def enter_data_using_post(pytestconfig, session):
         data = str(tf.read().replace('\n', ''))
     response = session.post(flask_api_url() + "/api/projects", data=data.encode('utf-8'),
                             headers={'Content-Type': 'application/json5'})
-    print(response.text)
     yield response
 
 
@@ -99,7 +98,6 @@ def enter_archived_using_post(pytestconfig, flask_api_url, session):
         data = str(tf.read().replace('\n', ''))
     response = session.post(flask_api_url + "/api/projects", data=data.encode('utf-8'),
                             headers={'Content-Type': 'application/json5'})
-    print(response.text)
     yield response
 
 
@@ -112,14 +110,11 @@ def enter_users(pytestconfig, session):
             'roles': 'user',
             'password': 'Mooooooooney'}
     add_user_response = session.post(flask_api_url() + "/api/users", json=user)
-    for x in add_user_response:
-        print(str(x))
     assert add_user_response.status_code == 200
     yield add_user_response
 
     delete_user_response = session.delete(flask_api_url() + '/api/users/' +
                                           add_user_response.json()['email'])
-    print(delete_user_response.text)
     assert delete_user_response.status_code == 200
 
 
@@ -132,12 +127,9 @@ def enter_default_user_users(pytestconfig, session):
             'roles': 'user',
             'password': 'user'}
     add_user_response = session.post(flask_api_url() + "/api/users", json=user)
-    for x in add_user_response:
-        print(str(x))
     assert add_user_response.status_code == 200
     yield add_user_response
 
     delete_user_response = session.delete(flask_api_url() + '/api/users/' +
                                           add_user_response.json()['email'])
-    print(delete_user_response.text)
     assert delete_user_response.status_code == 200
