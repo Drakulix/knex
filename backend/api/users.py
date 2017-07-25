@@ -62,8 +62,8 @@ def get_all_users():
 def get_usernames():
     userlist = [g.user_datastore.get_user(mail) for mail in request.json()
                 if g.user_datastore.find_user(mail)]
-    dic = {[(user.email, user.first_name + " " if user.first_name else "" + user.last_name)
-            for user in userlist]}
+    dic = dict([(user.email, user.first_name + " " if user.first_name else "" + user.last_name)
+                for user in userlist])
     return jsonify(dic)
 
 
