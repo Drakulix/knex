@@ -92,7 +92,7 @@ export default class SearchPage extends Component {
     var query = this.state.query
     query["authors"] = temp
 
-    Backend.searchAdvanced(this.state.query).then( function () {
+    Backend.search(this.state.query).then( function () {
       this.setState({open: false,
         snackbar : true,
         snackbarText : "Query saved"

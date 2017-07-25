@@ -396,12 +396,8 @@ class Backend {
         return this.postJson(`/api/projects/${encodeURIComponent(id)}/share`, mails);
     }
 
-    searchSimple(query) {
-        return this.postJson(`/api/projects/search/simple/`, query);
-    }
-
-    searchAdvanced(query) {
-        return this.postJson(`/api/projects/search/advanced/`, query);
+    search(query) {
+        return this.postJson(`/api/projects/search`, query);
     }
 
     searchSaved(id) {
