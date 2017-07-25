@@ -10,7 +10,7 @@ render(){
       <div className = "container">
       <div className = "header">Your projects</div>
         <DataTable  columns = {['title', 'status', 'tags', 'authors', 'description', '_id', 'archive' ]}
-                      fetchHandler = {Backend.getBookmarks()} />
+                      fetchHandler = {Backend.getProjects()} />
       </div>
     )
   }
