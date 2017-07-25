@@ -52,7 +52,7 @@ def search_api():
     request_json = {
         'query': {
             'bool': {
-                'must': {
+                'should': {
                     'multi_match': {
                         'query': search_string,
                         'fields': [
@@ -72,18 +72,20 @@ def search_api():
     }
 
     if authors:
-        request_json['query']['bool']['filter']['bool']['must'].append({
-            'terms': {'authors': authors}
-        })
+        for author in authors:
+            request_json['query']['bool']['filter']['bool']['must'].append({
+                'term': {'authors': author}
+                })
 
     if tags:
-        request_json['query']['bool']['filter']['bool']['must'].append({
-            'terms': {'tags': tags}
-        })
+        for tag in tags:
+            request_json['query']['bool']['filter']['bool']['must'].append({
+                'term': {'tags': tag}
+            })
 
     if status:
         request_json['query']['bool']['filter']['bool']['must'].append({
-            'term': {'status': status}
+            'term': {'status': status.lower()}
         })
 
     if archived:
