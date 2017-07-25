@@ -78,8 +78,11 @@ export default class TopBar extends Component {
           <div className = "col-1" style = {{marginTop : 2}}>
             <IconButton tooltip = "Notifications" style = {{color : 'white'}} onClick = {this.handleNotificationClick}>
               <i className = "material-icons">notifications</i>
-              <Badge  badgeContent = {this.state.notifications.length} primary = {true}
-                badgeStyle = {{top : -30, height : 20, width : 20}} />
+              { this.state.notifications.length !== 0 ?
+                <Badge  badgeContent = {this.state.notifications.length} primary = {true}
+                  badgeStyle = {{top : -30, height : 20, width : 20}} />
+                : ""
+              }
             </IconButton>
             <NotificationPane value = {this.state.popover}
                               anchorEl = {this.state.anchorEl}

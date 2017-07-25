@@ -33,7 +33,6 @@ export default class ProfileContainer extends Component {
   }
 
   componentWillReceiveProps(nextProps){
-    this.setState({email : nextProps.email})
     this.loadProfileInf(this.state.email)
   }
 

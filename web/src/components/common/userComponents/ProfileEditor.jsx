@@ -135,6 +135,7 @@ export default class ProfileEditor extends Component {
                     multiLine={true}
                     value={this.state.bio}
                     rowsMax={8}
+                    errorText = {(this.state.bio.length > 255) ? "Text to long" : ""}
                     fullWidth={true} />
               </div>
             </div>
@@ -146,7 +147,7 @@ export default class ProfileEditor extends Component {
                     label="Submit changes"
                     primary={true}
                     style={{width: "100%"}}
-                    disabled={(this.state.last_name === "" || this.state.first_name === "") ? true : false}
+                    disabled={(this.state.last_name === "" || this.state.first_name === "" || this.state.bio.length >255) ? true : false}
                     />
               </div>
             </div>
