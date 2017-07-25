@@ -178,6 +178,7 @@ export default class SearchPage extends Component {
               fetchURL={this.state.fetchURL}
               handleFilter= {this.handleFilterChange}
               predefinedFilter = {this.state.query}
+              fetchHandler = {Backend.getProjects()}
               ></DataTable>
           </div>
         </div>

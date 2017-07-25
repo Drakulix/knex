@@ -26,7 +26,8 @@ export default class BookmarksTable extends Component {
       filters : filters,
       filteredTable : [{
       }],
-      url : props.fetchURL,
+      handler : this.props.fetchHandler,
+      //url : props.fetchURL,
       dialogOpen : false,
       dialogText : "",
       projectTitle : "",
@@ -45,6 +46,8 @@ export default class BookmarksTable extends Component {
     this.handleArchive = this.handleArchive.bind(this)
     this.handleUnArchive = this.handleUnArchive.bind(this)
     this.handleClose = this.handleClose.bind(this)
+
+    this.fetchData()
   }
 
   handleDelete(projectID, projectName){
@@ -56,7 +59,7 @@ export default class BookmarksTable extends Component {
       action : function (){
         this.setState({dialogOpen:false})
            Backend.deleteProject(projectID)
-          .then(this.fetchData(this.state.url))
+          .then(this.fetchData())
           .then(this.setState({snackbar :true,
             snackbarText : "Project "+ projectName + " deleted"})
           )
@@ -66,7 +69,7 @@ export default class BookmarksTable extends Component {
 
   handleUnArchive(projectID, projectTitle){
     Backend.getProjectArchived(projectID, false)
-    .then(this.fetchData(this.state.url))
+    .then(this.fetchData())
     .then(this.setState({snackbar :true,
       snackbarText : "Project " + projectTitle + " unarchived"})
     )
@@ -85,7 +88,7 @@ export default class BookmarksTable extends Component {
       action : function (){
         this.setState({dialogOpen:false})
         Backend.getProjectArchived(projectID, true)
-          .then(this.fetchData(this.state.url))
+          .then(this.fetchData())
           .then(this.setState({snackbar :true,
             snackbarText : "Project "+projectName +" archived"})
           )
@@ -95,30 +98,30 @@ export default class BookmarksTable extends Component {
 
   handleAddBookmark(projectID){
     Backend.addBookmark(projectID)
-      .then(this.fetchData(this.props.fetchURL))
+      .then(this.fetchData())
   }
 
   handleRemoveBookmark(projectID){
     Backend.deleteBookmark(projectID)
-      .then(this.fetchData(this.props.fetchURL))
+      .then(this.fetchData())
   }
 
-  componentDidMount() {
-    this.setState({url :this.props.fetchURL})
-    this.fetchData(this.props.fetchURL)
-  }
+  // componentDidMount() {
+  //   this.fetchData()
+  // }
 
   componentWillReceiveProps(nextProps) {
     // You don't have to do this check first, but it can help prevent an unneeded render
-    if (this.state.url != nextProps.fetchURL){
+/*    if (this.state.url != nextProps.fetchURL){
       this.setState({url :nextProps.fetchURL})
       this.fetchData(nextProps.fetchURL)
-    }
+    }*/
   }
 
   fetchData(url){
     this.setState({loading : true})
-    return Backend.getJson(url).then(function(data) {
+    //return Backend.getJson(url).
+    return this.props.fetchHandler.then(function(data) {
       var datas =[]
       if(data !== undefined)
         datas = data
