@@ -10,10 +10,8 @@
     }
   ],
   "authors": [
-    {
-      "name": "test_owner0",
-      "email": "email@address.com"
-    }
+	"email@address.com",
+	"user@knex.com"
   ],
   "team": {
     "team_name": "teamname"

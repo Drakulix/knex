@@ -9,11 +9,7 @@
       "description": "thats what this analysis is about"
     },
     "authors":
-    [
-      {
-      "name": "test_owner1",
-      "email": "email@address.com"
-      }
+		"email@address.com"
     ],
     "team":
     {

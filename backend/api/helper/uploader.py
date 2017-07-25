@@ -39,7 +39,7 @@ def save_manifest_to_db(manifest):
 
                 ids.append(entry['_id'])
                 g.notify_users(
-                    list(set([author['email'] for author in entry['authors']])),
+                    list(set(entry['authors'])),
                     "Project was updated", entry['title'],
                     '/project/' + str(entry['_id']))
                 g.rerun_saved_searches()
