@@ -27,53 +27,10 @@ def prepare_es_results(res):
         raise ApiException(str(ke), 400)
 
 
-@search.route('/api/projects/search/simple/', methods=['POST'])
+@search.route('/api/projects/search', methods=['POST'])
 @login_required
-def search_simple():
-    """Search projects
-
-    Returns:
-        res (json): JSON containing Projects and metadata
-
-    """
-    query = request.get_json()
-
-    try:
-        search_string = query['searchString']
-    except KeyError:
-        return make_response('Invalid json', 400)
-
-    request_json = {
-        'query': {
-            'multi_match': {
-                'query': search_string,
-                'fields': [
-                    'tags^2',
-                    'title^2',
-                    'description',
-                ],
-            },
-        }
-    }
-
-    try:
-        projects = prepare_es_results(g.es.search(index="knexdb", body=request_json))
-    except RequestError as e:
-        raise ApiException(str(e), 400)
-
-    if 'label' in query:
-        try:
-            return g.save_search(current_user, query, request_json, len(projects))
-        except json.JSONDecodeError:
-            return make_response('Invalid json', 400)
-    else:
-        return jsonify(projects)
-
-
-@search.route('/api/projects/search/advanced/', methods=['POST'])
-@login_required
-def search_avanced():
-    """Advanced search with filters
+def search_api():
+    """Search function
 
     Returns:
         res (json): JSON containing Projects and metadata
@@ -82,17 +39,14 @@ def search_avanced():
 
     query = request.get_json()
 
-    try:
-        search_string = query['searchString']
-        authors = query.get('authors')
-        tags = query.get('tags')
-        status = query.get('status')
-        date_from = query.get('date_from')
-        date_to = query.get('date_to')
-        description = query.get('description')
-        title = query.get('title')
-    except KeyError:
-        return make_response('Invalid json', 400)
+    search_string = query.get('searchString', '')
+    authors = query.get('authors')
+    tags = query.get('tags')
+    status = query.get('status')
+    date_from = query.get('date_from')
+    date_to = query.get('date_to')
+    description = query.get('description')
+    title = query.get('title')
 
     request_json = {
         'query': {
@@ -118,23 +72,22 @@ def search_avanced():
 
     if authors:
         request_json['query']['bool']['filter']['bool']['must'].append({
-            'terms': { 'authors': authors }
+            'terms': {'authors': authors}
         })
 
     if tags:
         request_json['query']['bool']['filter']['bool']['must'].append({
-            'terms': { 'tags': tags }
+            'terms': {'tags': tags}
         })
-
 
     if status:
         request_json['query']['bool']['filter']['bool']['must'].append({
-            'term': { 'status': status  }
+            'term': {'status': status}
         })
 
     if date_from or date_to:
         date_filter = {
-            'range': { 'date_creation': {} }
+            'range': {'date_creation': {}}
         }
 
         if date_from:
@@ -146,12 +99,12 @@ def search_avanced():
 
     if description:
         request_json['query']['bool']['filter']['bool']['must'].append({
-            'wildcard': { 'description': '*'+description+'*' }
+            'wildcard': {'description': '*' + description + '*'}
         })
 
     if title:
         request_json['query']['bool']['filter']['bool']['must'].append({
-            'wildcard': { 'title': '*'+title+'*' }
+            'wildcard': {'title': '*' + title + '*'}
         })
 
     try:
