@@ -39,10 +39,9 @@ def save_manifest_to_db(manifest):
 
                 ids.append(entry['_id'])
                 g.notify_users(
-                    list(set(
-                        [author['email'] for author in entry['authors']] +
-                        g.users_with_bookmark(str(entry['_id'])))),
-                    "Project was updated", entry['title'], entry['_id'])
+                    list(set([author['email'] for author in entry['authors']])),
+                    "Project was updated", entry['title'],
+                    '/project/' + str(entry['_id']))
                 g.rerun_saved_searches()
             return ids
         else:
@@ -54,9 +53,11 @@ def save_manifest_to_db(manifest):
                 validation_error["errors"].append(error.message)
                 for suberror in sorted(error.context, key=lambda e: e.schema_path):
                     validation_error["sub_errors"].append(suberror.message)
-            raise ApiException("Validation Error: \n" + str(is_valid), 400, validation_error)
+            raise ApiException("Validation Error: \n" + str(is_valid), 400,
+                               validation_error)
 
     except ApiException as e:
         raise e
     except Exception as err:
-        raise ApiException("Error while trying to save the document(s) into db." + str(err))
+        raise ApiException(
+            "Error while trying to save the document(s) into db." + str(err))

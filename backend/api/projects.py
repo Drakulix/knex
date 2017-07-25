@@ -19,18 +19,17 @@ from globals import ADMIN_PERMISSION
 projects = Blueprint('api_projects', __name__)
 
 
-def is_permitted(user, entry):
+def is_permitted(user, entry) -> bool:
     """Return boolean value if user has admin permission, arg->list with roles
 
         Returns:
             res: true if user has admin role
         """
-
     if user.has_role('admin'):
         return True
     elif 'author' in entry:
         return user['email'] == entry['author']['email']
-    return user['email'] in entry['authors']
+    return user['email'] in [author['email'] for author in entry['authors']]
 
 
 @projects.route('/api/projects', methods=['POST'])
@@ -56,7 +55,7 @@ def add_projects():
     else:
         try:
             return_ids = []
-            if ('application/json' in request.content_type) and \
+            if ('application/json' in request.content_type) and\
                     ('application/json5' not in request.content_type):
                 return_ids = uploader.save_manifest_to_db(request.get_json())
             elif 'application/json5' in request.content_type:
@@ -291,10 +290,10 @@ def add_comment(project_id):
             raise ApiException("Project not found", 404)
         if "text/plain" not in request.content_type:
             raise ApiException("'text/plain' must be in Content-Type", 400)
-        comment = dict()
-        author = dict()
-        firstname = current_user['first_name'] if 'first_name' in current_user else ""
-        lastname = current_user['last_name'] if 'last_name' in current_user else ""
+        comment = {}
+        author = {}
+        firstname = current_user.to_dict().get('first_name', "")
+        lastname = current_user.to_dict().get('last_name', "")
         author['name'] = firstname + " " if firstname else "" + lastname
         author['email'] = current_user['email']
         comment['author'] = author

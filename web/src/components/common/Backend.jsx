@@ -282,7 +282,7 @@ class Backend {
     }
 
     updateProject(id, payload) {
-        return this.putJson('/api/projects'+id, payload);
+        return this.putJson('/api/projects/'+id, payload);
     }
 
     deleteProject(id) {
@@ -440,9 +440,31 @@ class Backend {
         return this.getJson('/api/users');
     }
 
-    async updateProfile(user) {
-        if (await this.putJson('/api/users', user)) {
-          if (this.mail == user.mail) {
+    async setUserRoles(mail, firstName, lastName, bio, roles){
+      if (await this.putJson('/api/users', {
+        'email': mail,
+        'first_name': firstName,
+        'last_name': lastName,
+        'bio': bio,
+        'roles' : roles
+      })) {
+        if (this.mail == mail) {
+          await this.getProfile();
+        }
+        return true;
+      } else {
+          return false;
+      }
+    }
+
+    async updateProfile(mail, firstName, lastName, bio) {
+        if (await this.putJson('/api/users', {
+          'email': mail,
+          'first_name': firstName,
+          'last_name': lastName,
+          'bio': bio,
+        })) {
+          if (this.mail == mail) {
             await this.getProfile();
           }
           return true;
@@ -451,8 +473,12 @@ class Backend {
         }
     }
 
-    updatePassword(user) {
-        return this.putJson('/api/users/password', user);
+    updatePassword(mail, old_pass, new_pass) {
+        return this.putJson('/api/users/password', {
+          'email': mail,
+          'old_password': old_pass,
+          'new_password': new_pass,
+        });
     }
 
     deleteUser(mail) {
@@ -476,11 +502,11 @@ class Backend {
     }
 
     addBookmark(id) {
-        return this.postJson('/api/users/bookmarks'+encodeURIComponent(id));
+        return this.postJson('/api/users/bookmarks/'+encodeURIComponent(id));
     }
 
     deleteBookmark(id) {
-        return this.delete('/api/users/bookmarks'+encodeURIComponent(id));
+        return this.delete('/api/users/bookmarks/'+encodeURIComponent(id));
     }
 
     getBookmarks() {
