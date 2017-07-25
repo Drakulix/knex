@@ -9,6 +9,7 @@ import styles from '../common/Styles.jsx'
 import RaisedButton from 'material-ui/RaisedButton'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
+import Snackbar from 'material-ui/Snackbar'
 
 export default class BookmarksTable extends Component {
 
@@ -35,7 +36,9 @@ export default class BookmarksTable extends Component {
       action : null,
       url : "/api/projects",
       loading : true,
-      buttonText : "DELETE"
+      buttonText : "DELETE",
+      snackbar : false,
+      snackbarText : ""
     }
 
     this.handleFilterChange = this.handleFilterChange.bind(this)
@@ -49,6 +52,7 @@ export default class BookmarksTable extends Component {
 
   handleDelete(projectID, projectName){
     this.setState({dialogOpen : true,
+      snackbar : false,
       dialogText : "Do you want to delete project " + projectName +"?",
       projectID : projectID,
       buttonText : "Delete",
@@ -56,13 +60,19 @@ export default class BookmarksTable extends Component {
         this.setState({dialogOpen:false})
         Backend.deleteProject(projectID)
           .then(this.fetchData(this.state.url))
+          .then(this.setState({snackbar :true,
+            snackbarText : "Project "+ projectName + " deleted"})
+          )
       }.bind(this)
       })
   }
 
-  handleUnArchive(projectID){
-    Backend.getProjectArchived(projectID, false).then(
-    this.fetchData(this.state.url))
+  handleUnArchive(projectID, projectTitle){
+    Backend.getProjectArchived(projectID, false)
+    .then(this.fetchData(this.state.url))
+    .then(this.setState({snackbar :true,
+      snackbarText : "Project " + projectTitle + " unarchived"})
+    )
   }
 
   handleClose(){
@@ -71,6 +81,7 @@ export default class BookmarksTable extends Component {
 
   handleArchive(projectID, projectName){
     this.setState({dialogOpen : true,
+      snackbar : false,
       dialogText : "Do you want to archive project " + projectName +"?",
       projectID : projectID,
       buttonText : "archive",
@@ -78,6 +89,9 @@ export default class BookmarksTable extends Component {
         this.setState({dialogOpen:false})
         Backend.getProjectArchived(projectID, true)
           .then(this.fetchData(this.state.url))
+          .then(this.setState({snackbar :true,
+            snackbarText : "Project "+projectName +" archived"})
+          )
       }.bind(this)
       })
   }
@@ -107,7 +121,7 @@ export default class BookmarksTable extends Component {
 
   fetchData(url){
     this.setState({loading : true})
-    Backend.getJson(url).then(function(data) {
+    return Backend.getJson(url).then(function(data) {
       var datas =[]
       if(data !== undefined)
         datas = data
@@ -135,6 +149,7 @@ export default class BookmarksTable extends Component {
       })
         this.filter(this.state.filters)
         this.setState({loading : false})
+
       }.bind(this))
     }
 
@@ -366,7 +381,7 @@ export default class BookmarksTable extends Component {
         style: {textAlign:"center"},
         Cell: props => { return props.value.archived  ?
           <IconButton
-          onClick = {()=>this.handleUnArchive(props.value._id)}
+          onClick = {()=>this.handleUnArchive(props.value._id, props.value.title)}
           touch = {true}
           style = {styles.largeIcon}
           iconStyle = {{fontSize: '24px'}}
@@ -430,6 +445,10 @@ export default class BookmarksTable extends Component {
                           buttonText = {this.state.buttonText}
                           handleAction= {this.state.action}
         />
+      <Snackbar open={this.state.snackbar}
+                message={this.state.snackbarText}
+                autoHideDuration={10000}
+      />
       <div className = "container" style = {{display : (this.state.loading ? "block" : "none")}}>
         <div className = "header"><CircularProgress size = {80} thickness = {5} /></div>
       </div>
