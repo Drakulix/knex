@@ -105,9 +105,7 @@ def update_user():
                 res.last_name != user.get('last_name', res.last_name):
             res.first_name = user.get('first_name', res.first_name)
             res.last_name = user.get('last_name', res.last_name)
-            firstname = res.get('first_name', "")
-            lastname = res.get('last_name', "")
-            newname = firstname + " " if firstname else "" + lastname
+            newname = res['first_name'] + " " if res['first_name'] else "" + res['last_name']
             g.projects.update_many({'authors.email': user['email']},
                                    {'$set': {'authors.$.name': newname}})
 
@@ -123,13 +121,14 @@ def update_user():
                         res.roles = [g.user_datastore.find_or_create_role(role)
                                      for role in user['roles']]
                         break
+                else:
+                    raise ApiException("Can't unassign the admin role from the last admin.", 400)
             else:
                 res.roles = [g.user_datastore.find_or_create_role(role) for role in user['roles']]
 
         res.save()
 
-        return make_response("User with email: " +
-                             user['email'] + " updated", 200)
+        return make_response("User with email: " + user['email'] + " updated", 200)
 
     return make_response("You don't have permission to edit this user", 403)
 
