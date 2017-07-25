@@ -520,3 +520,29 @@ class TestPUT(object):
         projectid = str(uuid.uuid4())
         response = session.delete(flask_api_url + '/api/projects/' + projectid)
         # assert response.status_code == 403
+
+    def test_authorized_update(self, flask_api_url, enter_default_user_users, pytestconfig):
+        session = requests.Session()
+        data = {"email": "user@knex.com", "password": "user"}
+        response = session.post(flask_api_url + '/api/users/login', data=data)
+        assert response.status_code == 200
+        test_manifest = os.path.join(
+            str(pytestconfig.rootdir),
+            'tests',
+            'testmanifests',
+            'validexample0.json'
+        )
+        with open(test_manifest, 'r') as tf:
+            test_manifest_json = json.load(tf)
+        test_manifest_json['authors'].append({"name": "Dagobert Duck", "email": "user@knex.com"})
+        project_id = session.post(flask_api_url + "/api/projects",
+                                  json=test_manifest_json).json()[0]
+        assert UUID(project_id, version=4)
+        get_response = session.get(flask_api_url + "/api/projects/" + project_id)
+        manifest = get_response.json()
+        manifest['archived'] = True
+        del manifest['is_bookmark']
+        del manifest['is_owner']
+        put_response = session.put(flask_api_url + "/api/projects/" + project_id, json=manifest)
+        print(put_response.text)
+        assert put_response.status_code == 200
