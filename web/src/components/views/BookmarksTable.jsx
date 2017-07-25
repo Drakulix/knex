@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import DataTable from '../common/DataTable'
-
+import Backend from '../common/Backend'
 
 export default class BookmarksTable extends Component {
 
@@ -9,7 +9,7 @@ export default class BookmarksTable extends Component {
       <div className = "container">
         <div className = "header">Your bookmarks</div>
         <DataTable  columns = {['title', 'status', 'tags', 'authors', 'description', '_id', 'bookmarked']}
-                    fetchURL = "/api/users/bookmarks"
+                    fetchHandler = {Backend.getBookmarks()}
         />
       </div>
     )

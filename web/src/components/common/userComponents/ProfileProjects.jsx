@@ -12,7 +12,7 @@ export default class ProfileProjects extends Component {
         <div  className="header-tab">Manage projects</div>
         <DataTable
 
-                  fetchURL = {"/api/projects"}
+                  fetchHandler = {Backend.getBookmarks()}
                   columns= {['title', 'status', 'tags', 'authors', 'description', '_id',
                     (!this.props.profileInf.email == Backend.getMail()) ? 'bookmarked':'',
                     (!this.props.profileInf.email == Backend.getMail() || Backend.isAdmin()) ?'archive' : '',

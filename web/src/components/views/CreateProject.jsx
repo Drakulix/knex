@@ -137,7 +137,7 @@ export default class CreateProject extends Component {
     }
     else{
       Backend.updateProject(this.state.projectID, projectInf).then(
-        history.push("/project/" + projectID)
+        history.push("/project/" + this.state.projectID)
       )
     }
   }
