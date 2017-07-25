@@ -25,13 +25,14 @@ import AdminOverview from './components/views/AdminOverview'
 import CreateProject from './components/views/CreateProject'
 import CreateProjectByURL from './components/views/CreateProjectByURL'
 import CreateProjectFromFile from './components/views/CreateProjectFromFile'
-import CreateProjectChoice from './components/views/CreateProjectChoice.jsx'
-import ProfileContainer from './components/views/ProfileContainer.jsx'
+import CreateProjectChoice from './components/views/CreateProjectChoice'
+import ProfileContainer from './components/views/ProfileContainer'
 import ProjectContainer from './components/views/ProjectContainer'
 import SearchPage from './components/views/SearchPage'
 import BookmarksTable from './components/views/BookmarksTable'
-import UserProjects from './components/views/UserProjects.jsx'
-import SavedQueries from './components/views/SavedQueries.jsx'
+import UserProjects from './components/views/UserProjects'
+import SavedQueries from './components/views/SavedQueries'
+import UserTrashcan from './components/views/UserTrashcan'
 
 import TopBar from './components/common/TopBar'
 import SideBar from './components/common/SideBar'
@@ -81,6 +82,7 @@ init(() => {
           <PageRoute sitePath="/profile" path="/profile/:email" component={ProfileContainer} />
           <PageRoute sitePath="/yourprojects" path="/yourprojects" component={UserProjects} />
           <PageRoute sitePath="/queries" path="/queries" component={SavedQueries} />
+          <PageRoute sitePath="/trashcan" path="/trashcan" component={UserTrashcan} />
           <Route path="/register" component={SignUp} />
           <Route exact path="/" component={SignIn} />
           <Route component={() => (<Redirect to="/"/>)} />
