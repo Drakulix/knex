@@ -396,36 +396,12 @@ class Backend {
         return this.postJson(`/api/projects/${encodeURIComponent(id)}/share`, mails);
     }
 
-    searchSimple(q, sort, order, offset = 0, count = 10) {
-        let sortStr = sort ? "&sort="+encodeURIComponent(sort) : "";
-        let orderStr = order ? "&order="+encodeURIComponent(order) : "";
-
-        return this.getJson(`/api/projects/search/simple/?q=${encodeURIComponent(q)}${sortStr}${orderStr}&offset=${encodeURIComponent(offset)}&count=${encodeURIComponent(count)}`);
+    search(query) {
+        return this.postJson(`/api/projects/search`, query);
     }
 
-    saveSearchSimple(title, q, sort, order, offset = 0, count = 10) {
-        let sortStr = sort ? "&sort="+encodeURIComponent(sort) : "";
-        let orderStr = order ? "&order="+encodeURIComponent(order) : "";
-
-        return this.getJson(`/api/projects/search/simple/?q=${encodeURIComponent(q)}${sortStr}${orderStr}&offset=${encodeURIComponent(offset)}&count=${encodeURIComponent(count)}&save=${encodeURIComponent(title)}`);
-    }
-
-    searchAdvanced(q, sort, order, offset = 0, count = 10) {
-        let sortStr = sort ? "&sort="+encodeURIComponent(sort) : "";
-        let orderStr = order ? "&order="+encodeURIComponent(order) : "";
-
-        return this.getJson(`/api/projects/search/advanced/?q=${encodeURIComponent(q)}${encodeURIComponent(sortStr)}${encodeURIComponent(orderStr)}&offset=${encodeURIComponent(offset)}&count=${encodeURIComponent(count)}`);
-    }
-
-    saveSearchAdvanced(title, q, sort, order, offset = 0, count = 10) {
-        let sortStr = sort ? "&sort="+encodeURIComponent(sort) : "";
-        let orderStr = order ? "&order="+encodeURIComponent(order) : "";
-
-        return this.getJson(`/api/projects/search/advanced/?q=${encodeURIComponent(q)}${encodeURIComponent(sortStr)}${encodeURIComponent(orderStr)}&offset=${encodeURIComponent(offset)}&count=${encodeURIComponent(count)}&save=${encodeURIComponent(title)}`);
-    }
-
-    searchSaved(id, offset = 0, count = 10) {
-        return this.getJson(`/api/projects/search/saved/${encodeURIComponent(id)}?offset=${encodeURIComponent(offset)}&count=${encodeURIComponent(count)}`);
+    searchSaved(id) {
+        return this.getJson(`/api/projects/search/saved/${encodeURIComponent(id)}`);
     }
 
     getSavedSearches() {
