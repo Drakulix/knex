@@ -224,7 +224,7 @@ export default class BookmarksTable extends Component {
         Cell: props =>{
           return(
             <div style={{whiteSpace : "normal"}}>
-              <Link to={`project/${props.value._id}`}
+              <Link to={`/project/${props.value._id}`}
                 className="table-link-text">
                 {props.value.title}
               </Link>

@@ -113,12 +113,12 @@ export default class ProjectContainer extends Component {
     delete project.is_bookmark
     delete project.is_owner
     project['archived'] = true
-    Backend.updateProject(this.state.projectID, project)
+    Backend.updateProject(this.state.projectID, project).then(
     this.setState({
       dialogOpen : false,
       snackbar : true,
-      snackbarText : "Project " + project.title + " deleted"
-    })
+      snackbarText : "Project " + project.title + " archived"
+    }))
   }
 
   loadSiteInf(uuid) {
@@ -288,6 +288,9 @@ export default class ProjectContainer extends Component {
                 <div style = {{marginTop : 30}}>
                   <div className = "profile-info">Description</div>
                   <div><a>{this.state.projectInf.description}</a></div>
+                </div>
+                <div style = {{display : (this.state.projectInf.archived) ? "block" : "none"}}>
+                  <div className = "profile-info">Archived</div>
                 </div>
               </div>
             </div>
