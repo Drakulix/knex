@@ -165,8 +165,8 @@ class SavedSearch(EmbeddedDocument):
 
 class User(DB.Document, UserMixin):
     email = DB.StringField(max_length=255, unique=True)
-    first_name = DB.StringField(max_length=255)
-    last_name = DB.StringField(max_length=255)
+    first_name = DB.StringField(max_length=255, default="")
+    last_name = DB.StringField(max_length=255, default="")
     password = DB.StringField(max_length=255)
     active = DB.BooleanField(default=True)
     bio = DB.StringField(max_length=255)

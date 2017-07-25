@@ -101,29 +101,36 @@ def update_user():
         if not res:
             return make_response("Unknown User with Email-address: " +
                                  user['email'], 400)
-        if res.first_name != user['first_name'] or res.last_name != user['last_name']:
-            res.first_name = user['first_name']
-            res.last_name = user['last_name']
-            firstname = current_user['first_name'] if 'first_name' in current_user else ""
-            lastname = current_user['last_name'] if 'last_name' in current_user else ""
-            newname = firstname + " " if firstname else "" + lastname
+        if res.first_name != user.get('first_name', res.first_name) or\
+                res.last_name != user.get('last_name', res.last_name):
+            res.first_name = user.get('first_name', res.first_name)
+            res.last_name = user.get('last_name', res.last_name)
+            newname = res['first_name'] + " " if res['first_name'] else "" + res['last_name']
             g.projects.update_many({'authors.email': user['email']},
                                    {'$set': {'authors.$.name': newname}})
 
         if 'bio' in user:
             res.bio = user['bio']
+
         if 'roles' in user:
             if 'admin' in user['roles'] and not current_user.has_role('admin'):
                 raise ApiException("Current user has no permission to assign admin role.", 403)
-            res.roles = [g.user_datastore.find_or_create_role(role) for role in user['roles']]
+            if 'admin' not in user['roles'] and res.has_role('admin'):
+                for usr in g.user_datastore.user_model.objects:
+                    if usr.has_role('admin') and usr['email'] != user['email']:
+                        res.roles = [g.user_datastore.find_or_create_role(role)
+                                     for role in user['roles']]
+                        break
+                else:
+                    raise ApiException("Can't unassign the admin role from the last admin.", 400)
+            else:
+                res.roles = [g.user_datastore.find_or_create_role(role) for role in user['roles']]
 
         res.save()
 
-        return make_response("User with email: " +
-                             user['email'] + " updated", 200)
+        return make_response("User with email: " + user['email'] + " updated", 200)
 
-    return make_response("You don't have permission " +
-                         "to edit this user", 400)
+    return make_response("You don't have permission to edit this user", 403)
 
 
 @users.route('/api/users/password', methods=['PUT'])
