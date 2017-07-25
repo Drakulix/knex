@@ -351,7 +351,7 @@ export default class BookmarksTable extends Component {
         }
       })
     }
-    if(this.props.columns.indexOf("dearchive") !== -1){
+    if(this.props.columns.indexOf("unarchive") !== -1){
       columns.push({
         Header: 'Unarchive',
         accessor: d => d,

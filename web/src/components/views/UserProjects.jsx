@@ -9,7 +9,7 @@ render(){
     return (
       <div className = "container">
         <div className = "header">Your projects</div>
-          <DataTable  columns = {['title', 'status', 'tags', 'authors', 'description', '_id', 'dearchive','archive' ]}
+          <DataTable  columns = {['title', 'status', 'tags', 'authors', 'description', '_id', 'unarchive','archive' ]}
                       fetchURL  = {"/api/projects/search/advanced/?q=(authors.email:" + Backend.getMail()+")"}/>
       </div>
     )
