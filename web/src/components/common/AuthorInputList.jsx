@@ -4,7 +4,7 @@ import Chip from 'material-ui/Chip'
 import AutoComplete from 'material-ui/AutoComplete'
 import styles from '../common/Styles.jsx'
 
-export default class ChipInputList extends Component {
+export default class AuthorInputList extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -25,10 +25,11 @@ export default class ChipInputList extends Component {
   }
 
   handleRequestDelete (deletedChip) {
-    var list = this.state.list.filter((c) => c !== deletedChip)
+    var list = this.state.list.filter((c) => c.email !== deletedChip)
     this.setState({
       list : list
     })
+    
     var event = {target : { name : this.props.name,
       value : list}}
     this.props.onChange(event)
@@ -42,6 +43,7 @@ export default class ChipInputList extends Component {
     return(
       <ChipInput
         dataSource={this.props.suggestions}
+        dataSourceConfig={{ text: 'name', value: 'email' }}
         value={this.state.list}
         filter={AutoComplete.fuzzyFilter}
         onRequestAdd={(chip) => this.handleRequestAdd(chip)}
@@ -49,14 +51,14 @@ export default class ChipInputList extends Component {
         errorText={this.props.errorText}
         hintText={this.props.hintText}
         fullWidth
-        chipRenderer={({ value, isFocused, isDisabled, handleClick, handleRequestDelete }, key) => (
+        chipRenderer={({ value, text, isFocused, isDisabled, handleClick, handleRequestDelete }, key) => (
           <Chip
             key={key}
             style= {{margin: '8px 8px 0 0',float: 'left'}}
-            backgroundColor={'#ff5000'}
+            backgroundColor={'#ffffff'}
             onTouchTap={handleClick}
             onRequestDelete={handleRequestDelete}>
-            <span style={{color : '#ffffff', fontWeight: 'bold'}}> {value} </span>
+            <span style={{color : '#000000', fontWeight: 'bold'}}> {text} </span>
           </Chip>
         )}/>
       )

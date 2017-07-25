@@ -25,7 +25,7 @@ export default class SearchPage extends Component {
     var query  = this.props.match.params.query !== undefined ? JSON.parse(this.props.match.params.query) : {}
     this.state = {
         searchString : query.searchString !== undefined ? query.searchString : "" ,
-        label : query.label !== undefined ? query.label : "",
+        label : "",
         query : query,
         fetchURL : "/api/projects",
         open : false,
@@ -78,24 +78,14 @@ export default class SearchPage extends Component {
   }
 
   saveSearch(){
-    var temp = []
-    var xquery = this.state.query
-    xquery.searchString = this.state.searchString
-    xquery.label = this.state.label
-    var authors = this.state.query["authors"]
-    for (var i in authors) {
-      var string = authors[i]
-      var name = string.substring(0, string.lastIndexOf("(")-1)
-      var id = string.substring(string.lastIndexOf("(")+1, string.length-1)
-      temp.push({"name" : name, "email" :id})
-    }
-    var query = this.state.query
-    query["authors"] = temp
-
-    Backend.search(this.state.query).then( function () {
+    var toSaveQuery = this.state.query
+    toSaveQuery["label"] = this.state.label
+    alert(toSaveQuery.authors)
+    Backend.search(toSaveQuery).then( function () {
       this.setState({open: false,
         snackbar : true,
-        snackbarText : "Query saved"
+        snackbarText : "Query saved",
+        label : ""
       })}.bind(this)
     )
   }
@@ -178,7 +168,7 @@ export default class SearchPage extends Component {
               fetchURL={this.state.fetchURL}
               handleFilter= {this.handleFilterChange}
               predefinedFilter = {this.state.query}
-              fetchHandler = {Backend.getProjects()}
+              fetchHandler = {Backend.search(this.state.query)}
               ></DataTable>
           </div>
         </div>
