@@ -8,7 +8,8 @@ export default class AuthorInputList extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      list : this.props.value
+      list : this.props.value,
+      suggestions : this.props.suggestions
     }
   }
 
@@ -25,25 +26,26 @@ export default class AuthorInputList extends Component {
   }
 
   handleRequestDelete (deletedChip) {
-    var list = this.state.list.filter((c) => c.email !== deletedChip)
+    var list = this.state.list.filter((c) => c !== deletedChip)
     this.setState({
       list : list
     })
-    
     var event = {target : { name : this.props.name,
       value : list}}
     this.props.onChange(event)
   }
 
   componentWillReceiveProps(props){
-    this.setState({list : props.value});
+
+    this.setState({list : props.value,
+suggestions : props.suggestions
+    });
   }
 
   render(){
     return(
       <ChipInput
-        dataSource={this.props.suggestions}
-        dataSourceConfig={{ text: 'name', value: 'email' }}
+        dataSource={this.state.suggestions}
         value={this.state.list}
         filter={AutoComplete.fuzzyFilter}
         onRequestAdd={(chip) => this.handleRequestAdd(chip)}
@@ -51,14 +53,14 @@ export default class AuthorInputList extends Component {
         errorText={this.props.errorText}
         hintText={this.props.hintText}
         fullWidth
-        chipRenderer={({ value, text, isFocused, isDisabled, handleClick, handleRequestDelete }, key) => (
+        chipRenderer={({ value, isFocused, isDisabled, handleClick, handleRequestDelete }, key) => (
           <Chip
             key={key}
             style= {{margin: '8px 8px 0 0',float: 'left'}}
             backgroundColor={'#ffffff'}
             onTouchTap={handleClick}
             onRequestDelete={handleRequestDelete}>
-            <span style={{color : '#000000', fontWeight: 'bold'}}> {text} </span>
+            <span style={{color : '#000000', fontWeight: 'bold'}}> {value} </span>
           </Chip>
         )}/>
       )

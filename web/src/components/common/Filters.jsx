@@ -24,9 +24,8 @@ export default class Filters extends Component{
     super(props)
     var filters = (props.value === undefined) ? {} : props.value
 
-
     this.state = {
-      expanded : (Object.keys(filters).length <= 1) ? false : true,
+      expanded : Object.keys(filters).length > 0,
       authors : filters.authors !== undefined ? filters.authors : [],
       title : filters.title !== undefined ? filters.title : "",
       tags : filters.tags !== undefined ? filters.tags : [],
@@ -44,15 +43,6 @@ export default class Filters extends Component{
 
 
   componentDidMount() {
-    Backend.getUserNames(this.state.authors).then(function (userNames){
-      var temp = []
-      for(let author in this.state.authors){
-        if(userNames[author] !== undefined){
-          temp.push({name : userNames[author], email : author})
-        }
-      }
-      this.setState({authors : temp})
-    }.bind(this))
 
     //gets all the exsiting tags from the backend
     Backend.getTags().then(function(tags) {

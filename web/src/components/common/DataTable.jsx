@@ -136,9 +136,6 @@ export default class BookmarksTable extends Component {
       delete state[key]
     }
     else  {
-      if(key == "authors"){
-          var value = value.map(item => {return item.email})
-      }
       state[key] = value
     }
     this.setState({filters : state})
@@ -167,7 +164,7 @@ export default class BookmarksTable extends Component {
                             return temp.indexOf(element) === -1})
               break
             case "authors":
-              temp = dataObject.authors.map((item) => {return item.email}).join().toLowerCase()
+              temp = dataObject[key].join().toLowerCase()
               discard = value.some( function notContains(element){
                 return temp.indexOf(element) === -1
               })
@@ -276,10 +273,10 @@ export default class BookmarksTable extends Component {
           return(
             <div style={{marginTop: -10}}>
             {array.map(item =>
-              <Chip key={item.email} style = {{margin: '8px 8px 0 0', background : '#ffffff', float: 'left' }}>
-                <Link to={"/profile/"+item.email}
+              <Chip key={item} style = {{margin: '8px 8px 0 0', background : '#ffffff', float: 'left' }}>
+                <Link to={"/profile/"+item}
                        style= {{color:'#000000', fontWeight:'bold'}}>
-                      {item.name}
+                      {item}
                 </Link><br></br></Chip>) }
             </div>
           )

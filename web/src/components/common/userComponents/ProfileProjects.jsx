@@ -11,8 +11,7 @@ export default class ProfileProjects extends Component {
       <div>
         <div  className="header-tab">Manage projects</div>
         <DataTable
-
-                  fetchHandler = {Backend.getProjects()}
+                  fetchHandler = {Backend.search({archived : "false", authors : [this.props.profileInf.email]})}
                   columns= {['title', 'status', 'tags', 'authors', 'description', '_id',
                     (!this.props.profileInf.email == Backend.getMail()) ? 'bookmarked':'',
                     (!this.props.profileInf.email == Backend.getMail() || Backend.isAdmin()) ?'archive' : '',

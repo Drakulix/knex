@@ -62,10 +62,6 @@ export default class CreateProject extends Component {
     const name = event.target.name
     var value = event.target.value
     var projectInf = this.state.projectInf
-    if(name === "authors"){
-      this.setState({authors:value})
-      value = value.map(item => {return item.email})
-    }
     projectInf[name] = value
     this.setState({ projectInf : projectInf})
   }
@@ -78,8 +74,6 @@ export default class CreateProject extends Component {
 
   handleChangeDate(event, date) {
     var projectInf = this.state.projectInf
-
-
     projectInf.date_creation = Moment(date).format("YYYY-MM-DD")
     this.setState({
       date : date,
@@ -102,28 +96,12 @@ export default class CreateProject extends Component {
         this.setState({ project_exists : false,
                         site_loaded : true,})
       }else{
-
-
-        Backend.getUserNames(data.authors).then(function (userNames){
-          var authorArray = []
-          for(let author in data.authors){
-            if(userNames[author] !== undefined){
-              authorArray.push({name : userNames[author], email : author})
-            }
-          }
-          this.setState({  authors : authorArray})
-
-        }.bind(this)).then(
-
-
-
-        this.setState({
+          this.setState({
           project_exists : true,
           site_loaded : true,
           projectInf : data,
-
           date : Moment(data.date_creation, "YYYY-MM-DD").toDate()
-        }))
+        })
       }
     })
   }
@@ -151,7 +129,7 @@ export default class CreateProject extends Component {
     return      this.state.projectInf.title === ''
     ||  this.state.projectInf.date_creation === ''
     ||  this.state.projectInf.description === ''
-    ||  this.state.authors.length === 0
+    ||  this.state.projectInf.authors.length === 0
     ||  this.state.projectInf.url.length === 0
     ||  this.state.projectInf.status === 0
   }
@@ -172,11 +150,7 @@ export default class CreateProject extends Component {
 
     //gets all the authors from the backend
     Backend.getUsers().then(function(authors) {
-      authors = authors.map(item => {
-        return {
-          name : item.first_name + " " + item.last_name,
-          email : item.email
-      }})
+      authors = authors.map(item => {return item.email})
         this.setState({
           suggestedAuthors : authors
         })
@@ -261,9 +235,9 @@ export default class CreateProject extends Component {
                       onChange = {this.handleChange}
                       name = "authors"
                       filtered = {true}
-                      value = {this.state.authors}
+                      value = {this.state.projectInf.authors}
                       hintText = {'Add authors...'}
-                      errorText = {(this.state.authors.length === 0) ?
+                      errorText = {(this.state.projectInf.authors.length === 0) ?
                                   "Please provide at least one author" : ""}
                       />
                     <div className = "profile-info">Links</div>

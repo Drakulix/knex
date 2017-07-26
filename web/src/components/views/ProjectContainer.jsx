@@ -260,8 +260,8 @@ export default class ProjectContainer extends Component {
                 <div style = {styles["wrapper"]}>
                   {
                     this.state.projectInf.authors.map(item =>
-                      <Chip style= {{margin: '8px 8px 0 0', background : '#ffffff', float: 'left' }} key={item.email}>
-                        <Link to = {"/profile/"+item.email} style= {{color:'#000000', fontWeight:'bold'}}>{item.name}</Link>
+                      <Chip style= {{margin: '8px 8px 0 0', background : '#ffffff', float: 'left' }} key={item}>
+                        <Link to = {"/profile/"+item} style= {{color:'#000000', fontWeight:'bold'}}>{item}</Link>
                       </Chip>
                     )
                   }
