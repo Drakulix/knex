@@ -260,8 +260,8 @@ export default class ProjectContainer extends Component {
                 <div style = {styles["wrapper"]}>
                   {
                     this.state.projectInf.authors.map(item =>
-                      <Chip style= {styles["chip"]} key={item.email}>
-                        <Link to = {"/profile/"+item.email} style= {styles["chipText"]}>{item.name}</Link>
+                      <Chip style= {{margin: '8px 8px 0 0', background : '#ffffff', float: 'left' }} key={item.email}>
+                        <Link to = {"/profile/"+item.email} style= {{color:'#000000', fontWeight:'bold'}}>{item.name}</Link>
                       </Chip>
                     )
                   }
@@ -285,7 +285,7 @@ export default class ProjectContainer extends Component {
                         <Link to = {"/discovery?tag = " +item} style= {styles["chipText"]} >{item}</Link></Chip>) }
                   </div>
                 </div>
-                <div style = {{marginTop : 30}}>
+                <div style = {{marginTop : 60}}>
                   <div className = "profile-info">Description</div>
                   <div><a>{this.state.projectInf.description}</a></div>
                 </div>

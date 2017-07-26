@@ -23,7 +23,8 @@ export default class Filters extends Component{
   constructor(props){
     super(props)
     var filters = (props.value === undefined) ? {} : props.value
-    //creepy authors is not empty
+
+
     this.state = {
       expanded : (Object.keys(filters).length <= 1) ? false : true,
       authors : filters.authors !== undefined ? filters.authors : [],
@@ -43,7 +44,15 @@ export default class Filters extends Component{
 
 
   componentDidMount() {
-    //tipp : if you fetch server side data, this is the place where it should happen : )
+    Backend.getUserNames(this.state.authors).then(function (userNames){
+      var temp = []
+      for(let author in this.state.authors){
+        if(userNames[author] !== undefined){
+          temp.push({name : userNames[author], email : author})
+        }
+      }
+      this.setState({authors : temp})
+    }.bind(this))
 
     //gets all the exsiting tags from the backend
     Backend.getTags().then(function(tags) {
@@ -54,18 +63,7 @@ export default class Filters extends Component{
 
     //gets all the authors from the backend
     Backend.getAuthors().then(function(authors) {
-    /*  var suggestedAuthors = authors
-      var suggestedAuthorsArray = []
-      for (var i in suggestedAuthors) {
-        suggestedAuthorsArray = suggestedAuthorsArray.concat([suggestedAuthors[i].name + " ("+suggestedAuthors[i].email+ ")"])
-      }
-      console.log(suggestedAuthorsArray)
-      this.setState({
-        suggestedAuthors : suggestedAuthorsArray
-      })*/
       this.setState({suggestedAuthors : authors})
-
-
     }.bind(this))
   }
 

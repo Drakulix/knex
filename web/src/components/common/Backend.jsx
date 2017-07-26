@@ -473,6 +473,10 @@ class Backend {
         return profile;
     }
 
+    getUserNames(userList){
+      return this.postJson('/api/usernames',userList)
+    }
+
     getTagsOfUser(mail) {
         return this.getJson(`/api/users/${encodeURIComponent(mail)}/tags`);
     }

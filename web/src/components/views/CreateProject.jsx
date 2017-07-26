@@ -102,18 +102,28 @@ export default class CreateProject extends Component {
         this.setState({ project_exists : false,
                         site_loaded : true,})
       }else{
-        var authorArray = []
-        var authors = data.authors
-        for (var i in authors) {
-          authorArray = authorArray.concat([authors[i].name + " ("+ authors[i].email+ ")"])
-        }
+
+
+        Backend.getUserNames(data.authors).then(function (userNames){
+          var authorArray = []
+          for(let author in data.authors){
+            if(userNames[author] !== undefined){
+              authorArray.push({name : userNames[author], email : author})
+            }
+          }
+          this.setState({  authors : authorArray})
+
+        }.bind(this)).then(
+
+
+
         this.setState({
           project_exists : true,
           site_loaded : true,
           projectInf : data,
-          authors : authorArray,
+
           date : Moment(data.date_creation, "YYYY-MM-DD").toDate()
-        })
+        }))
       }
     })
   }

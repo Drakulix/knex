@@ -118,7 +118,7 @@ export default class BookmarksTable extends Component {
     }*/
   }
 
-  fetchData(url){
+  fetchData(){
     this.setState({loading : true})
     return this.props.fetchHandler.then(function(data) {
       this.setState({
@@ -254,9 +254,13 @@ export default class BookmarksTable extends Component {
         Cell: props =>{
           var array = props.value === undefined ? [] : props.value
           return(
-              array.map(item =>
-                <Chip key={item} style= {styles["chip"]}>
-                  <Link to={"/discovery?tag=" +item} style= {styles["chipText"]} >{item}</Link></Chip>)
+              <div style={{marginTop: -10}}>
+                {array.map(item =>
+                  <Chip key={item} style= {styles["chip"]}>
+                    <Link to={"/discovery?tag=" +item} style= {styles["chipText"]} >{item}</Link>
+                  </Chip>)
+                }
+              </div>
           )
         },
       })
@@ -270,11 +274,13 @@ export default class BookmarksTable extends Component {
         Cell: props =>{
           var array = props.value === undefined ? [] : props.value
           return(
-            <div>
+            <div style={{marginTop: -10}}>
             {array.map(item =>
-              <Chip key={item.email} style= {styles["chip"]}>
-                <Link to={"/profile/"+item.email
-                } style= {styles["chipText"]} >{item.name}</Link><br></br></Chip>) }
+              <Chip key={item.email} style = {{margin: '8px 8px 0 0', background : '#ffffff', float: 'left' }}>
+                <Link to={"/profile/"+item.email}
+                       style= {{color:'#000000', fontWeight:'bold'}}>
+                      {item.name}
+                </Link><br></br></Chip>) }
             </div>
           )
         },

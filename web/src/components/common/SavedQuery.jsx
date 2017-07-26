@@ -89,7 +89,7 @@ export default class SavedQuery extends Component {
               <div style = {styles["wrapper"]}>
                  {  this.state.query.authors !== undefined ?
                     this.state.query.authors.map(item =>
-                   <Chip style= {styles["chip"]}>
+                   <Chip style= {{margin: '8px 8px 0 0', background : '#ffffff', float: 'left'}}>
                      {item}</Chip>)  : "" }
               </div>
             </div>
