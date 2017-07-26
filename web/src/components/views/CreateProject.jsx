@@ -12,9 +12,6 @@ import Moment from 'moment'
 import history from '../common/history'
 import AuthorInputList from '../common/AuthorInputList'
 
-
-
-
 const statusString = [
   {text : <span className = "badge badge-success">DONE</span>, value : "DONE"},
   {text : <span className = "badge badge-info">IN_REVIEW</span>, value : "IN_REVIEW"},

@@ -80,8 +80,7 @@ export default class SearchPage extends Component {
   saveSearch(){
     var toSaveQuery = this.state.query
     toSaveQuery["label"] = this.state.label
-    alert(toSaveQuery.authors)
-    Backend.search(toSaveQuery).then( function () {
+    Backend.saveSearch(toSaveQuery).then( function () {
       this.setState({open: false,
         snackbar : true,
         snackbarText : "Query saved",

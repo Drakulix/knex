@@ -121,19 +121,8 @@ export default class BookmarksTable extends Component {
   fetchData(url){
     this.setState({loading : true})
     return this.props.fetchHandler.then(function(data) {
-      var datas =[]
-      if(data !== undefined){
-        datas = JSON.parse(data)
-      }
-      var dataArray = []
-      for(let dataObject of datas) {
-        var transformedObject = dataObject
-        dataObject.tags.sort()
-        dataObject.authors.sort( function (a,b){ return a.name > b.name})
-        dataArray.push(transformedObject)
-      }
       this.setState({
-        data: dataArray,
+        data: data,
         filteredTable : []
       })
       this.filter(this.state.filters)
