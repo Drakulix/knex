@@ -60,7 +60,7 @@ def get_all_users():
 @users.route('/api/usernames', methods=['POST'])
 @login_required
 def get_usernames():
-    userlist = [g.user_datastore.get_user(mail) for mail in request.json()
+    userlist = [g.user_datastore.get_user(mail) for mail in request.get_json()
                 if g.user_datastore.find_user(mail)]
     dic = dict([(user.email, user.first_name + " " if user.first_name else "" + user.last_name)
                 for user in userlist])

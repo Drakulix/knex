@@ -243,7 +243,8 @@ def update_project(project_id):
             if is_valid and is_permitted(current_user, manifest):
                 manifest['date_last_updated'] = time.strftime("%Y-%m-%d")
                 manifest['_id'] = project_id
-                manifest['authors'] = list(set(manifest['authors']))
+                manifest['authors'] = sorted(list(set(manifest['authors'])))
+                manifest['tags'] = sorted(manifest['tags'])
                 g.projects.find_one_and_replace({'_id': project_id}, manifest,
                                                 return_document=ReturnDocument.AFTER)
                 g.notify_users(

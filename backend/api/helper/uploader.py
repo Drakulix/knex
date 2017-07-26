@@ -35,7 +35,8 @@ def save_manifest_to_db(manifest):
                 entry['_id'] = uuid.uuid4()
                 if 'archived' not in manifest:
                     entry['archived'] = False
-                entry['authors'] = list(set(entry['authors']))
+                entry['authors'] = sorted(list(set(entry['authors'])))
+                entry['tags'] = sorted(entry['tags'])
                 g.projects.insert(entry)
 
                 ids.append(entry['_id'])
