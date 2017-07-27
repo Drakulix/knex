@@ -77,7 +77,8 @@ export default class ProjectContainer extends Component {
     this.loadSiteInf(this.state.projectID)
   }
 
-  handleEdit(){
+  handleEdit(event){
+    event.preventDefault()
     history.push("/update/" + this.state.projectID)
   }
 
@@ -97,7 +98,6 @@ export default class ProjectContainer extends Component {
       snackbarText : `Project ${this.state.projectInf.title} shared`
     })
   }
-
 
   handleClose(){
     this.setState({
@@ -181,12 +181,6 @@ export default class ProjectContainer extends Component {
       })
     }
   }
-
-  handleEdit(event){
-    event.preventDefault()
-    history.push('/update/'+  this.state.projectID)
-  }
-
 
   render(){
     if(!this.state.site_loaded){
