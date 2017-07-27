@@ -35,11 +35,13 @@ def save_manifest_to_db(manifest):
                 entry['_id'] = uuid.uuid4()
                 if 'archived' not in manifest:
                     entry['archived'] = False
+                entry['authors'] = sorted(list(set(entry['authors'])))
+                entry['tags'] = sorted(entry['tags'])
                 g.projects.insert(entry)
 
                 ids.append(entry['_id'])
                 g.notify_users(
-                    list(set([author['email'] for author in entry['authors']])),
+                    list(set(entry['authors'])),
                     "Project was updated", entry['title'],
                     '/project/' + str(entry['_id']))
                 g.rerun_saved_searches()
