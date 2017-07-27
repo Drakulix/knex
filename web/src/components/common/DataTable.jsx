@@ -425,9 +425,6 @@ export default class BookmarksTable extends Component {
   class ConfirmationPane extends Component {
     constructor(props) {
       super(props)
-      this.state = {
-        open: false
-        }
       this.handleDelete = this.handleDelete.bind(this)
     }
 
@@ -435,7 +432,6 @@ export default class BookmarksTable extends Component {
       event.preventDefault()
       this.props.handleAction()
     }
-
 
     componentWillReceiveProps(props){
       this.setState({open: props.dialogOpen})
