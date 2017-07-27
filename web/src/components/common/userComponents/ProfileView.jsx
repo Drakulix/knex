@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import Chip from 'material-ui/Chip'
 import styles from '../../common/Styles.jsx'
+import TagOutputList from '../common/chips/TagOutputList'
 
 
 export default class ProfileView extends Component {
@@ -26,11 +27,7 @@ export default class ProfileView extends Component {
           </div>
           <div>
             <div className="profile-header">Knowledge in</div>
-            <div style = {styles["wrapper"]}>
-              { this.props.topTenTags.map(item =>
-                <Chip style= {styles["chip"]} key={item}>
-                  <Link to={"/discovery/"+JSON.stringify({tags:[item]})} style= {styles["chipText"]} >{item}</Link></Chip>) }
-            </div>
+            <TagOutputList value = {this.props.topTenTags} />
           </div>
         </div>
         <div className="col-3">

@@ -10,6 +10,9 @@ import RaisedButton from 'material-ui/RaisedButton'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import Snackbar from 'material-ui/Snackbar'
+import AuthorOutputList from '../common/chips/AuthorOutputList'
+import TagOutputList from '../common/chips/TagOutputList'
+
 
 export default class BookmarksTable extends Component {
 
@@ -249,15 +252,10 @@ export default class BookmarksTable extends Component {
         width: 220,
         style: {textAlign:"center"},
         Cell: props =>{
-          var array = props.value === undefined ? [] : props.value
           return(
-              <div style={{marginTop: -10}}>
-                {array.map(item =>
-                  <Chip key={item} style= {styles["chip"]}>
-                    <Link to={"/discovery?tag=" +item} style= {styles["chipText"]} >{item}</Link>
-                  </Chip>)
-                }
-              </div>
+            <div style={{marginTop: -10}}>
+              <TagOutputList value = {props.value} />
+            </div>
           )
         },
       })
@@ -269,15 +267,9 @@ export default class BookmarksTable extends Component {
         width: 150,
         id : 'authors',
         Cell: props =>{
-          var array = props.value === undefined ? [] : props.value
           return(
             <div style={{marginTop: -10}}>
-            {array.map(item =>
-              <Chip key={item} style = {{margin: '8px 8px 0 0', background : '#ffffff', float: 'left' }}>
-                <Link to={"/profile/"+item}
-                       style= {{color:'#000000', fontWeight:'bold'}}>
-                      {item}
-                </Link><br></br></Chip>) }
+              <AuthorOutputList value = {props.value} />
             </div>
           )
         },

@@ -7,9 +7,9 @@ import MenuItem from 'material-ui/MenuItem'
 import {Card, CardHeader, CardText} from 'material-ui/Card'
 import Backend from '../common/Backend.jsx'
 import Moment from 'moment'
-import AuthorInputList from '../common/AuthorInputList'
+import AuthorInputList from '../common/chips/AuthorInputList'
 
-import ChipInputList from '../common/ChipInputList'
+import ChipInputList from '../common/chips/ChipInputList'
 
 const statusString = [
   {text : <span className = "badge badge-success">DONE</span>, value : "DONE"},

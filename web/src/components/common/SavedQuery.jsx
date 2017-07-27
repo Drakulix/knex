@@ -4,6 +4,9 @@ import Chip from 'material-ui/Chip'
 import IconButton from 'material-ui/IconButton'
 import styles from '../common/Styles.jsx'
 import Backend from '../common/Backend'
+import AuthorOutputList from '../common/chips/AuthorOutputList'
+import TagOutputList from '../common/chips/TagOutputList'
+
 
 export default class SavedQuery extends Component {
 
@@ -77,21 +80,11 @@ export default class SavedQuery extends Component {
           <div className="row">
             <div className="col-1 filter-label">Tags</div>
             <div  className="col-5  query-value"  style={{marginTop:0}}>
-              <div style = {styles["wrapper"]}>
-                { this.state.query.tags !== undefined ?
-                    this.state.query.tags.map(item =>
-                     <Chip style= {styles["chip"]}>
-                       {item}</Chip>) : "" }
-              </div>
+              <TagOutputList value ={this.state.query.tags} />
             </div>
             <div className="col-1 filter-label"  style={{marginLeft:-40}}> Authors</div>
             <div  className="col-5  query-value" style={{marginTop:0}}>
-              <div style = {styles["wrapper"]}>
-                 {  this.state.query.authors !== undefined ?
-                    this.state.query.authors.map(item =>
-                   <Chip style= {{margin: '8px 8px 0 0', background : '#ffffff', float: 'left'}}>
-                     {item}</Chip>)  : "" }
-              </div>
+              <AuthorOutputList value ={this.state.query.authors} />
             </div>
           </div>
           <div className="row">

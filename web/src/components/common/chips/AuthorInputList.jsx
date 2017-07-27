@@ -2,13 +2,13 @@ import React, { Component } from 'react'
 import ChipInput from 'material-ui-chip-input'
 import Chip from 'material-ui/Chip'
 import AutoComplete from 'material-ui/AutoComplete'
-import styles from '../common/Styles.jsx'
 
-export default class ChipInputList extends Component {
+export default class AuthorInputList extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      list : this.props.value
+      list : this.props.value,
+      suggestions : this.props.suggestions
     }
   }
 
@@ -35,13 +35,16 @@ export default class ChipInputList extends Component {
   }
 
   componentWillReceiveProps(props){
-    this.setState({list : props.value});
+    this.setState({
+      list : props.value,
+      suggestions : props.suggestions
+    });
   }
 
   render(){
     return(
       <ChipInput
-        dataSource={this.props.suggestions}
+        dataSource={this.state.suggestions}
         value={this.state.list}
         filter={AutoComplete.fuzzyFilter}
         onRequestAdd={(chip) => this.handleRequestAdd(chip)}
@@ -49,14 +52,14 @@ export default class ChipInputList extends Component {
         errorText={this.props.errorText}
         hintText={this.props.hintText}
         fullWidth
-        chipRenderer={({ value, isFocused, isDisabled, handleClick, handleRequestDelete }, key) => (
+        chipRenderer={({ value, text, isFocused, isDisabled, handleClick, handleRequestDelete }, key) => (
           <Chip
             key={key}
             style= {{margin: '8px 8px 0 0',float: 'left'}}
-            backgroundColor={'#ff5000'}
+            backgroundColor={'#ffffff'}
             onTouchTap={handleClick}
             onRequestDelete={handleRequestDelete}>
-            <span style={{color : '#ffffff', fontWeight: 'bold'}}> {value} </span>
+            <span style={{color : '#000000', fontWeight: 'bold'}}> {value} </span>
           </Chip>
         )}/>
       )
