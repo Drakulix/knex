@@ -266,7 +266,7 @@ class Backend {
     }
 
     getAuthors() {
-        return this.getJson('/api/projects/authors');
+        return this.getJson('/api/projects/get_all_users_and_authors');
     }
 
     getTags() {

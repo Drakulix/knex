@@ -142,17 +142,14 @@ export default class CreateProject extends Component {
     }.bind(this))
 
     //gets all the authors from the backend
-    Backend.getUsers().then(function(authors) {
-      authors = authors.map(item => {return item.email})
-        this.setState({
-          suggestedAuthors : authors
-        })
-      }.bind(this))
+    Backend.getAuthors().then(function(authors) {
+      this.setState({suggestedAuthors : authors})
+    }.bind(this))
 
-      if(this.props.fromURL&&(this.state.status!==this.props.status)){
+    if(this.props.fromURL&&(this.state.status!==this.props.status)){
         this.setState({status : this.props.status})
-      }
     }
+  }
 
     render() {
       if(!this.state.site_loaded ){
