@@ -61,15 +61,13 @@ export default class ShowUsers extends Component {
   }
 
   handleSetActive(userInf){
-    var text = "User " + userInf.first_name + " " + userInf.last_name + " ";
-    if(userInf.active){
-      userInf.roles.splice(userInf.roles.indexOf("admin"))
-      text = text + " is disabled"
-    }
-    else {
-      userInf.roles.push("admin")
-      text = text + " is enabled"
-    }
+    var text = "User " + userInf.first_name + " " + userInf.last_name + " is "+ (userInf.active ? "de-" : "") + "activated"
+    Backend.setActivation( userInf.email,
+                           userInf.first_name,
+                           userInf.last_name,
+                           userInf.bio,
+                           userInf.active ? "false" : "true")
+    .then(this.props.handleUserUpdate(text))
   }
 
   componentWillReceiveProps(props){
@@ -160,12 +158,15 @@ export default class ShowUsers extends Component {
       Header : 'Active',
       id : 'active',
       accessor : d => d,
+      filterable : false,
+      width : 100,
+      style : {textAlign : "center"},
       Cell : props =>{
         return(
           <div onClick = {() => this.handleSetActive(props.value)}><i className="material-icons" style={{fontSize : '24px',padding:3}}>
             {props.value.active ?  "done" : "clear"}
           </i></div>)
-        )
+
       }
     })
 
