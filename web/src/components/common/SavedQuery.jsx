@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import Chip from 'material-ui/Chip'
 import IconButton from 'material-ui/IconButton'
 import styles from '../common/Styles.jsx'
 import Backend from '../common/Backend'

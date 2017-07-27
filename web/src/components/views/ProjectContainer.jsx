@@ -1,6 +1,4 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
-
 import Badge from 'material-ui/Badge'
 import Chip from 'material-ui/Chip'
 import styles from '../common/Styles.jsx'
@@ -33,7 +31,6 @@ export default class ProjectContainer extends Component {
       myEmail : Backend.getMail(),
       dialogOpen : false,
       snackbar : false,
-      sharePane : false,
       snackbarText : "",
       comments_count: 0
     }
@@ -47,8 +44,6 @@ export default class ProjectContainer extends Component {
     this.handleSharedProject = this.handleSharedProject.bind(this)
     this.handleClosedSharePane = this.handleClosedSharePane.bind(this)
     this.handleUpdateComments = this.handleUpdateComments.bind(this)
-    this.handleEdit = this.handleEdit.bind(this)
-
   }
 
   handleUpdateComments(event){
