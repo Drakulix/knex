@@ -13,6 +13,7 @@ import Snackbar from 'material-ui/Snackbar'
 import CommentSideBar from '../common/CommentSideBar'
 import AuthorOutputList from '../common/chips/AuthorOutputList'
 import TagOutputList from '../common/chips/TagOutputList'
+import ConfirmationPane from '../common/ConfirmationPane'
 
 
 
@@ -48,6 +49,19 @@ export default class ProjectContainer extends Component {
 
   handleUpdateComments(event){
     this.loadComments();
+  }
+
+  handleUnArchive(){
+    var project = this.state.projectInf;
+    delete project.is_bookmark
+    delete project.is_owner
+    project['archived'] = false
+    Backend.updateProject(this.state.projectID, project).then(
+    this.setState({
+      dialogOpen : false,
+      snackbar : true,
+      snackbarText : "Project " + project.title + " unarchived"
+    }))
   }
 
   transformArray(dataArray) {
@@ -217,10 +231,11 @@ export default class ProjectContainer extends Component {
                         />
             <CommentSideBar handleUpdateComments={this.handleUpdateComments} value = {this.state.commentBar} uuid = {this.state.projectID}></CommentSideBar>
             <ConfirmationPane open = {this.state.dialogOpen}
-                              projectID = {this.state.projectID}
-                              projectTitle = {this.state.projectInf.title}
-                              handleDelete = {this.handleDelete}
-                              handleClose = {this.handleClose}/>
+                handleClose = {this.handleClose}
+                title = {"Do you want to archive project " + this.state.projectInf.title}
+                confirmationLabel = {"Archive project"}
+                confirmAction = {this.handleDelete}
+            />
             <Snackbar
               open = {this.state.snackbar}
               message = {this.state.snackbarText}
@@ -229,6 +244,7 @@ export default class ProjectContainer extends Component {
               <div className = "col-12">
                 <div>Project</div>
                 <div style = {{fontSize : '20px'}}> {this.state.projectInf.title}</div>
+                {this.state.projectInf.archived ? <i style = {{fontSize : '20px'}}>Archived project</i> : ""}
               </div>
             </div>
             <div className = "row">
@@ -274,7 +290,8 @@ export default class ProjectContainer extends Component {
                 </div>
               </div>
             </div>
-            <div style = {{textAlign : "center", marginTop : 75}} >
+            {!this.state.projectInf.archived ?
+              <div style = {{textAlign : "center", marginTop : 75}} >
               <IconButton
                         onClick = {this.handleComment}
                         touch = {true}
@@ -333,56 +350,25 @@ export default class ProjectContainer extends Component {
                         <i className = "material-icons">archive</i>
               </IconButton>
             </div>
+              :
+            <div style = {{textAlign : "center", marginTop : 75}} >
+              <IconButton
+                        onClick ={() => this.handleUnArchive()}
+                        touch = {true}
+                        style = {styles.largeIcon}
+                        disabled = {! (this.state.isOwner || Backend.isAdmin())}
+                        tooltipPosition = "top-center"
+                        tooltip = "Unarchive project"
+                        iconStyle = {{fontSize : '24px'}}
+                        >
+                        <i className = "material-icons">unarchive</i>
+              </IconButton>
+            </div>
+
+            }
           </div>
         </div>
       )
     }
   }
-}
-
-  class ConfirmationPane extends Component {
-    constructor(props) {
-      super(props)
-      this.state = {
-        open: false
-        }
-      this.handleDelete = this.handleDelete.bind(this)
-    }
-
-    handleDelete(event){
-      event.preventDefault()
-      this.props.handleDelete()
-    }
-
-
-    componentWillReceiveProps(props){
-      this.setState({open: props.dialogOpen})
-    }
-
-    render() {
-      const actions = [
-        <RaisedButton
-          label = "Cancel"
-          primary = {true}
-          onTouchTap = {this.props.handleClose}
-          />,
-        <RaisedButton
-          label="Archive project"
-          primary = {true}
-          onTouchTap = {this.handleDelete}
-          style = {{marginLeft:20}}
-          />,
-      ]
-
-      return (
-        <Dialog
-          title = {"Do you want to archive project: \n"+ this.props.projectTitle}
-          actions = {actions}
-          modal = {false}
-          open = {this.props.open}
-          onRequestClose = {this.props.handleClose}
-          >
-        </Dialog>
-      )
-    }
 }
