@@ -63,7 +63,6 @@ export default class ShowUsers extends Component {
   }
 
   componentWillReceiveProps(props){
-    alert("fd")
     this.setState({
       loading : props.loading,
       open : false,
@@ -202,7 +201,7 @@ export default class ShowUsers extends Component {
       })
 
     return (
-      <div className = "padding">
+      <div>
         <ConfirmationPane open = {this.state.open}
                           handleClose = {this.handleClose}
                           title = {"Do you want to delete user " + this.state.userID}
@@ -213,46 +212,39 @@ export default class ShowUsers extends Component {
           <div className = "header"><CircularProgress size = {80} thickness = {5} /></div>
         </div>
         <div style = {{display : (!this.state.loading ? "block" : "none")}}>
-          <div className = "row" style = {{marginTop : 20, marginBottom : 20}}>
-            <div className = "col-1"></div>
-            <div className = "col-10">
-              <Card   onExpandChange = {() => this.setState({expanded : !this.state.expanded})}>
-                <CardHeader
-                  title = "Filter users by"
+          <div style = {{marginBottom : 20, width:"100%"}}>
+            <Card   onExpandChange = {() => this.setState({expanded : !this.state.expanded})}>
+              <CardHeader
+                  title = "Filter"
                   subtitle = "Define filters for your list"
                   actAsExpander = {true}
                   showExpandableButton = {true}
-                />
-                <CardText expandable = {true}>
-                  <div className = "row">
-                    <div className = "col-1 filter-label">Name</div>
-                    <div className = "col-5">
-                      <TextField style = {{width : '100%'}}
-                          value = {this.state.name}
-                          name = "name"
-                          onChange = {this.handleChange}
-                          type = "text" placeholder = "Enter username..."
-                      />
-                    </div>
-                    <div className = "col-1 filter-label">Email</div>
-                    <div className = "col-5">
-                      <TextField style = {{width : '100%'}}
-                          value = {this.state.email}
-                          name = "email"
-                          onChange = {this.handleChange}
-                          type = "text" placeholder = "Enter email adress..."
-                      />
-                    </div>
+              />
+              <CardText expandable = {true}>
+                <div className = "row">
+                  <div className = "col-1 filter-label">Name</div>
+                  <div className = "col-5">
+                    <TextField style = {{width : '100%'}}
+                        value = {this.state.name}
+                        name = "name"
+                        onChange = {this.handleChange}
+                        type = "text" placeholder = "Enter username..."
+                    />
                   </div>
-                </CardText>
-              </Card>
-            </div>
-            <div className = "col-1"></div>
+                  <div className = "col-1 filter-label">Email</div>
+                  <div className = "col-5">
+                    <TextField style = {{width : '100%'}}
+                        value = {this.state.email}
+                        name = "email"
+                        onChange = {this.handleChange}
+                        type = "text" placeholder = "Enter email adress..."
+                    />
+                  </div>
+                </div>
+              </CardText>
+            </Card>
           </div>
-          <div className = "row">
-            <div className = "col-1"></div>
-            <div className = "col-10">
-              <ReactTable style = {{width : "100%"}}
+          <ReactTable style = {{width : "100%"}}
                    data = {this.state.filteredList}
                    columns = {columns}
                    defaultExpanded = {{1 : true}}
@@ -263,10 +255,7 @@ export default class ShowUsers extends Component {
                       id : 'userID',
                       desc : true
                     }]}
-              />
-            </div>
-            <div className = "col-1"></div>
-          </div>
+          />
         </div>
       </div>
     )

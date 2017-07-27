@@ -67,9 +67,7 @@ export default class RegisterUser extends Component {
 
   render(){
     return (
-      <div>
-        <div style = {{marginTop : 20}}>
-          <div className="row">
+        <div className="row">
           <div className="col-4"></div>
           <div className="col-4" style = {{textAlign : "center"}}>
             <form onSubmit={this.handleRegister}>
@@ -152,8 +150,6 @@ export default class RegisterUser extends Component {
             </form>
           </div>
         </div>
-        </div>
-      </div>
     )
   }
 }

@@ -6,8 +6,8 @@ export default class ProfileView extends Component {
 
   render(){
     return (
-      <div className="row padding">
-        <div className="col-9">
+      <div className="row">
+        <div className="col-9" style={{marginTop : -30}}>
           <div className="profile-header">Name</div>
           <div className="profile-info">
             {this.props.profileInf.first_name} {this.props.profileInf.last_name}

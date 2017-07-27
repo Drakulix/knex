@@ -27,7 +27,6 @@ export default class SearchPage extends Component {
         label : "",
         searchString : query.searchString === undefined ? "" : query.searchString,
         query : query,
-        fetchURL : "/api/projects",
         open : false,
         snackbar : false,
         snackbarText : "",
@@ -42,15 +41,6 @@ export default class SearchPage extends Component {
       this.handleOpen = this.handleOpen.bind(this)
       this.handleLabelChange = this.handleLabelChange.bind(this)
     }
-
-
-  componentWillMount(){
-    if (this.props.match.params.qID !== undefined){
-        //FETCH QUERY FROM DB with ID QID
-      var query = {}
-      this.setState({query: query, fetch:true})
-    }
-  }
 
   handleChange(event) {
     const value = event.target.value

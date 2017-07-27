@@ -97,7 +97,7 @@ export default class ProfileEditor extends Component {
 
   render(){
     return (
-    <div style = {{marginTop : 20}}>
+    <div>
       <div className="row">
         <div className="col-9">
           <form onSubmit={this.handleProfileChangeSubmit}>
