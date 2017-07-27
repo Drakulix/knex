@@ -60,9 +60,9 @@ def get_all_users():
 @users.route('/api/usernames', methods=['POST'])
 @login_required
 def get_usernames():
-    userlist = [g.user_datastore.get_user(mail) for mail in request.get_json()
-                if g.user_datastore.find_user(mail)]
-    dic = dict([(user.email, user.first_name + " " if user.first_name else "" + user.last_name)
+    userlist = [g.user_datastore.find_user(email=mail) for mail in request.get_json()
+                if g.user_datastore.find_user(email=mail)]
+    dic = dict([(user.email, (user.first_name + " " if user.first_name else "" + user.last_name))
                 for user in userlist])
     return jsonify(dic)
 
@@ -245,7 +245,8 @@ def get_user_tags(mail):
             res: Array with topten tags lexicographical order
     """
     try:
-        pipeline = [{"$in": [mail, "$authors"]},  # not sure here
+        pipeline = [{"$unwind": "$authors"},
+                    {"$match": {"authors": mail}},
                     {"$unwind": "$tags"},
                     {"$group": {"_id": "$tags", "count": {"$sum": 1}}}
                     ]
@@ -268,7 +269,8 @@ def get_cur_user_tags():
             res: Array with topten tags lexicographical order
     """
     try:
-        pipeline = [{"$in": [curren_user['email'], "$authors"]},  # not sure here
+        pipeline = [{"$unwind": "$authors"},
+                    {"$match": {"authors": current_user['email']}},
                     {"$unwind": "$tags"},
                     {"$group": {"_id": "$tags", "count": {"$sum": 1}}}
                     ]
