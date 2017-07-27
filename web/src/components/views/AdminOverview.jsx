@@ -63,10 +63,10 @@ export default class AdminOverview extends Component {
           onChange = {this.handleChange}
           style = {{marginBottom : "40px"}}
         >
-          <Tab label = "Manage Projects" value = "1">
+          <Tab label = "Archived Projects" value = "1">
             <ShowProjects/>
           </Tab>
-          <Tab label = "List Users" value = "2">
+          <Tab label = "Manage Users" value = "2">
             <ShowUsers
               userList = {this.state.userList}
               handleUserUpdate = {this.handleUserUpdate}

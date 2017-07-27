@@ -97,11 +97,10 @@ export default class ProfileEditor extends Component {
 
   render(){
     return (
-    <div>
+    <div style = {{marginTop : 20}}>
       <div className="row">
         <div className="col-9">
           <form onSubmit={this.handleProfileChangeSubmit}>
-            <div className="profile-header">Information:</div>
             <div className="row">
               <div className="profile-info col-3">First name:</div>
               <div className="col-3">
@@ -167,31 +166,30 @@ export default class ProfileEditor extends Component {
       </div>
       <div className = "row">
         <div className ="col-9">
-          <div className="change-password">
-        <form onSubmit={this.handlePwChangeSubmit}>
-          <div className="row">
-            <label className="col-3 col-form-label">Email</label>
-            <div className="col-9">
-              <div className="form-control-static">{ this.props.profileInf.email }</div>
+          <form onSubmit={this.handlePwChangeSubmit}>
+            <div className="row">
+              <div className="col-3 profile-info">Email</div>
+              <div className="col-9">
+                <div className="form-control-static">{ this.props.profileInf.email }</div>
+              </div>
             </div>
-          </div>
-          {(Backend.isAdmin()) ? "" :
-          <div className="row">
-            <label className="col-3">Old password</label>
-            <div className="col-3">
-              <TextField
+            {(Backend.isAdmin()) ? "" :
+            <div className="row">
+              <div className = "col-3 profile-info">Old password</div>
+              <div className = "col-3">
+                <TextField
                           value={this.state.pw_old}
                           type="password"
                           name="pw_old"
                           hintText="Your old password"
                           onChange={this.handleInputChange}
                           errorText ={this.state.pw_old.length === 0 ? "Password can not be empty" :""}
-              />
+                />
+              </div>
             </div>
-          </div>
-          }
-          <div className="row">
-            <label className="col-3">New password</label>
+            }
+            <div className="row">
+            <div className="col-3 profile-info">New password</div>
             <div className="col-3">
               <TextField
                           value={this.state.pw_new}
@@ -204,7 +202,7 @@ export default class ProfileEditor extends Component {
             </div>
           </div>
           <div className="row">
-            <label className="col-3">Confirm password</label>
+            <div className="col-3 profile-info">Confirm password</div>
             <div className="col-3">
               <TextField
                           value={this.state.pw_new_confirm}
@@ -227,8 +225,7 @@ export default class ProfileEditor extends Component {
                           />
             </div>
           </div>
-        </form>
-      </div>
+          </form>
         </div>
       </div>
     </div>

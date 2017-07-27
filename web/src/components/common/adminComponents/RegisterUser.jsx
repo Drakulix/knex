@@ -68,8 +68,7 @@ export default class RegisterUser extends Component {
   render(){
     return (
       <div>
-        <div>
-          <div className="header-tab" style = {{textAlign : "center"}}>Register user</div>
+        <div style = {{marginTop : 20}}>
           <div className="row">
           <div className="col-4"></div>
           <div className="col-4" style = {{textAlign : "center"}}>

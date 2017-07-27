@@ -8,8 +8,7 @@ export default class ProfileProjects extends Component {
                   /*fetchURL = {"/api/projects/search/advanced/?q=(authors.email: " + this.props.profileInf.email + ")"}*/
   render(){
     return (
-      <div>
-        <div  className="header-tab">Manage projects</div>
+      <div style = {{marginTop : 20}}>
         <DataTable
                   fetchHandler = {Backend.search({archived : "false", authors : [this.props.profileInf.email]})}
                   columns= {['title', 'status', 'tags', 'authors', 'description', '_id',

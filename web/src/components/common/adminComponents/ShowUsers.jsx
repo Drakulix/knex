@@ -198,67 +198,66 @@ export default class ShowUsers extends Component {
                           userID = {this.state.userID}
                           handleUserUpdate = {this.props.handleUserUpdate}
                           handleClose = {this.handleClose}/>
-        <div className = "header-tab" style = {{textAlign : "center"}}>List users</div>
-          <div className = "container" style = {{display : (this.state.loading ? "block" : "none")}}>
-            <div className = "header"><CircularProgress size = {80} thickness = {5} /></div>
-          </div>
-          <div style = {{display : (!this.state.loading ? "block" : "none")}}>
-            <div className = "row" style = {{marginBottom : 20}}>
-              <div className = "col-1"></div>
-              <div className = "col-10">
-                <Card   onExpandChange = {() => this.setState({expanded : !this.state.expanded})}>
-                  <CardHeader
-                    title = "Filter users by"
-                    subtitle = "Define filters for your list"
-                    actAsExpander = {true}
-                    showExpandableButton = {true}
-                  />
-                  <CardText expandable = {true}>
-                    <div className = "row">
-                      <div className = "col-1 filter-label">Name</div>
-                      <div className = "col-5">
-                          <TextField style = {{width : '100%'}}
-                            value = {this.state.name}
-                            name = "name"
-                            onChange = {this.handleChange}
-                            type = "text" placeholder = "Enter username..."
-                          />
-                      </div>
-                      <div className = "col-1 filter-label">Email</div>
-                      <div className = "col-5">
-                          <TextField style = {{width : '100%'}}
-                            value = {this.state.email}
-                            name = "email"
-                            onChange = {this.handleChange}
-                            type = "text" placeholder = "Enter email adress..."
-                          />
-                      </div>
+        <div className = "container" style = {{display : (this.state.loading ? "block" : "none")}}>
+          <div className = "header"><CircularProgress size = {80} thickness = {5} /></div>
+        </div>
+        <div style = {{display : (!this.state.loading ? "block" : "none")}}>
+          <div className = "row" style = {{marginTop : 20, marginBottom : 20}}>
+            <div className = "col-1"></div>
+            <div className = "col-10">
+              <Card   onExpandChange = {() => this.setState({expanded : !this.state.expanded})}>
+                <CardHeader
+                  title = "Filter users by"
+                  subtitle = "Define filters for your list"
+                  actAsExpander = {true}
+                  showExpandableButton = {true}
+                />
+                <CardText expandable = {true}>
+                  <div className = "row">
+                    <div className = "col-1 filter-label">Name</div>
+                    <div className = "col-5">
+                      <TextField style = {{width : '100%'}}
+                          value = {this.state.name}
+                          name = "name"
+                          onChange = {this.handleChange}
+                          type = "text" placeholder = "Enter username..."
+                      />
                     </div>
-                  </CardText>
-                </Card>
-              </div>
-              <div className = "col-1"></div>
+                    <div className = "col-1 filter-label">Email</div>
+                    <div className = "col-5">
+                      <TextField style = {{width : '100%'}}
+                          value = {this.state.email}
+                          name = "email"
+                          onChange = {this.handleChange}
+                          type = "text" placeholder = "Enter email adress..."
+                      />
+                    </div>
+                  </div>
+                </CardText>
+              </Card>
             </div>
-            <div className = "row">
-              <div className = "col-1"></div>
-              <div className = "col-10">
-                <ReactTable style = {{width : "100%"}}
-                     data = {this.state.filteredList}
-                     columns = {columns}
-                     defaultExpanded = {{1 : true}}
-                     filterable = {false}
-                     showPageSizeOptions = {false}
-                     defaultPageSize = {10}
-                     defaultSorted = {[{
-                        id : 'userID',
-                        desc : true
-                      }]}
-                     />
-              </div>
-              <div className = "col-1"></div>
+            <div className = "col-1"></div>
+          </div>
+          <div className = "row">
+            <div className = "col-1"></div>
+            <div className = "col-10">
+              <ReactTable style = {{width : "100%"}}
+                   data = {this.state.filteredList}
+                   columns = {columns}
+                   defaultExpanded = {{1 : true}}
+                   filterable = {false}
+                   showPageSizeOptions = {false}
+                   defaultPageSize = {10}
+                   defaultSorted = {[{
+                      id : 'userID',
+                      desc : true
+                    }]}
+              />
             </div>
+            <div className = "col-1"></div>
           </div>
         </div>
+      </div>
     )
   }
 }
