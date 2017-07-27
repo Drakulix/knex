@@ -10,10 +10,7 @@
     },
     "authors":
     [
-      {
-      "name": "test_owner1",
-      "email": "email@address.com"
-      }
+        "email@address.com"
     ],
     "team":
     {

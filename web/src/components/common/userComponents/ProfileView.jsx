@@ -29,7 +29,7 @@ export default class ProfileView extends Component {
             <div style = {styles["wrapper"]}>
               { this.props.topTenTags.map(item =>
                 <Chip style= {styles["chip"]} key={item}>
-                  <Link to={"/discovery?tag=" +item} style= {styles["chipText"]} >{item}</Link></Chip>) }
+                  <Link to={"/discovery/"+JSON.stringify({tags:[item]})} style= {styles["chipText"]} >{item}</Link></Chip>) }
             </div>
           </div>
         </div>

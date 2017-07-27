@@ -28,8 +28,8 @@ def is_permitted(user, entry) -> bool:
     if user.has_role('admin'):
         return True
     elif 'author' in entry:
-        return user['email'] == entry['author']['email']
-    return user['email'] in [author['email'] for author in entry['authors']]
+        return user['email'] == entry['author']
+    return user['email'] in entry['authors']
 
 
 @projects.route('/api/projects', methods=['POST'])
@@ -116,7 +116,7 @@ def get_projects():
             project['is_bookmark'] = 'true' if project['_id']\
                 in current_user['bookmarks'] else 'false'
             project['is_owner'] = 'true' if current_user['email']\
-                in [author['email'] for author in project['authors']] else 'false'
+                in project['authors'] else 'false'
         return jsonify(res)
     except KeyError as err:
         raise ApiException(str(err), 400)
@@ -127,8 +127,8 @@ def get_projects():
 def get_all_authors():
     try:
         authors = g.projects.distinct('authors')
-        res = sorted(authors, key=lambda k: str(k['name']).lower()) if authors else []
-        return jsonify(res)
+        all_authors = sorted(authors, key=lambda k: str(k).lower()) if authors else []
+        return jsonify(all_authors)
     except Exception as err:
         raise ApiException(str(err), 500)
 
@@ -166,8 +166,7 @@ def get_project_by_id(project_id):
         return make_response("Project not found", 404)
     try:
         res['is_bookmark'] = 'true' if project_id in current_user['bookmarks'] else 'false'
-        res['is_owner'] = 'true' if current_user['email']\
-            in [author['email'] for author in res['authors']] else 'false'
+        res['is_owner'] = 'true' if current_user['email'] in res['authors'] else 'false'
     except KeyError as err:
         raise ApiException(str(err), 500)
     return jsonify(res)
@@ -208,7 +207,7 @@ def archive_project(project_id, archived):
                                     return_document=ReturnDocument.AFTER)
     g.notify_users(
         list(set(
-            [author['email'] for author in manifest['authors']] +
+            manifest['authors'] +
             g.users_with_bookmark(str(manifest['_id'])))),
         "Project was (un)archived", manifest['title'],
         '/project/' + str(manifest['_id']))
@@ -244,11 +243,13 @@ def update_project(project_id):
             if is_valid and is_permitted(current_user, manifest):
                 manifest['date_last_updated'] = time.strftime("%Y-%m-%d")
                 manifest['_id'] = project_id
+                manifest['authors'] = sorted(list(set(manifest['authors'])))
+                manifest['tags'] = sorted(manifest['tags'])
                 g.projects.find_one_and_replace({'_id': project_id}, manifest,
                                                 return_document=ReturnDocument.AFTER)
                 g.notify_users(
                     list(set(
-                        [author['email'] for author in manifest['authors']] +
+                        manifest['authors'] +
                         g.users_with_bookmark(str(manifest['_id'])))),
                     "Project was updated", manifest['title'],
                     '/project/' + str(manifest['_id']))
@@ -291,12 +292,7 @@ def add_comment(project_id):
         if "text/plain" not in request.content_type:
             raise ApiException("'text/plain' must be in Content-Type", 400)
         comment = {}
-        author = {}
-        firstname = current_user.to_dict().get('first_name', "")
-        lastname = current_user.to_dict().get('last_name', "")
-        author['name'] = firstname + " " if firstname else "" + lastname
-        author['email'] = current_user['email']
-        comment['author'] = author
+        comment['author'] = current_user['email']
         comment['datetime'] = time.strftime("%Y-%m-%d %H:%M:%S")
         comment['id'] = str(uuid.uuid4())
         comment['message'] = request.data.decode('utf-8')
@@ -312,9 +308,9 @@ def add_comment(project_id):
                                             return_document=ReturnDocument.AFTER)
             g.notify_users(
                 list(set(
-                    [author['email'] for author in manifest['authors']] +
-                    [comment['author']['email'] for comment in manifest['comments']])),
-                "New comment", author["name"] + " commented on " + manifest["title"],
+                    manifest['authors'] +
+                    [comment['author'] for comment in manifest['comments']])),
+                "New comment", current_user['email'] + " commented on " + manifest["title"],
                 '/project/' + str(manifest['_id']))
             return jsonify(comment['id'])
         else:

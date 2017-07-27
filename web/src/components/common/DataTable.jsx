@@ -9,6 +9,7 @@ import styles from '../common/Styles.jsx'
 import RaisedButton from 'material-ui/RaisedButton'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
+import Snackbar from 'material-ui/Snackbar'
 
 export default class BookmarksTable extends Component {
 
@@ -17,25 +18,24 @@ export default class BookmarksTable extends Component {
     var filters = {}
     if(props.predefinedFilter !== undefined){
       filters = props.predefinedFilter
-      delete filters.searchString
-      delete filters._id
-      delete filters.userID
-      delete filters.label
     }
+
     this.state = {
       data: [{
       }],
       filters : filters,
       filteredTable : [{
       }],
+      url : props.fetchURL,
       dialogOpen : false,
       dialogText : "",
       projectTitle : "",
       projectID : "",
       action : null,
-      url : "/api/projects",
       loading : true,
-      buttonText : "DELETE"
+      buttonText : "DELETE",
+      snackbar : false,
+      snackbarText : ""
     }
 
     this.handleFilterChange = this.handleFilterChange.bind(this)
@@ -49,20 +49,27 @@ export default class BookmarksTable extends Component {
 
   handleDelete(projectID, projectName){
     this.setState({dialogOpen : true,
+      snackbar : false,
       dialogText : "Do you want to delete project " + projectName +"?",
       projectID : projectID,
       buttonText : "Delete",
       action : function (){
         this.setState({dialogOpen:false})
-        Backend.deleteProject(projectID)
+           Backend.deleteProject(projectID)
           .then(this.fetchData(this.state.url))
+          .then(this.setState({snackbar :true,
+            snackbarText : "Project "+ projectName + " deleted"})
+          )
       }.bind(this)
       })
   }
 
-  handleUnArchive(projectID){
-    Backend.getProjectArchived(projectID, false).then(
-    this.fetchData(this.state.url))
+  handleUnArchive(projectID, projectTitle){
+    Backend.getProjectArchived(projectID, false)
+    .then(this.fetchData(this.state.url))
+    .then(this.setState({snackbar :true,
+      snackbarText : "Project " + projectTitle + " unarchived"})
+    )
   }
 
   handleClose(){
@@ -71,6 +78,7 @@ export default class BookmarksTable extends Component {
 
   handleArchive(projectID, projectName){
     this.setState({dialogOpen : true,
+      snackbar : false,
       dialogText : "Do you want to archive project " + projectName +"?",
       projectID : projectID,
       buttonText : "archive",
@@ -78,18 +86,21 @@ export default class BookmarksTable extends Component {
         this.setState({dialogOpen:false})
         Backend.getProjectArchived(projectID, true)
           .then(this.fetchData(this.state.url))
+          .then(this.setState({snackbar :true,
+            snackbarText : "Project "+projectName +" archived"})
+          )
       }.bind(this)
       })
   }
 
   handleAddBookmark(projectID){
     Backend.addBookmark(projectID)
-      .then(this.fetchData(this.state.url))
+      .then(this.fetchData(this.props.fetchURL))
   }
 
   handleRemoveBookmark(projectID){
     Backend.deleteBookmark(projectID)
-      .then(this.fetchData(this.state.url))
+      .then(this.fetchData(this.props.fetchURL))
   }
 
   componentDidMount() {
@@ -107,69 +118,49 @@ export default class BookmarksTable extends Component {
 
   fetchData(url){
     this.setState({loading : true})
-    Backend.getJson(url).then(function(data) {
+    return Backend.getJson(url).then(function(data) {
       var datas =[]
       if(data !== undefined)
         datas = data
-      var filteredDataArray = []
       var dataArray = []
       for(let dataObject of datas) {
         var transformedObject = dataObject
-        var t = new String(dataObject.tags)
-        t = t.substring(0,t.length)
-        var array = t.split(",")
-        array.sort()
-        transformedObject["tagString"] =array.join()
-        var temp = []
-        for (var i in  dataObject.authors) {
-          temp = temp.concat([dataObject.authors[i].name + " ##"+dataObject.authors[i].email] )
-        }
-        temp.sort()
-        transformedObject["authorString"] = temp.join()
-        filteredDataArray.push(transformedObject)
+        dataObject.tags.sort()
+        dataObject.authors.sort( function (a,b){ return a.name > b.name})
         dataArray.push(transformedObject)
       }
       this.setState({
         data: dataArray,
-        filteredTable : filteredDataArray
+        filteredTable : []
       })
         this.filter(this.state.filters)
         this.setState({loading : false})
+
       }.bind(this))
     }
 
-    handleFilterChange(key, value){
-      var state = this.state.filters
-      if(value === undefined || value ===""  || value.length === 0){
-        delete state[key]
-        value = undefined
-      }
-      else  {
-        state[key] = value
-      }
-      this.setState({filters : state})
-      this.filter(state)
-      if(this.props.handleFilter !== undefined)
-        this.props.handleFilter(key,value)
+  handleFilterChange(key, value){
+    var state = this.state.filters
+    if(value === undefined || value ===""  || value.length === 0){
+      delete state[key]
     }
+    else  {
+      state[key] = value
+    }
+    this.setState({filters : state})
+    this.filter(state)
+    if(this.props.handleFilter !== undefined)
+      this.props.handleFilter(key,value)
+  }
 
-    filter(filters){
-      this.setState({loading : true})
-      var array = []
-      for(let dataObject of this.state.data) {
-        var discard = false
-        for(let key of Object.keys(filters)){
-          var value = filters[key]
-          switch (key){
-            case "title":
-              discard = dataObject.title.toLowerCase().indexOf(value.toLowerCase()) === -1
-              break
-            case "description":
-              discard = dataObject.description.toLowerCase().indexOf(value.toLowerCase()) === -1
-              break
-            case "status":
-              discard = dataObject.status.toLowerCase().indexOf(value.toLowerCase()) === -1
-              break
+  filter(filters){
+    this.setState({loading : true})
+    var array = []
+    for(let dataObject of this.state.data) {
+      var discard = false
+      for(let key of Object.keys(filters)){
+        var value = filters[key]
+        switch (key){
             case "date_to":
               discard = dataObject.date_creation  > value
               break
@@ -177,13 +168,9 @@ export default class BookmarksTable extends Component {
               discard = dataObject.date_creation  < value
               break
             case "tags":
-              var temp = dataObject.tags.join().toLowerCase()
-              for(let i in value){
-                var tag = value[i]
-                discard = temp.indexOf(tag.toLowerCase()) === -1
-                if(discard)
-                  break
-              }
+              var temp = dataObject[key].join().toLowerCase()
+              discard = value.some(function notContains(element){
+                            return temp.indexOf(element) === -1})
               break
             case "authors":
               temp = []
@@ -191,27 +178,25 @@ export default class BookmarksTable extends Component {
                 temp = temp.concat([dataObject.authors[i].name + " ("+dataObject.authors[i].email+ ")"])
               }
               temp = temp.join().toLowerCase()
-              for(let i in value){
-                var author = value[i]
-                discard = temp.indexOf(author.toLowerCase()) === -1
-                if(discard)
-                  break
-              }
+              discard = value.some( function notContains(element){
+                return temp.indexOf(element) === -1
+              })
               break
             default:
+              discard = dataObject[key].toLowerCase().indexOf(value.toLowerCase()) === -1
               break
           }
-          if(discard){
-            break
-          }
-        }
-        if(!discard){
-          array.push(dataObject)
+        if(discard){
+          break
         }
       }
-      this.setState({filteredTable : array,
-      loading : false})
+      if(!discard){
+        array.push(dataObject)
+      }
     }
+    this.setState({filteredTable : array,
+    loading : false})
+  }
 
   render() {
     const columns = []
@@ -224,7 +209,7 @@ export default class BookmarksTable extends Component {
         Cell: props =>{
           return(
             <div style={{whiteSpace : "normal"}}>
-              <Link to={`project/${props.value._id}`}
+              <Link to={`/project/${props.value._id}`}
                 className="table-link-text">
                 {props.value.title}
               </Link>
@@ -272,12 +257,12 @@ export default class BookmarksTable extends Component {
     if(this.props.columns.indexOf("tags") !== -1){
       columns.push({
         Header: 'Tags',
-        accessor: "tagString",
-        id : 'tagString',
+        accessor: "tags",
+        id : 'tags',
         width: 220,
         style: {textAlign:"center"},
         Cell: props =>{
-          var array = props.value === undefined ? [] : new String(props.value).split(",")
+          var array = props.value === undefined ? [] : props.value
           return(
               array.map(item =>
                 <Chip key={item} style= {styles["chip"]}>
@@ -289,18 +274,17 @@ export default class BookmarksTable extends Component {
     if(this.props.columns.indexOf("authors") !== -1){
       columns.push({
         Header: 'Authors',
-        accessor: "authorString",
+        accessor: "authors",
         width: 150,
-        id : 'authorString',
+        id : 'authors',
         Cell: props =>{
-          var array = props.value === undefined ? [] : new String(props.value).split(",")
+          var array = props.value === undefined ? [] : props.value
           return(
             <div>
             {array.map(item =>
-              <Chip key={item.substring(item.indexOf(" ##")+3)} style= {styles["chip"]}>
-                <Link to={"/profile/"+item.substring(
-                    item.indexOf(" ##")+3
-                  )} style= {styles["chipText"]} >{item.substring(0,item.indexOf(" ##"))}</Link><br></br></Chip>) }
+              <Chip key={item.email} style= {styles["chip"]}>
+                <Link to={"/profile/"+item.email
+                } style= {styles["chipText"]} >{item.name}</Link><br></br></Chip>) }
             </div>
           )
         },
@@ -313,11 +297,11 @@ export default class BookmarksTable extends Component {
         style: {width: "100%"},
         accessor: d => d,
         Cell: props =>{
-
-          var text = (props.value.description !== undefined) ? new String(props.value.description).substring(0,250).trim()+"..." : "";
+          var text = (props.value.description !== undefined) ? props.value.description.substring(0,250).trim(): "";
+          text = text + ((text.length >= 250) ? "..." : "")
           return(
             <div style ={{whiteSpace : "normal"}}>
-              {text}
+            {text}
             </div>
           )
         }
@@ -351,15 +335,46 @@ export default class BookmarksTable extends Component {
         }
       })
     }
+    if(this.props.columns.indexOf("unarchive") !== -1){
+      columns.push({
+        Header: 'Unarchive',
+        accessor: d => d,
+        id: 'archived',
+        sortable:true,
+        sortMethod: (a,b) => {
+          return  a.archived === b.archived ?
+          (a.title < b.title ? 1 : -1)
+           :
+          (a.archived  ? 1 : -1)},
+        width: 100,
+        style: {textAlign:"center"},
+        Cell: props => { return props.value.archived  ?
+          <IconButton
+          onClick = {()=>this.handleUnArchive(props.value._id, props.value.title)}
+          touch = {true}
+          style = {styles.largeIcon}
+          iconStyle = {{fontSize: '24px'}}
+          value = {props.value._id}>
+            <i className="material-icons">unarchive</i>
+          </IconButton>
+          : ""}
+      })
+    }
     if(this.props.columns.indexOf("archive") !== -1){
       columns.push({
         Header: 'Archive',
         accessor: d => d,
         id: 'archive',
-        sortable:false,
+        sortable:true,
+        sortMethod: (a,b) => {
+          return  a.archived === b.archived ?
+          (a.title < b.title ? -1 : 1)
+           :
+          (a.archived  ? 1 : -1)},
         width: 80,
         style: {textAlign:"center"},
-        Cell: props => <IconButton
+        Cell: props => { return !props.value.archived  ?
+          <IconButton
           onClick = {()=>this.handleArchive(props.value._id, props.value.title)}
           touch = {true}
           style = {styles.largeIcon}
@@ -367,26 +382,10 @@ export default class BookmarksTable extends Component {
           value = {props.value._id}>
             <i className="material-icons">archive</i>
           </IconButton>
+          : "" }
       })
     }
-    if(this.props.columns.indexOf("dearchive") !== -1){
-      columns.push({
-        Header: 'Unarchive',
-        accessor: d => d,
-        id: 'dearchive',
-        sortable:false,
-        width: 100,
-        style: {textAlign:"center"},
-        Cell: props => <IconButton
-          onClick = {()=>this.handleUnArchive(props.value._id)}
-          touch = {true}
-          style = {styles.largeIcon}
-          iconStyle = {{fontSize: '24px'}}
-          value = {props.value._id}>
-            <i className="material-icons">unarchive</i>
-          </IconButton>
-      })
-    }
+
     if(this.props.columns.indexOf("delete") !== -1){
       columns.push({
         Header: 'Delete',
@@ -415,6 +414,10 @@ export default class BookmarksTable extends Component {
                           buttonText = {this.state.buttonText}
                           handleAction= {this.state.action}
         />
+      <Snackbar open={this.state.snackbar}
+                message={this.state.snackbarText}
+                autoHideDuration={10000}
+      />
       <div className = "container" style = {{display : (this.state.loading ? "block" : "none")}}>
         <div className = "header"><CircularProgress size = {80} thickness = {5} /></div>
       </div>
