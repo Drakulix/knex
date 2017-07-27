@@ -397,7 +397,11 @@ class Backend {
     }
 
     search(query) {
-        return this.postJson(`/api/projects/search`, query);
+        return this.postJson(`/api/projects/search`, query).then( function(data){return JSON.parse(data)});
+    }
+
+    saveSearch(query) {
+      return this.postJson(`/api/projects/search`, query)
     }
 
     searchSaved(id) {
@@ -467,6 +471,10 @@ class Backend {
           this.profile = profile;
         }
         return profile;
+    }
+
+    getUserNames(userList){
+      return this.postJson('/api/usernames',userList)
     }
 
     getTagsOfUser(mail) {

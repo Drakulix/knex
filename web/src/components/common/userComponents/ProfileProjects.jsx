@@ -9,18 +9,14 @@ export default class ProfileProjects extends Component {
   render(){
     return (
       <div>
-        <div  className="header-tab">Manage projects</div>
         <DataTable
-
-                  fetchURL = {"/api/projects"}
-                  columns= {['title', 'status', 'tags', 'authors', 'description', '_id',
-                    (!this.props.profileInf.email == Backend.getMail()) ? 'bookmarked':'',
-                    (!this.props.profileInf.email == Backend.getMail() || Backend.isAdmin()) ?'archive' : '',
-                    (!this.props.profileInf.email == Backend.getMail() || Backend.isAdmin()) ?'unarchive' :'']
-                  }
-                  isProfile = {true}
-                  />
-        <div className="footer" />
+        fetchHandler = {Backend.search({archived : "false", authors : [this.props.profileInf.email]})}
+        columns= {['title', 'status', 'tags', 'authors', 'description', '_id',
+                  (!this.props.profileInf.email == Backend.getMail()) ? 'bookmarked':'',
+                  (!this.props.profileInf.email == Backend.getMail() || Backend.isAdmin()) ?'archive' : '',
+                  (!this.props.profileInf.email == Backend.getMail() || Backend.isAdmin()) ?'unarchive' :'']
+        }
+        />
       </div>
     )
   }

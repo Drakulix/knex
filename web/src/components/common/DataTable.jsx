@@ -4,12 +4,15 @@ import ReactTable from 'react-table'
 import Backend from './Backend'
 import Filters from './Filters'
 import IconButton from 'material-ui/IconButton'
-import Chip from 'material-ui/Chip'
 import styles from '../common/Styles.jsx'
 import RaisedButton from 'material-ui/RaisedButton'
 import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import Snackbar from 'material-ui/Snackbar'
+import AuthorOutputList from '../common/chips/AuthorOutputList'
+import TagOutputList from '../common/chips/TagOutputList'
+import ConfirmationPane from '../common/ConfirmationPane'
+
 
 export default class BookmarksTable extends Component {
 
@@ -26,11 +29,10 @@ export default class BookmarksTable extends Component {
       filters : filters,
       filteredTable : [{
       }],
-      url : props.fetchURL,
+      handler : this.props.fetchHandler,
+      //url : props.fetchURL,
       dialogOpen : false,
-      dialogText : "",
-      projectTitle : "",
-      projectID : "",
+      dialogText : "XX",
       action : null,
       loading : true,
       buttonText : "DELETE",
@@ -45,18 +47,20 @@ export default class BookmarksTable extends Component {
     this.handleArchive = this.handleArchive.bind(this)
     this.handleUnArchive = this.handleUnArchive.bind(this)
     this.handleClose = this.handleClose.bind(this)
+
+    this.fetchData()
   }
 
   handleDelete(projectID, projectName){
-    this.setState({dialogOpen : true,
+    this.setState({
       snackbar : false,
       dialogText : "Do you want to delete project " + projectName +"?",
-      projectID : projectID,
       buttonText : "Delete",
+      dialogOpen : true,
       action : function (){
         this.setState({dialogOpen:false})
            Backend.deleteProject(projectID)
-          .then(this.fetchData(this.state.url))
+          .then(this.fetchData())
           .then(this.setState({snackbar :true,
             snackbarText : "Project "+ projectName + " deleted"})
           )
@@ -66,7 +70,7 @@ export default class BookmarksTable extends Component {
 
   handleUnArchive(projectID, projectTitle){
     Backend.getProjectArchived(projectID, false)
-    .then(this.fetchData(this.state.url))
+    .then(this.fetchData())
     .then(this.setState({snackbar :true,
       snackbarText : "Project " + projectTitle + " unarchived"})
     )
@@ -77,15 +81,15 @@ export default class BookmarksTable extends Component {
   }
 
   handleArchive(projectID, projectName){
-    this.setState({dialogOpen : true,
+    this.setState({
       snackbar : false,
       dialogText : "Do you want to archive project " + projectName +"?",
-      projectID : projectID,
       buttonText : "archive",
+      dialogOpen : true,
       action : function (){
         this.setState({dialogOpen:false})
         Backend.getProjectArchived(projectID, true)
-          .then(this.fetchData(this.state.url))
+          .then(this.fetchData())
           .then(this.setState({snackbar :true,
             snackbarText : "Project "+projectName +" archived"})
           )
@@ -95,49 +99,37 @@ export default class BookmarksTable extends Component {
 
   handleAddBookmark(projectID){
     Backend.addBookmark(projectID)
-      .then(this.fetchData(this.props.fetchURL))
+      .then(this.fetchData())
   }
 
   handleRemoveBookmark(projectID){
     Backend.deleteBookmark(projectID)
-      .then(this.fetchData(this.props.fetchURL))
+      .then(this.fetchData())
   }
 
-  componentDidMount() {
-    this.setState({url :this.props.fetchURL})
-    this.fetchData(this.props.fetchURL)
-  }
+  // componentDidMount() {
+  //   this.fetchData()
+  // }
 
   componentWillReceiveProps(nextProps) {
     // You don't have to do this check first, but it can help prevent an unneeded render
-    if (this.state.url != nextProps.fetchURL){
+/*    if (this.state.url != nextProps.fetchURL){
       this.setState({url :nextProps.fetchURL})
       this.fetchData(nextProps.fetchURL)
-    }
+    }*/
   }
 
-  fetchData(url){
+  fetchData(){
     this.setState({loading : true})
-    return Backend.getJson(url).then(function(data) {
-      var datas =[]
-      if(data !== undefined)
-        datas = data
-      var dataArray = []
-      for(let dataObject of datas) {
-        var transformedObject = dataObject
-        dataObject.tags.sort()
-        dataObject.authors.sort( function (a,b){ return a.name > b.name})
-        dataArray.push(transformedObject)
-      }
+    return this.props.fetchHandler.then(function(data) {
       this.setState({
-        data: dataArray,
+        data: data,
         filteredTable : []
       })
-        this.filter(this.state.filters)
-        this.setState({loading : false})
-
-      }.bind(this))
-    }
+      this.filter(this.state.filters)
+      this.setState({loading : false})
+    }.bind(this))
+  }
 
   handleFilterChange(key, value){
     var state = this.state.filters
@@ -173,11 +165,7 @@ export default class BookmarksTable extends Component {
                             return temp.indexOf(element) === -1})
               break
             case "authors":
-              temp = []
-              for (var i in  dataObject.authors) {
-                temp = temp.concat([dataObject.authors[i].name + " ("+dataObject.authors[i].email+ ")"])
-              }
-              temp = temp.join().toLowerCase()
+              temp = dataObject[key].join().toLowerCase()
               discard = value.some( function notContains(element){
                 return temp.indexOf(element) === -1
               })
@@ -262,11 +250,10 @@ export default class BookmarksTable extends Component {
         width: 220,
         style: {textAlign:"center"},
         Cell: props =>{
-          var array = props.value === undefined ? [] : props.value
           return(
-              array.map(item =>
-                <Chip key={item} style= {styles["chip"]}>
-                  <Link to={"/discovery?tag=" +item} style= {styles["chipText"]} >{item}</Link></Chip>)
+            <div style={{marginTop: -10}}>
+              <TagOutputList value = {props.value} />
+            </div>
           )
         },
       })
@@ -278,13 +265,9 @@ export default class BookmarksTable extends Component {
         width: 150,
         id : 'authors',
         Cell: props =>{
-          var array = props.value === undefined ? [] : props.value
           return(
-            <div>
-            {array.map(item =>
-              <Chip key={item.email} style= {styles["chip"]}>
-                <Link to={"/profile/"+item.email
-                } style= {styles["chipText"]} >{item.name}</Link><br></br></Chip>) }
+            <div style={{marginTop: -10}}>
+              <AuthorOutputList value = {props.value} />
             </div>
           )
         },
@@ -395,7 +378,7 @@ export default class BookmarksTable extends Component {
         width: 60,
         style: {textAlign:"center"},
         Cell: props => <IconButton
-          onClick = {()=>this.handleDelete(props.value._id,props.value.title)}
+          onClick = {()=>this.handleDelete(props.value._id, props.value.title)}
           touch = {true}
           style = {styles.largeIcon}
           iconStyle = {{fontSize: '24px'}}
@@ -406,14 +389,12 @@ export default class BookmarksTable extends Component {
     }
     return (
       <div>
-        <ConfirmationPane open = {this.state.dialogOpen}
-                          projectID = {this.state.projectID}
-                          dialogText = {this.state.dialogText}
-                          handleDelete = {this.handleDelete}
+      <ConfirmationPane   open = {this.state.dialogOpen}
                           handleClose = {this.handleClose}
-                          buttonText = {this.state.buttonText}
-                          handleAction= {this.state.action}
-        />
+                          title = {this.state.dialogText}
+                          confirmationLabel = {this.state.buttonText}
+                          confirmAction = {this.state.action}
+      />
       <Snackbar open={this.state.snackbar}
                 message={this.state.snackbarText}
                 autoHideDuration={10000}
@@ -435,52 +416,4 @@ export default class BookmarksTable extends Component {
       </div>
     )
   }
-}
-
-
-  class ConfirmationPane extends Component {
-    constructor(props) {
-      super(props)
-      this.state = {
-        open: false
-        }
-      this.handleDelete = this.handleDelete.bind(this)
-    }
-
-    handleDelete(event){
-      event.preventDefault()
-      this.props.handleAction()
-    }
-
-
-    componentWillReceiveProps(props){
-      this.setState({open: props.dialogOpen})
-    }
-
-    render() {
-      const actions = [
-        <RaisedButton
-          label = "Cancel"
-          primary = {true}
-          onTouchTap = {this.props.handleClose}
-          />,
-        <RaisedButton
-          label = {this.props.buttonText}
-          primary = {true}
-          onTouchTap = {this.handleDelete}
-          style = {{marginLeft:20}}
-          />,
-      ]
-
-      return (
-        <Dialog
-          title = {this.props.dialogText}
-          actions = {actions}
-          modal = {false}
-          open = {this.props.open}
-          onRequestClose = {this.props.handleClose}
-          >
-        </Dialog>
-      )
-    }
 }
