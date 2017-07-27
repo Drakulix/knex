@@ -62,13 +62,6 @@ export default class CreateProject extends Component {
     const name = event.target.name
     var value = event.target.value
     var projectInf = this.state.projectInf
-<<<<<<< HEAD
-=======
-    if(name === "authors"){
-      this.setState({authors:value})
-      value = value.map(item => {return item.email})
-    }
->>>>>>> fdd606059a07b4bcb59200b742484876795cab25
     projectInf[name] = value
     this.setState({ projectInf : projectInf})
   }
@@ -157,15 +150,7 @@ export default class CreateProject extends Component {
 
     //gets all the authors from the backend
     Backend.getUsers().then(function(authors) {
-<<<<<<< HEAD
       authors = authors.map(item => {return item.email})
-=======
-      authors = authors.map(item => {
-        return {
-          name : item.first_name + " " + item.last_name,
-          email : item.email
-      }})
->>>>>>> fdd606059a07b4bcb59200b742484876795cab25
         this.setState({
           suggestedAuthors : authors
         })

@@ -397,11 +397,7 @@ class Backend {
     }
 
     search(query) {
-<<<<<<< HEAD
         return this.postJson(`/api/projects/search`, query).then( function(data){return JSON.parse(data)});
-=======
-        return this.postJson(`/api/projects/search`, query).then( function(data){ return JSON.parse(data)});
->>>>>>> fdd606059a07b4bcb59200b742484876795cab25
     }
 
     saveSearch(query) {
