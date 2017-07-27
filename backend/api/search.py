@@ -19,8 +19,7 @@ def prepare_es_results(res):
         for project in projects:
             project['is_bookmark'] = 'true' if project['_id']\
                 in current_user['bookmarks'] else 'false'
-            project['is_owner'] = 'true' if current_user['email']\
-                in [author['email'] for author in project['authors']]\
+            project['is_owner'] = 'true' if current_user['email'] in project['authors']\
                 else 'false'
         return projects
     except KeyError as ke:

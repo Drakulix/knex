@@ -534,7 +534,7 @@ class TestPUT(object):
         )
         with open(test_manifest, 'r') as tf:
             test_manifest_json = json.load(tf)
-        test_manifest_json['authors'].append({"name": "Dagobert Duck", "email": "user@knex.com"})
+        test_manifest_json['authors'].append("user@knex.com")
         project_id = session.post(flask_api_url + "/api/projects",
                                   json=test_manifest_json).json()[0]
         assert UUID(project_id, version=4)
