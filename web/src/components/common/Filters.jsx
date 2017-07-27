@@ -25,7 +25,11 @@ export default class Filters extends Component{
     var filters = (props.value === undefined) ? {} : props.value
 
     this.state = {
+<<<<<<< HEAD
       expanded : Object.keys(filters).length > 0,
+=======
+      expanded : (Object.keys(filters).length <= 1) ? false : true,
+>>>>>>> fdd606059a07b4bcb59200b742484876795cab25
       authors : filters.authors !== undefined ? filters.authors : [],
       title : filters.title !== undefined ? filters.title : "",
       tags : filters.tags !== undefined ? filters.tags : [],
@@ -53,7 +57,22 @@ export default class Filters extends Component{
 
     //gets all the authors from the backend
     Backend.getAuthors().then(function(authors) {
+<<<<<<< HEAD
       this.setState({suggestedAuthors : authors})
+=======
+    /*  var suggestedAuthors = authors
+      var suggestedAuthorsArray = []
+      for (var i in suggestedAuthors) {
+        suggestedAuthorsArray = suggestedAuthorsArray.concat([suggestedAuthors[i].name + " ("+suggestedAuthors[i].email+ ")"])
+      }
+      console.log(suggestedAuthorsArray)
+      this.setState({
+        suggestedAuthors : suggestedAuthorsArray
+      })*/
+      this.setState({suggestedAuthors : authors})
+
+
+>>>>>>> fdd606059a07b4bcb59200b742484876795cab25
     }.bind(this))
   }
 

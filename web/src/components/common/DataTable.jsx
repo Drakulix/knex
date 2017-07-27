@@ -136,6 +136,9 @@ export default class BookmarksTable extends Component {
       delete state[key]
     }
     else  {
+      if(key == "authors"){
+          var value = value.map(item => {return item.email})
+      }
       state[key] = value
     }
     this.setState({filters : state})
@@ -164,7 +167,11 @@ export default class BookmarksTable extends Component {
                             return temp.indexOf(element) === -1})
               break
             case "authors":
+<<<<<<< HEAD
               temp = dataObject[key].join().toLowerCase()
+=======
+              temp = dataObject.authors.map((item) => {return item.email}).join().toLowerCase()
+>>>>>>> fdd606059a07b4bcb59200b742484876795cab25
               discard = value.some( function notContains(element){
                 return temp.indexOf(element) === -1
               })

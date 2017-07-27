@@ -24,8 +24,13 @@ export default class SearchPage extends Component {
 
     var query  = this.props.match.params.query !== undefined ? JSON.parse(this.props.match.params.query) : {}
     this.state = {
+<<<<<<< HEAD
         label : "",
         searchString : query.searchString === undefined ? "" : query.searchString,
+=======
+        searchString : query.searchString !== undefined ? query.searchString : "" ,
+        label : "",
+>>>>>>> fdd606059a07b4bcb59200b742484876795cab25
         query : query,
         fetchURL : "/api/projects",
         open : false,
@@ -71,7 +76,11 @@ export default class SearchPage extends Component {
   }
 
   saveSearch(){
+<<<<<<< HEAD
     var toSaveQuery = JSON.parse(JSON.stringify(this.state.query))
+=======
+    var toSaveQuery = this.state.query
+>>>>>>> fdd606059a07b4bcb59200b742484876795cab25
     toSaveQuery["label"] = this.state.label
     Backend.saveSearch(toSaveQuery).then( function () {
       this.setState({open: false,

@@ -10,7 +10,12 @@ export default class ProfileProjects extends Component {
     return (
       <div style = {{marginTop : 20}}>
         <DataTable
+<<<<<<< HEAD
                   fetchHandler = {Backend.search({archived : "false", authors : [this.props.profileInf.email]})}
+=======
+
+                  fetchHandler = {Backend.getProjects()}
+>>>>>>> fdd606059a07b4bcb59200b742484876795cab25
                   columns= {['title', 'status', 'tags', 'authors', 'description', '_id',
                     (!this.props.profileInf.email == Backend.getMail()) ? 'bookmarked':'',
                     (!this.props.profileInf.email == Backend.getMail() || Backend.isAdmin()) ?'archive' : '',
