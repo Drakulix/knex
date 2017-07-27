@@ -1,6 +1,7 @@
 import io
 import os
 import sys
+import json
 import base64
 import mimetypes
 
@@ -11,6 +12,7 @@ from mongoengine import NotUniqueError
 from mongoengine.fields import ObjectId
 from werkzeug.utils import secure_filename
 
+from api.projects import get_all_authors
 from api.helper.apiexception import ApiException
 
 
@@ -54,10 +56,19 @@ def logout():
 @login_required
 def get_all_users():
     users = g.user_datastore.user_model.objects
-    return jsonify([user.to_dict() for user in users])
+    return jsonify(sorted([user.to_dict() for user in users], key=lambda k: k.get('email').lower()))
 
 
-@users.route('/api/usernames', methods=['POST'])
+@users.route('/api/users/authors', methods=['GET'])
+@login_required
+def get_all_users_and_authors():
+    authors = json.loads(get_all_authors().get_data().decode())
+    users = [user['email'] for user in json.loads(get_all_users().get_data().decode())]
+    res = list(set(authors + users))
+    return jsonify(sorted(res), key=lambda k: k.lower())
+
+
+@users.route('/api/users/names', methods=['POST'])
 @login_required
 def get_usernames():
     userlist = [g.user_datastore.find_user(email=mail) for mail in request.get_json()
