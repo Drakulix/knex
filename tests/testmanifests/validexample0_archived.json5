@@ -18,10 +18,7 @@
   /* a list of authors and their email addresses
    * at least one */
   "authors": [
-    {
-      "name": "test_owner0",
-      "email": "email@address.com"
-    }
+    "email@address.com"
   ],
   /* the team name  */
   "team": {

@@ -7,9 +7,7 @@ class TestUsers(object):
         document = get_document_response.json()
         del document['is_bookmark']
         del document['is_owner']
-        updated_user = {'email': user['email'],
-                        'name': user['first_name'] + " " + user['last_name']}
-        document['authors'].append(updated_user)
+        document['authors'].append("user@knex.com")
         put_project_response = session.put(flask_api_url + "/api/projects/" +
                                            document_id[0], json=document)
         print(put_project_response.text)

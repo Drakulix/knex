@@ -1,6 +1,7 @@
 import io
 import os
 import sys
+import json
 import base64
 import mimetypes
 
@@ -11,6 +12,7 @@ from mongoengine import NotUniqueError
 from mongoengine.fields import ObjectId
 from werkzeug.utils import secure_filename
 
+from api.projects import get_all_authors
 from api.helper.apiexception import ApiException
 
 
@@ -54,7 +56,26 @@ def logout():
 @login_required
 def get_all_users():
     users = g.user_datastore.user_model.objects
-    return jsonify([user.to_dict() for user in users])
+    return jsonify(sorted([user.to_dict() for user in users], key=lambda k: k.get('email').lower()))
+
+
+@users.route('/api/users/authors', methods=['GET'])
+@login_required
+def get_all_users_and_authors():
+    authors = json.loads(get_all_authors().get_data().decode())
+    users = [user['email'] for user in json.loads(get_all_users().get_data().decode())]
+    res = list(set(authors + users))
+    return jsonify(sorted(res), key=lambda k: k.lower())
+
+
+@users.route('/api/users/names', methods=['POST'])
+@login_required
+def get_usernames():
+    userlist = [g.user_datastore.find_user(email=mail) for mail in request.get_json()
+                if g.user_datastore.find_user(email=mail)]
+    dic = dict([(user.email, (user.first_name + " " if user.first_name else "" + user.last_name))
+                for user in userlist])
+    return jsonify(dic)
 
 
 @users.route('/api/users', methods=['POST'])
@@ -99,18 +120,11 @@ def update_user():
     if is_permitted(current_user, user):
         res = g.user_datastore.get_user(user['email'])
         if not res:
-            return make_response("Unknown User with Email-address: " +
-                                 user['email'], 400)
-        if res.first_name != user.get('first_name', res.first_name) or\
-                res.last_name != user.get('last_name', res.last_name):
-            res.first_name = user.get('first_name', res.first_name)
-            res.last_name = user.get('last_name', res.last_name)
-            newname = res['first_name'] + " " if res['first_name'] else "" + res['last_name']
-            g.projects.update_many({'authors.email': user['email']},
-                                   {'$set': {'authors.$.name': newname}})
+            return make_response("Unknown User with Email-address: " + user['email'], 400)
 
-        if 'bio' in user:
-            res.bio = user['bio']
+        res.first_name = user.get('first_name', res.first_name)
+        res.last_name = user.get('last_name', res.last_name)
+        res.bio = user.get('bio', res.bio)
 
         if 'roles' in user:
             if 'admin' in user['roles'] and not current_user.has_role('admin'):
@@ -243,7 +257,7 @@ def get_user_tags(mail):
     """
     try:
         pipeline = [{"$unwind": "$authors"},
-                    {"$match": {"authors.email": mail}},
+                    {"$match": {"authors": mail}},
                     {"$unwind": "$tags"},
                     {"$group": {"_id": "$tags", "count": {"$sum": 1}}}
                     ]
@@ -267,7 +281,7 @@ def get_cur_user_tags():
     """
     try:
         pipeline = [{"$unwind": "$authors"},
-                    {"$match": {"authors.email": current_user['email']}},
+                    {"$match": {"authors": current_user['email']}},
                     {"$unwind": "$tags"},
                     {"$group": {"_id": "$tags", "count": {"$sum": 1}}}
                     ]
@@ -297,8 +311,8 @@ def add_bookmarks(id):
     try:
         for project in projects:
             project['is_bookmark'] = 'true'
-            project['is_owner'] = 'true' if current_user['email'] in\
-                [author['email'] for author in project['authors']] else 'false'
+            project['is_owner'] = 'true' if current_user['email'] in project['authors']\
+                else 'false'
 
         return jsonify(projects)
 
@@ -320,8 +334,8 @@ def delete_bookmarks(id):
         try:
             for project in projects:
                 project['is_bookmark'] = 'true'
-                project['is_owner'] = 'true' if current_user['email'] \
-                    in [author['email'] for author in project['authors']] else 'false'
+                project['is_owner'] = 'true' if current_user['email'] in project['authors']\
+                    else 'false'
 
             return make_response("Success", 200)
 
@@ -341,9 +355,8 @@ def get_bookmarks():
     try:
         for project in projects:
             project['is_bookmark'] = 'true'
-            project['is_owner'] = 'true'\
-                if current_user['email'] in\
-                [author['email'] for author in project['authors']] else 'false'
+            project['is_owner'] = 'true' if current_user['email'] in project['authors']\
+                else 'false'
 
         return jsonify(projects)
 

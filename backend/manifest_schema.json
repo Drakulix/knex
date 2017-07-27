@@ -42,7 +42,9 @@
         "type": "array",
         "minItems": 1,
         "items": {
-          "$ref": "#/project/definitions/user"
+          "author": {
+            "type": "string"
+          }
         },
         "additionalProperties": false
       },
@@ -144,12 +146,6 @@
           }
         }
       },
-      "authors": {
-        "type": "array",
-        "items": {
-          "$ref": "#/project/definitions/user"
-        }
-      },
       "related_project": {
         "type": "object",
         "properties": {
@@ -175,7 +171,7 @@
         ],
         "properties": {
           "author": {
-            "$ref": "#/project/definitions/user"
+            "type": "string"
           },
           "id": {
             "type": "string",
