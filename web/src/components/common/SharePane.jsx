@@ -1,47 +1,34 @@
 import React from 'react'
 import Dialog from 'material-ui/Dialog'
 import RaisedButton from 'material-ui/RaisedButton'
-import ChipInputList from '../common/ChipInputList.jsx'
+import AuthorInputList from '../common/chips/AuthorInputList.jsx'
 import Backend from '../common/Backend.jsx'
 
 export default class SharePane extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      authors : []
+      authors : [],
+      suggestedAuthors : []
     }
     this.handleAuthorChange = this.handleAuthorChange.bind(this)
   }
 
   shareProject =() =>{
     for (var i in this.state.authors) {
-      var string = this.state.authors[i]
-      var id = string.substring(string.lastIndexOf("(")+1, string.length-1)
-      Backend.shareProjectToUser(this.props.uuid, id)
+      Backend.shareProjectToUser(this.props.uuid, this.state.authors[i])
     }
     this.setState({open : false})
     this.props.handleSharedProject()
   }
 
   componentDidMount() {
-    //tipp : if you fetch server side data, this is the place where it should happen :)
-    //gets all the authors from the backend
     Backend.getUsers().then(function(authors) {
-      var suggestedAuthors = authors
-      var suggestedAuthorsArray = []
-      for (var i in suggestedAuthors) {
-        if(suggestedAuthors[i].email == Backend.getMail())
-          continue
-        suggestedAuthorsArray = suggestedAuthorsArray.concat([
-                                   suggestedAuthors[i].first_name + " "
-                                  +suggestedAuthors[i].last_name
-                             + " ("+suggestedAuthors[i].email+ ")"])
-      }
-      console.log(suggestedAuthorsArray)
-      this.setState({
-        suggestedAuthors : suggestedAuthorsArray
-      })
-    }.bind(this))
+      authors = authors.map(item => {return item.email})
+        this.setState({
+          suggestedAuthors : authors
+        })
+      }.bind(this))
   }
 
   handleAuthorChange(event) {
@@ -72,12 +59,14 @@ export default class SharePane extends React.Component {
         open={this.props.open}
         onRequestClose={this.handleClosedSharePane}
         >
-        <ChipInputList suggestions = {this.state.suggestedAuthors}
-          onChange={this.handleAuthorChange}
-          filtered ={true}
-          value={this.state.authors}
+        <AuthorInputList suggestions = {this.state.suggestedAuthors}
+          onChange = {this.handleAuthorChange}
           name = "authors"
-          hintText={'Add authors...'}
+          filtered = {true}
+          value = {this.state.authors}
+          hintText = {'Add authors...'}
+          errorText = {(this.state.authors.length === 0) ?
+                      "Please provide at least one author" : ""}
           />
       </Dialog>
     )

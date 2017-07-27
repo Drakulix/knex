@@ -6,11 +6,11 @@ import Snackbar from 'material-ui/Snackbar'
 import DropDownMenu from 'material-ui/DropDownMenu'
 import MenuItem from 'material-ui/MenuItem'
 import CircularProgress from 'material-ui/CircularProgress'
-import ChipInputList from '../common/ChipInputList'
+import ChipInputList from '../common/chips/ChipInputList'
 import Backend from '../common/Backend'
 import Moment from 'moment'
 import history from '../common/history'
-import AuthorInputList from '../common/AuthorInputList'
+import AuthorInputList from '../common/chips/AuthorInputList'
 
 const statusString = [
   {text : <span className = "badge badge-success">DONE</span>, value : "DONE"},
@@ -135,13 +135,6 @@ export default class CreateProject extends Component {
   }
 
   componentDidMount(){
-    /* Some bug resets this.state.status initialy to [].
-    * This happens inbetween the end of componentWillMount()
-    * and the beginning of the first time the component renders.
-    * This is a temporary workaround until the issue is resolved.
-    * Please don't remove this unless you know how to fix it.
-    */
-
     Backend.getTags().then(function(tags) {
       this.setState({
         suggestedTags : tags
@@ -155,6 +148,7 @@ export default class CreateProject extends Component {
           suggestedAuthors : authors
         })
       }.bind(this))
+
       if(this.props.fromURL&&(this.state.status!==this.props.status)){
         this.setState({status : this.props.status})
       }

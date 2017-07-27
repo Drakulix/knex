@@ -13,6 +13,9 @@ import RaisedButton from 'material-ui/RaisedButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import Snackbar from 'material-ui/Snackbar'
 import CommentSideBar from '../common/CommentSideBar'
+import AuthorOutputList from '../common/chips/AuthorOutputList'
+import TagOutputList from '../common/chips/TagOutputList'
+
 
 
 export default class ProjectContainer extends Component {
@@ -257,15 +260,7 @@ export default class ProjectContainer extends Component {
                 </div>
                 <div style = {{marginTop : 30}}>
                 <div className = "profile-info">Authors</div>
-                <div style = {styles["wrapper"]}>
-                  {
-                    this.state.projectInf.authors.map(item =>
-                      <Chip style= {{margin: '8px 8px 0 0', background : '#ffffff', float: 'left' }} key={item}>
-                        <Link to = {"/profile/"+item} style= {{color:'#000000', fontWeight:'bold'}}>{item}</Link>
-                      </Chip>
-                    )
-                  }
-                </div>
+                <AuthorOutputList value = {this.state.projectInf.authors} />
               </div>
               <div style = {{marginTop : 30}}>
                 <div className = "profile-info">Links</div>
@@ -279,11 +274,7 @@ export default class ProjectContainer extends Component {
               <div className = "col-6">
                 <div style = {{marginTop : 10}}>
                   <div className = "profile-info">Tags </div>
-                  <div style = {styles["wrapper"]}>
-                    { this.state.projectInf.tags.map(item =>
-                      <Chip style= {styles["chip"]}>
-                        <Link to = {"/discovery?tag = " +item} style= {styles["chipText"]} >{item}</Link></Chip>) }
-                  </div>
+                  <TagOutputList value = {this.state.projectInf.tags} />
                 </div>
                 <div style = {{marginTop : 60}}>
                   <div className = "profile-info">Description</div>
