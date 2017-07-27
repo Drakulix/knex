@@ -1,8 +1,5 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
-import Chip from 'material-ui/Chip'
-import styles from '../../common/Styles.jsx'
-import TagOutputList from '../common/chips/TagOutputList'
+import TagOutputList from '../../common/chips/TagOutputList'
 
 
 export default class ProfileView extends Component {

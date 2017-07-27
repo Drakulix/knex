@@ -10,9 +10,9 @@ export default class TagOutputList extends Component{
         { this.props.value !== undefined ?
           this.props.value.map(item =>
             <Chip style= {{margin: '8px 8px 0 0', background : '#ff5000', float: 'left' }} key={item}>
-              <Link   to = {"/profile/"+item}
-                      style= {{color:'#ffffff', fontWeight:'bold'}}>
-                      {item}
+              <Link to={"/discovery/"+ JSON.stringify({tags : [item]})}
+                    style= {{color:'#ffffff', fontWeight:'bold'}}>
+                {item}
               </Link>
               <br/>
             </Chip>
