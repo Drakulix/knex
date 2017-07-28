@@ -257,6 +257,38 @@ class Backend {
         }
     }
 
+    async putImage(url, payload) {
+        let response = await fetch(url, {
+            method: 'PUT',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'image/png'
+            },
+            body: payload
+        })
+        .catch(ex => {
+            console.error('Network Error', ex);
+            throw ex;
+        });
+
+        if (response.status == 403) {
+            this.loggedIn = false;
+            this.mail = '';
+            this.profile = '';
+            window.location = '/';
+            return undefined;
+        } else if (response.status == 404) {
+            return false;
+        } else if (response.ok) {
+            return true;
+        } else {
+            throw {
+                status: response.status,
+                error: await response.text()
+            }
+        }
+    }
+
     addProject(project) {
         return this.postJson('/api/projects', project);
     }
@@ -266,7 +298,7 @@ class Backend {
     }
 
     getAuthors() {
-        return this.getJson('/api/users/authors');
+        return this.getJson('/api/authors');
     }
 
     getTags() {
@@ -471,7 +503,9 @@ class Backend {
         }
     }
 
-
+    updateAvatar(email, image){
+      return this.putImage("/api/users/"+email+"/avatar", image)
+    }
 
     updatePassword(mail, old_pass, new_pass) {
         return this.putJson('/api/users/password', {

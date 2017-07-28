@@ -76,18 +76,16 @@ export default class ProfileEditor extends Component {
     if (file.name.substring(file.name.lastIndexOf(".")+1) === "png"){
       reader.onload = () => {
         try {
-          /*
-          putImage("/api/users/"+this.props.profileInf.email+"/avatar" , {}
-          )
+          Backend.updateAvatar(this.state.email, reader.result)
           .then(
             this.props.profileChangeHandler("Avatar changed",true)
           )
-          */
+
         } catch(e) {
           alert(e)
         }
       }
-      reader.readAsText(file);
+      reader.readAsDataURL(file);
     }
     else {
       this.props.profileChangeHandler("Invalid format for picture",false)
