@@ -266,7 +266,7 @@ class Backend {
     }
 
     getAuthors() {
-        return this.getJson('/api/projects/authors');
+        return this.getJson('/api/users/authors');
     }
 
     getTags() {
@@ -452,6 +452,25 @@ class Backend {
             return false;
         }
     }
+
+    async setActivation(mail, firstName, lastName, bio, active){
+      if (await this.putJson('/api/users', {
+          'email': mail,
+          'first_name': firstName,
+          'last_name': lastName,
+          'bio': bio,
+          'active' : active
+        })) {
+          if (this.mail == mail) {
+            await this.getProfile();
+          }
+          return true;
+        } else {
+            return false;
+        }
+    }
+
+
 
     updatePassword(mail, old_pass, new_pass) {
         return this.putJson('/api/users/password', {
