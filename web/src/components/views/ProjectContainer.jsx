@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import Chip from 'material-ui/Chip'
 import styles from '../common/Styles.jsx'
 import Backend from '../common/Backend'
 import history from '../common/history'
@@ -10,6 +9,7 @@ import Snackbar from 'material-ui/Snackbar'
 import CommentSideBar from '../common/CommentSideBar'
 import AuthorOutputList from '../common/chips/AuthorOutputList'
 import TagOutputList from '../common/chips/TagOutputList'
+import UrlOutputList from '../common/chips/UrlOutputList'
 import ConfirmationPane from '../common/ConfirmationPane'
 import Badge from '../common/Badge'
 
@@ -239,15 +239,12 @@ export default class ProjectContainer extends Component {
                   </div>
                 </div>
                 <div style = {{marginTop : 30}}>
-                <div className = "profile-info">Authors</div>
-                <AuthorOutputList value = {this.state.projectInf.authors} />
-              </div>
-              <div style = {{marginTop : 30}}>
-                <div className = "profile-info">Links</div>
-                <div style = {styles["wrapper"]}>
-                  { this.state.projectInf.url.map(item => <Chip style= {styles["chip"]} key={item}>
-                  <a href = {item} style= {styles["chipText"]}>{item}</a></Chip>) }
-                  </div>
+                  <div className = "profile-info">Authors</div>
+                  <AuthorOutputList value = {this.state.projectInf.authors} />
+                </div>
+                <div style = {{marginTop : 30}}>
+                  <div className = "profile-info">Links</div>
+                  <UrlOutputList value = {this.state.projectInf.url} />
                 </div>
               </div>
               <div className = "col-1"></div>

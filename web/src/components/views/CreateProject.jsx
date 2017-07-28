@@ -4,7 +4,7 @@ import DatePicker from 'material-ui/DatePicker'
 import TextField from 'material-ui/TextField'
 import Snackbar from 'material-ui/Snackbar'
 import CircularProgress from 'material-ui/CircularProgress'
-import ChipInputList from '../common/chips/ChipInputList'
+import UrlInputList from '../common/chips/UrlInputList'
 import Backend from '../common/Backend'
 import Moment from 'moment'
 import history from '../common/history'
@@ -207,13 +207,13 @@ export default class CreateProject extends Component {
                                           "Please provide at least one author" : ""}
                     />
                   <div className = "profile-info">Links</div>
-                  <ChipInputList
+                  <UrlInputList
                     name = "url"
                     value = {this.state.projectInf.url}
                     onChange = {this.handleChange}
                     errorText = {(this.state.projectInf.url.length === 0
-                                ) ? "Please provide at least one url" : ""}
-                    hintText='Add Links...'/>
+                    ) ? "Please provide at least one url" : ""}
+                  />
                 </div>
                 <div className = "col-1"></div>
                 <div className = "col-7">
