@@ -12,8 +12,6 @@ export default class SignUp extends Component {
 
   constructor(props) {
     super(props)
-
-    // set the initial component state
     this.state = {
       redirect: false,
       first_name : "",
@@ -76,14 +74,13 @@ export default class SignUp extends Component {
     }
 
     return (
-<div style = {{textAlign : "center"}}>
+      <div style = {{textAlign : "center"}}>
         <img className="service-name" src={logo} alt="Logo"/>
         <h2 className="team-name">brings light to the cloud</h2>
         <div className="rectangle-sign">
           <h3 className="sign-type-desc">Sign Up
           </h3>
           <form onSubmit={this.handleRegister}>
-            {/*Input First Name*/}
             <div>
               <TextField
                 type="text"
@@ -94,7 +91,6 @@ export default class SignUp extends Component {
                 name= "first_name"
                 />
             </div>
-            {/*Input Last Name*/}
             <div >
               <TextField
                 type="text"
@@ -106,7 +102,6 @@ export default class SignUp extends Component {
 
                 />
             </div>
-            {/*Input Email*/}
             <div>
               <TextField
                 type="email"
@@ -118,7 +113,6 @@ export default class SignUp extends Component {
 
                 />
             </div>
-            {/*Input password*/}
             <div >
               <TextField
                 type="password"
@@ -129,9 +123,7 @@ export default class SignUp extends Component {
                 errorText={(this.state.password === "") ? "Field is required" : ""}
                 />
             </div>
-
-            {/*Input confirm password*/}
-            <div >
+            <div>
               <TextField
                 type="password"
                 value={this.state.password_confirm}
@@ -152,12 +144,11 @@ export default class SignUp extends Component {
           </form>
         </div>
         <div style = {{marginTop : 30}}>
-          <Link to="/">
-            <a href="#" className="register-info">
+          <Link to="/" className="register-info">
               You already have an account?<br/>Login here.
-            </a>
           </Link>
         </div>
-</div>    )
+      </div>
+    )
   }
 }

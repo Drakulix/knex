@@ -37,7 +37,7 @@ export default class ProjectContainer extends Component {
     this.handleComment = this.handleComment.bind(this)
     this.handleBookmark = this.handleBookmark.bind(this)
     this.handleShare = this.handleShare.bind(this)
-
+    this.handleClose = this.handleClose.bind(this)
     this.handleDelete = this.handleDelete.bind(this)
     this.handleSharedProject = this.handleSharedProject.bind(this)
     this.handleUpdateComments = this.handleUpdateComments.bind(this)
@@ -96,7 +96,8 @@ export default class ProjectContainer extends Component {
     this.setState({
       dialogOpen : false,
       snackbar : false,
-      sharePane : false
+      sharePane : false,
+      commentBar : false
     })
   }
 
@@ -142,7 +143,6 @@ export default class ProjectContainer extends Component {
   }
 
   handleComment(event){
-    event.preventDefault()
     this.handleClose()
     this.setState({
       commentBar : true,
@@ -150,7 +150,6 @@ export default class ProjectContainer extends Component {
   }
 
   handleShare(event){
-    event.preventDefault()
     this.handleClose()
     this.setState({
       sharePane : true,
