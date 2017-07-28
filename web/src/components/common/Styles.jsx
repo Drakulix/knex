@@ -1,5 +1,3 @@
-const mainColor ="#ff5000";
-
 export default {
   uploadButton: {
     verticalAlign: 'middle',
@@ -23,9 +21,8 @@ export default {
     color: '#292b2c',
   },
   palette : {
-      primary1Color : mainColor,
+      primary1Color : "#ff5000",
       accent1Color : "#000000",
-      pickerHeaderColor: mainColor,
-
+      pickerHeaderColor: "#ff5000",
   }
-};
+}
