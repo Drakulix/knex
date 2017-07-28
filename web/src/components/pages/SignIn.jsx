@@ -46,8 +46,6 @@ export default class SignIn extends Component {
   }
 
   render() {
-    const { teamName } = this.props
-
     if (this.state.redirect || Backend.isLoggedIn() ) {
       return <Redirect to='/discovery'/>
     }
