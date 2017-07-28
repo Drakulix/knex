@@ -59,13 +59,24 @@ def get_all_users():
     return jsonify(sorted([user.to_dict() for user in users], key=lambda k: k.get('email').lower()))
 
 
+@users.route('/api/users/projectids', methods=['GET'])
+@login_required
+def get_all_users_project_ids():
+    dic = {}
+    for user in g.user_datastore.user_model.objects:
+        projects = json.loads(get_user_projects(user['email']).get_data().decode())
+        project_ids = [project['_id'] for project in projects]
+        dic[user['email']] = project_ids
+    return jsonify(dic)
+
+
 @users.route('/api/users/authors', methods=['GET'])
 @login_required
 def get_all_users_and_authors():
     authors = json.loads(get_all_authors().get_data().decode())
     users = [user['email'] for user in json.loads(get_all_users().get_data().decode())]
     res = list(set(authors + users))
-    return jsonify(sorted(res), key=lambda k: k.lower())
+    return jsonify(sorted(res, key=str.lower))
 
 
 @users.route('/api/users/names', methods=['POST'])
@@ -125,6 +136,8 @@ def update_user():
         res.first_name = user.get('first_name', res.first_name)
         res.last_name = user.get('last_name', res.last_name)
         res.bio = user.get('bio', res.bio)
+        res.active = True if user.get('active') == 'true' else\
+            False if user.get('active') == 'false' else res.active
 
         if 'roles' in user:
             if 'admin' in user['roles'] and not current_user.has_role('admin'):
@@ -245,6 +258,21 @@ def reset_user_avatar(mail):
     user.avatar_name = "default_avatar.png"
     user.save()
     return make_response("Success", 200)
+
+
+@users.route('/api/users/<email:mail>/projects', methods=['GET'])
+@login_required
+def get_user_projects(mail):
+    """Return projects of user
+
+        Returns:
+            res: Array with projects where the user is author
+    """
+    try:
+        projects = g.projects.find({'authors': str(mail)})
+        return jsonify(list(projects))
+    except Exception as err:
+        raise ApiException(str(err), 500)
 
 
 @users.route('/api/users/<email:mail>/tags', methods=['GET'])
