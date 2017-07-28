@@ -4,7 +4,7 @@ import Chip from 'material-ui/Chip'
 import AutoComplete from 'material-ui/AutoComplete'
 import Backend from '../../common/Backend'
 
-export default class AuthorInputList extends Component {
+export default class TagInputList extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -13,8 +13,8 @@ export default class AuthorInputList extends Component {
   }
 
   componentWillMount(){
-    Backend.getAuthors().then(function(authors) {
-          this.setState({suggestions : authors})
+    Backend.getTags().then(function(tags) {
+          this.setState({suggestions : tags})
     }.bind(this))
   }
 
@@ -55,17 +55,17 @@ export default class AuthorInputList extends Component {
         onRequestAdd={(chip) => this.handleRequestAdd(chip)}
         onRequestDelete={(deletedChip) => this.handleRequestDelete(deletedChip)}
         errorText={this.props.errorText}
-        hintText = {'Add authors...'}
+        hintText = {'Add tags...'}
         filtered = {this.props.filtered}
         fullWidth
         chipRenderer={({ value, text, isFocused, isDisabled, handleClick, handleRequestDelete }, key) => (
           <Chip
             key={key}
             style= {{margin: '8px 8px 0 0',float: 'left'}}
-            backgroundColor={'#ffffff'}
+            backgroundColor={'#ff5000'}
             onTouchTap={handleClick}
             onRequestDelete={handleRequestDelete}>
-            <span style={{color : '#000000', fontWeight: 'bold'}}> {value} </span>
+            <span style={{color : '#ffffff', fontWeight: 'bold'}}> {value} </span>
           </Chip>
         )}/>
       )

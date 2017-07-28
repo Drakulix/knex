@@ -5,13 +5,12 @@ import Backend from './Backend'
 import Filters from './Filters'
 import IconButton from 'material-ui/IconButton'
 import styles from '../common/Styles.jsx'
-import RaisedButton from 'material-ui/RaisedButton'
-import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import Snackbar from 'material-ui/Snackbar'
 import AuthorOutputList from '../common/chips/AuthorOutputList'
 import TagOutputList from '../common/chips/TagOutputList'
 import ConfirmationPane from '../common/ConfirmationPane'
+import Badge from '../common/Badge'
 
 
 export default class BookmarksTable extends Component {
@@ -47,7 +46,6 @@ export default class BookmarksTable extends Component {
     this.handleArchive = this.handleArchive.bind(this)
     this.handleUnArchive = this.handleUnArchive.bind(this)
     this.handleClose = this.handleClose.bind(this)
-
     this.fetchData()
   }
 
@@ -77,7 +75,10 @@ export default class BookmarksTable extends Component {
   }
 
   handleClose(){
-    this.setState({dialogOpen : false})
+    this.setState({
+      dialogOpen : false,
+      snackbar : false
+    })
   }
 
   handleArchive(projectID, projectName){
@@ -105,18 +106,6 @@ export default class BookmarksTable extends Component {
   handleRemoveBookmark(projectID){
     Backend.deleteBookmark(projectID)
       .then(this.fetchData())
-  }
-
-  // componentDidMount() {
-  //   this.fetchData()
-  // }
-
-  componentWillReceiveProps(nextProps) {
-    // You don't have to do this check first, but it can help prevent an unneeded render
-/*    if (this.state.url != nextProps.fetchURL){
-      this.setState({url :nextProps.fetchURL})
-      this.fetchData(nextProps.fetchURL)
-    }*/
   }
 
   fetchData(){
@@ -194,16 +183,13 @@ export default class BookmarksTable extends Component {
         id: 'title',
         width: 200,
         accessor: d => d,
-        Cell: props =>{
-          return(
+        Cell: props =>
             <div style={{whiteSpace : "normal"}}>
               <Link to={`/project/${props.value._id}`}
                 className="table-link-text">
                 {props.value.title}
               </Link>
             </div>
-          )
-        }
       })
     }
     if(this.props.columns.indexOf("status") !== -1){
@@ -213,24 +199,7 @@ export default class BookmarksTable extends Component {
         id:'status',
         style: {textAlign:"center"},
         width: 100,
-        Cell: props =>{
-          var status_badge = props.value
-          switch(props.value){
-            case "DONE":  status_badge = <span className="badge badge-success">DONE</span>
-              break
-            case 'IN_PROGRESS':
-              status_badge = <span className="badge badge-warning">IN_PROGRESS</span>
-              break
-            case 'IN_REVIEW':
-              status_badge = <span className="badge badge-info">IN_REVIEW</span>
-              break
-            default:
-              break
-          }
-          return(
-            <div>{status_badge}</div>
-          )
-        }
+        Cell: props => <Badge value={props.value} />
       })
     }
     if(this.props.columns.indexOf("date_creation") !== -1){
@@ -249,13 +218,10 @@ export default class BookmarksTable extends Component {
         id : 'tags',
         width: 220,
         style: {textAlign:"center"},
-        Cell: props =>{
-          return(
+        Cell: props =>
             <div style={{marginTop: -10}}>
               <TagOutputList value = {props.value} />
             </div>
-          )
-        },
       })
     }
     if(this.props.columns.indexOf("authors") !== -1){
@@ -264,13 +230,10 @@ export default class BookmarksTable extends Component {
         accessor: "authors",
         width: 150,
         id : 'authors',
-        Cell: props =>{
-          return(
+        Cell: props =>
             <div style={{marginTop: -10}}>
               <AuthorOutputList value = {props.value} />
             </div>
-          )
-        },
       })
     }
     if(this.props.columns.indexOf("description") !== -1){
@@ -368,7 +331,6 @@ export default class BookmarksTable extends Component {
           : "" }
       })
     }
-
     if(this.props.columns.indexOf("delete") !== -1){
       columns.push({
         Header: 'Delete',
