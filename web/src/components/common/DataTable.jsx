@@ -184,22 +184,12 @@ export default class BookmarksTable extends Component {
         width: 200,
         accessor: d => d,
         Cell: props =>
-            <div style={{whiteSpace : "normal"}}>
+            <div style={{whiteSpace : "normal", marginTop:8}}>
               <Link to={`/project/${props.value._id}`}
                 className="table-link-text">
                 {props.value.title}
               </Link>
             </div>
-      })
-    }
-    if(this.props.columns.indexOf("status") !== -1){
-      columns.push({
-        Header: 'Status',
-        accessor: 'status',
-        id:'status',
-        style: {textAlign:"center"},
-        width: 100,
-        Cell: props => <Badge value={props.value} />
       })
     }
     if(this.props.columns.indexOf("date_creation") !== -1){
@@ -208,7 +198,17 @@ export default class BookmarksTable extends Component {
         accessor: 'date_creation',
         pivot: true,
         width:95,
-        style: {textAlign:"center"},
+        style: {textAlign:"center", marginTop:9},
+      })
+    }
+    if(this.props.columns.indexOf("status") !== -1){
+      columns.push({
+        Header: 'Status',
+        accessor: 'status',
+        id:'status',
+        style: {align:"center", width : 100},
+              width: 100,
+        Cell: props => <Badge value={props.value} />
       })
     }
     if(this.props.columns.indexOf("tags") !== -1){
@@ -217,11 +217,8 @@ export default class BookmarksTable extends Component {
         accessor: "tags",
         id : 'tags',
         width: 220,
-        style: {textAlign:"center"},
-        Cell: props =>
-            <div style={{marginTop: -10}}>
-              <TagOutputList value = {props.value} />
-            </div>
+        style: {textAlign:"center", width : 220},
+        Cell: props => <TagOutputList value = {props.value} />
       })
     }
     if(this.props.columns.indexOf("authors") !== -1){
@@ -230,10 +227,7 @@ export default class BookmarksTable extends Component {
         accessor: "authors",
         width: 150,
         id : 'authors',
-        Cell: props =>
-            <div style={{marginTop: -10}}>
-              <AuthorOutputList value = {props.value} />
-            </div>
+        Cell: props => <AuthorOutputList value = {props.value} />
       })
     }
     if(this.props.columns.indexOf("description") !== -1){
@@ -246,7 +240,7 @@ export default class BookmarksTable extends Component {
           var text = (props.value.description !== undefined) ? props.value.description.substring(0,250).trim(): "";
           text = text + ((text.length >= 250) ? "..." : "")
           return(
-            <div style ={{whiteSpace : "normal"}}>
+            <div style ={{whiteSpace : "normal", marginTop:8}}>
             {text}
             </div>
           )

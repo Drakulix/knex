@@ -231,11 +231,11 @@ export default class ProjectContainer extends Component {
                   </div>
                   <div className = "col-4">
                     <div className = "profile-info">Creation date</div>
-                    <div>{this.state.projectInf.date_creation}</div>
+                    <div style={{marginTop:16}}>{this.state.projectInf.date_creation}</div>
                   </div>
                   <div className = "col-4">
                     <div className = "profile-info">Last update </div>
-                    <div> {this.state.projectInf.date_last_updated}</div>
+                    <div style={{marginTop:16}}> {this.state.projectInf.date_last_updated}</div>
                   </div>
                 </div>
                 <div style = {{marginTop : 30}}>
@@ -249,11 +249,11 @@ export default class ProjectContainer extends Component {
               </div>
               <div className = "col-1"></div>
               <div className = "col-6">
-                <div style = {{marginTop : 10}}>
+                <div>
                   <div className = "profile-info">Tags </div>
                   <TagOutputList value = {this.state.projectInf.tags} />
                 </div>
-                <div style = {{marginTop : 60}}>
+                <div style = {{marginTop : 50}}>
                   <div className = "profile-info">Description</div>
                   <div><a>{this.state.projectInf.description}</a></div>
                 </div>

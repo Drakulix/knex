@@ -9,7 +9,7 @@ export default class AuthorOutputList extends Component{
       <div style = {{display: 'flex', flexWrap: 'wrap',}}>
         { this.props.value !== undefined ?
           this.props.value.map(item =>
-            <Chip style= {{margin: '8px 8px 0 0', background : '#ffffff', float: 'left' }} key={item}>
+            <Chip style= {{margin: '4px 4px 4px 4px', background : '#ffffff', float: 'left' }} key={item}>
               <Link   to = {"/profile/"+item}
                       style= {{color:'#000000', fontWeight:'bold'}}>
                       {item}
