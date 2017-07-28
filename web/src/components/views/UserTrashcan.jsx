@@ -10,7 +10,9 @@ render(){
       <div className = "container">
         <div className = "header">Your archived projects</div>
           <DataTable  columns = {['title', 'status', 'tags', 'authors', 'description', '_id', 'unarchive']}
-                      fetchURL  = {"/api/projects/search/advanced/?q=(authors.email:" + Backend.getMail()+") AND archived:true"}/>
+            fetchHandler = {Backend.search({archived : "true", authors : [Backend.getMail()]})}
+          />
+
       </div>
     )
   }

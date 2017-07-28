@@ -6,11 +6,11 @@ import Snackbar from 'material-ui/Snackbar'
 import DropDownMenu from 'material-ui/DropDownMenu'
 import MenuItem from 'material-ui/MenuItem'
 import CircularProgress from 'material-ui/CircularProgress'
-import ChipInputList from '../common/ChipInputList'
+import ChipInputList from '../common/chips/ChipInputList'
 import Backend from '../common/Backend'
 import Moment from 'moment'
 import history from '../common/history'
-
+import AuthorInputList from '../common/chips/AuthorInputList'
 
 const statusString = [
   {text : <span className = "badge badge-success">DONE</span>, value : "DONE"},
@@ -62,16 +62,6 @@ export default class CreateProject extends Component {
     const name = event.target.name
     var value = event.target.value
     var projectInf = this.state.projectInf
-    if(name === "authors"){
-      this.setState({authors : value})
-      value = []
-      for (var i in event.target.value) {
-        var string = event.target.value[i]
-        var authorName = string.substring(0, string.lastIndexOf("(")-1)
-        var authorId = string.substring(string.lastIndexOf("(")+1, string.length-1)
-        value.push({name : authorName, email : authorId})
-      }
-    }
     projectInf[name] = value
     this.setState({ projectInf : projectInf})
   }
@@ -84,8 +74,6 @@ export default class CreateProject extends Component {
 
   handleChangeDate(event, date) {
     var projectInf = this.state.projectInf
-
-
     projectInf.date_creation = Moment(date).format("YYYY-MM-DD")
     this.setState({
       date : date,
@@ -108,16 +96,10 @@ export default class CreateProject extends Component {
         this.setState({ project_exists : false,
                         site_loaded : true,})
       }else{
-        var authorArray = []
-        var authors = data.authors
-        for (var i in authors) {
-          authorArray = authorArray.concat([authors[i].name + " ("+ authors[i].email+ ")"])
-        }
-        this.setState({
+          this.setState({
           project_exists : true,
           site_loaded : true,
           projectInf : data,
-          authors : authorArray,
           date : Moment(data.date_creation, "YYYY-MM-DD").toDate()
         })
       }
@@ -126,18 +108,19 @@ export default class CreateProject extends Component {
 
   handleUpload(event){
     event.preventDefault()
+    this.setState({site_loaded : false})
     var projectInf = this.state.projectInf
     delete projectInf.is_bookmark
     delete projectInf.is_owner
     if( this.state.projectID === undefined){
       Backend.addProject(projectInf)
-      .then( (id) =>{
+      .then((id) =>{
         history.push("/project/"+ JSON.parse(id)[0])
       })
     }
     else{
       Backend.updateProject(this.state.projectID, projectInf).then(
-        history.push("/project/" + projectID)
+        history.push("/project/" + this.state.projectID)
       )
     }
   }
@@ -146,19 +129,12 @@ export default class CreateProject extends Component {
     return      this.state.projectInf.title === ''
     ||  this.state.projectInf.date_creation === ''
     ||  this.state.projectInf.description === ''
-    ||  this.state.authors.length === 0
+    ||  this.state.projectInf.authors.length === 0
     ||  this.state.projectInf.url.length === 0
     ||  this.state.projectInf.status === 0
   }
 
   componentDidMount(){
-    /* Some bug resets this.state.status initialy to [].
-    * This happens inbetween the end of componentWillMount()
-    * and the beginning of the first time the component renders.
-    * This is a temporary workaround until the issue is resolved.
-    * Please don't remove this unless you know how to fix it.
-    */
-
     Backend.getTags().then(function(tags) {
       this.setState({
         suggestedTags : tags
@@ -167,19 +143,12 @@ export default class CreateProject extends Component {
 
     //gets all the authors from the backend
     Backend.getUsers().then(function(authors) {
-      var suggestedAuthors = authors
-      var suggestedAuthorsArray = []
-      for (var i in suggestedAuthors) {
-        suggestedAuthorsArray = suggestedAuthorsArray.concat([
-          suggestedAuthors[i].first_name + " "
-          +suggestedAuthors[i].last_name +
-          " ("+suggestedAuthors[i].email+ ")"])
-        }
-        console.log(suggestedAuthorsArray)
+      authors = authors.map(item => {return item.email})
         this.setState({
-          suggestedAuthors : suggestedAuthorsArray
+          suggestedAuthors : authors
         })
       }.bind(this))
+
       if(this.props.fromURL&&(this.state.status!==this.props.status)){
         this.setState({status : this.props.status})
       }
@@ -256,13 +225,13 @@ export default class CreateProject extends Component {
                       </div>
                     </div>
                     <div className = "profile-info">Authors</div>
-                    <ChipInputList suggestions = {this.state.suggestedAuthors}
+                    <AuthorInputList suggestions = {this.state.suggestedAuthors}
                       onChange = {this.handleChange}
                       name = "authors"
                       filtered = {true}
-                      value = {this.state.authors}
+                      value = {this.state.projectInf.authors}
                       hintText = {'Add authors...'}
-                      errorText = {(this.state.authors.length === 0) ?
+                      errorText = {(this.state.projectInf.authors.length === 0) ?
                                   "Please provide at least one author" : ""}
                       />
                     <div className = "profile-info">Links</div>

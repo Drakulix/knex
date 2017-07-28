@@ -24,10 +24,9 @@ export default class SearchPage extends Component {
 
     var query  = this.props.match.params.query !== undefined ? JSON.parse(this.props.match.params.query) : {}
     this.state = {
-        searchString : query.searchString !== undefined ? query.searchString : "" ,
-        label : query.label !== undefined ? query.label : "",
+        label : "",
+        searchString : query.searchString === undefined ? "" : query.searchString,
         query : query,
-        fetchURL : "/api/projects",
         open : false,
         snackbar : false,
         snackbarText : "",
@@ -43,28 +42,12 @@ export default class SearchPage extends Component {
       this.handleLabelChange = this.handleLabelChange.bind(this)
     }
 
-
-  componentWillMount(){
-    if (this.props.match.params.qID !== undefined){
-        //FETCH QUERY FROM DB with ID QID
-      var query = {}
-      this.setState({query: query})
-    }
-  }
-
   handleChange(event) {
     const value = event.target.value
-
-    this.setState({searchString : value})
-
-
-    if(value === ""){
-      this.setState({fetchURL : "/api/projects"})
-    }
-    else{
-      this.setState({fetchURL : "/api/projects"})
-  //    this.setState({fetchURL : end+"simple/?q=" + vquery["searchString"] + "*"})
-    }
+    var query = this.state.query
+    query['searchString'] = value
+    this.setState({query : query,
+    searchString : value})
   }
 
   handleFilterChange(key, value){
@@ -74,28 +57,17 @@ export default class SearchPage extends Component {
     } else {
       query[key] = value
     }
-    this.setState({query : query})
+    this.setState({query : query, fetch: true})
   }
 
   saveSearch(){
-    var temp = []
-    var xquery = this.state.query
-    xquery.searchString = this.state.searchString
-    xquery.label = this.state.label
-    var authors = this.state.query["authors"]
-    for (var i in authors) {
-      var string = authors[i]
-      var name = string.substring(0, string.lastIndexOf("(")-1)
-      var id = string.substring(string.lastIndexOf("(")+1, string.length-1)
-      temp.push({"name" : name, "email" :id})
-    }
-    var query = this.state.query
-    query["authors"] = temp
-
-    Backend.search(this.state.query).then( function () {
+    var toSaveQuery = JSON.parse(JSON.stringify(this.state.query))
+    toSaveQuery["label"] = this.state.label
+    Backend.saveSearch(toSaveQuery).then( function () {
       this.setState({open: false,
         snackbar : true,
-        snackbarText : "Query saved"
+        snackbarText : "Query saved",
+        label : ""
       })}.bind(this)
     )
   }
@@ -103,21 +75,23 @@ export default class SearchPage extends Component {
   handleClose = () => {
     this.setState({
       open: false,
-      snackbar : false
+      snackbar : false,
     })
   }
 
   handleOpen = () => {
     this.setState({
       open: true,
-      snackbar : false
+      snackbar : false,
     })
   }
 
   handleLabelChange(event){
+    event.preventDefault()
     const value = event.target.value
     this.setState({label : value})
   }
+
 
   render() {
     const actions = [
@@ -175,9 +149,9 @@ export default class SearchPage extends Component {
           </div>
           <div style={{marginTop:20}}>
             <DataTable columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'date_creation' ,'bookmarked']}
-              fetchURL={this.state.fetchURL}
               handleFilter= {this.handleFilterChange}
               predefinedFilter = {this.state.query}
+              fetchHandler = {Backend.search(this.state.query)}
               ></DataTable>
           </div>
         </div>

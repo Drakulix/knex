@@ -1,6 +1,4 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
-
 import Badge from 'material-ui/Badge'
 import Chip from 'material-ui/Chip'
 import styles from '../common/Styles.jsx'
@@ -13,6 +11,10 @@ import RaisedButton from 'material-ui/RaisedButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import Snackbar from 'material-ui/Snackbar'
 import CommentSideBar from '../common/CommentSideBar'
+import AuthorOutputList from '../common/chips/AuthorOutputList'
+import TagOutputList from '../common/chips/TagOutputList'
+import ConfirmationPane from '../common/ConfirmationPane'
+
 
 
 export default class ProjectContainer extends Component {
@@ -30,7 +32,6 @@ export default class ProjectContainer extends Component {
       myEmail : Backend.getMail(),
       dialogOpen : false,
       snackbar : false,
-      sharePane : false,
       snackbarText : "",
       comments_count: 0
     }
@@ -44,12 +45,23 @@ export default class ProjectContainer extends Component {
     this.handleSharedProject = this.handleSharedProject.bind(this)
     this.handleClosedSharePane = this.handleClosedSharePane.bind(this)
     this.handleUpdateComments = this.handleUpdateComments.bind(this)
-    this.handleEdit = this.handleEdit.bind(this)
-
   }
 
   handleUpdateComments(event){
     this.loadComments();
+  }
+
+  handleUnArchive(){
+    var project = this.state.projectInf;
+    delete project.is_bookmark
+    delete project.is_owner
+    project['archived'] = false
+    Backend.updateProject(this.state.projectID, project).then(
+    this.setState({
+      dialogOpen : false,
+      snackbar : true,
+      snackbarText : "Project " + project.title + " unarchived"
+    }))
   }
 
   transformArray(dataArray) {
@@ -79,7 +91,8 @@ export default class ProjectContainer extends Component {
     this.loadSiteInf(this.state.projectID)
   }
 
-  handleEdit(){
+  handleEdit(event){
+    event.preventDefault()
     history.push("/update/" + this.state.projectID)
   }
 
@@ -99,7 +112,6 @@ export default class ProjectContainer extends Component {
       snackbarText : `Project ${this.state.projectInf.title} shared`
     })
   }
-
 
   handleClose(){
     this.setState({
@@ -184,12 +196,6 @@ export default class ProjectContainer extends Component {
     }
   }
 
-  handleEdit(event){
-    event.preventDefault()
-    history.push('/update/'+  this.state.projectID)
-  }
-
-
   render(){
     if(!this.state.site_loaded){
       return (
@@ -225,10 +231,11 @@ export default class ProjectContainer extends Component {
                         />
             <CommentSideBar handleUpdateComments={this.handleUpdateComments} value = {this.state.commentBar} uuid = {this.state.projectID}></CommentSideBar>
             <ConfirmationPane open = {this.state.dialogOpen}
-                              projectID = {this.state.projectID}
-                              projectTitle = {this.state.projectInf.title}
-                              handleDelete = {this.handleDelete}
-                              handleClose = {this.handleClose}/>
+                handleClose = {this.handleClose}
+                title = {"Do you want to archive project " + this.state.projectInf.title}
+                confirmationLabel = {"Archive project"}
+                confirmAction = {this.handleDelete}
+            />
             <Snackbar
               open = {this.state.snackbar}
               message = {this.state.snackbarText}
@@ -237,6 +244,7 @@ export default class ProjectContainer extends Component {
               <div className = "col-12">
                 <div>Project</div>
                 <div style = {{fontSize : '20px'}}> {this.state.projectInf.title}</div>
+                {this.state.projectInf.archived ? <i style = {{fontSize : '20px'}}>Archived project</i> : ""}
               </div>
             </div>
             <div className = "row">
@@ -257,15 +265,7 @@ export default class ProjectContainer extends Component {
                 </div>
                 <div style = {{marginTop : 30}}>
                 <div className = "profile-info">Authors</div>
-                <div style = {styles["wrapper"]}>
-                  {
-                    this.state.projectInf.authors.map(item =>
-                      <Chip style= {styles["chip"]} key={item.email}>
-                        <Link to = {"/profile/"+item.email} style= {styles["chipText"]}>{item.name}</Link>
-                      </Chip>
-                    )
-                  }
-                </div>
+                <AuthorOutputList value = {this.state.projectInf.authors} />
               </div>
               <div style = {{marginTop : 30}}>
                 <div className = "profile-info">Links</div>
@@ -279,13 +279,9 @@ export default class ProjectContainer extends Component {
               <div className = "col-6">
                 <div style = {{marginTop : 10}}>
                   <div className = "profile-info">Tags </div>
-                  <div style = {styles["wrapper"]}>
-                    { this.state.projectInf.tags.map(item =>
-                      <Chip style= {styles["chip"]}>
-                        <Link to = {"/discovery?tag = " +item} style= {styles["chipText"]} >{item}</Link></Chip>) }
-                  </div>
+                  <TagOutputList value = {this.state.projectInf.tags} />
                 </div>
-                <div style = {{marginTop : 30}}>
+                <div style = {{marginTop : 60}}>
                   <div className = "profile-info">Description</div>
                   <div><a>{this.state.projectInf.description}</a></div>
                 </div>
@@ -294,7 +290,8 @@ export default class ProjectContainer extends Component {
                 </div>
               </div>
             </div>
-            <div style = {{textAlign : "center", marginTop : 75}} >
+            {!this.state.projectInf.archived ?
+              <div style = {{textAlign : "center", marginTop : 75}} >
               <IconButton
                         onClick = {this.handleComment}
                         touch = {true}
@@ -353,56 +350,25 @@ export default class ProjectContainer extends Component {
                         <i className = "material-icons">archive</i>
               </IconButton>
             </div>
+              :
+            <div style = {{textAlign : "center", marginTop : 75}} >
+              <IconButton
+                        onClick ={() => this.handleUnArchive()}
+                        touch = {true}
+                        style = {styles.largeIcon}
+                        disabled = {! (this.state.isOwner || Backend.isAdmin())}
+                        tooltipPosition = "top-center"
+                        tooltip = "Unarchive project"
+                        iconStyle = {{fontSize : '24px'}}
+                        >
+                        <i className = "material-icons">unarchive</i>
+              </IconButton>
+            </div>
+
+            }
           </div>
         </div>
       )
     }
   }
-}
-
-  class ConfirmationPane extends Component {
-    constructor(props) {
-      super(props)
-      this.state = {
-        open: false
-        }
-      this.handleDelete = this.handleDelete.bind(this)
-    }
-
-    handleDelete(event){
-      event.preventDefault()
-      this.props.handleDelete()
-    }
-
-
-    componentWillReceiveProps(props){
-      this.setState({open: props.dialogOpen})
-    }
-
-    render() {
-      const actions = [
-        <RaisedButton
-          label = "Cancel"
-          primary = {true}
-          onTouchTap = {this.props.handleClose}
-          />,
-        <RaisedButton
-          label="Archive project"
-          primary = {true}
-          onTouchTap = {this.handleDelete}
-          style = {{marginLeft:20}}
-          />,
-      ]
-
-      return (
-        <Dialog
-          title = {"Do you want to archive project: \n"+ this.props.projectTitle}
-          actions = {actions}
-          modal = {false}
-          open = {this.props.open}
-          onRequestClose = {this.props.handleClose}
-          >
-        </Dialog>
-      )
-    }
 }

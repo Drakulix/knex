@@ -8,10 +8,8 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 
 import {
-  BrowserRouter,
   Route,
   Router
-
 } from 'react-router-dom'
 
 

@@ -100,7 +100,8 @@ export default class ProfileContainer extends Component {
             inkBarStyle = {{marginTop : -5, height : 5}}
             value = {this.state.value}
             onChange = {this.handleChange}
-            style = {{marginBottom : "40px"}}>
+            contentContainerStyle = {{marginTop: 30, paddingLeft:15, paddingRight:15}}
+          >
             <Tab
               label = "Profile Info" value = "a">
               <ProfileView profileInf = {this.state.profileInf}

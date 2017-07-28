@@ -3,12 +3,11 @@ import ReactTable from 'react-table'
 import { Link } from 'react-router-dom'
 import IconButton from 'material-ui/IconButton'
 import styles from '../../common/Styles'
-import RaisedButton from 'material-ui/RaisedButton'
-import Dialog from 'material-ui/Dialog'
 import Backend from '../../common/Backend'
 import CircularProgress from 'material-ui/CircularProgress'
 import {Card, CardHeader, CardText} from 'material-ui/Card'
 import TextField from 'material-ui/TextField'
+import ConfirmationPane from '../../common/ConfirmationPane'
 
 
 export default class ShowUsers extends Component {
@@ -27,6 +26,7 @@ export default class ShowUsers extends Component {
     this.handleClose = this.handleClose.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.handleSetAdmin = this.handleSetAdmin.bind(this)
+    this.intentionToDeleteUser = this.intentionToDeleteUser.bind(this)
   }
 
   handleClose(){
@@ -97,11 +97,17 @@ export default class ShowUsers extends Component {
     })
   }
 
-
-  handleDelete(userID){
+  intentionToDeleteUser(userID){
     this.setState({
-        open : true,
-        userID : userID})
+      open : true,
+      userID : userID})
+  }
+
+  handleDelete(){
+    Backend.deleteUser(this.state.userID).then(function confirm(){
+      this.setState({open:false})
+      this.props.handleUserUpdate("User " + this.state.userID + " deleted")
+    }.bind(this))
   }
 
   render(){
@@ -182,7 +188,7 @@ export default class ShowUsers extends Component {
       width : 60,
       style : {textAlign : "center"},
       Cell : props => <IconButton
-            onClick = {()=>this.handleDelete(props.value.email)}
+            onClick = {()=>this.intentionToDeleteUser(props.value.email)}
             touch = {true}
             style = {styles.largeIcon}
             iconStyle = {{fontSize : '24px'}}
@@ -193,114 +199,63 @@ export default class ShowUsers extends Component {
       })
 
     return (
-      <div className = "padding">
+      <div>
         <ConfirmationPane open = {this.state.open}
-                          userID = {this.state.userID}
-                          handleUserUpdate = {this.props.handleUserUpdate}
-                          handleClose = {this.handleClose}/>
-        <div className = "header-tab" style = {{textAlign : "center"}}>List users</div>
-          <div className = "container" style = {{display : (this.state.loading ? "block" : "none")}}>
-            <div className = "header"><CircularProgress size = {80} thickness = {5} /></div>
-          </div>
-          <div style = {{display : (!this.state.loading ? "block" : "none")}}>
-            <div className = "row" style = {{marginBottom : 20}}>
-              <div className = "col-1"></div>
-              <div className = "col-10">
-                <Card   onExpandChange = {() => this.setState({expanded : !this.state.expanded})}>
-                  <CardHeader
-                    title = "Filter users by"
-                    subtitle = "Define filters for your list"
-                    actAsExpander = {true}
-                    showExpandableButton = {true}
-                  />
-                  <CardText expandable = {true}>
-                    <div className = "row">
-                      <div className = "col-1 filter-label">Name</div>
-                      <div className = "col-5">
-                          <TextField style = {{width : '100%'}}
-                            value = {this.state.name}
-                            name = "name"
-                            onChange = {this.handleChange}
-                            type = "text" placeholder = "Enter username..."
-                          />
-                      </div>
-                      <div className = "col-1 filter-label">Email</div>
-                      <div className = "col-5">
-                          <TextField style = {{width : '100%'}}
-                            value = {this.state.email}
-                            name = "email"
-                            onChange = {this.handleChange}
-                            type = "text" placeholder = "Enter email adress..."
-                          />
-                      </div>
-                    </div>
-                  </CardText>
-                </Card>
-              </div>
-              <div className = "col-1"></div>
-            </div>
-            <div className = "row">
-              <div className = "col-1"></div>
-              <div className = "col-10">
-                <ReactTable style = {{width : "100%"}}
-                     data = {this.state.filteredList}
-                     columns = {columns}
-                     defaultExpanded = {{1 : true}}
-                     filterable = {false}
-                     showPageSizeOptions = {false}
-                     defaultPageSize = {10}
-                     defaultSorted = {[{
-                        id : 'userID',
-                        desc : true
-                      }]}
-                     />
-              </div>
-              <div className = "col-1"></div>
-            </div>
-          </div>
+                          handleClose = {this.handleClose}
+                          title = {"Do you want to delete user " + this.state.userID}
+                          confirmationLabel = {"Delete User"}
+                          confirmAction = {this.handleDelete}
+        />
+        <div className = "container" style = {{display : (this.state.loading ? "block" : "none")}}>
+          <div className = "header"><CircularProgress size = {80} thickness = {5} /></div>
         </div>
-    )
-  }
-}
-
-class ConfirmationPane extends Component {
-  handleDelete = () =>{
-    var text = "You can not delete the admin user"
-    text = "User " + this.props.userID + " deleted"
-    Backend.deleteUser(this.props.userID).then(
-      this.props.handleUserUpdate(text)
-    )
-  }
-
-
-  componentWillReceiveProps(props){
-    this.setState({open : props.open})
-  }
-
-  render() {
-    const actions = [
-      <RaisedButton
-        label = "Cancel"
-        primary = {true}
-        onTouchTap = {this.props.handleClose}
-        />,
-      <RaisedButton
-        label = "DELETE USER"
-        primary = {true}
-        onTouchTap = {this.handleDelete}
-        style = {{marginLeft : 20}}
-        />,
-    ]
-
-    return (
-      <Dialog
-        title = {"Do you want to delete user "+ this.props.userID}
-        actions = {actions}
-        modal = {false}
-        open = {this.props.open}
-        onRequestClose = {this.props.handleClose}
-        >
-      </Dialog>
+        <div style = {{display : (!this.state.loading ? "block" : "none")}}>
+          <div style = {{marginBottom : 20, width:"100%"}}>
+            <Card   onExpandChange = {() => this.setState({expanded : !this.state.expanded})}>
+              <CardHeader
+                  title = "Filter"
+                  subtitle = "Define filters for your list"
+                  actAsExpander = {true}
+                  showExpandableButton = {true}
+              />
+              <CardText expandable = {true}>
+                <div className = "row">
+                  <div className = "col-1 filter-label">Name</div>
+                  <div className = "col-5">
+                    <TextField style = {{width : '100%'}}
+                        value = {this.state.name}
+                        name = "name"
+                        onChange = {this.handleChange}
+                        type = "text" placeholder = "Enter username..."
+                    />
+                  </div>
+                  <div className = "col-1 filter-label">Email</div>
+                  <div className = "col-5">
+                    <TextField style = {{width : '100%'}}
+                        value = {this.state.email}
+                        name = "email"
+                        onChange = {this.handleChange}
+                        type = "text" placeholder = "Enter email adress..."
+                    />
+                  </div>
+                </div>
+              </CardText>
+            </Card>
+          </div>
+          <ReactTable style = {{width : "100%"}}
+                   data = {this.state.filteredList}
+                   columns = {columns}
+                   defaultExpanded = {{1 : true}}
+                   filterable = {false}
+                   showPageSizeOptions = {false}
+                   defaultPageSize = {10}
+                   defaultSorted = {[{
+                      id : 'userID',
+                      desc : true
+                    }]}
+          />
+        </div>
+      </div>
     )
   }
 }

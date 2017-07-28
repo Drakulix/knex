@@ -7,8 +7,9 @@ import MenuItem from 'material-ui/MenuItem'
 import {Card, CardHeader, CardText} from 'material-ui/Card'
 import Backend from '../common/Backend.jsx'
 import Moment from 'moment'
+import AuthorInputList from '../common/chips/AuthorInputList'
 
-import ChipInputList from '../common/ChipInputList'
+import ChipInputList from '../common/chips/ChipInputList'
 
 const statusString = [
   {text : <span className = "badge badge-success">DONE</span>, value : "DONE"},
@@ -22,9 +23,9 @@ export default class Filters extends Component{
   constructor(props){
     super(props)
     var filters = (props.value === undefined) ? {} : props.value
-    //creepy authors is not empty
+
     this.state = {
-      expanded : (Object.keys(filters).length === 1) ? false : true,
+      expanded : Object.keys(filters).length > 0,
       authors : filters.authors !== undefined ? filters.authors : [],
       title : filters.title !== undefined ? filters.title : "",
       tags : filters.tags !== undefined ? filters.tags : [],
@@ -42,7 +43,6 @@ export default class Filters extends Component{
 
 
   componentDidMount() {
-    //tipp : if you fetch server side data, this is the place where it should happen : )
 
     //gets all the exsiting tags from the backend
     Backend.getTags().then(function(tags) {
@@ -53,15 +53,7 @@ export default class Filters extends Component{
 
     //gets all the authors from the backend
     Backend.getAuthors().then(function(authors) {
-      var suggestedAuthors = authors
-      var suggestedAuthorsArray = []
-      for (var i in suggestedAuthors) {
-        suggestedAuthorsArray = suggestedAuthorsArray.concat([suggestedAuthors[i].name + " ("+suggestedAuthors[i].email+ ")"])
-      }
-      console.log(suggestedAuthorsArray)
-      this.setState({
-        suggestedAuthors : suggestedAuthorsArray
-      })
+      this.setState({suggestedAuthors : authors})
     }.bind(this))
   }
 
@@ -168,7 +160,7 @@ export default class Filters extends Component{
             </IconButton>
             <div className = "col-1 filter-label"> Authors</div>
             <div  className = "col-5">
-              <ChipInputList suggestions = {this.state.suggestedAuthors}
+              <AuthorInputList suggestions = {this.state.suggestedAuthors}
                 onChange = {this.handleChange}
                 filtered = {true}
                 name = "authors"
