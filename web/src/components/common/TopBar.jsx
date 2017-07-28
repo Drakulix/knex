@@ -76,7 +76,7 @@ export default class TopBar extends Component {
           <div className = "col-10">
           </div>
           <div className = "col-1" style = {{marginTop : 2}}>
-            <IconButton tooltip = "Notifications" style = {{color : 'white'}} onClick = {this.handleNotificationClick}>
+            <IconButton tooltip = "Notifications" style = {{color : 'white', marginLeft:80}} onClick = {this.handleNotificationClick}>
               <i className = "material-icons">notifications</i>
               { this.state.notifications.length !== 0 ?
                 <Badge  badgeContent = {this.state.notifications.length} primary = {true}

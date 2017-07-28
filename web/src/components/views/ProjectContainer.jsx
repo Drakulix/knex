@@ -1,20 +1,17 @@
 import React, { Component } from 'react'
-import Badge from 'material-ui/Badge'
-import Chip from 'material-ui/Chip'
 import styles from '../common/Styles.jsx'
 import Backend from '../common/Backend'
 import history from '../common/history'
 import IconButton from 'material-ui/IconButton'
 import SharePane from '../common/SharePane'
-import Dialog from 'material-ui/Dialog'
-import RaisedButton from 'material-ui/RaisedButton'
 import CircularProgress from 'material-ui/CircularProgress'
 import Snackbar from 'material-ui/Snackbar'
 import CommentSideBar from '../common/CommentSideBar'
 import AuthorOutputList from '../common/chips/AuthorOutputList'
 import TagOutputList from '../common/chips/TagOutputList'
+import UrlOutputList from '../common/chips/UrlOutputList'
 import ConfirmationPane from '../common/ConfirmationPane'
-
+import Badge from '../common/Badge'
 
 
 export default class ProjectContainer extends Component {
@@ -43,7 +40,6 @@ export default class ProjectContainer extends Component {
 
     this.handleDelete = this.handleDelete.bind(this)
     this.handleSharedProject = this.handleSharedProject.bind(this)
-    this.handleClosedSharePane = this.handleClosedSharePane.bind(this)
     this.handleUpdateComments = this.handleUpdateComments.bind(this)
   }
 
@@ -96,7 +92,7 @@ export default class ProjectContainer extends Component {
     history.push("/update/" + this.state.projectID)
   }
 
-  handleClosedSharePane(){
+  handleClose(){
     this.setState({
       dialogOpen : false,
       snackbar : false,
@@ -105,18 +101,10 @@ export default class ProjectContainer extends Component {
   }
 
   handleSharedProject(){
+    this.handleClose()
     this.setState({
-      dialogOpen : false,
       snackbar : true,
-      sharePane : false,
       snackbarText : `Project ${this.state.projectInf.title} shared`
-    })
-  }
-
-  handleClose(){
-    this.setState({
-      dialogOpen : false,
-      snackbar : false
     })
   }
 
@@ -155,27 +143,23 @@ export default class ProjectContainer extends Component {
 
   handleComment(event){
     event.preventDefault()
+    this.handleClose()
     this.setState({
-      sharePane : false,
-      commentBar : true
+      commentBar : true,
     })
   }
 
   handleShare(event){
     event.preventDefault()
+    this.handleClose()
     this.setState({
-      commentBar : false,
-      sharePane : true
+      sharePane : true,
     })
   }
 
   handleBookmark(event){
     event.preventDefault()
-    this.setState({
-        commentBar : false,
-        sharePane : false,
-        snackbar : false
-    })
+    this.handleClose()
     // HORRIBLE  and strange initialstate
     if(new String(this.state.projectInf.is_bookmark) == "true"){
       Backend.deleteBookmark(this.state.projectID).then(res => {
@@ -211,23 +195,14 @@ export default class ProjectContainer extends Component {
         </div>
       )
     }else{
-      let status_badge = null
-      if (this.state.projectInf.status === 'DONE'){
-        status_badge = <span className = "badge badge-success">DONE</span>
-      } else if (this.state.projectInf.status === 'IN_PROGRESS') {
-        status_badge = <span className = "badge badge-warning">IN_PROGRESS</span>
-      } else if (this.state.projectInf.status === 'IN_REVIEW') {
-        status_badge = <span className = "badge badge-info">IN_REVIEW</span>
-      } else {
-        status_badge = this.state.projectInf.status
-      }
+
       return(
         <div className = "container">
           <div className = "innerContainer">
             <SharePane  uuid = {this.state.projectID}
                         handleSharedProject = {this.handleSharedProject}
                         open = {this.state.sharePane}
-                        handleClosedSharePane ={this.handleClosedSharePane}
+                        handleClosedSharePane ={this.handleClose}
                         />
             <CommentSideBar handleUpdateComments={this.handleUpdateComments} value = {this.state.commentBar} uuid = {this.state.projectID}></CommentSideBar>
             <ConfirmationPane open = {this.state.dialogOpen}
@@ -252,36 +227,33 @@ export default class ProjectContainer extends Component {
                 <div className = "row">
                   <div className = "col-4">
                     <div className = "profile-info">Status</div>
-                    <div>{status_badge}</div>
+                    <div><Badge value ={this.state.projectInf.status}/></div>
                   </div>
                   <div className = "col-4">
                     <div className = "profile-info">Creation date</div>
-                    <div>{this.state.projectInf.date_creation}</div>
+                    <div style={{marginTop:16}}>{this.state.projectInf.date_creation}</div>
                   </div>
                   <div className = "col-4">
                     <div className = "profile-info">Last update </div>
-                    <div> {this.state.projectInf.date_last_updated}</div>
+                    <div style={{marginTop:16}}> {this.state.projectInf.date_last_updated}</div>
                   </div>
                 </div>
                 <div style = {{marginTop : 30}}>
-                <div className = "profile-info">Authors</div>
-                <AuthorOutputList value = {this.state.projectInf.authors} />
-              </div>
-              <div style = {{marginTop : 30}}>
-                <div className = "profile-info">Links</div>
-                <div style = {styles["wrapper"]}>
-                  { this.state.projectInf.url.map(item => <Chip style= {styles["chip"]} key={item}>
-                  <a href = {item} style= {styles["chipText"]}>{item}</a></Chip>) }
-                  </div>
+                  <div className = "profile-info">Authors</div>
+                  <AuthorOutputList value = {this.state.projectInf.authors} />
+                </div>
+                <div style = {{marginTop : 30}}>
+                  <div className = "profile-info">Links</div>
+                  <UrlOutputList value = {this.state.projectInf.url} />
                 </div>
               </div>
               <div className = "col-1"></div>
               <div className = "col-6">
-                <div style = {{marginTop : 10}}>
+                <div>
                   <div className = "profile-info">Tags </div>
                   <TagOutputList value = {this.state.projectInf.tags} />
                 </div>
-                <div style = {{marginTop : 60}}>
+                <div style = {{marginTop : 50}}>
                   <div className = "profile-info">Description</div>
                   <div><a>{this.state.projectInf.description}</a></div>
                 </div>

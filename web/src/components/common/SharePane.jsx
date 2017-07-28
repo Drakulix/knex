@@ -9,7 +9,6 @@ export default class SharePane extends React.Component {
     super(props)
     this.state = {
       authors : [],
-      suggestedAuthors : []
     }
     this.handleAuthorChange = this.handleAuthorChange.bind(this)
   }
@@ -20,15 +19,6 @@ export default class SharePane extends React.Component {
     }
     this.setState({open : false})
     this.props.handleSharedProject()
-  }
-
-  componentDidMount() {
-    Backend.getUsers().then(function(authors) {
-      authors = authors.map(item => {return item.email})
-        this.setState({
-          suggestedAuthors : authors
-        })
-      }.bind(this))
   }
 
   handleAuthorChange(event) {
@@ -59,12 +49,11 @@ export default class SharePane extends React.Component {
         open={this.props.open}
         onRequestClose={this.handleClosedSharePane}
         >
-        <AuthorInputList suggestions = {this.state.suggestedAuthors}
+        <AuthorInputList
           onChange = {this.handleAuthorChange}
           name = "authors"
           filtered = {true}
           value = {this.state.authors}
-          hintText = {'Add authors...'}
           errorText = {(this.state.authors.length === 0) ?
                       "Please provide at least one author" : ""}
           />

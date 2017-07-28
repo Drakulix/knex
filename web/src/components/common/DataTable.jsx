@@ -5,13 +5,12 @@ import Backend from './Backend'
 import Filters from './Filters'
 import IconButton from 'material-ui/IconButton'
 import styles from '../common/Styles.jsx'
-import RaisedButton from 'material-ui/RaisedButton'
-import Dialog from 'material-ui/Dialog'
 import CircularProgress from 'material-ui/CircularProgress'
 import Snackbar from 'material-ui/Snackbar'
 import AuthorOutputList from '../common/chips/AuthorOutputList'
 import TagOutputList from '../common/chips/TagOutputList'
 import ConfirmationPane from '../common/ConfirmationPane'
+import Badge from '../common/Badge'
 
 
 export default class BookmarksTable extends Component {
@@ -30,12 +29,11 @@ export default class BookmarksTable extends Component {
       filteredTable : [{
       }],
       handler : this.props.fetchHandler,
-      //url : props.fetchURL,
       dialogOpen : false,
-      dialogText : "XX",
+      dialogText : "Delete Project",
       action : null,
       loading : true,
-      buttonText : "DELETE",
+      buttonText : "Delete",
       snackbar : false,
       snackbarText : ""
     }
@@ -47,7 +45,6 @@ export default class BookmarksTable extends Component {
     this.handleArchive = this.handleArchive.bind(this)
     this.handleUnArchive = this.handleUnArchive.bind(this)
     this.handleClose = this.handleClose.bind(this)
-
     this.fetchData()
   }
 
@@ -68,18 +65,6 @@ export default class BookmarksTable extends Component {
       })
   }
 
-  handleUnArchive(projectID, projectTitle){
-    Backend.getProjectArchived(projectID, false)
-    .then(this.fetchData())
-    .then(this.setState({snackbar :true,
-      snackbarText : "Project " + projectTitle + " unarchived"})
-    )
-  }
-
-  handleClose(){
-    this.setState({dialogOpen : false})
-  }
-
   handleArchive(projectID, projectName){
     this.setState({
       snackbar : false,
@@ -97,6 +82,21 @@ export default class BookmarksTable extends Component {
       })
   }
 
+  handleUnArchive(projectID, projectTitle){
+    Backend.getProjectArchived(projectID, false)
+    .then(this.fetchData())
+    .then(this.setState({snackbar :true,
+      snackbarText : "Project " + projectTitle + " unarchived"})
+    )
+  }
+
+  handleClose(){
+    this.setState({
+      dialogOpen : false,
+      snackbar : false
+    })
+  }
+
   handleAddBookmark(projectID){
     Backend.addBookmark(projectID)
       .then(this.fetchData())
@@ -107,16 +107,10 @@ export default class BookmarksTable extends Component {
       .then(this.fetchData())
   }
 
-  // componentDidMount() {
-  //   this.fetchData()
-  // }
-
-  componentWillReceiveProps(nextProps) {
-    // You don't have to do this check first, but it can help prevent an unneeded render
-/*    if (this.state.url != nextProps.fetchURL){
-      this.setState({url :nextProps.fetchURL})
-      this.fetchData(nextProps.fetchURL)
-    }*/
+  componentWillReceiveProps(props){
+    if(props.load){
+      this.fetchData()
+    }
   }
 
   fetchData(){
@@ -127,7 +121,7 @@ export default class BookmarksTable extends Component {
         filteredTable : []
       })
       this.filter(this.state.filters)
-      this.setState({loading : false})
+      return ""
     }.bind(this))
   }
 
@@ -152,28 +146,24 @@ export default class BookmarksTable extends Component {
       var discard = false
       for(let key of Object.keys(filters)){
         var value = filters[key]
-        switch (key){
+        if(key === "tags" || key === "authors"){
+          var temp = dataObject[key].join().toLowerCase()
+          discard = value.some(function notContains(element){
+                        return temp.indexOf(element) === -1})
+        }
+        else{
+          switch (key){
             case "date_to":
               discard = dataObject.date_creation  > value
               break
             case "date_from":
               discard = dataObject.date_creation  < value
               break
-            case "tags":
-              var temp = dataObject[key].join().toLowerCase()
-              discard = value.some(function notContains(element){
-                            return temp.indexOf(element) === -1})
-              break
-            case "authors":
-              temp = dataObject[key].join().toLowerCase()
-              discard = value.some( function notContains(element){
-                return temp.indexOf(element) === -1
-              })
-              break
             default:
               discard = dataObject[key].toLowerCase().indexOf(value.toLowerCase()) === -1
               break
           }
+        }
         if(discard){
           break
         }
@@ -182,8 +172,10 @@ export default class BookmarksTable extends Component {
         array.push(dataObject)
       }
     }
-    this.setState({filteredTable : array,
-    loading : false})
+    this.setState({
+      filteredTable : array,
+      loading:false
+    })
   }
 
   render() {
@@ -194,43 +186,13 @@ export default class BookmarksTable extends Component {
         id: 'title',
         width: 200,
         accessor: d => d,
-        Cell: props =>{
-          return(
-            <div style={{whiteSpace : "normal"}}>
+        Cell: props =>
+            <div style={{whiteSpace : "normal", marginTop:8}}>
               <Link to={`/project/${props.value._id}`}
                 className="table-link-text">
                 {props.value.title}
               </Link>
             </div>
-          )
-        }
-      })
-    }
-    if(this.props.columns.indexOf("status") !== -1){
-      columns.push({
-        Header: 'Status',
-        accessor: 'status',
-        id:'status',
-        style: {textAlign:"center"},
-        width: 100,
-        Cell: props =>{
-          var status_badge = props.value
-          switch(props.value){
-            case "DONE":  status_badge = <span className="badge badge-success">DONE</span>
-              break
-            case 'IN_PROGRESS':
-              status_badge = <span className="badge badge-warning">IN_PROGRESS</span>
-              break
-            case 'IN_REVIEW':
-              status_badge = <span className="badge badge-info">IN_REVIEW</span>
-              break
-            default:
-              break
-          }
-          return(
-            <div>{status_badge}</div>
-          )
-        }
       })
     }
     if(this.props.columns.indexOf("date_creation") !== -1){
@@ -239,23 +201,26 @@ export default class BookmarksTable extends Component {
         accessor: 'date_creation',
         pivot: true,
         width:95,
-        style: {textAlign:"center"},
+        style: {textAlign:"center", marginTop:9},
+      })
+    }
+    if(this.props.columns.indexOf("status") !== -1){
+      columns.push({
+        Header: 'Status',
+        accessor: 'status',
+        id:'status',
+        style: {align:"center", width : 100},
+              width: 100,
+        Cell: props => <Badge value={props.value} />
       })
     }
     if(this.props.columns.indexOf("tags") !== -1){
       columns.push({
         Header: 'Tags',
         accessor: "tags",
-        id : 'tags',
         width: 220,
-        style: {textAlign:"center"},
-        Cell: props =>{
-          return(
-            <div style={{marginTop: -10}}>
-              <TagOutputList value = {props.value} />
-            </div>
-          )
-        },
+        style: {textAlign:"center", width : 220},
+        Cell: props => <TagOutputList value = {props.value} />
       })
     }
     if(this.props.columns.indexOf("authors") !== -1){
@@ -263,14 +228,7 @@ export default class BookmarksTable extends Component {
         Header: 'Authors',
         accessor: "authors",
         width: 150,
-        id : 'authors',
-        Cell: props =>{
-          return(
-            <div style={{marginTop: -10}}>
-              <AuthorOutputList value = {props.value} />
-            </div>
-          )
-        },
+        Cell: props => <AuthorOutputList value = {props.value} />
       })
     }
     if(this.props.columns.indexOf("description") !== -1){
@@ -278,12 +236,12 @@ export default class BookmarksTable extends Component {
         Header: 'Description',
         id: 'description',
         style: {width: "100%"},
-        accessor: d => d,
+        accessor: 'description',
         Cell: props =>{
-          var text = (props.value.description !== undefined) ? props.value.description.substring(0,250).trim(): "";
+          var text = (props.value !== undefined) ? props.value.substring(0,250).trim(): "";
           text = text + ((text.length >= 250) ? "..." : "")
           return(
-            <div style ={{whiteSpace : "normal"}}>
+            <div style ={{whiteSpace : "normal", marginTop:8}}>
             {text}
             </div>
           )
@@ -368,7 +326,6 @@ export default class BookmarksTable extends Component {
           : "" }
       })
     }
-
     if(this.props.columns.indexOf("delete") !== -1){
       columns.push({
         Header: 'Delete',

@@ -1,5 +1,3 @@
-const mainColor ="#ff5000";
-
 export default {
   uploadButton: {
     verticalAlign: 'middle',
@@ -14,15 +12,6 @@ export default {
     width: '100%',
     opacity: 0,
   },
-  chip: {
-    margin: '8px 8px 0 0',
-    float: 'left',
-    background: mainColor
-  },
-  wrapper: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
   largeIcon: {
     width: 32,
     height: 32,
@@ -31,17 +20,12 @@ export default {
     padding: 1,
     color: '#292b2c',
   },
-  chipText:{
-    color : '#ffffff',
-    fontWeight: 'bold'
-  },
-  datePicker: {
-      selectColor: mainColor
+  datePicker : {
+    selectColor : '#ff5000'
   },
   palette : {
-      primary1Color : mainColor,
+      primary1Color : "#ff5000",
       accent1Color : "#000000",
-      pickerHeaderColor: mainColor,
-
+      pickerHeaderColor: "#ff5000",
   }
-};
+}

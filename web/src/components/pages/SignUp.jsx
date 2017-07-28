@@ -5,8 +5,6 @@ import {
 } from 'react-router-dom'
 import RaisedButton from 'material-ui/RaisedButton'
 import TextField from 'material-ui/TextField'
-import SelectField from 'material-ui/SelectField'
-import MenuItem from 'material-ui/MenuItem'
 import logo from '../../style/img/black_logo_title_below.svg'
 import Backend from '../common/Backend'
 
@@ -18,250 +16,148 @@ export default class SignUp extends Component {
     // set the initial component state
     this.state = {
       redirect: false,
-      error: '',
-      profileInf: {},
-      firstname: '',
-      firstname_error : 'Requiered',
-      lastname_error : 'Requiered',
-      email_error : 'Requiered',
-      password_error : '',
-      password_confirm_error : '',
-      lastname: '',
-      email: '',
-      password: '',
-      password_confirm: '',
-      role: 'user',
-      myProfile: Backend.getMail()
+      first_name : "",
+      last_name : "",
+      email : "",
+      password : "",
+      password_confirm : ""
     }
-    this.handleChangeFirstName = this.handleChangeFirstName.bind(this)
-    this.handleChangeLastName = this.handleChangeLastName.bind(this)
-    this.handleChangeEmail = this.handleChangeEmail.bind(this)
-    this.handleChangePassword = this.handleChangePassword.bind(this)
-    this.handleChangePasswordConfirm = this.handleChangePasswordConfirm.bind(this)
-    this.handleRoleChange = this.handleRoleChange.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
+
+    this.handleInputChange = this.handleInputChange.bind(this)
+    this.handleRegister = this.handleRegister.bind(this)
   }
 
-  handleChangeFirstName(event) {
-    if(event.target.value === ''){
-      this.setState({firstname_error: 'Requiered'})
-    }else{
-      this.setState({firstname_error: ''})
-    }
-    this.setState({firstname: event.target.value})
+  handleInputChange(event) {
+    const target = event.target
+    const value =  target.value
+    const name = target.name
+    this.setState({
+      [name]: value,
+    })
   }
 
-  handleChangeLastName(event) {
-    if(event.target.value === ''){
-      this.setState({lastname_error: 'Requiered'})
-    }else{
-      this.setState({lastname_error: ''})
-    }
-    this.setState({lastname: event.target.value})
+  isValidEmailAddress() {
+    var email = (this.state.email)
+    if(email === undefined || email === "")
+      return false
+    else
+      return email.match(/\S+@\S+\.\S+/)
   }
 
-  handleChangeEmail(event) {
-    if(event.target.value === '' || !this.isValidEmailAddress(event.target.value)){
-      this.setState({email_error: 'Not a valid email'})
-    }else{
-      this.setState({email_error: ''})
-    }
-    this.setState({email: event.target.value})
+  isInValidInput(){
+    return !this.isValidEmailAddress()
+        || this.state.first_name === ""
+        || this.state.last_name === ""
+        || this.state.email === ""
+        || this.state.password === ""
+        || this.state.password !== this.state.password_confirm
   }
 
-  handleChangePassword(event) {
-    if(event.target.value === ''){
-      this.setState({password_error: 'Can not be empty!'})
-    }else if(this.state.password !== this.state.password_confirm){
-      this.setState({password_confirm_error: 'Password do not match!'})
-    }else{
-      this.setState({password_error: ''})
-      this.setState({password_confirm_error: ''})
-    }
-    this.setState({password: event.target.value})
-  }
-
-
-  handleRoleChange(event, index, value) {
-    this.setState({'role': value})
-  }
-
-  handleChangePasswordConfirm(event) {
-    if(event.target.value !== this.state.password){
-      this.setState({password_confirm_error: 'Requiered'})
-    }else if(this.state.password !== this.state.password_confirm){
-      this.setState({password_confirm_error: 'Password do not match!'})
-    }else{
-      this.setState({password_confirm_error: ''})
-    }
-    this.setState({password_confirm: event.target.value})
-  }
-
-  handleSubmit(event){
+  handleRegister(event){
     event.preventDefault()
-    if(this.state.password !== this.state.password_confirm){
-      this.setState({password_confirm_error: 'Password do not match!'})
-    }else{
-      this.setState({password_confirm_error: ''})
-    }
-
-    if(this.state.firstname_error === '' && this.state.lastname_error === '' &&this.state.email_error === '' && this.state.password_error === '' &&  this.state.password_confirm_error === ''){
-    Backend.register(this.state.firstname, this.state.lastname, this.state.email, this.state.password, this.state.password_confirm, this.state.role).then((success) => {
-
+    Backend.register(this.state.first_name, this.state.last_name, this.state.email, this.state.password, this.state.password_confirm, ["user"]).then((success) => {
       if(success){
-        alert("Registration successfull!")
-        this.setState({ redirect: true })
-      }else{
-        this.setState({ redirect: false, error: 'Registration failed!' })
-        alert("Registration failed!")
+        Backend.login(this.state.email, this.state.password).then((success) => {
+          if(success){
+            this.setState({ redirect: true })
+          }else{
+            this.setState({ redirect: false, error: 'Login failed' })
+            alert("Login failed")
+          }
+        })
       }
     })
-    }
   }
 
-  isValidEmailAddress(address) {
-    return !! address.match(/\S+@\S+\.\S+/)
-  }
-
-  loadProfileInf(e) {
-    Backend.getProfile(e).then(data => {
-      this.setState({profileInf: data})
-      if(!data){
-        this.setState({profile_exists: false})
-      }else{
-        this.setState({first_name: data.first_name, last_name: data.last_name, bio: data.bio})
-      }
-    }).catch(ex => {
-      this.setState({profile_exists: false})
-    })
-
-  }
-
-  componentDidMount(){
-    this.loadProfileInf(this.state.myProfile)
-  }
-
-  isUserAdmin(){
-    return this.state.profileInf && (this.state.profileInf.roles === 'admin')
-  }
-
-  getRoleStyle(){
-    if(!this.isUserAdmin()){
-      return {visibility: 'hidden', display: 'none'}
-    }else{
-      return {}
-    }
-  }
 
   render() {
-    const { teamName } = this.props
-
     if (this.state.redirect) {
-      return <Redirect to='/'/>
+      return <Redirect to='/discovery'/>
     }
 
     return (
-      <section className="sign-container">
-
-        {/*Information*/}
+<div style = {{textAlign : "center"}}>
         <img className="service-name" src={logo} alt="Logo"/>
-        <h2 className="team-name">{teamName}</h2>
+        <h2 className="team-name">brings light to the cloud</h2>
         <div className="rectangle-sign">
           <h3 className="sign-type-desc">Sign Up
           </h3>
-          <form onSubmit={this.handleSubmit}>
-          {/*Input First Name*/}
-          <div className="input-group input-login" id="email-signup">
+          <form onSubmit={this.handleRegister}>
+            {/*Input First Name*/}
+            <div>
+              <TextField
+                type="text"
+                value={this.state.first_name}
+                onChange={this.handleInputChange}
+                hintText="Enter the first name..."
+                errorText={(this.state.first_name === "") ? "Field is required" : ""}
+                name= "first_name"
+                />
+            </div>
+            {/*Input Last Name*/}
+            <div >
+              <TextField
+                type="text"
+                value={this.state.last_name}
+                name="last_name"
+                onChange={this.handleInputChange}
+                hintText="Enter the last name..."
+                errorText={(this.state.last_name === "") ? "Field is required" : ""}
 
-            <TextField
-              type="text"
-              value={this.state.firstname}
-              onChange={this.handleChangeFirstName}
-              hintText="First Name"
-              errorText={(this.state.firstname === "") ? "Field is requiered" : ""}
+                />
+            </div>
+            {/*Input Email*/}
+            <div>
+              <TextField
+                type="email"
+                value={this.state.email}
+                onChange={this.handleInputChange}
+                hintText="Email"
+                name="email"
+                errorText={(!this.isValidEmailAddress()) ? "Needs to be a valid email" : ""}
 
-            />
-          </div>
-          {/*Input Last Name*/}
-          <div className="input-group input-login" id="email-signup">
-            <TextField
-              type="text"
-              value={this.state.lastname}
-              onChange={this.handleChangeLastName}
-              hintText="Last Name"
-              errorText={(this.state.lastname === "") ? "Field is requiered" : ""}
-            />
-          </div>
-          {/*Input Email*/}
-          <div className="input-group input-login" id="email-signup">
-            <TextField
-              type="email"
-              value={this.state.email}
-              onChange={this.handleChangeEmail}
-              hintText="Email"
-              errorText={this.state.email_error}
-            />
-          </div>
-          {/*Input password*/}
-          <div className="input-group input-login">
-            <TextField
-              type="password"
-              value={this.state.password}
-              onChange={this.handleChangePassword}
-              hintText="Password"
-              errorText={(this.state.password === "") ? "Field is requiered" : ""}
-            />
-          </div>
+                />
+            </div>
+            {/*Input password*/}
+            <div >
+              <TextField
+                type="password"
+                value={this.state.password}
+                onChange={this.handleInputChange}
+                hintText="Password"
+                name="password"
+                errorText={(this.state.password === "") ? "Field is required" : ""}
+                />
+            </div>
 
-          {/*Input confirm password*/}
-          <div className="input-group input-login">
-            <TextField
-              type="password"
-              value={this.state.password_confirm}
-              onChange={this.handleChangePasswordConfirm}
-              hintText="Confirm Password"
-              errorText={( this.state.password !== this.state.password_confirm ) ? "Passwords do not match" : "" }
-            />
-          </div>
-          <div >
-            <SelectField
-              style={this.getRoleStyle()}
-              floatingLabelText="Role"
-              value={this.state.role}
-              onChange={this.handleRoleChange}
-            >
-              <MenuItem value={'user'} primaryText="User" />
-              <MenuItem value={'admin'} primaryText="Admin" />
-            </SelectField>
-          </div>
+            {/*Input confirm password*/}
+            <div >
+              <TextField
+                type="password"
+                value={this.state.password_confirm}
+                onChange={this.handleInputChange}
+                hintText="Confirm password"
+                name="password_confirm"
+                errorText={( this.state.password !== this.state.password_confirm ) ? "Passwords do not match" : "" }
+                />
+            </div>
             <RaisedButton
               type="Submit"
               label="Register"
+              disabled={this.isInValidInput()}
               primary={true}
               style={{width: 250}}
-            />
-        </form>
-          </div>
-
-        <div>
+              required
+              />
+          </form>
+        </div>
+        <div style = {{marginTop : 30}}>
           <Link to="/">
             <a href="#" className="register-info">
               You already have an account?<br/>Login here.
             </a>
           </Link>
         </div>
-
-      </section>
-    )
+</div>    )
   }
-}
-
-SignUp.propTypes = {
-  serviceName: React.PropTypes.string,
-  teamName: React.PropTypes.string,
-}
-
-SignUp.defaultProps = {
-  serviceName: 'Knex',
-  teamName: 'brings light to the cloud'
 }
