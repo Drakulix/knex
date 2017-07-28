@@ -29,12 +29,11 @@ export default class BookmarksTable extends Component {
       filteredTable : [{
       }],
       handler : this.props.fetchHandler,
-      //url : props.fetchURL,
       dialogOpen : false,
-      dialogText : "XX",
+      dialogText : "",
       action : null,
       loading : true,
-      buttonText : "DELETE",
+      buttonText : "",
       snackbar : false,
       snackbarText : ""
     }
@@ -66,21 +65,6 @@ export default class BookmarksTable extends Component {
       })
   }
 
-  handleUnArchive(projectID, projectTitle){
-    Backend.getProjectArchived(projectID, false)
-    .then(this.fetchData())
-    .then(this.setState({snackbar :true,
-      snackbarText : "Project " + projectTitle + " unarchived"})
-    )
-  }
-
-  handleClose(){
-    this.setState({
-      dialogOpen : false,
-      snackbar : false
-    })
-  }
-
   handleArchive(projectID, projectName){
     this.setState({
       snackbar : false,
@@ -98,6 +82,21 @@ export default class BookmarksTable extends Component {
       })
   }
 
+  handleUnArchive(projectID, projectTitle){
+    Backend.getProjectArchived(projectID, false)
+    .then(this.fetchData())
+    .then(this.setState({snackbar :true,
+      snackbarText : "Project " + projectTitle + " unarchived"})
+    )
+  }
+
+  handleClose(){
+    this.setState({
+      dialogOpen : false,
+      snackbar : false
+    })
+  }
+
   handleAddBookmark(projectID){
     Backend.addBookmark(projectID)
       .then(this.fetchData())
@@ -108,6 +107,12 @@ export default class BookmarksTable extends Component {
       .then(this.fetchData())
   }
 
+  componentWillReceiveProps(props){
+    if(props.load){
+      this.fetchData()
+    }
+  }
+
   fetchData(){
     this.setState({loading : true})
     return this.props.fetchHandler.then(function(data) {
@@ -116,7 +121,7 @@ export default class BookmarksTable extends Component {
         filteredTable : []
       })
       this.filter(this.state.filters)
-      this.setState({loading : false})
+      return ""
     }.bind(this))
   }
 
@@ -141,28 +146,24 @@ export default class BookmarksTable extends Component {
       var discard = false
       for(let key of Object.keys(filters)){
         var value = filters[key]
-        switch (key){
+        if(key === "tags" || key === "authors"){
+          var temp = dataObject[key].join().toLowerCase()
+          discard = value.some(function notContains(element){
+                        return temp.indexOf(element) === -1})
+        }
+        else{
+          switch (key){
             case "date_to":
               discard = dataObject.date_creation  > value
               break
             case "date_from":
               discard = dataObject.date_creation  < value
               break
-            case "tags":
-              var temp = dataObject[key].join().toLowerCase()
-              discard = value.some(function notContains(element){
-                            return temp.indexOf(element) === -1})
-              break
-            case "authors":
-              temp = dataObject[key].join().toLowerCase()
-              discard = value.some( function notContains(element){
-                return temp.indexOf(element) === -1
-              })
-              break
             default:
               discard = dataObject[key].toLowerCase().indexOf(value.toLowerCase()) === -1
               break
           }
+        }
         if(discard){
           break
         }
@@ -171,8 +172,10 @@ export default class BookmarksTable extends Component {
         array.push(dataObject)
       }
     }
-    this.setState({filteredTable : array,
-    loading : false})
+    this.setState({
+      filteredTable : array,
+      loading:false
+    })
   }
 
   render() {
@@ -215,7 +218,6 @@ export default class BookmarksTable extends Component {
       columns.push({
         Header: 'Tags',
         accessor: "tags",
-        id : 'tags',
         width: 220,
         style: {textAlign:"center", width : 220},
         Cell: props => <TagOutputList value = {props.value} />
@@ -226,7 +228,6 @@ export default class BookmarksTable extends Component {
         Header: 'Authors',
         accessor: "authors",
         width: 150,
-        id : 'authors',
         Cell: props => <AuthorOutputList value = {props.value} />
       })
     }
@@ -235,9 +236,9 @@ export default class BookmarksTable extends Component {
         Header: 'Description',
         id: 'description',
         style: {width: "100%"},
-        accessor: d => d,
+        accessor: 'description',
         Cell: props =>{
-          var text = (props.value.description !== undefined) ? props.value.description.substring(0,250).trim(): "";
+          var text = (props.value !== undefined) ? props.value.substring(0,250).trim(): "";
           text = text + ((text.length >= 250) ? "..." : "")
           return(
             <div style ={{whiteSpace : "normal", marginTop:8}}>
