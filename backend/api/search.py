@@ -26,18 +26,7 @@ def prepare_es_results(res):
         raise ApiException(str(ke), 400)
 
 
-@search.route('/api/projects/search', methods=['POST'])
-@login_required
-def search_api():
-    """Search function
-
-    Returns:
-        res (json): JSON containing Projects and metadata
-
-    """
-
-    query = request.get_json()
-
+def prepare_es_query(query):
     search_string = query.get('searchString', '')
     archived = query.get('archived')
     authors = query.get('authors')
@@ -114,6 +103,21 @@ def search_api():
             'wildcard': {'title': '*' + title + '*'}
         })
 
+    return request_json
+
+
+@search.route('/api/projects/search', methods=['POST'])
+@login_required
+def search_es():
+    """Search function
+
+    Returns:
+        res (json): JSON containing Projects and metadata
+
+    """
+    query = request.get_json()
+    request_json = prepare_es_query(query)
+
     try:
         projects = prepare_es_results(g.es.search(index="knexdb", body=request_json))
     except RequestError as e:
@@ -126,6 +130,25 @@ def search_api():
             return make_response('Invalid json', 400)
     else:
         return jsonify(projects)
+
+
+@search.route('/api/projects/search/count', methods=['POST'])
+@login_required
+def search_count():
+    """Search function
+
+    Returns:
+        res (json): JSON containing number of matches
+
+    """
+    query = request.get_json()
+    request_json = prepare_es_query(query)
+
+    try:
+        res = g.es.search(index="knexdb", body=request_json)['hits']['total']
+        return jsonify(res)
+    except Exception as err:
+        raise ApiException(str(err), 400)
 
 
 @search.route('/api/projects/search/saved/<id>', methods=['GET'])
