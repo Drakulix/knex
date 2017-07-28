@@ -60,6 +60,16 @@ export default class ShowUsers extends Component {
     .then(this.props.handleUserUpdate(text))
   }
 
+  handleSetActive(userInf){
+    var text = "User " + userInf.first_name + " " + userInf.last_name + " is "+ (userInf.active ? "de-" : "") + "activated"
+    Backend.setActivation( userInf.email,
+                           userInf.first_name,
+                           userInf.last_name,
+                           userInf.bio,
+                           userInf.active ? "false" : "true")
+    .then(this.props.handleUserUpdate(text))
+  }
+
   componentWillReceiveProps(props){
     this.setState({
       loading : props.loading,
@@ -141,6 +151,22 @@ export default class ShowUsers extends Component {
             </Link>
           </div>
         )
+      }
+    })
+
+    columns.push({
+      Header : 'Active',
+      id : 'active',
+      accessor : d => d,
+      filterable : false,
+      width : 100,
+      style : {textAlign : "center"},
+      Cell : props =>{
+        return(
+          <div onClick = {() => this.handleSetActive(props.value)}><i className="material-icons" style={{fontSize : '24px',padding:3}}>
+            {props.value.active ?  "done" : "clear"}
+          </i></div>)
+
       }
     })
 
