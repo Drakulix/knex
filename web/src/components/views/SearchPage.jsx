@@ -98,7 +98,6 @@ export default class SearchPage extends Component {
     this.setState({label : value, load:false})
   }
 
-
   render() {
     const actions = [
       <RaisedButton
@@ -114,7 +113,6 @@ export default class SearchPage extends Component {
         disabled= {(this.state.label === ""  || this.state.label === undefined) ? true : false}
         />,
     ]
-
     return(
       <div className="container">
         <div className="innerContainer">

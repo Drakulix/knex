@@ -12,14 +12,12 @@ export default class SignIn extends Component {
 
   constructor(props) {
     super(props)
-
     // set the initial component state
     this.state = {
       redirect: false,
       error: '',
       email: Backend.getMail(),
       password: '',
-      remember: null
     }
 
     this.handleChangeEmail = this.handleChangeEmail.bind(this)
@@ -35,14 +33,9 @@ export default class SignIn extends Component {
     this.setState({password: event.target.value})
   }
 
-  handleChangeRemember(event) {
-    this.setState({remember: event.target.value})
-  }
-
   handleSubmit(event){
     event.preventDefault()
     Backend.login(this.state.email, this.state.password).then((success) => {
-
       if(success){
         this.setState({ redirect: true })
       }else{
@@ -64,7 +57,7 @@ export default class SignIn extends Component {
 
         {/*Information*/}
         <img className="service-name" src={logo} alt="Logo"/>
-        <h2 className="team-name">{teamName}</h2>
+        <h2 className="team-name">brings light to the cloud</h2>
         <div className="rectangle-sign">
           <h3 className="sign-type-desc">Login</h3>
           <form onSubmit={this.handleSubmit}>
@@ -77,17 +70,13 @@ export default class SignIn extends Component {
                 hintText="Email"
               />
             </div>
-
             {/*Input password*/}
             <div className="input-group input-login">
-
               <TextField
                 type="password"
                 value={this.state.password}
                 onChange={this.handleChangePassword}
                 hintText="Password"
-
-
               />
             </div>
             <div>
@@ -96,12 +85,11 @@ export default class SignIn extends Component {
                 label="Login"
                 primary={true}
                 style={{width: 250, marginTop:40}}
-
               />
           </div>
           </form>
           <div>
-<br/>
+            <br/>
             <Link to="/register">
             <RaisedButton
               type="Submit"
@@ -113,18 +101,7 @@ export default class SignIn extends Component {
             </Link>
           </div>
         </div>
-
       </section>
     )
   }
-}
-
-SignIn.propTypes = {
-  serviceName: React.PropTypes.string,
-  teamName: React.PropTypes.string,
-}
-
-SignIn.defaultProps = {
-  serviceName: 'Knex',
-  teamName: 'brings light to the cloud'
 }

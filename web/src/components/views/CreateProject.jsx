@@ -16,14 +16,12 @@ export default class CreateProject extends Component {
 
   constructor(props) {
     super(props)
-
     if(props.fromURL){
       this.state = {
         projectInf : props.projectInf,
-        authors : props.authors,
         date : props.date,
         snackbar : false,
-        site_loaded : false,
+        site_loaded : true,
         project_exists : false,
       }
     } else {

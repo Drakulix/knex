@@ -20,6 +20,9 @@ export default {
     padding: 1,
     color: '#292b2c',
   },
+  datePicker : {
+    selectColor : '#ff5000'
+  },
   palette : {
       primary1Color : "#ff5000",
       accent1Color : "#000000",

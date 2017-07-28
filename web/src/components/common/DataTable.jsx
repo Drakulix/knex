@@ -30,10 +30,10 @@ export default class BookmarksTable extends Component {
       }],
       handler : this.props.fetchHandler,
       dialogOpen : false,
-      dialogText : "",
+      dialogText : "Delete Project",
       action : null,
       loading : true,
-      buttonText : "",
+      buttonText : "Delete",
       snackbar : false,
       snackbarText : ""
     }
