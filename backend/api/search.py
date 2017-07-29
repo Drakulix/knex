@@ -61,18 +61,17 @@ def prepare_es_query(query):
 
     if authors:
         for author in authors:
-            request_json['query']['bool']['filter']['bool']['must'].append({
-                'term': {'authors': author.split('@')[0]}
-            })
-            request_json['query']['bool']['filter']['bool']['must'].append({
-                'term': {'authors': author.split('@')[1]}
-            })
+            for part in author.split('@'):
+                request_json['query']['bool']['filter']['bool']['must'].append({
+                    'term': {'authors': part}
+                })
 
     if tags:
         for tag in tags:
-            request_json['query']['bool']['filter']['bool']['must'].append({
-                'term': {'tags': tag}
-            })
+            for part in tag.split(' '):
+                request_json['query']['bool']['filter']['bool']['must'].append({
+                    'term': {'tags': part}
+                })
 
     if status:
         request_json['query']['bool']['filter']['bool']['must'].append({
