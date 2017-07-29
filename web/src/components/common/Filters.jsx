@@ -100,7 +100,7 @@ export default class Filters extends Component{
                   type = "text" placeholder = "Enter exact title..."
                   />
               </div>
-              <IconButton style = {{color : 'gray', marginLeft : -30, visibility : (this.state.title != '') ? "visible" : "hidden"}} onClick = {() => this.handleChange({target : {name :"title", value :""}})}>
+              <IconButton style = {{color : 'gray', marginLeft : -30, visibility : (this.state.title !== '') ? "visible" : "hidden"}} onClick = {() => this.handleChange({target : {name :"title", value :""}})}>
                 <i className = "material-icons">cancel</i>
               </IconButton>
               <div className = "col-1 filter-label" style = {{textAlign : "left"}}>Description</div>
@@ -113,7 +113,7 @@ export default class Filters extends Component{
                   type = "text" placeholder = "Enter exact description..."
                   />
               </div>
-              <IconButton style = {{color : 'gray', marginLeft : -30, visibility : (this.state.description != "") ? "visible" : "hidden"}} onClick = {() => this.handleChange({target : {name :"description", value :""}})}>
+              <IconButton style = {{color : 'gray', marginLeft : -30, visibility : (this.state.description !== "") ? "visible" : "hidden"}} onClick = {() => this.handleChange({target : {name :"description", value :""}})}>
                 <i className = "material-icons">cancel</i>
               </IconButton>
             </div>
@@ -126,7 +126,7 @@ export default class Filters extends Component{
                                   value = {this.state.tags}
                   />
               </div>
-              <IconButton style = {{color : 'gray', marginLeft : -30, visibility : (this.state.tags.length != 0) ? "visible" : "hidden"}} onClick = {() => this.handleChange({target : {name :"tags", value :[]}})}>
+              <IconButton style = {{color : 'gray', marginLeft : -30, visibility : (this.state.tags.length !== 0) ? "visible" : "hidden"}} onClick = {() => this.handleChange({target : {name :"tags", value :[]}})}>
                 <i className = "material-icons">cancel</i>
               </IconButton>
               <div className = "col-1 filter-label"> Authors</div>
@@ -137,7 +137,7 @@ export default class Filters extends Component{
                                   value = {this.state.authors}
                   />
               </div>
-              <IconButton style = {{color : 'gray', marginLeft : -30, visibility : (this.state.authors.length != 0) ? "visible" : "hidden"}} onClick = {() => this.handleChange({target : {name :"authors", value :[]}})}>
+              <IconButton style = {{color : 'gray', marginLeft : -30, visibility : (this.state.authors.length !== 0) ? "visible" : "hidden"}} onClick = {() => this.handleChange({target : {name :"authors", value :[]}})}>
                 <i className = "material-icons">cancel</i>
               </IconButton>
             </div>
@@ -178,7 +178,7 @@ export default class Filters extends Component{
                             value = {this.state.status}
                 />
               </div>
-              <IconButton style = {{color : 'gray', marginLeft : -20, visibility : (this.state.status != "") ? "visible" : "hidden"}} onClick = {() => this.handleStatusChange(null,null,"")}>
+              <IconButton style = {{color : 'gray', marginLeft : -20, visibility : (this.state.status !== "") ? "visible" : "hidden"}} onClick = {() => this.handleStatusChange(null,null,"")}>
                 <i className = "material-icons" style = {{color : 'gray', marginLeft : -30}}>cancel</i>
               </IconButton>
               <div className = "col-1"></div>

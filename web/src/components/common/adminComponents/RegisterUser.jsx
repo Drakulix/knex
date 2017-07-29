@@ -61,8 +61,8 @@ export default class RegisterUser extends Component {
 
   handleRegister(event){
     event.preventDefault()
-    Backend.register(this.state.first_name, this.state.last_name, this.state.email, this.state.password, this.state.password_confirm, this.state.role).
-    then((success) => {
+    Backend.register(this.state.first_name, this.state.last_name, this.state.email, this.state.password, this.state.password_confirm, this.state.role)
+    .then((success) => {
         if(success){
           this.setState({
             snackbar : true,

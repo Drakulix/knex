@@ -116,25 +116,6 @@ export default class CreateProjectChoice extends Component {
       )
   }
 
-  serialiseObject(obj){
-    var pairs = [];
-    for (var prop in obj) {
-        if (!obj.hasOwnProperty(prop)) {
-            continue;
-        }
-        if (Object.prototype.toString.call(obj[prop]) == '[object Array]') {
-            pairs.push(this.serialiseObject(obj[prop]));
-            continue;
-        }
-        if (Object.prototype.toString.call(obj[prop]) == '[object Object]') {
-            pairs.push(this.serialiseObject(obj[prop]));
-            continue;
-        }
-        pairs.push(prop + '=' + obj[prop]);
-    }
-    return pairs.join('&');
-  }
-
   render() {
     if (this.state.redirect){
       return <Redirect to = {'/createByURL/'+encodeURIComponent(this.state.sourceURL)}/>
