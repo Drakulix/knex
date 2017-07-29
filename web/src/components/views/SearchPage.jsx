@@ -156,6 +156,7 @@ export default class SearchPage extends Component {
               handleFilter= {this.handleFilterChange}
               predefinedFilter = {this.state.query}
               fetchHandler = {Backend.search(this.state.query)}
+              remoteFilters = {true}
               load = {this.state.load}
               ></DataTable>
           </div>

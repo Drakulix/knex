@@ -425,11 +425,11 @@ class Backend {
     }
 
     shareProjectToUsers(id, mails) {
-        return this.postJson(`/api/projects/${encodeURIComponent(id)}/share`, mails);
+      return this.postJson(`/api/projects/${encodeURIComponent(id)}/share`, mails);
     }
 
     search(query) {
-        return this.postJson(`/api/projects/search`, query)
+      return this.postJson(`/api/projects/search`, query)
         .then(function(data){return JSON.parse(data)});
     }
 
