@@ -3,6 +3,7 @@ mongo --nodb wait.js
 echo "Started.."
 
 echo SETUP.sh time now: `date +"%T" `
+
 mongo --host mongodb:27017 <<EOF
    var cfg = {
         "_id": "projectsRepSet",

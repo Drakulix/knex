@@ -184,7 +184,7 @@ class User(DB.Document, UserMixin):
         dic['first_name'] = str(self.first_name)
         dic['last_name'] = str(self.last_name)
         # dic['password'] = str(self.password)
-        dic['active'] = str(self.active)
+        dic['active'] = str(self.active).lower()
         dic['bio'] = str(self.bio)
         dic['bookmarks'] = [str(bookmark) for bookmark in self.bookmarks]
         dic['roles'] = [str(role.name) for role in self.roles]
