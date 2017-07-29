@@ -100,7 +100,7 @@ export default class ProfileEditor extends Component {
         <div className="col-9">
           <form onSubmit={this.handleProfileChangeSubmit}>
             <div className="row">
-              <div className="profile-info col-3">First name:</div>
+              <div className="profile-info col-3">First name</div>
               <div className="col-3">
                 <TextField
                       name="first_name"
@@ -112,7 +112,7 @@ export default class ProfileEditor extends Component {
               </div>
             </div>
             <div className="row">
-              <div className="profile-info col-3">Last name: </div>
+              <div className="profile-info col-3">Last name</div>
               <div className="col-3">
               <TextField
                       name="last_name"
@@ -124,7 +124,7 @@ export default class ProfileEditor extends Component {
               </div>
             </div>
             <div className="row">
-              <div className="profile-info col-3">Biography:</div>
+              <div className="profile-info col-3">Biography</div>
               <div className="col-9"><TextField
                     name="bio"
                     hintText="Something about you"

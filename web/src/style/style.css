@@ -57,6 +57,11 @@ a:hover {
   width: 100%;
 }
 
+.-previous button, .-next button, .-next, .-previous{
+  background-color: #ff5000;
+  font-weight: bold  !important;
+}
+
 
 /* Start Sidebar Styling */
 

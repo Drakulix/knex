@@ -21,13 +21,10 @@ export default class BookmarksTable extends Component {
     if(props.predefinedFilter !== undefined){
       filters = props.predefinedFilter
     }
-
     this.state = {
-      data: [{
-      }],
+      data: [],
       filters : filters,
-      filteredTable : [{
-      }],
+      filteredTable : [],
       handler : this.props.fetchHandler,
       dialogOpen : false,
       dialogText : "Delete Project",
@@ -39,12 +36,12 @@ export default class BookmarksTable extends Component {
     }
 
     this.handleFilterChange = this.handleFilterChange.bind(this)
-    this.handleDelete = this.handleDelete.bind(this)
-    this.handleAddBookmark = this.handleAddBookmark.bind(this)
-    this.handleRemoveBookmark = this.handleRemoveBookmark.bind(this)
+    this.handleClose = this.handleClose.bind(this)
     this.handleArchive = this.handleArchive.bind(this)
     this.handleUnArchive = this.handleUnArchive.bind(this)
-    this.handleClose = this.handleClose.bind(this)
+  }
+
+  componentDidMount(){
     this.fetchData()
   }
 
@@ -54,15 +51,14 @@ export default class BookmarksTable extends Component {
       dialogText : "Do you want to delete project " + projectName +"?",
       buttonText : "Delete",
       dialogOpen : true,
-      action : function (){
+      action : () => {
         this.setState({dialogOpen:false})
-           Backend.deleteProject(projectID)
-          .then(this.fetchData())
-          .then(this.setState({snackbar :true,
-            snackbarText : "Project "+ projectName + " deleted"})
-          )
-      }.bind(this)
-      })
+        Backend.deleteProject(projectID)
+        .then(this.fetchData())
+        .then(this.setState({snackbar :true,
+          snackbarText : "Project "+projectName +" deleted"}))
+      }
+    })
   }
 
   handleArchive(projectID, projectName){
@@ -71,23 +67,22 @@ export default class BookmarksTable extends Component {
       dialogText : "Do you want to archive project " + projectName +"?",
       buttonText : "archive",
       dialogOpen : true,
-      action : function (){
+      action : () => {
         this.setState({dialogOpen:false})
         Backend.getProjectArchived(projectID, true)
+          .then(() => {this.setState({snackbar :true,
+            snackbarText : "Project "+projectName +" archived"})})
           .then(this.fetchData())
-          .then(this.setState({snackbar :true,
-            snackbarText : "Project "+projectName +" archived"})
-          )
-      }.bind(this)
-      })
+
+      }
+    })
   }
 
   handleUnArchive(projectID, projectTitle){
     Backend.getProjectArchived(projectID, false)
-    .then(this.fetchData())
-    .then(this.setState({snackbar :true,
-      snackbarText : "Project " + projectTitle + " unarchived"})
-    )
+      .then(() => {this.setState({snackbar :true,
+      snackbarText : "Project " + projectTitle + " unarchived"})})
+        .then(this.fetchData())
   }
 
   handleClose(){
@@ -99,12 +94,16 @@ export default class BookmarksTable extends Component {
 
   handleAddBookmark(projectID){
     Backend.addBookmark(projectID)
-      .then(this.fetchData())
+    .then(this.fetchData())
+    .then(this.setState({snackbar :true,
+      snackbarText : "Project bookmarked"}))
   }
 
   handleRemoveBookmark(projectID){
     Backend.deleteBookmark(projectID)
-      .then(this.fetchData())
+    .then(this.fetchData())
+    .then(this.setState({snackbar :true,
+      snackbarText : "Project bookmark removed"}))
   }
 
   componentWillReceiveProps(props){
@@ -115,36 +114,39 @@ export default class BookmarksTable extends Component {
 
   fetchData(){
     this.setState({loading : true})
-    return this.props.fetchHandler.then(function(data) {
+    this.props.fetchHandler
+    .then((projects) => {
       this.setState({
-        data: data,
-        filteredTable : []
+        data : projects,
+        filteredTable : projects,
+        loading : false
       })
-      this.filter(this.state.filters)
-      return ""
-    }.bind(this))
+    //  this.filter(projects, this.state.filters)
+    })
   }
 
   handleFilterChange(key, value){
     var state = this.state.filters
-    if(value === undefined || value ===""  || value.length === 0){
+    if(value === undefined || value === ""  || value.length === 0){
       delete state[key]
     }
     else  {
       state[key] = value
     }
     this.setState({filters : state})
-    this.filter(state)
+    this.filter(this.state.data, state)
     if(this.props.handleFilter !== undefined)
       this.props.handleFilter(key,value)
   }
 
-  filter(filters){
+  filter(data, filters){
+    alert(JSON.stringify(filters))
     this.setState({loading : true})
     var array = []
-    for(let dataObject of this.state.data) {
+    for(let dataObject of data) {
       var discard = false
-      for(let key of Object.keys(filters)){
+      if(!this.props.remoteFilters){
+        for(let key of Object.keys(filters)){
         var value = filters[key]
         if(key === "tags" || key === "authors"){
           var temp = dataObject[key].join().toLowerCase()
@@ -168,6 +170,7 @@ export default class BookmarksTable extends Component {
           break
         }
       }
+      }
       if(!discard){
         array.push(dataObject)
       }
@@ -184,7 +187,7 @@ export default class BookmarksTable extends Component {
       columns.push({
         Header: 'Project title',
         id: 'title',
-        width: 200,
+        width: 180,
         accessor: d => d,
         Cell: props =>
             <div style={{whiteSpace : "normal", marginTop:8}}>
@@ -227,7 +230,7 @@ export default class BookmarksTable extends Component {
       columns.push({
         Header: 'Authors',
         accessor: "authors",
-        width: 150,
+        width: 180,
         Cell: props => <AuthorOutputList value = {props.value} />
       })
     }
