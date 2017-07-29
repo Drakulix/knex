@@ -56,7 +56,6 @@ export default class TagInputList extends Component {
         onRequestDelete={(deletedChip) => this.handleRequestDelete(deletedChip)}
         errorText={this.props.errorText}
         hintText = {'Add tags...'}
-        filtered = {this.props.filtered}
         fullWidth
         chipRenderer={({ value, text, isFocused, isDisabled, handleClick, handleRequestDelete }, key) => (
           <Chip

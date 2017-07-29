@@ -8,6 +8,7 @@ import CircularProgress from 'material-ui/CircularProgress'
 import {Card, CardHeader, CardText} from 'material-ui/Card'
 import TextField from 'material-ui/TextField'
 import ConfirmationPane from '../../common/ConfirmationPane'
+import Snackbar from 'material-ui/Snackbar'
 
 
 export default class ShowUsers extends Component {
@@ -16,24 +17,44 @@ export default class ShowUsers extends Component {
     this.state = {
       open : false,
       loading : false,
+      snackbar : false,
+      snackbarText : false,
       expanded : true,
-      data : this.props.userList,
-      filteredList : this.props.userList,
+      data : [],
+      filteredList : [],
       email : "",
-      name : ""
+      name : "",
+      projectCounts : []
     }
     this.handleDelete = this.handleDelete.bind(this)
-    this.handleClose = this.handleClose.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.handleSetAdmin = this.handleSetAdmin.bind(this)
     this.intentionToDeleteUser = this.intentionToDeleteUser.bind(this)
   }
 
-  handleClose(){
-    this.setState({
-      open : false
-    })
+
+  componentWillReceiveProps(){
+    this.loadUsers()
   }
+
+  loadUsers(){
+    this.setState({loading : true,
+      open : false,
+      snackbar : false
+    })
+    Backend.getUsers()
+    .then((data) => {
+      this.setState({
+        userList : data,
+        loading : false,
+        filteredList : data,
+      })
+    })
+    .then(() => {return  Backend.getProjectsForAllUsers()})
+    .then((count) => {this.setState({projectCounts : count})})
+    .then (() => this.filter ("default", ""))
+  }
+
 
   handleChange(event) {
     const name = event.target.name
@@ -46,19 +67,20 @@ export default class ShowUsers extends Component {
     var text = "User " + userInf.first_name + " " + userInf.last_name + " ";
     if(userInf.roles.includes("admin")){
       userInf.roles.splice(userInf.roles.indexOf("admin"))
-      text = text + " is not Admin anymore"
+      text = text + " is not admin anymore"
     }
     else {
       userInf.roles.push("admin")
-      text = text + " is now Admin"
+      text = text + " is now admin"
     }
     Backend.setUserRoles(userInf.email,
                          userInf.first_name,
                          userInf.last_name,
                          userInf.bio,
                          userInf.roles)
-    .then(this.props.handleUserUpdate(text))
-  }
+    .then(() =>{this.setState({snackbar : true, snackbarText:text})})
+    .then(this.loadUsers())
+    }
 
   handleSetActive(userInf){
     var text = "User " + userInf.first_name + " " + userInf.last_name + " is "+ (userInf.active ? "de-" : "") + "activated"
@@ -66,23 +88,30 @@ export default class ShowUsers extends Component {
                            userInf.first_name,
                            userInf.last_name,
                            userInf.bio,
-                           userInf.active ? "false" : "true")
-    .then(this.props.handleUserUpdate(text))
+                           userInf.active === "false" ? "true" : "false"
+                           )
+   .then(() =>{this.setState({snackbar : true, snackbarText:text})})
+   .then(this.loadUsers())
   }
 
-  componentWillReceiveProps(props){
+  intentionToDeleteUser(userID){
     this.setState({
-      loading : props.loading,
-      open : false,
-      data : props.userList,
-      filteredList : props.userList
-    })
-    this.filter("default", "")
+      open : true,
+      userID : userID})
   }
+
+  handleDelete(){
+    Backend.deleteUser(this.state.userID)
+    .then(() =>{this.setState({ open:false,
+                                snackbar: true,
+                                snackbarText : "User " + this.state.userID + " deleted"})})
+    .then(this.loadUsers())
+  }
+
 
   filter(name, value){
     var temp = []
-    for(let dataObject of this.state.data) {
+    for(let dataObject of this.state.userList) {
       var discard = true
       var userName = dataObject.first_name + " " + dataObject.last_name
       switch (name) {
@@ -95,8 +124,7 @@ export default class ShowUsers extends Component {
           discard = discard || (this.state.email !== "" && dataObject.email.indexOf(this.state.email) === -1)
           break;
         default:
-          discard = this.state.name !== "" && userName.indexOf(this.state.name) === -1
-          discard = discard || (this.state.email !== "" && dataObject.email.indexOf(this.state.email) === -1)
+          discard = false
           break
         }
         if(!discard)
@@ -107,28 +135,17 @@ export default class ShowUsers extends Component {
     })
   }
 
-  intentionToDeleteUser(userID){
-    this.setState({
-      open : true,
-      userID : userID})
-  }
 
-  handleDelete(){
-    Backend.deleteUser(this.state.userID).then(function confirm(){
-      this.setState({open:false})
-      this.props.handleUserUpdate("User " + this.state.userID + " deleted")
-    }.bind(this))
-  }
 
   render(){
     var columns = []
     columns.push({
-      Header : 'Users',
+      Header : 'Name',
       id : 'userID',
       accessor : d => d,
       Cell : props =>{
         return(
-          <div style = {{whiteSpace : "normal"}}>
+          <div style = {{whiteSpace : "normal", marginTop:5}}>
             <Link to = {`profile/${props.value.email}`}
               className = "table-link-text">
               {props.value.first_name + " " + props.value.last_name }
@@ -141,6 +158,8 @@ export default class ShowUsers extends Component {
     columns.push({
       Header : 'Email',
       id : 'email',
+      width : 300,
+      style : {textAlign : "center", marginTop:5},
       accessor : d => d,
       Cell : props =>{
         return(
@@ -155,16 +174,25 @@ export default class ShowUsers extends Component {
     })
 
     columns.push({
+      Header : 'Projects',
+      id : 'projectCount',
+      width :80,
+      style : {textAlign : "center", marginTop:5},
+      accessor : "email",
+      Cell : props => this.state.projectCounts[props.value] !== undefined ? this.state.projectCounts[props.value].length :0
+    })
+
+    columns.push({
       Header : 'Active',
       id : 'active',
       accessor : d => d,
       filterable : false,
-      width : 100,
+      width : 60,
       style : {textAlign : "center"},
       Cell : props =>{
         return(
           <div onClick = {() => this.handleSetActive(props.value)}><i className="material-icons" style={{fontSize : '24px',padding:3}}>
-            {props.value.active ?  "done" : "clear"}
+            {props.value.active === "false" ?  "clear" : "done"}
           </i></div>)
 
       }
@@ -173,15 +201,14 @@ export default class ShowUsers extends Component {
     columns.push({
       Header : 'Admin',
       id : 'admin',
-      width : 100,
+      width : 60,
       filterable : false,
       style : {textAlign : "center"},
       accessor : d => d,
       Cell : props =>{
-        //Horrible hack as long the Role issue is not fixed... can deliver horrible results
         return(
           <div onClick = {() => this.handleSetAdmin(props.value)}><i className="material-icons" style={{fontSize : '24px',padding:3}}>
-            {(props.value.roles.includes("admin")) ?  "done" : "clear"}
+            {(props.value.roles.indexOf("admin") !== -1) ?  "done" : "clear"}
           </i></div>)
       }
     })
@@ -227,17 +254,22 @@ export default class ShowUsers extends Component {
     return (
       <div>
         <ConfirmationPane open = {this.state.open}
-                          handleClose = {this.handleClose}
+                          handleClose = {() => {this.setState({open : false})}}
                           title = {"Do you want to delete user " + this.state.userID}
                           confirmationLabel = {"Delete User"}
                           confirmAction = {this.handleDelete}
+        />
+        <Snackbar
+          open={this.state.snackbar}
+          message={this.state.snackbarText}
+          autoHideDuration={10000}
         />
         <div className = "container" style = {{display : (this.state.loading ? "block" : "none")}}>
           <div className = "header"><CircularProgress size = {80} thickness = {5} /></div>
         </div>
         <div style = {{display : (!this.state.loading ? "block" : "none")}}>
           <div style = {{marginBottom : 20, width:"100%"}}>
-            <Card   onExpandChange = {() => this.setState({expanded : !this.state.expanded})}>
+            <Card  onExpandChange = {() => this.setState({expanded : !this.state.expanded})}>
               <CardHeader
                   title = "Filter"
                   subtitle = "Define filters for your list"
