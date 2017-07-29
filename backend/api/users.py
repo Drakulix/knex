@@ -84,7 +84,8 @@ def get_all_users_and_authors():
 def get_usernames():
     userlist = [g.user_datastore.find_user(email=mail) for mail in request.get_json()
                 if g.user_datastore.find_user(email=mail)]
-    dic = dict([(user.email, (user.first_name + " " if user.first_name else "" + user.last_name))
+    dic = dict([(user.email, (user.first_name + " " if user.first_name and user.last_name
+                else "" + user.last_name))
                 for user in userlist])
     return jsonify(dic)
 

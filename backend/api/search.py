@@ -79,9 +79,9 @@ def prepare_es_query(query):
             'term': {'status': status.lower()}
         })
 
-    if archived:
+    if archived and archived in ['true', 'false']:
         request_json['query']['bool']['filter']['bool']['must'].append({
-            'term': {'archived': archived in ['true', 'True', '1', 'yes', 'y']}
+            'term': {'archived': (archived == 'true')}
         })
 
     if date_from or date_to:
