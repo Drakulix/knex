@@ -21,7 +21,8 @@ export default class ProfileContainer extends Component {
       value : 'a',
       topTenTags : [],
       snackbar : false,
-      snackbarText : ""
+      snackbarText : "",
+      projectCount : 0,
     }
     this.handleProfileChange = this.handleProfileChange.bind(this)
   }
@@ -48,11 +49,13 @@ export default class ProfileContainer extends Component {
           site_loaded : true
         })
       }else{
-        Backend.getTagsOfUser(e).then(tags => {
-            this.setState({
-              topTenTags : tags
-            })
-        }).then(
+        Backend.getTagsOfUser(e)
+        .then(tags => {this.setState({topTenTags : tags})})
+        .then(
+          Backend.getUsersProjects(e)
+          .then(count =>{this.setState({projectCount : count.length})})
+        )
+        .then(
           this.setState({
             profileInf : data,
             profile_exists : true,
@@ -106,7 +109,8 @@ export default class ProfileContainer extends Component {
             <Tab
               label = "Profile Info" value = "a">
               <ProfileView profileInf = {this.state.profileInf}
-                          topTenTags = {this.state.topTenTags}/>
+                          topTenTags = {this.state.topTenTags}
+                          projectsContributed = {this.state.projectCount}/>
             </Tab>
             {(Backend.isAdmin() || this.state.isMe)?
               <Tab label = "Edit Profile" value = "b">

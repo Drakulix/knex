@@ -20,20 +20,21 @@ export default class ShowUsers extends Component {
       data : this.props.userList,
       filteredList : this.props.userList,
       email : "",
-      name : ""
+      name : "",
+      projectCounts : []
     }
     this.handleDelete = this.handleDelete.bind(this)
-    this.handleClose = this.handleClose.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.handleSetAdmin = this.handleSetAdmin.bind(this)
     this.intentionToDeleteUser = this.intentionToDeleteUser.bind(this)
   }
 
-  handleClose(){
-    this.setState({
-      open : false
-    })
+
+  componentWillMount(){
+    Backend.getProjectsForAllUsers()
+    .then(function (count) {this.setState({projectCounts : count})}.bind(this))
   }
+
 
   handleChange(event) {
     const name = event.target.name
@@ -123,12 +124,12 @@ export default class ShowUsers extends Component {
   render(){
     var columns = []
     columns.push({
-      Header : 'Users',
+      Header : 'Name',
       id : 'userID',
       accessor : d => d,
       Cell : props =>{
         return(
-          <div style = {{whiteSpace : "normal"}}>
+          <div style = {{whiteSpace : "normal", marginTop:5}}>
             <Link to = {`profile/${props.value.email}`}
               className = "table-link-text">
               {props.value.first_name + " " + props.value.last_name }
@@ -141,6 +142,8 @@ export default class ShowUsers extends Component {
     columns.push({
       Header : 'Email',
       id : 'email',
+      width : 300,
+      style : {textAlign : "center", marginTop:5},
       accessor : d => d,
       Cell : props =>{
         return(
@@ -155,11 +158,20 @@ export default class ShowUsers extends Component {
     })
 
     columns.push({
+      Header : 'Projects',
+      id : 'projectCount',
+      width :80,
+      style : {textAlign : "center", marginTop:5},
+      accessor : "email",
+      Cell : props => this.state.projectCounts[props.value].length
+    })
+
+    columns.push({
       Header : 'Active',
       id : 'active',
       accessor : d => d,
       filterable : false,
-      width : 100,
+      width : 60,
       style : {textAlign : "center"},
       Cell : props =>{
         return(
@@ -173,15 +185,14 @@ export default class ShowUsers extends Component {
     columns.push({
       Header : 'Admin',
       id : 'admin',
-      width : 100,
+      width : 60,
       filterable : false,
       style : {textAlign : "center"},
       accessor : d => d,
       Cell : props =>{
-        //Horrible hack as long the Role issue is not fixed... can deliver horrible results
         return(
           <div onClick = {() => this.handleSetAdmin(props.value)}><i className="material-icons" style={{fontSize : '24px',padding:3}}>
-            {(props.value.roles.includes("admin")) ?  "done" : "clear"}
+            {(props.value.roles.indexOf("admin") !== -1) ?  "done" : "clear"}
           </i></div>)
       }
     })
@@ -227,7 +238,7 @@ export default class ShowUsers extends Component {
     return (
       <div>
         <ConfirmationPane open = {this.state.open}
-                          handleClose = {this.handleClose}
+                          handleClose = {() => {this.setState({open : false})}}
                           title = {"Do you want to delete user " + this.state.userID}
                           confirmationLabel = {"Delete User"}
                           confirmAction = {this.handleDelete}
@@ -237,7 +248,7 @@ export default class ShowUsers extends Component {
         </div>
         <div style = {{display : (!this.state.loading ? "block" : "none")}}>
           <div style = {{marginBottom : 20, width:"100%"}}>
-            <Card   onExpandChange = {() => this.setState({expanded : !this.state.expanded})}>
+            <Card  onExpandChange = {() => this.setState({expanded : !this.state.expanded})}>
               <CardHeader
                   title = "Filter"
                   subtitle = "Define filters for your list"

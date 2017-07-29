@@ -298,7 +298,7 @@ class Backend {
     }
 
     getAuthors() {
-        return this.getJson('/api/authors');
+        return this.getJson('/api/users/authors');
     }
 
     getTags() {
@@ -451,6 +451,14 @@ class Backend {
 
     getUsers() {
         return this.getJson('/api/users');
+    }
+
+    getUsersProjects(mail){
+      return this.getJson('/api/users/'+mail+'/projects')
+    }
+
+    getProjectsForAllUsers(){
+      return this.getJson('/api/users/projectids')
     }
 
     async setUserRoles(mail, firstName, lastName, bio, roles){
