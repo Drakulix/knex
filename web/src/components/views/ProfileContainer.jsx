@@ -3,10 +3,13 @@ import {Tabs, Tab} from 'material-ui/Tabs'
 import CircularProgress from 'material-ui/CircularProgress'
 import Backend from '../common/Backend'
 import Snackbar from 'material-ui/Snackbar'
+import history from '../common/history'
 
 import ProfileView from '../common/userComponents/ProfileView'
 import ProfileProjects from '../common/userComponents/ProfileProjects'
 import ProfileEditor from '../common/userComponents/ProfileEditor'
+import RegisterUser from '../common/adminComponents/RegisterUser'
+import RaisedButton from 'material-ui/RaisedButton'
 
 
 export default class ProfileContainer extends Component {
@@ -23,6 +26,7 @@ export default class ProfileContainer extends Component {
       snackbar : false,
       snackbarText : "",
       projectCount : 0,
+      showRegistration : false
     }
     this.handleProfileChange = this.handleProfileChange.bind(this)
   }
@@ -65,6 +69,7 @@ export default class ProfileContainer extends Component {
       }
     }).catch(ex => {
       this.setState({
+
         profile_exists : false,
         site_loaded : true
       })
@@ -91,7 +96,31 @@ export default class ProfileContainer extends Component {
     if( !this.state.profile_exists){
       return (
         <div className = "container">
-          <div className = "header">Profile not found</div>
+          <div className = "row" style={{marginTop: "100px", marginBottom: 100}}>
+            <div className = "col-5 "></div>
+            <div className = "col-2 " style ={{fontSize : "30px", height:41, textAlign: "center"}}>
+              Profile not found
+            </div>
+            <div className = "col-2"></div>
+            <div className = "col-3">
+              {Backend.isAdmin?
+                <RaisedButton
+                  style  = {{width : "100%"}}
+                  label = {(this.state.showRegistration) ? "Hide registration" : "Do you want to register user" }
+                  primary = {true}
+                  onClick = {() => this.setState ({showRegistration : !this.state.showRegistration})}/>
+                :""}
+            </div>
+          </div>
+            {Backend.isAdmin ?
+              <div style ={{textAlign : "center", marginBottom : 40, display : (this.state.showRegistration) ? "block" : "none" }}>
+                <RegisterUser email = {this.props.match.params.email}
+                              handleUserUpdate = {() => {history.push("/profile/"+this.props.match.params.email)}}/>
+              </div>
+              :  "" }
+            <ProfileProjects
+              email = {this.state.email} />
+
         </div>
       )
     }
@@ -120,7 +149,8 @@ export default class ProfileContainer extends Component {
               </Tab> : ""
             }
             <Tab label = "Projects" value = "c">
-              <ProfileProjects profileInf={this.state.profileInf} />
+              <ProfileProjects
+                email = {this.state.email} />
             </Tab>
           </Tabs>
           <Snackbar

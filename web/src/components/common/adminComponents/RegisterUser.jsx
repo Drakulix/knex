@@ -4,6 +4,7 @@ import RaisedButton from "material-ui/RaisedButton"
 import MenuItem from "material-ui/MenuItem"
 import SelectField from "material-ui/SelectField"
 import Backend from '../../common/Backend.jsx'
+import Snackbar from 'material-ui/Snackbar'
 
 
 export default class RegisterUser extends Component {
@@ -12,10 +13,12 @@ export default class RegisterUser extends Component {
     this.state = {
       first_name : "",
       last_name : "",
-      email : "",
+      email : (this.props.email !== undefined) ? this.props.email : "",
       password : "",
       password_confirm : "",
-      role : 'user'
+      role : 'user',
+      snackbar : false,
+      snackbarText : ""
     }
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleRegister = this.handleRegister.bind(this)
@@ -37,6 +40,10 @@ export default class RegisterUser extends Component {
     })
   }
 
+  componentWillReceiveProps(props){
+    this.setState({snackbar : false})
+  }
+
   isValidEmailAddress() {
     var email = (this.state.email)
     if(email === undefined || email === "")
@@ -56,46 +63,85 @@ export default class RegisterUser extends Component {
 
   handleRegister(event){
     event.preventDefault()
-    Backend.register(this.state.first_name, this.state.last_name, this.state.email, this.state.password, this.state.password_confirm, this.state.role).then((success) => {
-      if(success){
-        this.props.handleUserUpdate('Registration successfull!')
-      }else{
-        this.props.handleUserUpdate('Registration failed!')
-      }
+    Backend.register(this.state.first_name, this.state.last_name, this.state.email, this.state.password, this.state.password_confirm, this.state.role).
+    then((success) => {
+        if(success){
+          this.setState({
+            snackbar : true,
+            snackbarText : 'Registration successfull!'
+          })
+        }else{
+          this.setState({
+            snackbar : true,
+            snackbarText : 'Registration unsuccessfull!'
+          })
+        }
+        if(this.props.handleUserUpdate !== undefined){
+          this.props.handleUserUpdate()
+        }
     })
   }
 
   render(){
     return (
-        <div className="row">
-          <div className="col-4"></div>
-          <div className="col-4" style = {{textAlign : "center"}}>
-            <form onSubmit={this.handleRegister}>
-              {/*Input First Name*/}
-              <div>
-                <TextField
-                  type="text"
-                  value={this.state.first_name}
-                  onChange={this.handleInputChange}
-                  hintText="Enter the first name..."
-                  errorText={(this.state.first_name === "") ? "Field is required" : ""}
-                  name= "first_name"
-                  />
-              </div>
-              {/*Input Last Name*/}
-              <div >
-                <TextField
-                  type="text"
-                  value={this.state.last_name}
-                  name="last_name"
-                  onChange={this.handleInputChange}
-                  hintText="Enter the last name..."
-                  errorText={(this.state.last_name === "") ? "Field is required" : ""}
-
-                  />
-              </div>
-              {/*Input Email*/}
-              <div>
+      <div style = {{textAlign : "left"}}>
+        <Snackbar
+                open={this.state.snackbar}
+                message={this.state.snackbarText}
+                autoHideDuration={10000}
+        />
+        <form onSubmit={this.handleRegister}>
+          <div className="row">
+            <div className="profile-info col-2">First name</div>
+            <div className="col-3">
+              <TextField
+                name="first_name"
+                onChange={this.handleInputChange}
+                value={this.state.first_name}
+                hintText="Enter the first name"
+                errorText={(this.state.first_name === "") ? "Field is required" : ""}
+                      />
+            </div>
+            <div className ="col-2"/>
+            <div className="profile-info col-2">Password</div>
+            <div className="col-3">
+              <TextField
+                type="password"
+                value={this.state.password}
+                onChange={this.handleInputChange}
+                hintText="Password"
+                name="password"
+                errorText={(this.state.password === "") ? "Field is required" : ""}
+                />
+            </div>
+          </div>
+          <div className="row">
+            <div className="profile-info col-2">Last name</div>
+            <div className="col-3">
+              <TextField
+                name="last_name"
+                onChange={this.handleInputChange}
+                value={this.state.last_name}
+                hintText="Enter your last name"
+                errorText={(this.state.last_name === "") ? "Field is required" : ""}
+              />
+            </div>
+            <div className ="col-2"/>
+            <div className="profile-info col-2">Confirm Password</div>
+            <div className="col-3">
+              <TextField
+                type="password"
+                value={this.state.password_confirm}
+                onChange={this.handleInputChange}
+                hintText="Confirm password"
+                name="password_confirm"
+                errorText={( this.state.password !== this.state.password_confirm ) ? "Passwords do not match" : "" }
+                />
+            </div>
+          </div>
+          <div className="row">
+            <div className="profile-info col-2">Email</div>
+            <div className="col-3">
                 <TextField
                   type="email"
                   value={this.state.email}
@@ -103,53 +149,22 @@ export default class RegisterUser extends Component {
                   hintText="Email"
                   name="email"
                   errorText={(!this.isValidEmailAddress()) ? "Needs to be a valid email" : ""}
-
                   />
-              </div>
-              {/*Input password*/}
-              <div >
-                <TextField
-                  type="password"
-                  value={this.state.password}
-                  onChange={this.handleInputChange}
-                  hintText="Password"
-                  name="password"
-                  errorText={(this.state.password === "") ? "Field is required" : ""}
-                  />
-              </div>
-
-              {/*Input confirm password*/}
-              <div >
-                <TextField
-                  type="password"
-                  value={this.state.password_confirm}
-                  onChange={this.handleInputChange}
-                  hintText="Confirm password"
-                  name="password_confirm"
-                  errorText={( this.state.password !== this.state.password_confirm ) ? "Passwords do not match" : "" }
-                  />
-              </div>
-              <div >
-                <SelectField
-                  floatingLabelText="Role"
-                  value={this.state.role}
-                  onChange={this.handleRegRoleChange}
-                  >
-                  <MenuItem value={'user'} primaryText="User" />
-                  <MenuItem value={'admin'} primaryText="Admin" />
-                </SelectField>
-              </div>
+            </div>
+            <div className ="col-4"/>
+            <div className="col-3">
               <RaisedButton
                 type="Submit"
-                label="Register"
+                label="Register User"
                 disabled={this.isInValidInput()}
                 primary={true}
-                style={{width: 250}}
+                style={{width: "100%"}}
                 required
                 />
-            </form>
+            </div>
           </div>
-        </div>
+        </form>
+      </div>
     )
   }
 }
