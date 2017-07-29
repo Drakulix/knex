@@ -88,7 +88,8 @@ export default class ShowUsers extends Component {
                            userInf.first_name,
                            userInf.last_name,
                            userInf.bio,
-                           userInf.active ? "false" : "true")
+                           userInf.active === "false" ? "true" : "false"
+                           )
    .then(() =>{this.setState({snackbar : true, snackbarText:text})})
    .then(this.loadUsers())
   }
@@ -191,7 +192,7 @@ export default class ShowUsers extends Component {
       Cell : props =>{
         return(
           <div onClick = {() => this.handleSetActive(props.value)}><i className="material-icons" style={{fontSize : '24px',padding:3}}>
-            {props.value.active ?  "done" : "clear"}
+            {props.value.active === "false" ?  "clear" : "done"}
           </i></div>)
 
       }

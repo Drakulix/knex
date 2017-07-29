@@ -37,6 +37,8 @@ export default class BookmarksTable extends Component {
 
     this.handleFilterChange = this.handleFilterChange.bind(this)
     this.handleClose = this.handleClose.bind(this)
+    this.handleArchive = this.handleArchive.bind(this)
+    this.handleUnArchive = this.handleUnArchive.bind(this)
   }
 
   componentDidMount(){
@@ -68,18 +70,19 @@ export default class BookmarksTable extends Component {
       action : () => {
         this.setState({dialogOpen:false})
         Backend.getProjectArchived(projectID, true)
+          .then(() => {this.setState({snackbar :true,
+            snackbarText : "Project "+projectName +" archived"})})
           .then(this.fetchData())
-          .then(this.setState({snackbar :true,
-            snackbarText : "Project "+projectName +" archived"}))
+
       }
     })
   }
 
   handleUnArchive(projectID, projectTitle){
     Backend.getProjectArchived(projectID, false)
-    .then(this.fetchData())
-    .then(this.setState({snackbar :true,
-      snackbarText : "Project " + projectTitle + " unarchived"}))
+      .then(() => {this.setState({snackbar :true,
+      snackbarText : "Project " + projectTitle + " unarchived"})})
+        .then(this.fetchData())
   }
 
   handleClose(){
@@ -111,13 +114,14 @@ export default class BookmarksTable extends Component {
 
   fetchData(){
     this.setState({loading : true})
-    return this.props.fetchHandler.then((projects) => {
-      alert(JSON.stringify(projects))
+    this.props.fetchHandler
+    .then((projects) => {
       this.setState({
         data : projects,
-        filteredTable : []
+        filteredTable : projects,
+        loading : false
       })
-      this.filter(projects, this.state.filters)
+    //  this.filter(projects, this.state.filters)
     })
   }
 

@@ -128,7 +128,7 @@ export default class ProfileContainer extends Component {
       return (
         <div className = "container">
           <div className = "header">Profile details</div>
-          {!this.state.profileInf.active ? <i style = {{fontSize : '20px'}}>Inactive user</i> : ""}
+          {!this.state.profileInf.active === "false" ? <i style = {{fontSize : '20px'}}>Inactive user</i> : ""}
           <Tabs
             inkBarStyle = {{marginTop : -5, height : 5}}
             value = {this.state.value}
