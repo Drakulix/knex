@@ -37,12 +37,10 @@ export default class BookmarksTable extends Component {
     }
 
     this.handleFilterChange = this.handleFilterChange.bind(this)
-    this.handleDelete = this.handleDelete.bind(this)
-    this.handleAddBookmark = this.handleAddBookmark.bind(this)
-    this.handleRemoveBookmark = this.handleRemoveBookmark.bind(this)
-    this.handleArchive = this.handleArchive.bind(this)
-    this.handleUnArchive = this.handleUnArchive.bind(this)
     this.handleClose = this.handleClose.bind(this)
+  }
+
+  componentDidMount(){
     this.fetchData()
   }
 
@@ -55,12 +53,11 @@ export default class BookmarksTable extends Component {
       action : () => {
         this.setState({dialogOpen:false})
         Backend.deleteProject(projectID)
-        .then(this.fetchData())
-        .then(this.setState({snackbar :true,
-            snackbarText : "Project "+ projectName + " deleted"})
-          )
+        .then(() => {this.fetchData()})
+        .then(() => {this.setState({snackbar :true,
+          snackbarText : "Project "+projectName +" deleted"})})
       }
-      })
+    })
   }
 
   handleArchive(projectID, projectName){
@@ -69,23 +66,22 @@ export default class BookmarksTable extends Component {
       dialogText : "Do you want to archive project " + projectName +"?",
       buttonText : "archive",
       dialogOpen : true,
-      action : () =>{
+      action : () => {
         this.setState({dialogOpen:false})
         Backend.getProjectArchived(projectID, true)
-          .then(() => {this.fetchData()})
-          .then(() => {this.setState({snackbar :true,
-            snackbarText : "Project "+projectName +" archived"})}
-          )
+          .then(this.setState({snackbar :true,
+          snackbarText : "Project "+projectName +" archived"}))
+          .then(this.fetchData())
+
       }
-      })
+    })
   }
 
   handleUnArchive(projectID, projectTitle){
     Backend.getProjectArchived(projectID, false)
-    .then(() => {this.fetchData()})
     .then(this.setState({snackbar :true,
-      snackbarText : "Project " + projectTitle + " unarchived"})
-    )
+      snackbarText : "Project " + projectTitle + " unarchived"}))
+    .then(this.fetchData())
   }
 
   handleClose(){
@@ -97,12 +93,16 @@ export default class BookmarksTable extends Component {
 
   handleAddBookmark(projectID){
     Backend.addBookmark(projectID)
-      .then(() => {this.fetchData()})
+    .then(this.setState({snackbar :true,
+      snackbarText : "Project bookmarked"}))
+    .then(this.fetchData())
   }
 
   handleRemoveBookmark(projectID){
     Backend.deleteBookmark(projectID)
-      .then(() => {this.fetchData()})
+    .then(this.setState({snackbar :true,
+      snackbarText : "Project bookmark removed"}))
+    .then(this.fetchData())
   }
 
   componentWillReceiveProps(props){
@@ -181,7 +181,7 @@ export default class BookmarksTable extends Component {
       columns.push({
         Header: 'Project title',
         id: 'title',
-        width: 200,
+        width: 180,
         accessor: d => d,
         Cell: props =>
             <div style={{whiteSpace : "normal", marginTop:8}}>
@@ -224,7 +224,7 @@ export default class BookmarksTable extends Component {
       columns.push({
         Header: 'Authors',
         accessor: "authors",
-        width: 150,
+        width: 180,
         Cell: props => <AuthorOutputList value = {props.value} />
       })
     }
