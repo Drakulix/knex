@@ -252,7 +252,7 @@ export default class ShowUsers extends Component {
       })
 
     return (
-      <div>
+      <div className = "container" >
         <ConfirmationPane open = {this.state.open}
                           handleClose = {() => {this.setState({open : false})}}
                           title = {"Do you want to delete user " + this.state.userID}
@@ -264,8 +264,8 @@ export default class ShowUsers extends Component {
           message={this.state.snackbarText}
           autoHideDuration={10000}
         />
-        <div className = "container" style = {{display : (this.state.loading ? "block" : "none")}}>
-          <div className = "header"><CircularProgress size = {80} thickness = {5} /></div>
+        <div className = "spinner" style = {{display : (this.state.loading ? "block" : "none")}}>
+          <CircularProgress size = {80} thickness = {5} />
         </div>
         <div style = {{display : (!this.state.loading ? "block" : "none")}}>
           <div style = {{marginBottom : 20, width:"100%"}}>

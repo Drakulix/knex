@@ -133,7 +133,7 @@ export default class CreateProjectChoice extends Component {
           message = {this.state.snackbarText}
           autoHideDuration = {10000}
           />
-        <div className = "header">Create Project</div>
+        <div className = "headerCreation">Create Project</div>
           <form onSubmit = {this.submitForm}>
             <div>
               <TextField

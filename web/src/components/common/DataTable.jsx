@@ -22,10 +22,8 @@ export default class BookmarksTable extends Component {
       filters = props.predefinedFilter
     }
     this.state = {
-      data: [],
       filters : filters,
-      filteredTable : [],
-      handler : this.props.fetchHandler,
+      filteredData : [],
       dialogOpen : false,
       dialogText : "Delete Project",
       action : null,
@@ -38,10 +36,6 @@ export default class BookmarksTable extends Component {
     this.handleFilterChange = this.handleFilterChange.bind(this)
   }
 
-  componentDidMount(){
-    this.fetchData()
-  }
-
   handleDelete(projectInf){
     this.setState({
       snackbar : false,
@@ -51,7 +45,7 @@ export default class BookmarksTable extends Component {
       action : () => {
         this.setState({dialogOpen:false})
         Backend.deleteProject(projectInf._id)
-        .then(this.fetchData())
+        .then(this.props.handler())
         .then(this.setState({snackbar :true,
           snackbarText : "Project "+ projectInf.title +" deleted"}))
       }
@@ -67,8 +61,8 @@ export default class BookmarksTable extends Component {
       action : () => {
         this.setState({dialogOpen:false})
         Backend.getProjectArchived(projectInf._id, true)
-          .then(this.fetchData())
-          .then(this.setState({snackbar :true,
+            .then(this.props.handler())
+            .then(this.setState({snackbar :true,
             snackbarText : "Project "+ projectInf.title +" archived"}))
       }
     })
@@ -76,30 +70,31 @@ export default class BookmarksTable extends Component {
 
   handleUnArchive(projectInf){
     Backend.getProjectArchived(projectInf._id, false)
-      .then(this.fetchData())
-      .then(this.setState({snackbar :true,
+        .then(this.props.handler())
+        .then(this.setState({snackbar :true,
           snackbarText : "Project " + projectInf.title + " unarchived"}))
   }
 
   handleBookmark(projectInf){
     if(projectInf.is_bookmark === "true") {
       Backend.deleteBookmark(projectInf._id)
-      .then(this.fetchData())
+      .then(this.props.handler())
       .then(this.setState({snackbar :true,
         snackbarText : "Project bookmarked"}))
     }
     else {
       Backend.addBookmark(projectInf._id)
-      .then(this.fetchData())
+      .then(this.props.handler())
       .then(this.setState({snackbar :true,
         snackbarText : "Project bookmark removed"}))
     }
   }
 
   componentWillReceiveProps(props){
-    if(props.load){
-      this.fetchData()
-    }
+    this.setState({
+      filteredData : (this.props.isBookmarkTable
+                      ? this.filter(props.data, this.state.filters) : props.data)
+      })
   }
 
   fetchData(){
@@ -134,6 +129,7 @@ export default class BookmarksTable extends Component {
     var array = []
     for(let dataObject of data){
       var discard = false
+      alert(dataObject)
       if(!this.props.remoteFilters){
         for(let key of Object.keys(filters)){
         var value = filters[key]
@@ -168,10 +164,7 @@ export default class BookmarksTable extends Component {
         array.push(dataObject)
       }
     }
-    this.setState({
-      filteredTable : array,
-      loading:false
-    })
+    return array
   }
 
   render() {
@@ -330,30 +323,28 @@ export default class BookmarksTable extends Component {
       })
     }
     return (
-      <div>
-      <ConfirmationPane   open = {this.state.dialogOpen}
-                          handleClose = {() => {this.setState({dialogOpen : false, snackbar : false})}}
-                          title = {this.state.dialogText}
-                          confirmationLabel = {this.state.buttonText}
-                          confirmAction = {this.state.action}
-      />
-      <Snackbar open={this.state.snackbar}
-                message={this.state.snackbarText}
-                autoHideDuration={10000}
-      />
-      <div className = "container" style = {{display : (this.state.loading ? "block" : "none")}}>
-        <div className = "header"><CircularProgress size = {80} thickness = {5} /></div>
-      </div>
-      <div style = {{display : (!this.state.loading ? "block" : "none")}}>
-        <Filters value={this.state.filters}
-                 onChange={this.handleFilterChange}/>
-        <ReactTable
-            data={this.state.filteredTable}
-            columns={columns}
-            defaultExpanded={{1: true}}
-            filterable={false}
-            showPageSizeOptions={false}
-            defaultPageSize={10}/>
+      <div className = "container" >
+        <ConfirmationPane   open = {this.state.dialogOpen}
+                            handleClose = {() => {this.setState({dialogOpen : false, snackbar : false})}}
+                            title = {this.state.dialogText}
+                            confirmationLabel = {this.state.buttonText}
+                            confirmAction = {this.state.action}
+        />
+        <Snackbar open={this.state.snackbar}
+                  message={this.state.snackbarText}
+                  autoHideDuration={10000}
+        />
+        <div className = "spinner" style = {{display : (this.props.loading ? "block" : "none")}}><CircularProgress size = {80} thickness = {5} /></div>
+        <div style = {{display : (!this.props.loading ? "block" : "none")}}>
+          <Filters value={this.state.filters}
+                   onChange={this.handleFilterChange}/>
+          <ReactTable
+              data={this.state.filteredData}
+              columns={columns}
+              defaultExpanded={{1: true}}
+              filterable={false}
+              showPageSizeOptions={false}
+              defaultPageSize={10}/>
         </div>
       </div>
     )

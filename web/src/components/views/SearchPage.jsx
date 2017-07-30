@@ -7,17 +7,6 @@ import Backend from '../common/Backend'
 import Snackbar from 'material-ui/Snackbar'
 
 
-class Headline extends Component {
-  render() {
-    return(
-      <div className="headerCreation" id="headerSearch" style={{width:"100%"}}>
-        Looking for a project?
-      </div>
-    )
-  }
-}
-
-
 export default class SearchPage extends Component {
   constructor(props) {
     super(props)
@@ -133,7 +122,9 @@ export default class SearchPage extends Component {
               onChange={this.handleLabelChange}
               ></TextField>
             </Dialog>
-          <Headline />
+          <div className="headerCreation" style={{width:"100%"}}>
+            Looking for a project?
+          </div>
           <div className="row" style={{textAlign:"center"}}>
             <div className="col-10">
               <TextField  style={{width:"100%"}}

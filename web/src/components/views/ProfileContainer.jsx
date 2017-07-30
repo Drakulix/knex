@@ -89,7 +89,7 @@ export default class ProfileContainer extends Component {
     if(!this.state.site_loaded){
       return (
         <div className = "container">
-          <div className = "header"><CircularProgress size = {80} thickness = {5} /></div>
+          <div className = "spinner"><CircularProgress size = {80} thickness = {5} /></div>
         </div>
       )
     }
@@ -127,7 +127,7 @@ export default class ProfileContainer extends Component {
     else {
       return (
         <div className = "container">
-          <div className = "header">Profile details</div>
+          <div className = "headerCreation">Profile details</div>
           {!this.state.profileInf.active === "false" ? <i style = {{fontSize : '20px'}}>Inactive user</i> : ""}
           <Tabs
             inkBarStyle = {{marginTop : -5, height : 5}}

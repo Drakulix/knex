@@ -182,87 +182,86 @@ export default class ProjectContainer extends Component {
     if(!this.state.site_loaded){
       return (
         <div className = "container">
-          <div className = "header"><CircularProgress size = {80} thickness = {5} /></div>
+          <div className = "spinner"><CircularProgress size = {80} thickness = {5} /></div>
         </div>
       )
     }
     if(!this.state.project_exists){
       return (
         <div className = "container">
-          <div className = "header">Project Not Found</div>
+          <div className = "headerCreation">Project Not Found</div>
         </div>
       )
     }else{
 
       return(
         <div className = "container">
-          <div className = "innerContainer">
-            <SharePane  uuid = {this.state.projectID}
-                        handleSharedProject = {this.handleSharedProject}
-                        open = {this.state.sharePane}
-                        handleClosedSharePane ={this.handleClose}
-                        />
-            <CommentSideBar handleUpdateComments={this.handleUpdateComments} value = {this.state.commentBar} uuid = {this.state.projectID}></CommentSideBar>
-            <ConfirmationPane open = {this.state.dialogOpen}
-                handleClose = {this.handleClose}
-                title = {"Do you want to archive project " + this.state.projectInf.title}
-                confirmationLabel = {"Archive project"}
-                confirmAction = {this.handleDelete}
-            />
-            <Snackbar
-              open = {this.state.snackbar}
-              message = {this.state.snackbarText}
-              autoHideDuration = {10000}/>
-            <div className = "row headerCreation" style = {{width : "100%"}}>
-              <div className = "col-12">
-                <div>Project</div>
-                <div style = {{fontSize : '20px'}}> {this.state.projectInf.title}</div>
+          <SharePane  uuid = {this.state.projectID}
+                      handleSharedProject = {this.handleSharedProject}
+                      open = {this.state.sharePane}
+                      handleClosedSharePane ={this.handleClose}
+          />
+          <CommentSideBar handleUpdateComments = {this.handleUpdateComments} value = {this.state.commentBar} uuid = {this.state.projectID}></CommentSideBar>
+          <ConfirmationPane open = {this.state.dialogOpen}
+                            handleClose = {this.handleClose}
+                            title = {"Do you want to archive project " + this.state.projectInf.title}
+                            confirmationLabel = {"Archive project"}
+                            confirmAction = {this.handleDelete}
+          />
+          <Snackbar open = {this.state.snackbar}
+                    message = {this.state.snackbarText}
+                    autoHideDuration = {10000}
+          />
+          <div className = "row headerCreation" style = {{width : "100%"}}>
+            <div className = "col-12">
+              <div>Project</div>
+              <div style = {{fontSize : '20px'}}> {this.state.projectInf.title}</div>
                 {this.state.projectInf.archived ? <i style = {{fontSize : '20px'}}>Archived project</i> : ""}
               </div>
-            </div>
-            <div className = "row">
-              <div className = "col-5">
-                <div className = "row">
-                  <div className = "col-4">
-                    <div className = "profile-info">Status</div>
-                    <div><Badge value ={this.state.projectInf.status}/></div>
-                  </div>
-                  <div className = "col-4">
-                    <div className = "profile-info">Creation date</div>
-                    <div style={{marginTop:16}}>{this.state.projectInf.date_creation}</div>
-                  </div>
-                  <div className = "col-4">
-                    <div className = "profile-info">Last update </div>
-                    <div style={{marginTop:16}}> {this.state.projectInf.date_last_updated}</div>
-                  </div>
+          </div>
+          <div className = "row">
+            <div className = "col-5">
+              <div className = "row">
+                <div className = "col-4">
+                  <div className = "profile-info">Status</div>
+                    <Badge value ={this.state.projectInf.status}/>
                 </div>
-                <div style = {{marginTop : 30}}>
-                  <div className = "profile-info">Authors</div>
-                  <AuthorOutputList value = {this.state.projectInf.authors} />
+                <div className = "col-4">
+                  <div className = "profile-info">Creation date</div>
+                  <div style={{marginTop:16}}>{this.state.projectInf.date_creation}</div>
                 </div>
-                <div style = {{marginTop : 30}}>
-                  <div className = "profile-info">Links</div>
-                  <UrlOutputList value = {this.state.projectInf.url} />
+                <div className = "col-4">
+                  <div className = "profile-info">Last update </div>
+                  <div style={{marginTop:16}}> {this.state.projectInf.date_last_updated}</div>
                 </div>
               </div>
-              <div className = "col-1"></div>
-              <div className = "col-6">
-                <div>
-                  <div className = "profile-info">Tags </div>
-                  <TagOutputList value = {this.state.projectInf.tags} />
-                </div>
-                <div style = {{marginTop : 50}}>
-                  <div className = "profile-info">Description</div>
-                  <div><a>{this.state.projectInf.description}</a></div>
-                </div>
-                <div style = {{display : (this.state.projectInf.archived) ? "block" : "none"}}>
-                  <div className = "profile-info">Archived</div>
-                </div>
+              <div style = {{marginTop : 30}}>
+                <div className = "profile-info">Authors</div>
+                <AuthorOutputList value = {this.state.projectInf.authors} />
+              </div>
+              <div style = {{marginTop : 30}}>
+              <div className = "profile-info">Links</div>
+                <UrlOutputList value = {this.state.projectInf.url} />
               </div>
             </div>
-            {!this.state.projectInf.archived ?
-              <div style = {{textAlign : "center", marginTop : 75}} >
-              <IconButton
+            <div className = "col-1"></div>
+            <div className = "col-6">
+              <div>
+                <div className = "profile-info">Tags </div>
+                <TagOutputList value = {this.state.projectInf.tags} />
+              </div>
+              <div style = {{marginTop : 50}}>
+                <div className = "profile-info">Description</div>
+                <div>{this.state.projectInf.description}</div>
+              </div>
+              <div style = {{display : (this.state.projectInf.archived) ? "block" : "none"}}>
+                <div className = "profile-info">Archived</div>
+              </div>
+            </div>
+          </div>
+          {!this.state.projectInf.archived ?
+            <div style = {{textAlign : "center", marginTop : 75}} >
+            <IconButton
                         onClick = {this.handleComment}
                         touch = {true}
                         style = {styles.largeIcon}
@@ -273,8 +272,8 @@ export default class ProjectContainer extends Component {
                         <i className = "material-icons">comment</i>
                         <Badge  badgeContent = {this.state.comments_count} primary = {true}
                           badgeStyle = {{top : -30, height : 20, width : 20}} />
-              </IconButton>
-              <IconButton
+            </IconButton>
+            <IconButton
                         onClick = {this.handleBookmark}
                         touch = {true}
                         style = {styles.largeIcon}
@@ -286,8 +285,8 @@ export default class ProjectContainer extends Component {
                         <i className = "material-icons">
                           {this.state.projectInf.is_bookmark === "true" ? "star" : "star_border"}
                         </i>
-              </IconButton>
-              <IconButton
+            </IconButton>
+            <IconButton
                         onClick = {this.handleShare}
                         touch = {true}
                         style = {styles.largeIcon}
@@ -296,47 +295,45 @@ export default class ProjectContainer extends Component {
                         iconStyle = {{fontSize : '24px'}}
                         >
                         <i className = "material-icons">share</i>
-              </IconButton>
-              <IconButton
-                          touch = {true}
-                          style = {styles.largeIcon}
-                          disabled = {! (this.state.isOwner || Backend.isAdmin())}
-                          tooltipPosition = "top-center"
-                          tooltip = "Edit project"
-                          onClick = {this.handleEdit}
-                          iconStyle = {{fontSize : '24px'}}
-                          >
-                          <i className = "material-icons">mode_edit</i>
-              </IconButton>
-              <IconButton
-                        onClick ={() => this.setState({dialogOpen : true})}
+            </IconButton>
+            <IconButton
                         touch = {true}
                         style = {styles.largeIcon}
                         disabled = {! (this.state.isOwner || Backend.isAdmin())}
                         tooltipPosition = "top-center"
-                        tooltip = "Archive project"
+                        tooltip = "Edit project"
+                        onClick = {this.handleEdit}
                         iconStyle = {{fontSize : '24px'}}
                         >
-                        <i className = "material-icons">archive</i>
-              </IconButton>
-            </div>
-              :
-            <div style = {{textAlign : "center", marginTop : 75}} >
-              <IconButton
-                        onClick ={() => this.handleUnArchive()}
-                        touch = {true}
-                        style = {styles.largeIcon}
-                        disabled = {! (this.state.isOwner || Backend.isAdmin())}
-                        tooltipPosition = "top-center"
-                        tooltip = "Unarchive project"
-                        iconStyle = {{fontSize : '24px'}}
-                        >
-                        <i className = "material-icons">unarchive</i>
-              </IconButton>
-            </div>
-
-            }
+                        <i className = "material-icons">mode_edit</i>
+            </IconButton>
+            <IconButton
+                      onClick ={() => this.setState({dialogOpen : true})}
+                      touch = {true}
+                      style = {styles.largeIcon}
+                      disabled = {! (this.state.isOwner || Backend.isAdmin())}
+                      tooltipPosition = "top-center"
+                      tooltip = "Archive project"
+                      iconStyle = {{fontSize : '24px'}}
+                      >
+                      <i className = "material-icons">archive</i>
+            </IconButton>
           </div>
+              :
+          <div style = {{textAlign : "center", marginTop : 75}} >
+            <IconButton
+                      onClick ={() => this.handleUnArchive()}
+                      touch = {true}
+                      style = {styles.largeIcon}
+                      disabled = {! (this.state.isOwner || Backend.isAdmin())}
+                      tooltipPosition = "top-center"
+                      tooltip = "Unarchive project"
+                      iconStyle = {{fontSize : '24px'}}
+                      >
+                      <i className = "material-icons">unarchive</i>
+            </IconButton>
+          </div>
+        }
         </div>
       )
     }

@@ -22,7 +22,7 @@ export default class AdminOverview extends Component {
   render() {
     return (
       <div className = "container">
-        <div className = "header">Admin area</div>
+        <div className = "headerCreation">Admin area</div>
         <Tabs
           inkBarStyle = {{marginTop : -4, height : 4}}
           value = {this.state.value}
