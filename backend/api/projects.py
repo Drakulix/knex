@@ -68,8 +68,8 @@ def add_projects():
             g.rerun_saved_searches()
             return jsonify(return_ids)
 
-        except ApiException as e:
-            raise e
+        except ApiException as apierr:
+            raise apierr
 
         except UnicodeDecodeError:
             raise ApiException("Only utf-8 compatible charsets are " +
@@ -92,7 +92,6 @@ def get_projects():
     archived = request.args.get('archived', type=str, default='false')
     if archived not in ['true', 'false', 'mixed']:
         return make_response('Invalid parameters', 400)
-    argc = len(request.args)
 
     if g.projects.count() == 0:
         return make_response(jsonify([]), 200)
@@ -125,6 +124,8 @@ def get_projects():
 @projects.route('/api/projects/authors', methods=['GET'])
 @login_required
 def get_all_authors():
+    """ Returns a list of all email adresses used in projects "authors" field.
+    """
     try:
         authors = g.projects.distinct('authors')
         all_authors = sorted(authors, key=lambda k: str(k).lower()) if authors else []
@@ -136,9 +137,11 @@ def get_all_authors():
 @projects.route('/api/projects/tags', methods=['GET'])
 @login_required
 def get_all_tags():
+    """ Returns a list of all tags used in projects "tags" field.
+    """
     try:
         tags = g.projects.distinct('tags')
-        return jsonify(sorted(tags, key=str.lower) if tags else [])
+        return jsonify(sorted(tags, key=str.lower))
     except Exception as err:
         raise ApiException(str(err), 500)
 
@@ -194,6 +197,15 @@ def delete_project(project_id):
 @projects.route('/api/projects/<uuid:project_id>/archive/<string:archived>', methods=['GET'])
 @login_required
 def archive_project(project_id, archived):
+    """Archives a project by ID.
+
+    Args:
+        project_id: ID of a project
+        archived: 'true' or 'false', whether to archive project.
+
+    Returns:
+        response: Success response or 404 if project is not found, 403 lacking permission
+    """
     if archived not in ["true", "false"]:
         raise ApiException("Argument <string:archived> must be 'true' or 'false'", 400)
     archived = True if archived == "true" else False
