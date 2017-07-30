@@ -48,7 +48,7 @@ export default class ShowUsers extends Component {
         var userID = data[user].email
         Backend.getTags(userID)
         .then((data) => {
-          this.state.tags[userID] = data
+        //  this.state.tags[userID] = data
                     // this.setState({
           //   tags : tags
           // })
@@ -88,6 +88,7 @@ export default class ShowUsers extends Component {
           discard = discard || (this.state.email !== "" && dataObject.email.indexOf(this.state.email) === -1)
           break
         case "tags":
+
           discard = false
           break
         default:
