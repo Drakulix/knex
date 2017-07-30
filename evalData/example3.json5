@@ -5,10 +5,6 @@
         date_creation        :    '2010-10-08',
         url            :    ['http://example3.org'],
         tags             :     ['Music information retrieval','Web content mining','Information systems','Application','Evaluation'],
-        authors         :    [
-            {    name        :    'Markus Schedl',
-                email        :    'markus.schedl@jku.at'
-            }
-        ]
+        authors         :    ['markus.schedl@jku.at']
 }
 
