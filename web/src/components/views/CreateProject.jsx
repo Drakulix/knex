@@ -3,7 +3,6 @@ import RaisedButton from 'material-ui/RaisedButton'
 import DatePicker from 'material-ui/DatePicker'
 import TextField from 'material-ui/TextField'
 import Snackbar from 'material-ui/Snackbar'
-import CircularProgress from 'material-ui/CircularProgress'
 import UrlInputList from '../common/chips/UrlInputList'
 import Backend from '../common/Backend'
 import Moment from 'moment'
@@ -11,6 +10,7 @@ import history from '../common/history'
 import AuthorInputList from '../common/chips/AuthorInputList'
 import TagInputList from '../common/chips/TagInputList'
 import {BadgeInput} from '../common/Badge'
+import Spinner from '../common/Spinner'
 
 export default class CreateProject extends Component {
 
@@ -135,9 +135,7 @@ export default class CreateProject extends Component {
   render() {
     if(!this.state.site_loaded ){
       return (
-        <div className = "container">
-          <div className = "spinner"><CircularProgress size = {80} thickness = {5} /></div>
-        </div>
+        <Spinner loading = {true} text = {"Loading Project"}/>
       )
     }
     if(!this.state.project_exists && this.state.projectID){

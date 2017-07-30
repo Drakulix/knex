@@ -5,12 +5,12 @@ import Backend from './Backend'
 import Filters from './Filters'
 import IconButton from 'material-ui/IconButton'
 import styles from '../common/Styles.jsx'
-import CircularProgress from 'material-ui/CircularProgress'
 import Snackbar from 'material-ui/Snackbar'
 import AuthorOutputList from '../common/chips/AuthorOutputList'
 import TagOutputList from '../common/chips/TagOutputList'
 import ConfirmationPane from '../common/ConfirmationPane'
 import Badge from '../common/Badge'
+import Spinner from '../common/Spinner'
 
 
 export default class BookmarksTable extends Component {
@@ -334,7 +334,7 @@ export default class BookmarksTable extends Component {
                   message={this.state.snackbarText}
                   autoHideDuration={10000}
         />
-        <div className = "spinner" style = {{display : (this.props.loading ? "block" : "none")}}><CircularProgress size = {80} thickness = {5} /></div>
+      <Spinner loading = {this.props.loading} text ={"Loading projects"}/>
         <div style = {{display : (!this.props.loading ? "block" : "none")}}>
           <Filters value={this.state.filters}
                    onChange={this.handleFilterChange}/>

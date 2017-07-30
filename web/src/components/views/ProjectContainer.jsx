@@ -4,7 +4,6 @@ import Backend from '../common/Backend'
 import history from '../common/history'
 import IconButton from 'material-ui/IconButton'
 import SharePane from '../common/SharePane'
-import CircularProgress from 'material-ui/CircularProgress'
 import Snackbar from 'material-ui/Snackbar'
 import CommentSideBar from '../common/CommentSideBar'
 import AuthorOutputList from '../common/chips/AuthorOutputList'
@@ -12,6 +11,8 @@ import TagOutputList from '../common/chips/TagOutputList'
 import UrlOutputList from '../common/chips/UrlOutputList'
 import ConfirmationPane from '../common/ConfirmationPane'
 import Badge from '../common/Badge'
+import Spinner from '../common/Spinner'
+
 
 
 export default class ProjectContainer extends Component {
@@ -181,9 +182,7 @@ export default class ProjectContainer extends Component {
   render(){
     if(!this.state.site_loaded){
       return (
-        <div className = "container">
-          <div className = "spinner"><CircularProgress size = {80} thickness = {5} /></div>
-        </div>
+        <Spinner loading = {true} text = {"Loading project"} />
       )
     }
     if(!this.state.project_exists){

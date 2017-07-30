@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import SavedQuery from "../common/SavedQuery"
 import Backend from '../common/Backend'
 import Snackbar from 'material-ui/Snackbar'
-import CircularProgress from 'material-ui/CircularProgress'
+import Spinner from '../common/Spinner'
+
 
 export default class SavedQueries extends Component {
   constructor(props) {
@@ -46,7 +47,7 @@ export default class SavedQueries extends Component {
   render() {
     return(
       <div className="container">
-        <div className = "spinner" style = {{display : (this.state.loading ? "block" : "none")}}><CircularProgress size = {80} thickness = {5} /></div>
+        <Spinner loading = {this.state.loading} text = {"Loading queries"}/>
         <div  style = {{display : (!this.state.loading ? "block" : "none")}}>
           <Snackbar
             open = {this.state.snackbar}

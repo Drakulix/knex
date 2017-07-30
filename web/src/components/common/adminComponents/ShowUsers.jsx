@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import IconButton from 'material-ui/IconButton'
 import styles from '../../common/Styles'
 import Backend from '../../common/Backend'
-import CircularProgress from 'material-ui/CircularProgress'
+import Spinner from '../../common/Spinner'
 import {Card, CardHeader, CardText} from 'material-ui/Card'
 import TextField from 'material-ui/TextField'
 import ConfirmationPane from '../../common/ConfirmationPane'
@@ -264,9 +264,7 @@ export default class ShowUsers extends Component {
           message={this.state.snackbarText}
           autoHideDuration={10000}
         />
-        <div className = "spinner" style = {{display : (this.state.loading ? "block" : "none")}}>
-          <CircularProgress size = {80} thickness = {5} />
-        </div>
+      <Spinner loading = {this.state.loading} text ={"Loading users"} />
         <div style = {{display : (!this.state.loading ? "block" : "none")}}>
           <div style = {{marginBottom : 20, width:"100%"}}>
             <Card  onExpandChange = {() => this.setState({expanded : !this.state.expanded})}>
