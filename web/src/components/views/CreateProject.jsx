@@ -9,7 +9,7 @@ import Moment from 'moment'
 import history from '../common/history'
 import AuthorInputList from '../common/chips/AuthorInputList'
 import TagInputList from '../common/chips/TagInputList'
-import {BadgeInput} from '../common/Badge'
+import {StatusInput} from '../common/Status'
 import Spinner from '../common/Spinner'
 
 export default class CreateProject extends Component {
@@ -187,7 +187,7 @@ export default class CreateProject extends Component {
                   <div className = "col-6">
                     <div className = "profile-info">Status</div>
                     <div>
-                      <BadgeInput onChange = {this.handleStatusChange}
+                      <StatusInput onChange = {this.handleStatusChange}
                                   value = {this.state.projectInf.status}
                                   />
                     </div>

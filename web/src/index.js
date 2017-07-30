@@ -31,6 +31,7 @@ import BookmarksTable from './components/views/BookmarksTable'
 import UserProjects from './components/views/UserProjects'
 import SavedQueries from './components/views/SavedQueries'
 import UserTrashcan from './components/views/UserTrashcan'
+import UserList from './components/views/UserList'
 
 import TopBar from './components/common/TopBar'
 import SideBar from './components/common/SideBar'
@@ -81,6 +82,7 @@ init(() => {
           <PageRoute sitePath="/yourprojects" path="/yourprojects" component={UserProjects} />
           <PageRoute sitePath="/queries" path="/queries" component={SavedQueries} />
           <PageRoute sitePath="/trashcan" path="/trashcan" component={UserTrashcan} />
+          <PageRoute sitePath="/users" path="/users" component={UserList} />
           <Route path="/register" component={SignUp} />
           <Route exact path="/" component={SignIn} />
           <Route component={() => (<Redirect to="/"/>)} />

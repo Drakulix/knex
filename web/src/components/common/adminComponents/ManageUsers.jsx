@@ -11,7 +11,7 @@ import ConfirmationPane from '../../common/ConfirmationPane'
 import Snackbar from 'material-ui/Snackbar'
 
 
-export default class ShowUsers extends Component {
+export default class ManageUsers extends Component {
   constructor(props) {
     super(props)
     this.state = {

@@ -19,10 +19,10 @@ export default class ProfileView extends Component {
           <div className="row">
             <div className ="col-4">
               <div className="profile-header">Projects contributed to</div>
-              <div className="profile-info" style={{marginTop:10}}>{this.props.projectsContributed}</div>
+              <div className="profile-info" style={{marginTop:16}}>{this.props.projectsContributed}</div>
             </div>
             <div className ="col-8">
-              <div className="profile-header">Knowledge in</div>
+              <div className="profile-header" style ={{marginLeft : 16}}>Knowledge in</div>
               <TagOutputList value = {this.props.topTenTags} />
             </div>
           </div>
@@ -32,7 +32,7 @@ export default class ProfileView extends Component {
               {this.props.profileInf.bio}
             </td></tr></tbody></table>
           </div>
-          
+
         </div>
         <div className="col-3">
           <img src={"/api/users/"+this.props.profileInf.email+"/avatar"} width="200px" height="200px" alt="..." className="rounded-circle profile-icon" />

@@ -10,7 +10,7 @@ import AuthorOutputList from '../common/chips/AuthorOutputList'
 import TagOutputList from '../common/chips/TagOutputList'
 import UrlOutputList from '../common/chips/UrlOutputList'
 import ConfirmationPane from '../common/ConfirmationPane'
-import Badge from '../common/Badge'
+import Status from '../common/Status'
 import Spinner from '../common/Spinner'
 
 
@@ -213,7 +213,7 @@ export default class ProjectContainer extends Component {
               <div className = "row">
                 <div className = "col-4">
                   <div className = "profile-info">Status</div>
-                    <Badge value ={this.state.projectInf.status}/>
+                    <Status value ={this.state.projectInf.status}/>
                 </div>
                 <div className = "col-4">
                   <div className = "profile-info">Creation date</div>
@@ -226,7 +226,7 @@ export default class ProjectContainer extends Component {
               </div>
               <div style = {{marginTop : 30}}>
                 <div className = "profile-info">Authors</div>
-                <AuthorOutputList value = {this.state.projectInf.authors} />
+                <div style ={{marginLeft:-16}}><AuthorOutputList value = {this.state.projectInf.authors} /></div>
               </div>
               <div style = {{marginTop : 30}}>
               <div className = "profile-info">Links</div>
@@ -259,7 +259,7 @@ export default class ProjectContainer extends Component {
                         iconStyle = {{fontSize : '24px'}}
                         >
                         <i className = "material-icons">comment</i>
-                        <Badge  badgeContent = {this.state.comments_count} primary = {true}
+                        <Status  badgeContent = {this.state.comments_count} primary = {true}
                           badgeStyle = {{top : -30, height : 20, width : 20}} />
             </IconButton>
             <IconButton

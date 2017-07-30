@@ -9,13 +9,14 @@ export default class SideBar extends Component {
     this.state = {
       menu : {
         discoverProjects : 'Discover projects',
-        createProject : 'Create new project',
-        queries : "Saved queries",
-        bookmarks : 'Bookmarks',
+        createProject : 'Create a new project',
+        queries : "Your saved queries",
+        bookmarks : 'Your Bookmarks',
         userprojects : 'Your projects',
         profile : 'Your profile',
         adminArea : 'Admin area',
-        trashcan : "Your trash"
+        trashcan : "Your trash",
+        people : "Search users"
 
       },
       myProfile : Backend.getMail(),
@@ -36,6 +37,7 @@ export default class SideBar extends Component {
                 <SideBarEntry icon = "add_circle" name = {this.state.menu.createProject} to = "/createbylink" active = {this.isActive("/createbylink")} />
                 <SideBarEntry icon = "work" name = {this.state.menu.userprojects} to = "/yourprojects" active = {this.isActive("/yourprojects")} />
                 <SideBarEntry icon = "delete" name = {this.state.menu.trashcan} to = '/trashcan/' active = {this.isActive("/trashcan")} />
+                <SideBarEntry icon = "people" name = {this.state.menu.people} to = {'/users/' + this.state.myProfile } active = {this.isActive("/users")} />
                 <SideBarEntry icon = "account_circle" name = {this.state.menu.profile} to = {'/profile/' + this.state.myProfile } active = {this.isActive("/profile")} />
                 <SideBarEntry
                   icon = "settings"

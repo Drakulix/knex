@@ -9,7 +9,7 @@ import Snackbar from 'material-ui/Snackbar'
 import AuthorOutputList from '../common/chips/AuthorOutputList'
 import TagOutputList from '../common/chips/TagOutputList'
 import ConfirmationPane from '../common/ConfirmationPane'
-import Badge from '../common/Badge'
+import Status from '../common/Status'
 import Spinner from '../common/Spinner'
 
 
@@ -188,7 +188,7 @@ export default class BookmarksTable extends Component {
         id:'status',
         style: {align:"center", width : 100},
               width: 100,
-        Cell: props => <Badge value={props.value} />
+        Cell: props => <Status value={props.value} />
       })
     }
     if(this.props.columns.indexOf("tags") !== -1){

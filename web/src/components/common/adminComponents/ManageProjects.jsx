@@ -3,7 +3,7 @@ import DataTable from '../../common/DataTable'
 import Backend from '../../common/Backend'
 
 
-export default class ShowProjects extends Component {
+export default class ManageProjects extends Component {
   constructor(props){
     super(props)
     this.state = {
