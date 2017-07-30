@@ -160,23 +160,13 @@ export default class ProjectContainer extends Component {
   handleBookmark(event){
     event.preventDefault()
     this.handleClose()
-    if(this.state.projectInf.is_bookmark === "true"){
-      Backend.deleteBookmark(this.state.projectID).then(res => {
-        if(res){
-          var projectInf = this.state.projectInf
-          projectInf.is_bookmark = "false"
+    Backend.handleBookmark(this.state.projectID, this.state.projectInf.is_bookmark ).then(res => {
+      var projectInf = this.state.projectInf
+          projectInf.is_bookmark = this.state.projectInf.is_bookmark === "true" ? "false" : "true"
           this.setState({projectInf : projectInf})
-        }
-      })
-    } else {
-      Backend.addBookmark(this.state.projectID).then(res => {
-        if(res){
-          var projectInf = this.state.projectInf
-          projectInf.is_bookmark = "true"
-          this.setState({projectInf : projectInf})
-        }
-      })
-    }
+    })
+    .then(() => {this.setState({snackbar :true,
+      snackbarText : "Project bookmark"+(this.state.projectInf.is_bookmark === "true" ? "ed" : " removed")})})
   }
 
   render(){

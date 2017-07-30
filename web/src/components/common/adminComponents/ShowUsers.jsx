@@ -32,7 +32,6 @@ export default class ShowUsers extends Component {
     this.intentionToDeleteUser = this.intentionToDeleteUser.bind(this)
   }
 
-
   componentWillReceiveProps(){
     this.loadUsers()
   }

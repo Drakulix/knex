@@ -31,7 +31,6 @@ export default class BookmarksTable extends Component {
       buttonText : "Delete",
       snackbar : false,
       snackbarText : "",
-      loading : true
     }
 
     this.handleFilterChange = this.handleFilterChange.bind(this)
@@ -57,7 +56,7 @@ export default class BookmarksTable extends Component {
     this.setState({
       snackbar : false,
       dialogText : "Do you want to archive project " + projectInf.title + "?",
-      buttonText : "archive",
+      buttonText : "Archive",
       dialogOpen : true,
       loading : true,
       action : () => {
@@ -79,18 +78,10 @@ export default class BookmarksTable extends Component {
   }
 
   handleBookmark(projectInf){
-    if(projectInf.is_bookmark === "true") {
-      Backend.deleteBookmark(projectInf._id)
-      .then(() => {this.props.handler(this.state.filters)})
-      .then(() => {this.setState({snackbar :true,
-        snackbarText : "Project bookmarked removed"})})
-    }
-    else {
-      Backend.addBookmark(projectInf._id)
-      .then(() => {this.props.handler(this.state.filters)})
-      .then(() => {this.setState({snackbar :true,
-        snackbarText : "Project bookmarked"})})
-    }
+    Backend.handleBookmark(projectInf._id, projectInf.is_bookmark)
+    .then(() => {this.props.handler(this.state.filters)})
+    .then(() => {this.setState({snackbar :true,
+      snackbarText : "Project bookmark"+(projectInf.is_bookmark === "true" ? " removed" : "ed")})})
   }
 
   componentWillReceiveProps(props){
