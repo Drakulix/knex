@@ -36,74 +36,64 @@ export default class BookmarksTable extends Component {
     }
 
     this.handleFilterChange = this.handleFilterChange.bind(this)
-    this.handleClose = this.handleClose.bind(this)
-    this.handleArchive = this.handleArchive.bind(this)
-    this.handleUnArchive = this.handleUnArchive.bind(this)
   }
 
   componentDidMount(){
     this.fetchData()
   }
 
-  handleDelete(projectID, projectName){
+  handleDelete(projectInf){
     this.setState({
       snackbar : false,
-      dialogText : "Do you want to delete project " + projectName +"?",
+      dialogText : "Do you want to delete project " + projectInf.title + "?",
       buttonText : "Delete",
       dialogOpen : true,
       action : () => {
         this.setState({dialogOpen:false})
-        Backend.deleteProject(projectID)
+        Backend.deleteProject(projectInf._id)
         .then(this.fetchData())
         .then(this.setState({snackbar :true,
-          snackbarText : "Project "+projectName +" deleted"}))
+          snackbarText : "Project "+ projectInf.title +" deleted"}))
       }
     })
   }
 
-  handleArchive(projectID, projectName){
+  handleArchive(projectInf){
     this.setState({
       snackbar : false,
-      dialogText : "Do you want to archive project " + projectName +"?",
+      dialogText : "Do you want to archive project " + projectInf.title + "?",
       buttonText : "archive",
       dialogOpen : true,
       action : () => {
         this.setState({dialogOpen:false})
-        Backend.getProjectArchived(projectID, true)
-          .then(() => {this.setState({snackbar :true,
-            snackbarText : "Project "+projectName +" archived"})})
+        Backend.getProjectArchived(projectInf._id, true)
           .then(this.fetchData())
-
+          .then(this.setState({snackbar :true,
+            snackbarText : "Project "+ projectInf.title +" archived"}))
       }
     })
   }
 
-  handleUnArchive(projectID, projectTitle){
-    Backend.getProjectArchived(projectID, false)
-      .then(() => {this.setState({snackbar :true,
-      snackbarText : "Project " + projectTitle + " unarchived"})})
-        .then(this.fetchData())
+  handleUnArchive(projectInf){
+    Backend.getProjectArchived(projectInf._id, false)
+      .then(this.fetchData())
+      .then(this.setState({snackbar :true,
+          snackbarText : "Project " + projectInf.title + " unarchived"}))
   }
 
-  handleClose(){
-    this.setState({
-      dialogOpen : false,
-      snackbar : false
-    })
-  }
-
-  handleAddBookmark(projectID){
-    Backend.addBookmark(projectID)
-    .then(this.fetchData())
-    .then(this.setState({snackbar :true,
-      snackbarText : "Project bookmarked"}))
-  }
-
-  handleRemoveBookmark(projectID){
-    Backend.deleteBookmark(projectID)
-    .then(this.fetchData())
-    .then(this.setState({snackbar :true,
-      snackbarText : "Project bookmark removed"}))
+  handleBookmark(projectInf){
+    if(projectInf.is_bookmark === "true") {
+      Backend.deleteBookmark(projectInf._id)
+      .then(this.fetchData())
+      .then(this.setState({snackbar :true,
+        snackbarText : "Project bookmarked"}))
+    }
+    else {
+      Backend.addBookmark(projectInf._id)
+      .then(this.fetchData())
+      .then(this.setState({snackbar :true,
+        snackbarText : "Project bookmark removed"}))
+    }
   }
 
   componentWillReceiveProps(props){
@@ -142,7 +132,7 @@ export default class BookmarksTable extends Component {
   filter(data, filters){
     this.setState({loading : true})
     var array = []
-    for(let dataObject of data) {
+    for(let dataObject of data){
       var discard = false
       if(!this.props.remoteFilters){
         for(let key of Object.keys(filters)){
@@ -262,24 +252,13 @@ export default class BookmarksTable extends Component {
         pivot: true,
         width: 85,
         style: {textAlign:"center"},
-        Cell: props =>{
-          return(
-            (props.value.is_bookmark === "true") ?
-              <IconButton onClick={()=>this.handleRemoveBookmark(props.value._id)}
-                touch={true}
-                style = {styles.largeIcon}
-                iconStyle={{fontSize: '24px'}}>
-                <i className="material-icons">star</i>
-              </IconButton>
-            :
-              <IconButton onClick={()=>this.handleAddBookmark(props.value._id)}
-                touch={true}
-                style = {styles.largeIcon}
-                iconStyle={{fontSize: '24px'}}>
-                  <i className="material-icons">star_border</i>
-              </IconButton>
-          )
-        }
+        Cell: props =>
+          <IconButton onClick={()=>this.handleBookmark(props.value)}
+                      touch={true}
+                      style = {styles.largeIcon}
+                      iconStyle={{fontSize: '24px'}}>
+            <i className="material-icons">{props.value.is_bookmark === "true" ? "star" : "star_border"}</i>
+          </IconButton>
       })
     }
     if(this.props.columns.indexOf("unarchive") !== -1){
@@ -297,7 +276,7 @@ export default class BookmarksTable extends Component {
         style: {textAlign:"center"},
         Cell: props => { return props.value.archived  ?
           <IconButton
-          onClick = {()=>this.handleUnArchive(props.value._id, props.value.title)}
+          onClick = {()=>this.handleUnArchive(props.value)}
           touch = {true}
           style = {styles.largeIcon}
           iconStyle = {{fontSize: '24px'}}
@@ -322,7 +301,7 @@ export default class BookmarksTable extends Component {
         style: {textAlign:"center"},
         Cell: props => { return !props.value.archived  ?
           <IconButton
-          onClick = {()=>this.handleArchive(props.value._id, props.value.title)}
+          onClick = {()=>this.handleArchive(props.value)}
           touch = {true}
           style = {styles.largeIcon}
           iconStyle = {{fontSize: '24px'}}
@@ -341,7 +320,7 @@ export default class BookmarksTable extends Component {
         width: 60,
         style: {textAlign:"center"},
         Cell: props => <IconButton
-          onClick = {()=>this.handleDelete(props.value._id, props.value.title)}
+          onClick = {()=>this.handleDelete(props.value)}
           touch = {true}
           style = {styles.largeIcon}
           iconStyle = {{fontSize: '24px'}}
@@ -353,7 +332,7 @@ export default class BookmarksTable extends Component {
     return (
       <div>
       <ConfirmationPane   open = {this.state.dialogOpen}
-                          handleClose = {this.handleClose}
+                          handleClose = {() => {this.setState({dialogOpen : false, snackbar : false})}}
                           title = {this.state.dialogText}
                           confirmationLabel = {this.state.buttonText}
                           confirmAction = {this.state.action}
