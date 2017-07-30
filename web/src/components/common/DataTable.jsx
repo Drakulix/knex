@@ -121,7 +121,7 @@ export default class BookmarksTable extends Component {
         filteredTable : projects,
         loading : false
       })
-    //  this.filter(projects, this.state.filters)
+      this.filter(projects, this.state.filters)
     })
   }
 
@@ -140,7 +140,6 @@ export default class BookmarksTable extends Component {
   }
 
   filter(data, filters){
-    alert(JSON.stringify(filters))
     this.setState({loading : true})
     var array = []
     for(let dataObject of data) {
@@ -150,8 +149,12 @@ export default class BookmarksTable extends Component {
         var value = filters[key]
         if(key === "tags" || key === "authors"){
           var temp = dataObject[key].join().toLowerCase()
-          discard = value.some(function notContains(element){
-                        return temp.indexOf(element) === -1})
+          for(let item in value){
+            if (temp.indexOf(value[item]) === -1){
+              discard = true
+              break
+            }
+          }
         }
         else{
           switch (key){
@@ -261,7 +264,7 @@ export default class BookmarksTable extends Component {
         style: {textAlign:"center"},
         Cell: props =>{
           return(
-            (new String(props.value.is_bookmark) == "true") ?
+            (props.value.is_bookmark === "true") ?
               <IconButton onClick={()=>this.handleRemoveBookmark(props.value._id)}
                 touch={true}
                 style = {styles.largeIcon}

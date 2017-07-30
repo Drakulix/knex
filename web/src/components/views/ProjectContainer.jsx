@@ -159,12 +159,11 @@ export default class ProjectContainer extends Component {
   handleBookmark(event){
     event.preventDefault()
     this.handleClose()
-    // HORRIBLE  and strange initialstate
-    if(new String(this.state.projectInf.is_bookmark) == "true"){
+    if(this.state.projectInf.is_bookmark === "true"){
       Backend.deleteBookmark(this.state.projectID).then(res => {
         if(res){
           var projectInf = this.state.projectInf
-          projectInf.is_bookmark = false
+          projectInf.is_bookmark = "false"
           this.setState({projectInf : projectInf})
         }
       })
@@ -172,7 +171,7 @@ export default class ProjectContainer extends Component {
       Backend.addBookmark(this.state.projectID).then(res => {
         if(res){
           var projectInf = this.state.projectInf
-          projectInf.is_bookmark = true
+          projectInf.is_bookmark = "true"
           this.setState({projectInf : projectInf})
         }
       })
@@ -285,7 +284,7 @@ export default class ProjectContainer extends Component {
                         iconStyle = {{fontSize : '24px'}}
                         >
                         <i className = "material-icons">
-                          {(new String(this.state.projectInf.is_bookmark) == "true") ? "star" : "star_border"}
+                          {this.state.projectInf.is_bookmark === "true" ? "star" : "star_border"}
                         </i>
               </IconButton>
               <IconButton
