@@ -47,11 +47,10 @@ export default class SearchPage extends Component {
 
   handleChange(event) {
     const value = event.target.value
-    var query = this.state.query
+    var query = JSON.parse(JSON.stringify(this.state.query))
     query['searchString'] = value
     this.setState({
       query : query,
-      load : true,
       searchString : value
     })
     this.handler(query)
@@ -72,7 +71,6 @@ export default class SearchPage extends Component {
     toSaveQuery["label"] = this.state.label
     Backend.saveSearch(toSaveQuery).then( function () {
       this.setState({open: false,
-        load : false,
         snackbar : true,
         snackbarText : "Query saved",
         label : ""
@@ -84,7 +82,6 @@ export default class SearchPage extends Component {
     this.setState({
       open: false,
       snackbar : false,
-      load : false,
     })
   }
 
@@ -92,14 +89,13 @@ export default class SearchPage extends Component {
     this.setState({
       open: true,
       snackbar : false,
-      load : false,
     })
   }
 
   handleLabelChange(event){
     event.preventDefault()
     const value = event.target.value
-    this.setState({label : value, load:false})
+    this.setState({label : value})
   }
 
   render() {
@@ -151,7 +147,6 @@ export default class SearchPage extends Component {
             <div className = "col-2">
               <RaisedButton style = {{width:"100%"}}
                 label="Save search"
-                labelPosition="before"
                 icon={<i className="material-icons" style={{color: "#ffffff", marginTop:-3}}>save</i>}
                 onClick={this.handleOpen}
                 primary={true}/>
