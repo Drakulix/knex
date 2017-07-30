@@ -16,12 +16,16 @@ export default class UserProjects extends Component {
   }
 
   componentDidMount(){
-    this.handler()
+    this.handler({})
   }
 
-  handler (){
+  handler (query){
+    query = JSON.parse(JSON.stringify(query))
+    query.archived = "false"
+    query.authors = query.authors !== undefined ? query.authors : []
+    query.authors.push(Backend.getMail())
     this.setState({loading: true})
-    return Backend.search({archived : "false",authors : [Backend.getMail()] })
+    return Backend.search(query)
               .then ((data) => {this.setState({projects : data, loading:false}); return data;})
   }
 

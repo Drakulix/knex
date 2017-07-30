@@ -14,12 +14,16 @@ export default class ProfileProjects extends Component {
   }
 
   componentDidMount(){
-    this.handler()
+    this.handler({})
   }
 
-  handler (){
+  handler (query){
+    query = JSON.parse(JSON.stringify(query))
+    query.archived = "false"
+    query.authors = query.authors !== undefined ? query.authors : []
+    query.authors.push(this.props.email)
     this.setState({loading: true})
-    return Backend.search({archived : "false", authors : [this.props.email]})
+    return Backend.search(query)
               .then ((data) => {this.setState({projects : data, loading:false}); return data;})
   }
 

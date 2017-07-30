@@ -303,6 +303,8 @@ export default class ShowUsers extends Component {
                    columns = {columns}
                    defaultExpanded = {{1 : true}}
                    filterable = {false}
+                   minRows = {3}
+                   noDataText = 'No users found'
                    showPageSizeOptions = {false}
                    defaultPageSize = {10}
                    defaultSorted = {[{

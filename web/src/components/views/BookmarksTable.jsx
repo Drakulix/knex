@@ -14,10 +14,10 @@ export default class BookmarksTable extends Component {
   }
 
   componentDidMount(){
-    this.handler()
+    this.handler({})
   }
 
-  handler (){
+  handler (query){
     this.setState({loading: true})
     return Backend.getBookmarks()
               .then ((data) => {this.setState({projects : data, loading:false}); return data;})

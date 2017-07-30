@@ -14,12 +14,14 @@ export default class ShowProjects extends Component {
   }
 
   componentDidMount(){
-    this.handler()
+    this.handler({})
   }
 
-  handler (){
+  handler (query){
+    query = JSON.parse(JSON.stringify(query))
+    query.archived = "true"
     this.setState({loading: true})
-    return Backend.search({archived : "true"})
+    return Backend.search(query)
               .then ((data) => {this.setState({projects : data, loading:false}); return data;})
   }
 

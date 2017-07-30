@@ -19,17 +19,31 @@ export default class SearchPage extends Component {
         open : false,
         snackbar : false,
         snackbarText : "",
-      }
-
-      delete query.label
-      delete query.searchString
-
-      this.handleFilterChange = this.handleFilterChange.bind(this)
-      this.saveSearch = this.saveSearch.bind(this)
-      this.handleChange = this.handleChange.bind(this)
-      this.handleOpen = this.handleOpen.bind(this)
-      this.handleLabelChange = this.handleLabelChange.bind(this)
+        loading : false,
+        projects : []
     }
+
+    delete query.label
+    delete query.searchString
+
+    this.handleFilterChange = this.handleFilterChange.bind(this)
+    this.saveSearch = this.saveSearch.bind(this)
+    this.handleChange = this.handleChange.bind(this)
+    this.handleOpen = this.handleOpen.bind(this)
+    this.handleLabelChange = this.handleLabelChange.bind(this)
+    this.handler = this.handler.bind(this)
+
+  }
+
+  componentDidMount(){
+    this.handler(this.state.query)
+  }
+
+  handler(query){
+    this.setState({loading: true})
+    return Backend.search(query)
+              .then ((data) => {this.setState({projects : data, loading:false}); return data;})
+  }
 
   handleChange(event) {
     const value = event.target.value
@@ -40,6 +54,7 @@ export default class SearchPage extends Component {
       load : true,
       searchString : value
     })
+    this.handler(query)
   }
 
   handleFilterChange(key, value){
@@ -49,7 +64,7 @@ export default class SearchPage extends Component {
     } else {
       query[key] = value
     }
-    this.setState({query : query, load : true})
+    this.setState({query : query})
   }
 
   saveSearch(){
@@ -146,9 +161,9 @@ export default class SearchPage extends Component {
             <DataTable columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'date_creation' ,'bookmarked']}
               handleFilter= {this.handleFilterChange}
               predefinedFilter = {this.state.query}
-              fetchHandler = {Backend.search(this.state.query)}
-              remoteFilters = {true}
-              load = {this.state.load}
+              handler = {this.handler}
+              data = {this.state.projects}
+              loading = {this.state.loading}
               ></DataTable>
           </div>
         </div>
