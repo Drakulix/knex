@@ -58,8 +58,8 @@ def save_manifest_to_db(manifest):
             raise ApiException("Validation Error: \n" + str(is_valid), 400,
                                validation_error)
 
-    except ApiException as e:
-        raise e
+    except ApiException as apie:
+        raise apie
     except Exception as err:
         raise ApiException(
             "Error while trying to save the document(s) into db." + str(err))

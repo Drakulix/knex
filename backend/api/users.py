@@ -1,4 +1,7 @@
-import io
+""" Module users defines the web servers /api/users routes which
+    provide all sort of user-related functionality.
+"""
+
 import os
 import sys
 import json
@@ -10,7 +13,6 @@ from flask_security import login_required, login_user, logout_user, current_user
 from flask_security.utils import verify_password, hash_password
 from mongoengine import NotUniqueError
 from mongoengine.fields import ObjectId
-from werkzeug.utils import secure_filename
 
 from api.projects import get_all_authors
 from api.helper.apiexception import ApiException
@@ -20,11 +22,11 @@ users = Blueprint('api_users', __name__)
 
 
 def is_permitted(user, entry):
-    """Return boolean value if user has admin permission, arg->list with roles
+    """ Internal function returning whether the user has permission to edit the (other) user.
 
         Returns:
-            res: true if user has admin role
-        """
+            res: true if user has admin role or tries to edit himself.
+    """
 
     if user.has_role('admin'):
         return True
@@ -33,6 +35,9 @@ def is_permitted(user, entry):
 
 @users.route('/api/users/login', methods=['POST'])
 def login():
+    """ Logs the user in. Expects a json in the format:
+    { "email": <mail>, "password": <password> }
+    """
     email = request.form['email']
     password = request.form['password']
     user = g.user_datastore.get_user(email)
@@ -48,6 +53,8 @@ def login():
 
 @users.route('/api/users/logout')
 def logout():
+    """ Logs the current user out.
+    """
     logout_user()
     return make_response("Logged out", 200)
 
@@ -55,6 +62,8 @@ def logout():
 @users.route('/api/users', methods=['GET'])
 @login_required
 def get_all_users():
+    """ Returns a list of all user jsons currently in the database.
+    """
     users = g.user_datastore.user_model.objects
     return jsonify(sorted([user.to_dict() for user in users], key=lambda k: k.get('email').lower()))
 
@@ -62,6 +71,9 @@ def get_all_users():
 @users.route('/api/users/projectids', methods=['GET'])
 @login_required
 def get_all_users_project_ids():
+    """ Returns a dictionary of all users with their projects,
+        value = user email and value = project id's.
+    """
     dic = {}
     for user in g.user_datastore.user_model.objects:
         projects = json.loads(get_user_projects(user['email']).get_data().decode())
@@ -73,6 +85,8 @@ def get_all_users_project_ids():
 @users.route('/api/users/authors', methods=['GET'])
 @login_required
 def get_all_users_and_authors():
+    """ Returns a list of all users and authors in the database.
+    """
     authors = json.loads(get_all_authors().get_data().decode())
     users = [user['email'] for user in json.loads(get_all_users().get_data().decode())]
     res = list(set(authors + users))
@@ -82,6 +96,9 @@ def get_all_users_and_authors():
 @users.route('/api/users/names', methods=['POST'])
 @login_required
 def get_usernames():
+    """ Returns a dictionary of each user in the database as key and
+        their name (concatinated) as value.
+    """
     userlist = [g.user_datastore.find_user(email=mail) for mail in request.get_json()
                 if g.user_datastore.find_user(email=mail)]
     dic = dict([(user.email, (user.first_name + " " if user.first_name and user.last_name
@@ -92,6 +109,16 @@ def get_usernames():
 
 @users.route('/api/users', methods=['POST'])
 def create_user():
+    """ Api Endpoint to create a user. Doesn't require login because of the register function.
+        POST a json with 'email', 'password', 'roles', 'first_name', 'last_name', 'bio'.
+        The new user will have a default avatar, can be replaced using PUT later.
+
+        Returns: json of the user that was added to the database.
+
+        Returns 409 if a user with the email already exists,
+        403 if it's attempted to create an admin user without needed permissions or
+        400 if 'roles' weren't supplied correctly.
+    """
     try:
         user = request.get_json()
 
@@ -128,6 +155,10 @@ def create_user():
 @users.route('/api/users', methods=['PUT'])
 @login_required
 def update_user():
+    """ Updates the User with 'email' in the passed json.
+
+        Returns: 400 if user unknown, 403 if no permissions, 200 on success.
+    """
     user = request.get_json()
     if is_permitted(current_user, user):
         res = g.user_datastore.get_user(user['email'])
@@ -164,11 +195,18 @@ def update_user():
 @users.route('/api/users/password', methods=['PUT'])
 @login_required
 def update_password():
+    """ Method to update the password of the user with 'email' from the passed json.
+        Supply new password as json['new_password'] and the old password with json['old_password']
+        unless current user is an admin.
+
+        Returns: 400 if user can't be found, 403 on false credentials or no permission,
+                 200 on success.
+    """
     user = request.get_json()
     res = g.user_datastore.get_user(user['email'])
     if not res:
         return make_response("Unknown User with Email-address: " +
-                             user['email'], 404)
+                             user['email'], 400)
 
     if current_user.has_role('admin') or verify_password(user["old_password"], res.password):
         new_password = user["new_password"]
@@ -176,12 +214,15 @@ def update_password():
         res.save()
         return make_response("Password restored!", 200)
 
-    return make_response("You don't have permission to edit this user", 400)
+    return make_response("You don't have permission to edit this user", 403)
 
 
 @users.route('/api/users/<email:mail>', methods=['DELETE'])
 @login_required
 def delete_user(mail):
+    """ Method to delete the user with <email>
+        Returns: 403 if no permission, 404 if no user with <email> and 200 on success.
+    """
     user = g.user_datastore.get_user(mail)
     if not user:
         raise ApiException("user not found", 404)
