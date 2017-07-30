@@ -5,7 +5,6 @@ import Spinner from '../common/Spinner'
 import {Card, CardHeader, CardText} from 'material-ui/Card'
 import TextField from 'material-ui/TextField'
 import TagInputList from '../common/chips/TagInputList'
-import AuthorInputList from '../common/chips/AuthorInputList'
 import SkillOutputList from '../common/chips/SkillOutputList'
 
 
@@ -47,15 +46,13 @@ export default class ShowUsers extends Component {
       })
       for(let user in data){
         var userID = data[user].email
-        Backend.getTagsOfUser(userID)
+        Backend.getTags(userID)
         .then((data) => {
-          alert(data)
-          var tags = this.state.tags
-          tags[userID] = data
-          this.setState({
-            tags : tags
-          })}
-        )
+          this.state.tags[userID] = data
+                    // this.setState({
+          //   tags : tags
+          // })
+        })
       }
       this.setState({
         userList : data,

@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import Chip from 'material-ui/Chip'
-import {Link} from 'react-router-dom'
 
 export default class SkillOutputList extends Component{
 
