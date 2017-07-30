@@ -30,7 +30,8 @@ export default class BookmarksTable extends Component {
       loading : true,
       buttonText : "Delete",
       snackbar : false,
-      snackbarText : ""
+      snackbarText : "",
+      loading : true
     }
 
     this.handleFilterChange = this.handleFilterChange.bind(this)
@@ -45,7 +46,7 @@ export default class BookmarksTable extends Component {
       action : () => {
         this.setState({dialogOpen:false})
         Backend.deleteProject(projectInf._id)
-        .then(this.props.handler(this.state.filters))
+        .then(() => {this.props.handler(this.state.filters)})
         .then(this.setState({snackbar :true,
           snackbarText : "Project "+ projectInf.title +" deleted"}))
       }
@@ -58,35 +59,37 @@ export default class BookmarksTable extends Component {
       dialogText : "Do you want to archive project " + projectInf.title + "?",
       buttonText : "archive",
       dialogOpen : true,
+      loading : true,
       action : () => {
         this.setState({dialogOpen:false})
         Backend.getProjectArchived(projectInf._id, true)
-            .then(this.props.handler(this.state.filters))
-            .then(this.setState({snackbar :true,
-            snackbarText : "Project "+ projectInf.title +" archived"}))
+            .then(() => {this.props.handler(this.state.filters)})
+            .then(() => {this.setState({snackbar :true,
+            snackbarText : "Project "+ projectInf.title +" archived"})})
       }
     })
   }
 
   handleUnArchive(projectInf){
+    this.setState({loading : true})
     Backend.getProjectArchived(projectInf._id, false)
-        .then(this.props.handler(this.state.filters))
-        .then(this.setState({snackbar :true,
-          snackbarText : "Project " + projectInf.title + " unarchived"}))
+        .then(() => {this.props.handler(this.state.filters)})
+        .then(() => {this.setState({snackbar :true,
+          snackbarText : "Project " + projectInf.title + " unarchived"})})
   }
 
   handleBookmark(projectInf){
     if(projectInf.is_bookmark === "true") {
       Backend.deleteBookmark(projectInf._id)
-      .then(this.props.handler(this.state.filters))
-      .then(this.setState({snackbar :true,
-        snackbarText : "Project bookmarked removed"}))
+      .then(() => {this.props.handler(this.state.filters)})
+      .then(() => {this.setState({snackbar :true,
+        snackbarText : "Project bookmarked removed"})})
     }
     else {
       Backend.addBookmark(projectInf._id)
-      .then(this.props.handler(this.state.filters))
-      .then(this.setState({snackbar :true,
-        snackbarText : "Project bookmarked"}))
+      .then(() => {this.props.handler(this.state.filters)})
+      .then(() => {this.setState({snackbar :true,
+        snackbarText : "Project bookmarked"})})
     }
   }
 
@@ -95,6 +98,12 @@ export default class BookmarksTable extends Component {
       filteredData : (this.props.isBookmarkTable
                       ? this.filter(props.data, this.state.filters) : props.data)
       })
+  }
+
+  componentDidUpdate(prevProps, prevState){
+    if(prevProps.loading !== this.props.loading){
+      this.setState({ loading : this.props.loading})
+    }
   }
 
   handleFilterChange(key, value){
@@ -322,8 +331,8 @@ export default class BookmarksTable extends Component {
                   message={this.state.snackbarText}
                   autoHideDuration={10000}
         />
-      <Spinner loading = {this.props.loading} text ={"Loading projects"}/>
-        <div style = {{display : (!this.props.loading ? "block" : "none")}}>
+      <Spinner loading = {this.state.loading} text ={"Loading projects"}/>
+        <div style = {{display : (!this.state.loading ? "block" : "none")}}>
           <Filters value={this.state.filters}
                    onChange={this.handleFilterChange}/>
           <ReactTable
