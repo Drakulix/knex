@@ -31,8 +31,7 @@ export default class ProfileProjects extends Component {
     return (
       <div>
         <DataTable
-            columns= {['title', 'status', 'tags', 'authors', 'description', '_id',
-                  (!this.props.email === Backend.getMail()) ? 'bookmarked' : '',
+            columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'bookmarked',
                   (!this.props.email === Backend.getMail() || Backend.isAdmin()) ?'archive' : '',
                   (!this.props.email === Backend.getMail() || Backend.isAdmin()) ?'unarchive' :'']
                 }

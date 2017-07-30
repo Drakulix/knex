@@ -128,7 +128,7 @@ export default class ProjectContainer extends Component {
       var email = this.state.myEmail
       var isOwner = false
       for (let author in data.authors)
-        isOwner = isOwner || data.authors[author].email === email
+        isOwner = isOwner || data.authors[author] === email
       this.setState({
         projectInf : data,
         project_exists : !!data,
@@ -278,7 +278,6 @@ export default class ProjectContainer extends Component {
                         style = {styles.largeIcon}
                         tooltipPosition = "top-center"
                         tooltip = "Bookmark project"
-                        disabled = {this.state.isOwner}
                         iconStyle = {{fontSize : '24px'}}
                         >
                         <i className = "material-icons">

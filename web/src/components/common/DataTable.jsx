@@ -116,7 +116,6 @@ export default class BookmarksTable extends Component {
     var array = []
     for(let dataObject of data){
       var discard = false
-      alert(dataObject)
       for(let key of Object.keys(filters)){
         var value = filters[key]
         if(key === "tags" || key === "authors"){
@@ -159,6 +158,10 @@ export default class BookmarksTable extends Component {
         Header: 'Project title',
         id: 'title',
         width: 180,
+        sortMethod: (a,b) => {
+          return  a.title.toLowerCase() === b.title.toLowerCase() ? 0
+                    : a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1
+        },
         accessor: d => d,
         Cell: props =>
             <div style={{whiteSpace : "normal", marginTop:8}}>
@@ -324,14 +327,18 @@ export default class BookmarksTable extends Component {
           <Filters value={this.state.filters}
                    onChange={this.handleFilterChange}/>
           <ReactTable
-              data={this.state.filteredData}
-              columns={columns}
-              defaultExpanded={{1: true}}
-              filterable={false}
-              showPageSizeOptions={false}
+              data = {this.state.filteredData}
+              columns = {columns}
+              defaultSorted = {[{
+                    id: 'title',
+                    desc: false
+                    }]}
+              defaultExpanded = {{1: true}}
+              filterable = {false}
+              showPageSizeOptions = {false}
               minRows = {3}
               noDataText = 'No projects found'
-              defaultPageSize={10}/>
+              defaultPageSize = {10}/>
         </div>
       </div>
     )
