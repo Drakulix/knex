@@ -35,7 +35,7 @@ export default class AdminOverview extends Component {
           <Tab label = "Manage Users" value = "2">
             <ManageUsers/>
           </Tab>
-          <Tab label = "Register user" value = "3">
+          <Tab label = "Register a new user" value = "3">
             <RegisterUser/>
           </Tab>
         </Tabs>

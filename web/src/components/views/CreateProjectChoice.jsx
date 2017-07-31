@@ -133,7 +133,7 @@ export default class CreateProjectChoice extends Component {
           message = {this.state.snackbarText}
           autoHideDuration = {10000}
           />
-        <div className = "headerCreation">Create Project</div>
+        <div className = "headerCreation">Create a new project</div>
           <form onSubmit = {this.submitForm}>
             <div>
               <TextField
@@ -159,7 +159,7 @@ export default class CreateProjectChoice extends Component {
                     containerElement = "label"
                     primary = {true}
                     style = {{width:'300px'}}>
-                  <input type = "file" style = {styles.uploadInput} onChange = {this.handleFile}/>
+                  <input type = "file" style = {styles.uploadInput} onChange = {this.handleFile} />
           </RaisedButton>
         </div>
         <div className = "text" >or</div>
