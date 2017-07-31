@@ -37,6 +37,7 @@ services:
         restart: "always"
         volumes:
             - ./backend:/backend
+            
     yarn:
         build:
             context: ./
