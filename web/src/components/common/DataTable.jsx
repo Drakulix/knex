@@ -341,6 +341,7 @@ export default class BookmarksTable extends Component {
       <Spinner loading = {this.state.loading} text ={"Loading projects"}/>
         <div style = {{display : (!this.state.loading ? "block" : "none")}}>
           <Filters value={this.state.filters}
+                   title ={"Apply filters to your search"}
                    onChange={this.handleFilterChange}/>
           <ReactTable
               data = {this.state.filteredData}

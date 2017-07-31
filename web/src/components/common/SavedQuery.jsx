@@ -66,7 +66,7 @@ export default class SavedQuery extends Component {
           <CardText expandable = {true}>
             <div style = {{ textAlign : "left", verticalAlign : "center", display : "block"}} >
               <div className="row">
-                <div className="col-1 filter-label" style={{textAlign: "left"}}>Query</div>
+                <div className="col-1 filter-label" style={{textAlign: "left"}}>Querystring</div>
                 <div className="col-5 query-value" style={{marginLeft:-40}}>
                  {this.state.query.searchString}
                 </div>
@@ -94,7 +94,7 @@ export default class SavedQuery extends Component {
                 <div className="col-2  query-value" style={{marginLeft:-40}} >
                    {this.state.query.date_from}
                 </div>
-                <div className="col-1 filter-label" style={{textAlign: "left"}}>Till</div>
+                <div className="col-1 filter-label" style={{textAlign: "left"}}>To</div>
                 <div className="col-2  query-value" style={{marginLeft:-40}}>
                    {this.state.query.date_to}
                 </div>

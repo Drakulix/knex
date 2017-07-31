@@ -82,8 +82,7 @@ export default class Filters extends Component{
       <div style = {{marginBottom : 20}}>
         <Card  expanded = {this.state.expanded} onExpandChange={() => this.setState({expanded : !this.state.expanded})}>
         <CardHeader
-          title = "Filters"
-          subtitle = "Define filters for your search."
+          title = {this.props.title}
           actAsExpander = {true}
           showExpandableButton = {true}
         />
