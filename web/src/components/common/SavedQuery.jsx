@@ -78,12 +78,12 @@ export default class SavedQuery extends Component {
           </div>
           <div className="row">
             <div className="col-1 filter-label">Tags</div>
-            <div  className="col-5  query-value"  style={{marginTop:0}}>
+            <div  className="col-5  query-value"  style={{marginTop:4}}>
               <TagOutputList value ={this.state.query.tags} />
             </div>
             <div className="col-1 filter-label"  style={{marginLeft:-40}}> Authors</div>
-            <div  className="col-5  query-value" style={{marginTop:0}}>
-              <AuthorOutputList value ={this.state.query.authors} />
+            <div  className="col-5  query-value" style={{marginTop:4}}>
+              <AuthorOutputList value ={this.state.query.authors} userNames={this.props.userNames} />
             </div>
           </div>
           <div className="row">

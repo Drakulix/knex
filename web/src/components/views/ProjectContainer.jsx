@@ -135,6 +135,12 @@ export default class ProjectContainer extends Component {
         site_loaded : true,
         isOwner : isOwner
       })
+      Backend.getUserNames(data.authors)
+      .then ((userNames) => {
+        this.setState({
+          userNames : JSON.parse(userNames)
+        })
+      })
     }).catch(ex => {
       this.setState({
         project_exists : false,
@@ -226,7 +232,7 @@ export default class ProjectContainer extends Component {
               </div>
               <div style = {{marginTop : 30}}>
                 <div className = "profile-info">Authors</div>
-                <AuthorOutputList value = {this.state.projectInf.authors} />
+                <AuthorOutputList value = {this.state.projectInf.authors} userNames = {this.state.userNames} />
               </div>
               <div style = {{marginTop : 30}}>
               <div className = "profile-info">Links</div>

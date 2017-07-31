@@ -532,15 +532,11 @@ class Backend {
     }
 
     getUserNames(userList){
-      return this.postJson('/api/usernames',userList)
+      return this.postJson('/api/users/names',userList)
     }
 
     getTagsOfUser(mail) {
         return this.getJson(`/api/users/${encodeURIComponent(mail)}/tags`);
-    }
-
-    getMyTags() {
-        return this.getJson('/api/users/tags');
     }
 
     addBookmark(id) {

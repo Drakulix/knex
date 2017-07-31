@@ -14,17 +14,20 @@ export default class SavedQueries extends Component {
       queries : [],
       snackbar : false,
       snackbarText : "",
-      loading : false
+      loading : false,
+      userNames : {}
     }
     this.snackbarHandler = this.snackbarHandler.bind(this)
   }
 
   snackbarHandler(text){
-    this.setState({
-      snackbar : true,
-      snackbarText : text
-    })
     this.loadQueries()
+    .then(() => {
+      this.setState({
+        snackbar : true,
+        snackbarText : text
+      })
+    })
   }
 
 
@@ -36,14 +39,23 @@ export default class SavedQueries extends Component {
     this.setState({
       loading : true,
     })
-    Backend.getSavedSearches().then(
-      function (queries)  {
+    Backend.getSavedSearches()
+    .then((queries) => {
+      this.setState({
+        queries : queries,
+        loading : false
+      })
+      var authors  = []
+      for (let query in queries){
+        authors = authors.concat(queries[query].query.authors)
+      }
+      Backend.getUserNames(authors)
+      .then ((userNames) => {
         this.setState({
-          queries : queries,
-          loading : false
+          userNames : JSON.parse(userNames)
         })
-      }.bind(this)
-    )
+      })
+    })
   }
 
   render() {
@@ -71,7 +83,8 @@ export default class SavedQueries extends Component {
             }
             {this.state.queries.map(item =>
               <div key = {item.id}>
-                <SavedQuery savedSearch={item}
+                <SavedQuery savedSearch = {item}
+                            userNames = {this.state.userNames}
                             snackbarHandler = {this.snackbarHandler}
                 />
                 <hr></hr>

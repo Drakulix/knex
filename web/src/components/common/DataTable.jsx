@@ -96,6 +96,15 @@ export default class BookmarksTable extends Component {
       filteredData : (this.props.isBookmarkTable
                       ? this.filter(props.data, this.state.filters) : props.data),
       })
+    Backend.getAuthors()
+    .then((authors) => {
+      Backend.getUserNames(authors)
+      .then ((userNames) => {
+        this.setState({
+          userNames : JSON.parse(userNames)
+        })
+      })
+    })
   }
 
   componentDidUpdate(prevProps, prevState){
@@ -212,7 +221,7 @@ export default class BookmarksTable extends Component {
         Header: 'Authors',
         accessor: "authors",
         width: 180,
-        Cell: props => <AuthorOutputList value = {props.value} />
+        Cell: props => <AuthorOutputList value = {props.value} userNames = {this.state.userNames} />
       })
     }
     if(this.props.columns.indexOf("description") !== -1){
