@@ -35,7 +35,7 @@ export default class CreateProject extends Component {
           date_creation : Moment().format("YYYY-MM-DD"),
           tags : [],
           url : [],
-          authors : [],
+          authors : [Backend.getMail()],
         },
         date : Moment().toDate(),
         snackbar : false,
@@ -149,23 +149,32 @@ export default class CreateProject extends Component {
         <div className = "container">
           <Snackbar
             open = {this.state.snackbar}
-            message = {(this.state.projectID === undefined) ? "New project added!" : "Project updated"}
+            message = {(this.state.projectID === undefined) ? "New project added" : "Project updated"}
             autoHideDuration = {10000}
           />
           <div className = "headerCreation" style = {{width : "100%"}}>
-            {(this.state.projectID !== undefined) ? "Edit project" : "Add new project"}
+            {(this.state.projectID !== undefined) ? "Edit project" : "Create a new project"}
           </div>
           <form>
-            <div>
-              <div className = "profile-info">Title</div>
-              <TextField  value = {this.state.projectInf.title}
-                name = "title"
-                onChange = {this.handleChange}
-                hintText = "Add title..."
-                style = {{width : '100%'}}
-                errorText = {(this.state.projectInf.title === "") ?
-                              "Please provide a title" : ""}
-                />
+            <div className = "profile-info">Title</div>
+            <div className = "row">
+              <div className = "col-10">
+                <TextField  value = {this.state.projectInf.title}
+                  name = "title"
+                  onChange = {this.handleChange}
+                  hintText = "Add title..."
+                  style = {{width : '100%'}}
+                  errorText = {(this.state.projectInf.title === "") ?
+                                "Please provide a title" : ""}
+                  />
+              </div>
+              <div className = "col-2">
+                <RaisedButton label = {this.state.projectID === undefined ? "Add Project" : "Submit changes"}
+                                disabled = {this.isInValid()}
+                                onClick = {this.handleUpload}
+                                style = {{width : "100%"}}
+                                primary = {true}/>
+              </div>
             </div>
             <div className = "row">
               <div className = "col-4">
@@ -208,6 +217,8 @@ export default class CreateProject extends Component {
                               errorText = {(this.state.projectInf.url.length === 0
                                         ) ? "Please provide at least one url" : ""}
                 />
+
+
               </div>
               <div className = "col-1"></div>
               <div className = "col-7">
@@ -226,15 +237,6 @@ export default class CreateProject extends Component {
                             errorText = {(this.state.projectInf.description === "") ?
                                   "Please provide a description" : ""}
                 />
-                <div className = "row" style = {{marginTop : 100}}>
-                  <div className = "col-10"></div>
-                  <div className = "col-1" >
-                    <RaisedButton label = "Submit"
-                                  disabled = {this.isInValid()}
-                                  onClick = {this.handleUpload}
-                                  primary = {true}/>
-                  </div>
-                </div>
               </div>
             </div>
           </form>
