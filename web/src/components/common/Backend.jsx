@@ -309,10 +309,6 @@ class Backend {
         return this.getJson('/api/projects/'+id);
     }
 
-    getProjectArchived(id, archived) {
-        return this.getJson(`/api/projects/${encodeURIComponent(id)}/archive/${archived.toString()}`)
-    }
-
     updateProject(id, payload) {
         return this.putJson('/api/projects/'+id, payload);
     }

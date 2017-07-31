@@ -18,9 +18,7 @@ export default class Status extends Component {
     }
     return (<div>{this.props.value}</div>)
   }
-
 }
-
 
 export class StatusInput extends Component {
 

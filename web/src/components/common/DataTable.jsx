@@ -60,8 +60,11 @@ export default class BookmarksTable extends Component {
       dialogOpen : true,
       loading : true,
       action : () => {
-        this.setState({dialogOpen:false})
-        Backend.getProjectArchived(projectInf._id, true)
+        var project = projectInf
+        delete project.is_bookmark
+        delete project.is_owner
+        project['archived'] = true
+        Backend.updateProject(projectInf._id, project)
             .then(() => {this.props.handler(this.state.filters)})
             .then(() => {this.setState({snackbar : true,
             snackbarText : "Project "+ projectInf.title +" archived"})})
@@ -71,7 +74,11 @@ export default class BookmarksTable extends Component {
 
   handleUnArchive(projectInf){
     this.setState({loading : true})
-    Backend.getProjectArchived(projectInf._id, false)
+    var project = projectInf
+    delete project.is_bookmark
+    delete project.is_owner
+    project['archived'] = false
+    Backend.updateProject(projectInf._id, project)
         .then(() => {this.props.handler(this.state.filters)})
         .then(() => {this.setState({snackbar : true,
           snackbarText : "Project " + projectInf.title + " unarchived"})})
