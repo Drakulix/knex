@@ -5,12 +5,12 @@ import Backend from './Backend'
 import Filters from './Filters'
 import IconButton from 'material-ui/IconButton'
 import styles from '../common/Styles.jsx'
-import CircularProgress from 'material-ui/CircularProgress'
 import Snackbar from 'material-ui/Snackbar'
 import AuthorOutputList from '../common/chips/AuthorOutputList'
 import TagOutputList from '../common/chips/TagOutputList'
 import ConfirmationPane from '../common/ConfirmationPane'
 import Badge from '../common/Badge'
+import Spinner from '../common/Spinner'
 
 
 export default class BookmarksTable extends Component {
@@ -22,107 +22,79 @@ export default class BookmarksTable extends Component {
       filters = props.predefinedFilter
     }
     this.state = {
-      data: [],
       filters : filters,
-      filteredTable : [],
-      handler : this.props.fetchHandler,
+      filteredData : [],
       dialogOpen : false,
       dialogText : "Delete Project",
       action : null,
       loading : true,
       buttonText : "Delete",
       snackbar : false,
-      snackbarText : ""
+      snackbarText : "",
     }
 
     this.handleFilterChange = this.handleFilterChange.bind(this)
-    this.handleClose = this.handleClose.bind(this)
-    this.handleArchive = this.handleArchive.bind(this)
-    this.handleUnArchive = this.handleUnArchive.bind(this)
   }
 
-  componentDidMount(){
-    this.fetchData()
-  }
-
-  handleDelete(projectID, projectName){
+  handleDelete(projectInf){
     this.setState({
       snackbar : false,
-      dialogText : "Do you want to delete project " + projectName +"?",
+      dialogText : "Do you want to delete project " + projectInf.title + "?",
       buttonText : "Delete",
       dialogOpen : true,
       action : () => {
         this.setState({dialogOpen:false})
-        Backend.deleteProject(projectID)
-        .then(this.fetchData())
+        Backend.deleteProject(projectInf._id)
+        .then(() => {this.props.handler(this.state.filters)})
         .then(this.setState({snackbar :true,
-          snackbarText : "Project "+projectName +" deleted"}))
+          snackbarText : "Project "+ projectInf.title +" deleted"}))
       }
     })
   }
 
-  handleArchive(projectID, projectName){
+  handleArchive(projectInf){
     this.setState({
       snackbar : false,
-      dialogText : "Do you want to archive project " + projectName +"?",
-      buttonText : "archive",
+      dialogText : "Do you want to archive project " + projectInf.title + "?",
+      buttonText : "Archive",
       dialogOpen : true,
+      loading : true,
       action : () => {
         this.setState({dialogOpen:false})
-        Backend.getProjectArchived(projectID, true)
-          .then(() => {this.setState({snackbar :true,
-            snackbarText : "Project "+projectName +" archived"})})
-          .then(this.fetchData())
-
+        Backend.getProjectArchived(projectInf._id, true)
+            .then(() => {this.props.handler(this.state.filters)})
+            .then(() => {this.setState({snackbar :true,
+            snackbarText : "Project "+ projectInf.title +" archived"})})
       }
     })
   }
 
-  handleUnArchive(projectID, projectTitle){
-    Backend.getProjectArchived(projectID, false)
-      .then(() => {this.setState({snackbar :true,
-      snackbarText : "Project " + projectTitle + " unarchived"})})
-        .then(this.fetchData())
+  handleUnArchive(projectInf){
+    this.setState({loading : true})
+    Backend.getProjectArchived(projectInf._id, false)
+        .then(() => {this.props.handler(this.state.filters)})
+        .then(() => {this.setState({snackbar :true,
+          snackbarText : "Project " + projectInf.title + " unarchived"})})
   }
 
-  handleClose(){
-    this.setState({
-      dialogOpen : false,
-      snackbar : false
-    })
-  }
-
-  handleAddBookmark(projectID){
-    Backend.addBookmark(projectID)
-    .then(this.fetchData())
-    .then(this.setState({snackbar :true,
-      snackbarText : "Project bookmarked"}))
-  }
-
-  handleRemoveBookmark(projectID){
-    Backend.deleteBookmark(projectID)
-    .then(this.fetchData())
-    .then(this.setState({snackbar :true,
-      snackbarText : "Project bookmark removed"}))
+  handleBookmark(projectInf){
+    Backend.handleBookmark(projectInf._id, projectInf.is_bookmark)
+    .then(() => {this.props.handler(this.state.filters)})
+    .then(() => {this.setState({snackbar :true,
+      snackbarText : "Project bookmark"+(projectInf.is_bookmark === "true" ? " removed" : "ed")})})
   }
 
   componentWillReceiveProps(props){
-    if(props.load){
-      this.fetchData()
-    }
+    this.setState({
+      filteredData : (this.props.isBookmarkTable
+                      ? this.filter(props.data, this.state.filters) : props.data)
+      })
   }
 
-  fetchData(){
-    this.setState({loading : true})
-    this.props.fetchHandler
-    .then((projects) => {
-      this.setState({
-        data : projects,
-        filteredTable : projects,
-        loading : false
-      })
-    //  this.filter(projects, this.state.filters)
-    })
+  componentDidUpdate(prevProps, prevState){
+    if(prevProps.loading !== this.props.loading){
+      this.setState({ loading : this.props.loading})
+    }
   }
 
   handleFilterChange(key, value){
@@ -134,24 +106,26 @@ export default class BookmarksTable extends Component {
       state[key] = value
     }
     this.setState({filters : state})
-    this.filter(this.state.data, state)
     if(this.props.handleFilter !== undefined)
       this.props.handleFilter(key,value)
+    this.props.handler(state)
   }
 
   filter(data, filters){
-    alert(JSON.stringify(filters))
     this.setState({loading : true})
     var array = []
-    for(let dataObject of data) {
+    for(let dataObject of data){
       var discard = false
-      if(!this.props.remoteFilters){
-        for(let key of Object.keys(filters)){
+      for(let key of Object.keys(filters)){
         var value = filters[key]
         if(key === "tags" || key === "authors"){
           var temp = dataObject[key].join().toLowerCase()
-          discard = value.some(function notContains(element){
-                        return temp.indexOf(element) === -1})
+          for(let item in value){
+            if (temp.indexOf(value[item]) === -1){
+              discard = true
+              break
+            }
+          }
         }
         else{
           switch (key){
@@ -170,15 +144,11 @@ export default class BookmarksTable extends Component {
           break
         }
       }
-      }
       if(!discard){
         array.push(dataObject)
       }
     }
-    this.setState({
-      filteredTable : array,
-      loading:false
-    })
+    return array
   }
 
   render() {
@@ -188,6 +158,10 @@ export default class BookmarksTable extends Component {
         Header: 'Project title',
         id: 'title',
         width: 180,
+        sortMethod: (a,b) => {
+          return  a.title.toLowerCase() === b.title.toLowerCase() ? 0
+                    : a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1
+        },
         accessor: d => d,
         Cell: props =>
             <div style={{whiteSpace : "normal", marginTop:8}}>
@@ -259,24 +233,13 @@ export default class BookmarksTable extends Component {
         pivot: true,
         width: 85,
         style: {textAlign:"center"},
-        Cell: props =>{
-          return(
-            (new String(props.value.is_bookmark) == "true") ?
-              <IconButton onClick={()=>this.handleRemoveBookmark(props.value._id)}
-                touch={true}
-                style = {styles.largeIcon}
-                iconStyle={{fontSize: '24px'}}>
-                <i className="material-icons">star</i>
-              </IconButton>
-            :
-              <IconButton onClick={()=>this.handleAddBookmark(props.value._id)}
-                touch={true}
-                style = {styles.largeIcon}
-                iconStyle={{fontSize: '24px'}}>
-                  <i className="material-icons">star_border</i>
-              </IconButton>
-          )
-        }
+        Cell: props =>
+          <IconButton onClick={()=>this.handleBookmark(props.value)}
+                      touch={true}
+                      style = {styles.largeIcon}
+                      iconStyle={{fontSize: '24px'}}>
+            <i className="material-icons">{props.value.is_bookmark === "true" ? "star" : "star_border"}</i>
+          </IconButton>
       })
     }
     if(this.props.columns.indexOf("unarchive") !== -1){
@@ -294,7 +257,7 @@ export default class BookmarksTable extends Component {
         style: {textAlign:"center"},
         Cell: props => { return props.value.archived  ?
           <IconButton
-          onClick = {()=>this.handleUnArchive(props.value._id, props.value.title)}
+          onClick = {()=>this.handleUnArchive(props.value)}
           touch = {true}
           style = {styles.largeIcon}
           iconStyle = {{fontSize: '24px'}}
@@ -319,7 +282,7 @@ export default class BookmarksTable extends Component {
         style: {textAlign:"center"},
         Cell: props => { return !props.value.archived  ?
           <IconButton
-          onClick = {()=>this.handleArchive(props.value._id, props.value.title)}
+          onClick = {()=>this.handleArchive(props.value)}
           touch = {true}
           style = {styles.largeIcon}
           iconStyle = {{fontSize: '24px'}}
@@ -338,7 +301,7 @@ export default class BookmarksTable extends Component {
         width: 60,
         style: {textAlign:"center"},
         Cell: props => <IconButton
-          onClick = {()=>this.handleDelete(props.value._id, props.value.title)}
+          onClick = {()=>this.handleDelete(props.value)}
           touch = {true}
           style = {styles.largeIcon}
           iconStyle = {{fontSize: '24px'}}
@@ -348,30 +311,34 @@ export default class BookmarksTable extends Component {
       })
     }
     return (
-      <div>
-      <ConfirmationPane   open = {this.state.dialogOpen}
-                          handleClose = {this.handleClose}
-                          title = {this.state.dialogText}
-                          confirmationLabel = {this.state.buttonText}
-                          confirmAction = {this.state.action}
-      />
-      <Snackbar open={this.state.snackbar}
-                message={this.state.snackbarText}
-                autoHideDuration={10000}
-      />
-      <div className = "container" style = {{display : (this.state.loading ? "block" : "none")}}>
-        <div className = "header"><CircularProgress size = {80} thickness = {5} /></div>
-      </div>
-      <div style = {{display : (!this.state.loading ? "block" : "none")}}>
-        <Filters value={this.state.filters}
-                 onChange={this.handleFilterChange}/>
-        <ReactTable
-            data={this.state.filteredTable}
-            columns={columns}
-            defaultExpanded={{1: true}}
-            filterable={false}
-            showPageSizeOptions={false}
-            defaultPageSize={10}/>
+      <div className = "container" >
+        <ConfirmationPane   open = {this.state.dialogOpen}
+                            handleClose = {() => {this.setState({dialogOpen : false, snackbar : false})}}
+                            title = {this.state.dialogText}
+                            confirmationLabel = {this.state.buttonText}
+                            confirmAction = {this.state.action}
+        />
+        <Snackbar open={this.state.snackbar}
+                  message={this.state.snackbarText}
+                  autoHideDuration={10000}
+        />
+      <Spinner loading = {this.state.loading} text ={"Loading projects"}/>
+        <div style = {{display : (!this.state.loading ? "block" : "none")}}>
+          <Filters value={this.state.filters}
+                   onChange={this.handleFilterChange}/>
+          <ReactTable
+              data = {this.state.filteredData}
+              columns = {columns}
+              defaultSorted = {[{
+                    id: 'title',
+                    desc: false
+                    }]}
+              defaultExpanded = {{1: true}}
+              filterable = {false}
+              showPageSizeOptions = {false}
+              minRows = {3}
+              noDataText = 'No projects found'
+              defaultPageSize = {10}/>
         </div>
       </div>
     )

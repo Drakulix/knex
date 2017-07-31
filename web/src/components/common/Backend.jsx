@@ -555,6 +555,15 @@ class Backend {
         return this.delete('/api/users/bookmarks/'+encodeURIComponent(id));
     }
 
+    handleBookmark(id, shouldBookmark){
+      if(shouldBookmark === "true") {
+        return this.delete('/api/users/bookmarks/'+encodeURIComponent(id));
+      }
+      else{
+        return this.postJson('/api/users/bookmarks/'+encodeURIComponent(id));
+      }
+    }
+
     getBookmarks() {
         return this.getJson('/api/users/bookmarks');
     }

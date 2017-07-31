@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import IconButton from 'material-ui/IconButton'
 import styles from '../../common/Styles'
 import Backend from '../../common/Backend'
-import CircularProgress from 'material-ui/CircularProgress'
+import Spinner from '../../common/Spinner'
 import {Card, CardHeader, CardText} from 'material-ui/Card'
 import TextField from 'material-ui/TextField'
 import ConfirmationPane from '../../common/ConfirmationPane'
@@ -31,7 +31,6 @@ export default class ShowUsers extends Component {
     this.handleSetAdmin = this.handleSetAdmin.bind(this)
     this.intentionToDeleteUser = this.intentionToDeleteUser.bind(this)
   }
-
 
   componentWillReceiveProps(){
     this.loadUsers()
@@ -252,7 +251,7 @@ export default class ShowUsers extends Component {
       })
 
     return (
-      <div>
+      <div className = "container" >
         <ConfirmationPane open = {this.state.open}
                           handleClose = {() => {this.setState({open : false})}}
                           title = {"Do you want to delete user " + this.state.userID}
@@ -264,9 +263,7 @@ export default class ShowUsers extends Component {
           message={this.state.snackbarText}
           autoHideDuration={10000}
         />
-        <div className = "container" style = {{display : (this.state.loading ? "block" : "none")}}>
-          <div className = "header"><CircularProgress size = {80} thickness = {5} /></div>
-        </div>
+      <Spinner loading = {this.state.loading} text ={"Loading users"} />
         <div style = {{display : (!this.state.loading ? "block" : "none")}}>
           <div style = {{marginBottom : 20, width:"100%"}}>
             <Card  onExpandChange = {() => this.setState({expanded : !this.state.expanded})}>
@@ -305,6 +302,8 @@ export default class ShowUsers extends Component {
                    columns = {columns}
                    defaultExpanded = {{1 : true}}
                    filterable = {false}
+                   minRows = {3}
+                   noDataText = 'No users found'
                    showPageSizeOptions = {false}
                    defaultPageSize = {10}
                    defaultSorted = {[{

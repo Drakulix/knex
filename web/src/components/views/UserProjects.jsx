@@ -5,12 +5,38 @@ import Backend from '../common/Backend'
 
 export default class UserProjects extends Component {
 
-render(){
+
+  constructor(props){
+    super(props)
+    this.state = {
+      projects : [],
+      loading : true
+    }
+    this.handler = this.handler.bind(this)
+  }
+
+  componentDidMount(){
+    this.handler({})
+  }
+
+  handler (query){
+    query = JSON.parse(JSON.stringify(query))
+    query.archived = "false"
+    query.authors = query.authors !== undefined ? query.authors : []
+    query.authors.push(Backend.getMail())
+    this.setState({loading: true})
+    return Backend.search(query)
+              .then ((data) => {this.setState({projects : data, loading:false}); return data;})
+  }
+
+  render(){
     return (
       <div className = "container">
-      <div className = "header">Your projects</div>
+        <div className = "headerCreation">Your projects</div>
         <DataTable  columns = {['title', 'status', 'tags', 'authors', 'description', '_id', 'archive' ]}
-                    fetchHandler = {Backend.search({archived : "false",authors : [Backend.getMail()] })}
+                      handler = {this.handler}
+                      data = {this.state.projects}
+                      loading = {this.state.loading}
         />
       </div>
     )

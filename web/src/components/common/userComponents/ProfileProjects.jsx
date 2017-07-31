@@ -4,18 +4,40 @@ import Backend from '../../common/Backend'
 
 export default class ProfileProjects extends Component {
 
+  constructor(props){
+    super(props)
+    this.state = {
+      projects : [],
+      loading : true
+    }
+    this.handler = this.handler.bind(this)
+  }
 
-                  /*fetchURL = {"/api/projects/search/advanced/?q=(authors.email: " + this.props.profileInf.email + ")"}*/
+  componentDidMount(){
+    this.handler({})
+  }
+
+  handler (query){
+    query = JSON.parse(JSON.stringify(query))
+    query.archived = "false"
+    query.authors = query.authors !== undefined ? query.authors : []
+    query.authors.push(this.props.email)
+    this.setState({loading: true})
+    return Backend.search(query)
+              .then ((data) => {this.setState({projects : data, loading:false}); return data;})
+  }
+
   render(){
     return (
       <div>
         <DataTable
-        fetchHandler = {Backend.search({archived : "false", authors : [this.props.email]})}
-        columns= {['title', 'status', 'tags', 'authors', 'description', '_id',
-                  (!this.props.email == Backend.getMail()) ? 'bookmarked':'',
-                  (!this.props.email == Backend.getMail() || Backend.isAdmin()) ?'archive' : '',
-                  (!this.props.email == Backend.getMail() || Backend.isAdmin()) ?'unarchive' :'']
-        }
+            columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'bookmarked',
+                  (!this.props.email === Backend.getMail() || Backend.isAdmin()) ?'archive' : '',
+                  (!this.props.email === Backend.getMail() || Backend.isAdmin()) ?'unarchive' :'']
+                }
+            handler = {this.handler}
+            data = {this.state.projects}
+            loading = {this.state.loading}
         />
       </div>
     )

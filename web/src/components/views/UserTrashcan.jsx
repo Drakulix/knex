@@ -5,15 +5,39 @@ import Backend from '../common/Backend'
 
 export default class UserTrashcan extends Component {
 
-render(){
-    return (
-      <div className = "container">
-        <div className = "header">Your archived projects</div>
-          <DataTable  columns = {['title', 'status', 'tags', 'authors', 'description', '_id', 'unarchive']}
-            fetchHandler = {Backend.search({archived : "true", authors : [Backend.getMail()]})}
-          />
-
-      </div>
-    )
+  constructor(props){
+    super(props)
+    this.state = {
+      projects : [],
+      loading : true
+    }
+    this.handler = this.handler.bind(this)
   }
-}
+
+  componentDidMount(){
+    this.handler({})
+  }
+
+  handler (query){
+    this.setState({loading: true})
+    query = JSON.parse(JSON.stringify(query))
+    query.archived = "true"
+    query.authors = query.authors !== undefined ? query.authors : []
+    query.authors.push(Backend.getMail())
+    return Backend.search(query)
+              .then ((data) => {this.setState({projects : data, loading:false});return data;})
+  }
+
+  render(){
+      return (
+        <div className = "container">
+          <div className = "headerCreation">Your archived projects</div>
+          <DataTable  columns = {['title', 'status', 'tags', 'authors', 'description', '_id', 'unarchive' ]}
+                      handler = {this.handler}
+                      data = {this.state.projects}
+                      loading = {this.state.loading}
+          />
+        </div>
+      )
+    }
+  }

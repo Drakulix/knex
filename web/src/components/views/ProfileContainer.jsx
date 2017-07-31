@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
 import {Tabs, Tab} from 'material-ui/Tabs'
-import CircularProgress from 'material-ui/CircularProgress'
 import Backend from '../common/Backend'
 import Snackbar from 'material-ui/Snackbar'
 import history from '../common/history'
-
+import Spinner from '../common/Spinner'
 import ProfileView from '../common/userComponents/ProfileView'
 import ProfileProjects from '../common/userComponents/ProfileProjects'
 import ProfileEditor from '../common/userComponents/ProfileEditor'
@@ -88,9 +87,7 @@ export default class ProfileContainer extends Component {
   render() {
     if(!this.state.site_loaded){
       return (
-        <div className = "container">
-          <div className = "header"><CircularProgress size = {80} thickness = {5} /></div>
-        </div>
+        <Spinner loading = {true} text = {"Loading profile"}/>
       )
     }
     if( !this.state.profile_exists){
@@ -127,7 +124,7 @@ export default class ProfileContainer extends Component {
     else {
       return (
         <div className = "container">
-          <div className = "header">Profile details</div>
+          <div className = "headerCreation">Profile details</div>
           {!this.state.profileInf.active === "false" ? <i style = {{fontSize : '20px'}}>Inactive user</i> : ""}
           <Tabs
             inkBarStyle = {{marginTop : -5, height : 5}}

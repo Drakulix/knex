@@ -2,18 +2,8 @@ import React, { Component } from 'react';
 import SavedQuery from "../common/SavedQuery"
 import Backend from '../common/Backend'
 import Snackbar from 'material-ui/Snackbar'
-import CircularProgress from 'material-ui/CircularProgress'
+import Spinner from '../common/Spinner'
 
-
-class Headline extends Component {
-  render() {
-    return(
-      <div className="headerCreation" id="headerSearch" style={{width:"100%"}}>
-        Your Saved Queries
-      </div>
-    )
-  }
-}
 
 export default class SavedQueries extends Component {
   constructor(props) {
@@ -56,31 +46,25 @@ export default class SavedQueries extends Component {
 
   render() {
     return(
-      <div>
-        <div className = "container" style = {{display : (this.state.loading ? "block" : "none")}}>
-          <div className = "header"><CircularProgress size = {80} thickness = {5} /></div>
-        </div>
-        <div className="container" style = {{display : (!this.state.loading ? "block" : "none")}}>
-        <Snackbar
-          open = {this.state.snackbar}
-          message = {this.state.snackbarText}
-          autoHideDuration = {10000}/>
-        <div className="innerContainer">
-          <Headline />
+      <div className="container">
+        <Spinner loading = {this.state.loading} text = {"Loading queries"}/>
+        <div  style = {{display : (!this.state.loading ? "block" : "none")}}>
+          <Snackbar
+            open = {this.state.snackbar}
+            message = {this.state.snackbarText}
+            autoHideDuration = {10000}/>
+          <div className="headerCreation" style={{width:"100%"}}>Your Saved Queries</div>
           <div>
-            {
-              this.state.queries.map(item =>
-                <div key = {item.id}>
-                  <SavedQuery savedSearch={item}
-                              snackbarHandler = {this.snackbarHandler}
-                  />
+            {this.state.queries.map(item =>
+              <div key = {item.id}>
+                <SavedQuery savedSearch={item}
+                            snackbarHandler = {this.snackbarHandler}
+                />
                 <hr></hr>
-                </div>
-              )
-            }
+              </div>
+            )}
           </div>
         </div>
-      </div>
       </div>
     )
   }

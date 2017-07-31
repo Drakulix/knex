@@ -7,17 +7,6 @@ import Backend from '../common/Backend'
 import Snackbar from 'material-ui/Snackbar'
 
 
-class Headline extends Component {
-  render() {
-    return(
-      <div className="headerCreation" id="headerSearch" style={{width:"100%"}}>
-        Looking for a project?
-      </div>
-    )
-  }
-}
-
-
 export default class SearchPage extends Component {
   constructor(props) {
     super(props)
@@ -30,27 +19,41 @@ export default class SearchPage extends Component {
         open : false,
         snackbar : false,
         snackbarText : "",
-      }
-
-      delete query.label
-      delete query.searchString
-
-      this.handleFilterChange = this.handleFilterChange.bind(this)
-      this.saveSearch = this.saveSearch.bind(this)
-      this.handleChange = this.handleChange.bind(this)
-      this.handleOpen = this.handleOpen.bind(this)
-      this.handleLabelChange = this.handleLabelChange.bind(this)
+        loading : false,
+        projects : []
     }
+
+    delete query.label
+    delete query.searchString
+
+    this.handleFilterChange = this.handleFilterChange.bind(this)
+    this.saveSearch = this.saveSearch.bind(this)
+    this.handleChange = this.handleChange.bind(this)
+    this.handleOpen = this.handleOpen.bind(this)
+    this.handleLabelChange = this.handleLabelChange.bind(this)
+    this.handler = this.handler.bind(this)
+
+  }
+
+  componentDidMount(){
+    this.handler(this.state.query)
+  }
+
+  handler(query){
+    this.setState({loading: true})
+    return Backend.search(query)
+              .then ((data) => {this.setState({projects : data, loading:false}); return data;})
+  }
 
   handleChange(event) {
     const value = event.target.value
-    var query = this.state.query
+    var query = JSON.parse(JSON.stringify(this.state.query))
     query['searchString'] = value
     this.setState({
       query : query,
-      load : true,
       searchString : value
     })
+    this.handler(query)
   }
 
   handleFilterChange(key, value){
@@ -60,7 +63,7 @@ export default class SearchPage extends Component {
     } else {
       query[key] = value
     }
-    this.setState({query : query, load : true})
+    this.setState({query : query})
   }
 
   saveSearch(){
@@ -68,7 +71,6 @@ export default class SearchPage extends Component {
     toSaveQuery["label"] = this.state.label
     Backend.saveSearch(toSaveQuery).then( function () {
       this.setState({open: false,
-        load : false,
         snackbar : true,
         snackbarText : "Query saved",
         label : ""
@@ -80,7 +82,6 @@ export default class SearchPage extends Component {
     this.setState({
       open: false,
       snackbar : false,
-      load : false,
     })
   }
 
@@ -88,14 +89,13 @@ export default class SearchPage extends Component {
     this.setState({
       open: true,
       snackbar : false,
-      load : false,
     })
   }
 
   handleLabelChange(event){
     event.preventDefault()
     const value = event.target.value
-    this.setState({label : value, load:false})
+    this.setState({label : value})
   }
 
   render() {
@@ -133,7 +133,9 @@ export default class SearchPage extends Component {
               onChange={this.handleLabelChange}
               ></TextField>
             </Dialog>
-          <Headline />
+          <div className="headerCreation" style={{width:"100%"}}>
+            Looking for a project?
+          </div>
           <div className="row" style={{textAlign:"center"}}>
             <div className="col-10">
               <TextField  style={{width:"100%"}}
@@ -145,7 +147,6 @@ export default class SearchPage extends Component {
             <div className = "col-2">
               <RaisedButton style = {{width:"100%"}}
                 label="Save search"
-                labelPosition="before"
                 icon={<i className="material-icons" style={{color: "#ffffff", marginTop:-3}}>save</i>}
                 onClick={this.handleOpen}
                 primary={true}/>
@@ -155,9 +156,9 @@ export default class SearchPage extends Component {
             <DataTable columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'date_creation' ,'bookmarked']}
               handleFilter= {this.handleFilterChange}
               predefinedFilter = {this.state.query}
-              fetchHandler = {Backend.search(this.state.query)}
-              remoteFilters = {true}
-              load = {this.state.load}
+              handler = {this.handler}
+              data = {this.state.projects}
+              loading = {this.state.loading}
               ></DataTable>
           </div>
         </div>
