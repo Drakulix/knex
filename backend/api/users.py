@@ -13,6 +13,7 @@ from flask_security import login_required, login_user, logout_user, current_user
 from flask_security.utils import verify_password, hash_password
 from mongoengine import NotUniqueError
 from mongoengine.fields import ObjectId
+from werkzeug.utils import secure_filename
 
 from api.projects import get_all_authors
 from api.helper.apiexception import ApiException
@@ -292,8 +293,8 @@ def set_user_avatar(mail):
     if 'image' not in request.files:
         raise ApiException("request.files contains no image", 400)
     file = request.files['image']
-    if 'image/' not in file.content_type:
-        raise ApiException("Content-Type must be set to 'image/<filetype>'", 400)
+    if 'image/' not in file.mimetype:
+        raise ApiException("File mimetype must be 'image/<filetype>'", 400)
     user.avatar_name = secure_filename(file.filename)
     user.avatar = base64.b64encode(file.read()).decode()
     user.save()

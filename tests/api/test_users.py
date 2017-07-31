@@ -1,5 +1,6 @@
 import os
 
+
 class TestUsers(object):
     def test_update_usernames(self, flask_api_url, enter_users, session, enter_data_using_post):
         user = enter_users.json()

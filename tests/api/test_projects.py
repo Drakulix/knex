@@ -351,26 +351,6 @@ class TestGET(object):
         assert response_json["archived"]
         assert response_json["_id"] == project_id_archived[0]
 
-    def test_archive_endpoint(self, flask_api_url, session, enter_data_using_post):
-        project_id = enter_data_using_post.json()[0]
-        response = session.get(flask_api_url + "/api/projects/" +
-                               project_id + "/archive/" + "true")
-        print(response.text)
-        assert response.status_code == 200
-        response = session.get(flask_api_url + "/api/projects/" +
-                               project_id + "?archived=true")
-        assert response.status_code == 200
-
-    def test_unarchive_endpoint(self, flask_api_url, session, enter_data_using_post):
-        project_id = enter_data_using_post.json()[0]
-        response = session.get(flask_api_url + "/api/projects/" +
-                               project_id + "/archive/" + "false")
-        print(response.text)
-        assert response.status_code == 200
-        response = session.get(flask_api_url + "/api/projects/" +
-                               project_id + "?archived=false")
-        assert response.status_code == 200
-
     def test_get_archived_mixed_admin(self, session, flask_api_url,
                                       enter_archived_using_post, enter_data_using_post):
         project_id_not_archived = enter_data_using_post.json()
