@@ -109,30 +109,18 @@ export default class ManageUsers extends Component {
 
 
   filter(name, value){
-    var temp = []
+    var filteredList = []
     for(let dataObject of this.state.userList) {
-      var discard = true
+      var discard = false
       var userName = (dataObject.first_name + " " + dataObject.last_name).toLowerCase()
-      switch (name) {
-        case "email":
-          value = value.toLowerCase()
-          discard = value !== "" && dataObject.email.indexOf(value) === -1
-          discard = discard || (this.state.name !== "" && userName.indexOf(this.state.name) === -1)
-          break;
-        case "name":
-          value = value.toLowerCase()
-          discard = value !== "" && userName.indexOf(value) === -1
-          discard = discard || (this.state.email !== "" && dataObject.email.indexOf(this.state.email) === -1)
-          break;
-        default:
-          discard = false
-          break
-        }
-        if(!discard)
-          temp.push(dataObject)
-      }
+      var email = dataObject.email.toLowerCase()
+      discard = discard || email.indexOf(name === "email" ? value.toLowerCase() :  this.state.email.toLowerCase()) === -1
+      discard = discard || userName.indexOf(name === "name" ? value.toLowerCase() :  this.state.name.toLowerCase()) === -1
+      if(!discard)
+        filteredList.push(dataObject)
+    }
     this.setState({
-      filteredList : temp
+      filteredList : filteredList
     })
   }
 

@@ -457,6 +457,10 @@ class Backend {
       return this.getJson('/api/users/projectids')
     }
 
+    getAllUsersTags(){
+      return this.getJson('/api/users/tags')
+    }
+
     async setUserRoles(mail, firstName, lastName, bio, roles){
       if (await this.putJson('/api/users', {
           'email': mail,

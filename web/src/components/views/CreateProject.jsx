@@ -34,7 +34,7 @@ export default class CreateProject extends Component {
           date_creation : Moment().format("YYYY-MM-DD"),
           tags : [],
           url : [],
-          authors : [Backend.getMail()],
+          authors : [],
         },
         date : Moment().toDate(),
         snackbar : false,

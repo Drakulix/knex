@@ -20,7 +20,8 @@ export default class ShowUsers extends Component {
       projectCounts : [],
       name : "",
       email : "",
-      tags : {}
+      tags : [],
+      userTags : {}
     }
     this.handleChange = this.handleChange.bind(this)
   }
@@ -43,23 +44,18 @@ export default class ShowUsers extends Component {
         var a_last = (a.last_name !== undefined) ? a.last_name.toLowerCase() : ""
         var b_last = (b.last_name !== undefined) ? b.last_name.toLowerCase() : ""
         return a_first === b_first  ? a_last.localeCompare(b_last) : a_first.localeCompare(b_first)
-      })
-      for(let user in data){
-        var userID = data[user].email
-        Backend.getTags(userID)
-        .then((data) => {
-        //  this.state.tags[userID] = data
-                    // this.setState({
-          //   tags : tags
-          // })
-        })
-      }
-      this.setState({
+    })
+    this.setState({
         userList : data,
         loading : false,
         filteredList : data,
       })
     })
+    .then(Backend.getAllUsersTags()
+      .then((userTags) => {
+        this.setState({userTags : userTags})
+      })
+    )
     .then(() => {return  Backend.getProjectsForAllUsers()})
     .then((count) => {this.setState({projectCounts : count})})
     .then (() => this.filter ("default", ""))
@@ -73,33 +69,26 @@ export default class ShowUsers extends Component {
   }
 
   filter(name, value){
-    var temp = []
+    var filteredList = []
     for(let dataObject of this.state.userList) {
-      var discard = true
+      var discard = false
       var userName = (dataObject.first_name + " " + dataObject.last_name).toLowerCase()
-      value = value.toLowerCase()
-      switch (name) {
-        case "email":
-          discard = value !== "" && dataObject.email.indexOf(value) === -1
-          discard = discard || (this.state.name !== "" && userName.indexOf(this.state.name) === -1)
-          break
-        case "name":
-          discard = value !== "" && userName.indexOf(value) === -1
-          discard = discard || (this.state.email !== "" && dataObject.email.indexOf(this.state.email) === -1)
-          break
-        case "tags":
-
-          discard = false
-          break
-        default:
-          discard = false
+      var email = dataObject.email.toLowerCase()
+      discard = discard || email.indexOf(name === "email" ? value.toLowerCase() :  this.state.email.toLowerCase()) === -1
+      discard = discard || userName.indexOf(name === "name" ? value.toLowerCase() :  this.state.name.toLowerCase()) === -1
+      value = (name === "tags") ? value : this.state.tags
+      var temp = this.state.userTags[email].join().toLowerCase()
+      for(let item in value){
+        if (temp.indexOf(value[item]) === -1){
+          discard = true
           break
         }
-        if(!discard)
-          temp.push(dataObject)
+      }
+      if(!discard)
+          filteredList.push(dataObject)
       }
     this.setState({
-      filteredList : temp
+      filteredList : filteredList
     })
   }
 
@@ -164,7 +153,7 @@ export default class ShowUsers extends Component {
                             <div style = {{fontWeight : "bold", fontSize : 20}}>{user.first_name + " " +user.last_name}</div>
                             <div style = {{fontSize : 14}}>{user.email}</div>
                             <div style = {{fontSize : 16}}>{this.state.projectCounts[user.email] !== undefined ? this.state.projectCounts[user.email].length :0} Projects</div>
-                            <div style = {{width : 200}}><SkillOutputList value = {this.state.tags[user.email]} /></div>
+                            <div style = {{width : 200}}><SkillOutputList value = {this.state.userTags[user.email]} /></div>
                           </div>
                         </div>
                       </Link>
