@@ -12,12 +12,12 @@ if __name__ == "__main__":
             text = open(file, "r").read()
             res = session.post("http://localhost:5000/api/projects", data=text.encode('utf-8'),
                                headers={'Content-Type': 'application/json'})
-            print(res)
+            print(file + " " + str(res))
 
         elif file.endswith(".json5"):
             text = open(file, "r").read()
             res = session.post("http://localhost:5000/api/projects", data=text.encode('utf-8'),
                                headers={'Content-Type': 'application/json5'})
-            print(res)
+            print(file + " " + str(res))
 
     session.get("http://localhost:5000/api/users/logout")
