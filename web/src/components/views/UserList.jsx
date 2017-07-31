@@ -107,8 +107,8 @@ export default class ShowUsers extends Component {
     return (
       <div className = "container">
         <Spinner loading = {this.state.loading} text ={"Loading users"} />
-        <div style = {{display : (!this.state.loading ? "block" : "none")}}>
-          <div style = {{marginBottom : 20, width:"100%"}}>
+        <div style = {{width:"100%", display : (!this.state.loading ? "block" : "none")}}>
+          <div>
             <div className = "headerCreation">Looking for a user?</div>
             <Card  onExpandChange = {() => this.setState({expanded : !this.state.expanded})}>
               <CardHeader
@@ -149,7 +149,7 @@ export default class ShowUsers extends Component {
             </Card>
             <div style={{marginTop:20}} >
                 {this.state.filteredList.map((user) => (
-                    <div key={user.email} style={{width : 350, float:"left", marginRight: 20, marginBottom : 20}}>
+                    <div key={user.email} style={{width : "31%", float:"left", marginRight: 20, marginBottom : 20}}>
                       <Link to={"/profile/"+user.email} >
                         <div className = "row">
                           <div className = "col-4">

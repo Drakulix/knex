@@ -45,13 +45,13 @@ export default class ManageUsers extends Component {
     .then((data) => {
       this.setState({
         userList : data,
-        loading : false,
         filteredList : data,
       })
     })
     .then(() => {return  Backend.getProjectsForAllUsers()})
     .then((count) => {this.setState({projectCounts : count})})
     .then (() => this.filter ("default", ""))
+    .then(() => this.setState({loading : false}))
   }
 
 
@@ -77,8 +77,8 @@ export default class ManageUsers extends Component {
                          userInf.last_name,
                          userInf.bio,
                          userInf.roles)
+    .then(() => {this.loadUsers()})
     .then(() =>{this.setState({snackbar : true, snackbarText:text})})
-    .then(this.loadUsers())
     }
 
   handleSetActive(userInf){
@@ -89,8 +89,8 @@ export default class ManageUsers extends Component {
                            userInf.bio,
                            userInf.active === "false" ? "true" : "false"
                            )
+   .then(() => {this.loadUsers()})
    .then(() =>{this.setState({snackbar : true, snackbarText:text})})
-   .then(this.loadUsers())
   }
 
   intentionToDeleteUser(userID){
@@ -104,7 +104,7 @@ export default class ManageUsers extends Component {
     .then(() =>{this.setState({ open:false,
                                 snackbar: true,
                                 snackbarText : "User " + this.state.userID + " deleted"})})
-    .then(this.loadUsers())
+    .then(() => {this.loadUsers()})
   }
 
 

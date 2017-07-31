@@ -3,16 +3,16 @@ import styles from '../common/Styles.jsx'
 import Backend from '../common/Backend'
 import history from '../common/history'
 import IconButton from 'material-ui/IconButton'
-import SharePane from '../common/SharePane'
+import SharePane from '../common/projectComponents/SharePane'
 import Snackbar from 'material-ui/Snackbar'
-import CommentSideBar from '../common/CommentSideBar'
+import CommentSideBar from '../common/projectComponents/CommentSideBar'
 import AuthorOutputList from '../common/chips/AuthorOutputList'
 import TagOutputList from '../common/chips/TagOutputList'
 import UrlOutputList from '../common/chips/UrlOutputList'
 import ConfirmationPane from '../common/ConfirmationPane'
 import Status from '../common/Status'
 import Spinner from '../common/Spinner'
-
+import ProjectControls from '../common/projectComponents/ProjectControls'
 
 
 export default class ProjectContainer extends Component {
@@ -226,7 +226,7 @@ export default class ProjectContainer extends Component {
               </div>
               <div style = {{marginTop : 30}}>
                 <div className = "profile-info">Authors</div>
-                <div style ={{marginLeft:-16}}><AuthorOutputList value = {this.state.projectInf.authors} /></div>
+                <AuthorOutputList value = {this.state.projectInf.authors} />
               </div>
               <div style = {{marginTop : 30}}>
               <div className = "profile-info">Links</div>
