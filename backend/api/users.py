@@ -83,6 +83,16 @@ def get_all_users_project_ids():
     return jsonify(dic)
 
 
+@users.route('/api/users/tags', methods=['GET'])
+@login_required
+def get_all_users_tags():
+    dic = {}
+    for user in g.user_datastore.user_model.objects:
+        tags = json.loads(get_user_tags(user['email']).get_data().decode())
+        dic[user['email']] = tags
+    return jsonify(dic)
+
+
 @users.route('/api/users/authors', methods=['GET'])
 @login_required
 def get_all_users_and_authors():
@@ -272,7 +282,7 @@ def get_user_avatar(mail):
     return response
 
 
-@users.route('/api/users/<email:mail>/avatar', methods=['PUT'])
+@users.route('/api/users/<email:mail>/avatar', methods=['POST'])
 @login_required
 @ADMIN_PERMISSION.require()
 def set_user_avatar(mail):
@@ -281,25 +291,25 @@ def set_user_avatar(mail):
         raise ApiException("Unknown User with Email-address: " + str(mail), 404)
     if 'image' not in request.files:
         raise ApiException("request.files contains no image", 400)
-    if 'image/' not in request.content_type:
-        raise ApiException("Content-Type must be set to 'image/<filetype>'", 400)
     file = request.files['image']
-    user.avatar_name = file.filename
+    if 'image/' not in file.content_type:
+        raise ApiException("Content-Type must be set to 'image/<filetype>'", 400)
+    user.avatar_name = secure_filename(file.filename)
     user.avatar = base64.b64encode(file.read()).decode()
     user.save()
     return make_response("Avatar successfully replaced.", 200)
 
 
-@users.route('/api/users/avatar', methods=['PUT'])
+@users.route('/api/users/avatar', methods=['POST'])
 @login_required
-def set_user_avatar():
+def set_curuser_avatar():
     user = current_user
     if 'image' not in request.files:
         raise ApiException("request.files contains no image", 400)
-    if 'image/' not in request.content_type:
-        raise ApiException("Content-Type must be set to 'image/<filetype>'", 400)
     file = request.files['image']
-    user.avatar_name = file.filename
+    if 'image/' not in file.content_type:
+        raise ApiException("Content-Type must be set to 'image/<filetype>'", 400)
+    user.avatar_name = secure_filename(file.filename)
     user.avatar = base64.b64encode(file.read()).decode()
     user.save()
     return make_response("Avatar successfully replaced.", 200)
@@ -322,7 +332,7 @@ def reset_user_avatar(mail):
 
 @users.route('/api/users/avatar', methods=['DELETE'])
 @login_required
-def reset_user_avatar():
+def reset_curuser_avatar():
     user = current_user
     with open(os.path.join(sys.path[0], "default_avatar.png"), 'rb') as tf:
         imgtext = base64.b64encode(tf.read())
@@ -350,7 +360,7 @@ def get_user_projects(mail):
 @users.route('/api/users/<email:mail>/tags', methods=['GET'])
 @login_required
 def get_user_tags(mail):
-    """Return topten tags of user
+    """Return top five tags of user
 
         Returns:
             res: Array with topten tags lexicographical order
@@ -364,31 +374,7 @@ def get_user_tags(mail):
         taglist = sorted(list(g.projects.aggregate(pipeline)), key=lambda k: k['count'],
                          reverse=True) if g.projects.aggregate(pipeline) else []
 
-        toptags = taglist[0:10] if len(taglist) > 9 else taglist
-        return jsonify(sorted([x['_id'] for x in toptags], key=str.lower))
-
-    except Exception as err:
-        raise ApiException(str(err), 500)
-
-
-@users.route('/api/users/tags', methods=['GET'])
-@login_required
-def get_cur_user_tags():
-    """Return topten tags of current_user
-
-        Returns:
-            res: Array with topten tags lexicographical order
-    """
-    try:
-        pipeline = [{"$unwind": "$authors"},
-                    {"$match": {"authors": current_user['email']}},
-                    {"$unwind": "$tags"},
-                    {"$group": {"_id": "$tags", "count": {"$sum": 1}}}
-                    ]
-        taglist = sorted(list(g.projects.aggregate(pipeline)), key=lambda k: k['count'],
-                         reverse=True) if g.projects.aggregate(pipeline) else []
-
-        toptags = taglist[0:10] if len(taglist) > 9 else taglist
+        toptags = taglist[0:5] if len(taglist) > 5 else taglist
         return jsonify(sorted([x['_id'] for x in toptags], key=str.lower))
 
     except Exception as err:

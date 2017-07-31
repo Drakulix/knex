@@ -1,3 +1,5 @@
+import os
+
 class TestUsers(object):
     def test_update_usernames(self, flask_api_url, enter_users, session, enter_data_using_post):
         user = enter_users.json()
@@ -37,7 +39,7 @@ class TestUsers(object):
             'exampleavatar.png'
         )
         with open(test_avatar, 'rb') as tf:
-            response = session.put(flask_api_url + "/api/users/avatar", files={'image': tf},
-                                   headers={'Content-Type': 'image/png'})
+            response = session.post(flask_api_url + "/api/users/avatar",
+                                    files={'image': ('exampleavatar.png', tf, 'image/png')})
         print(response.text)
         assert response.status_code == 200
