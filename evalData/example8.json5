@@ -5,13 +5,5 @@
         date_creation        :    '2015-07-02',
         url            :    ['http://example8.org'],
         tags             :     ['Social media tags', 'Recommendation by Tag-driven Item Similarity'],
-        authors         :    [
-            {    name        :    'Gunjan Advani',
-                email        :    'advani@.patel.org'
-
-            },
-            {    name        :    'Neha Soni',
-                email        :    'soni@patel.org'
-            }
-        ]
+        authors         :    ['advani@.patel.org','soni@patel.org']
 }

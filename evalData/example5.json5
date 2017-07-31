@@ -5,19 +5,5 @@
         date_creation        :    '2011-12-12',
         url            :    ['http://example5.org'],
         tags             :     ['Algorithms', 'Experimentation', 'Human Factors'],
-        authors         :    [
-            {    name        :    'Yuan Cao Zhang',
-                email        :    'ycz20@cantab.net'
-
-            },
-            {    name        :    'Diarmuid Ó Séaghdha',
-                email        :    'do242@cam.ac.uk'
-            },
-            {    name        :    'Daniele Quercia',
-                email        :    'dq209@cl.cam.ac.uk'
-            },
-            {    name        :    'Tamas Jambor',
-                email        :    't.jambor@cs.ucl.ac.uk'
-            }
-        ]
+        authors         :    ['ycz20@cantab.net','do242@cam.ac.uk','dq209@cl.cam.ac.uk','t.jambor@cs.ucl.ac.uk']
 }
