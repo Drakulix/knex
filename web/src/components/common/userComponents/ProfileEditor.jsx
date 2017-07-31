@@ -70,17 +70,12 @@ export default class ProfileEditor extends Component {
     var file = event.target.files[0]
     let reader = new FileReader();
     if (file.name.substring(file.name.lastIndexOf(".")+1) === "png"){
-
       var input = document.querySelector('input[type="file"]')
-
       var data = new FormData()
       data.append('file', event.target.files[0])
-
       Backend.updateAvatar(this.state.email, data)
       .then(
-        this.props.profileChangeHandler("Avatar changed",true)
-)
-
+        this.props.profileChangeHandler("Avatar changed",true))
     }
     else {
       this.props.profileChangeHandler("Invalid format for picture",false)
