@@ -261,9 +261,7 @@ class Backend {
         let response = await fetch(url, {
             method: 'POST',
             credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'image/png'
-            },
+      
             body: payload
         })
         .catch(ex => {

@@ -303,9 +303,9 @@ def set_user_avatar(mail):
         raise ApiException("Unknown User with Email-address: " + str(mail), 404)
     if not is_permitted(current_user, user):
         raise ApiException("Current User has no permission for the requested user.", 403)
-    if 'image' not in request.files:
+    if 'file' not in request.files:
         raise ApiException("request.files contains no image", 400)
-    file = request.files['image']
+    file = request.files['file']
     if 'image/' not in file.mimetype:
         raise ApiException("File mimetype must be 'image/<filetype>'", 400)
     user.avatar_name = secure_filename(file.filename)
