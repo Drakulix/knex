@@ -9,7 +9,7 @@ import Snackbar from 'material-ui/Snackbar'
 import AuthorOutputList from '../common/chips/AuthorOutputList'
 import TagOutputList from '../common/chips/TagOutputList'
 import ConfirmationPane from '../common/ConfirmationPane'
-import Badge from '../common/Badge'
+import Status from '../common/Status'
 import Spinner from '../common/Spinner'
 
 
@@ -46,7 +46,7 @@ export default class BookmarksTable extends Component {
         this.setState({dialogOpen:false})
         Backend.deleteProject(projectInf._id)
         .then(() => {this.props.handler(this.state.filters)})
-        .then(this.setState({snackbar :true,
+        .then(this.setState({snackbar : true,
           snackbarText : "Project "+ projectInf.title +" deleted"}))
       }
     })
@@ -60,10 +60,13 @@ export default class BookmarksTable extends Component {
       dialogOpen : true,
       loading : true,
       action : () => {
-        this.setState({dialogOpen:false})
-        Backend.getProjectArchived(projectInf._id, true)
+        var project = projectInf
+        delete project.is_bookmark
+        delete project.is_owner
+        project['archived'] = true
+        Backend.updateProject(projectInf._id, project)
             .then(() => {this.props.handler(this.state.filters)})
-            .then(() => {this.setState({snackbar :true,
+            .then(() => {this.setState({snackbar : true,
             snackbarText : "Project "+ projectInf.title +" archived"})})
       }
     })
@@ -71,24 +74,37 @@ export default class BookmarksTable extends Component {
 
   handleUnArchive(projectInf){
     this.setState({loading : true})
-    Backend.getProjectArchived(projectInf._id, false)
+    var project = projectInf
+    delete project.is_bookmark
+    delete project.is_owner
+    project['archived'] = false
+    Backend.updateProject(projectInf._id, project)
         .then(() => {this.props.handler(this.state.filters)})
-        .then(() => {this.setState({snackbar :true,
+        .then(() => {this.setState({snackbar : true,
           snackbarText : "Project " + projectInf.title + " unarchived"})})
   }
 
   handleBookmark(projectInf){
     Backend.handleBookmark(projectInf._id, projectInf.is_bookmark)
     .then(() => {this.props.handler(this.state.filters)})
-    .then(() => {this.setState({snackbar :true,
+    .then(() => {this.setState({snackbar : true,
       snackbarText : "Project bookmark"+(projectInf.is_bookmark === "true" ? " removed" : "ed")})})
   }
 
   componentWillReceiveProps(props){
     this.setState({
       filteredData : (this.props.isBookmarkTable
-                      ? this.filter(props.data, this.state.filters) : props.data)
+                      ? this.filter(props.data, this.state.filters) : props.data),
       })
+    Backend.getAuthors()
+    .then((authors) => {
+      Backend.getUserNames(authors)
+      .then ((userNames) => {
+        this.setState({
+          userNames : JSON.parse(userNames)
+        })
+      })
+    })
   }
 
   componentDidUpdate(prevProps, prevState){
@@ -188,7 +204,7 @@ export default class BookmarksTable extends Component {
         id:'status',
         style: {align:"center", width : 100},
               width: 100,
-        Cell: props => <Badge value={props.value} />
+        Cell: props => <Status value={props.value} />
       })
     }
     if(this.props.columns.indexOf("tags") !== -1){
@@ -205,7 +221,7 @@ export default class BookmarksTable extends Component {
         Header: 'Authors',
         accessor: "authors",
         width: 180,
-        Cell: props => <AuthorOutputList value = {props.value} />
+        Cell: props => <AuthorOutputList value = {props.value} userNames = {this.state.userNames} />
       })
     }
     if(this.props.columns.indexOf("description") !== -1){

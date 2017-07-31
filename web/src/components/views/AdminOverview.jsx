@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import {Tabs, Tab} from 'material-ui/Tabs'
-import ShowUsers from '../common/adminComponents/ShowUsers'
+import ManageUsers from '../common/adminComponents/ManageUsers'
 import RegisterUser from '../common/adminComponents/RegisterUser'
-import ShowProjects from '../common/adminComponents/ShowProjects'
+import ManageProjects from '../common/adminComponents/ManageProjects'
 
 export default class AdminOverview extends Component {
 
@@ -30,12 +30,12 @@ export default class AdminOverview extends Component {
           contentContainerStyle = {{marginTop: 30, paddingLeft:15, paddingRight:15}}
         >
           <Tab label = "Archived Projects" value = "1">
-            <ShowProjects/>
+            <ManageProjects/>
           </Tab>
           <Tab label = "Manage Users" value = "2">
-            <ShowUsers/>
+            <ManageUsers/>
           </Tab>
-          <Tab label = "Register user" value = "3">
+          <Tab label = "Register a new user" value = "3">
             <RegisterUser/>
           </Tab>
         </Tabs>

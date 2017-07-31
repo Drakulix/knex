@@ -26,7 +26,7 @@ a:hover {
   font-weight: 300;
 }
 
-.badge {
+.Status {
   margin-right: 0.5em;
 }
 
@@ -157,8 +157,6 @@ a:hover {
 
 .spinner{
   vertical-align: middle;
-  margin-top: 180px;
-  margin-bottom: 2em;
   text-align: center;
 }
 

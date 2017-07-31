@@ -6,7 +6,7 @@ import {Card, CardHeader, CardText} from 'material-ui/Card'
 import Moment from 'moment'
 import AuthorInputList from '../common/chips/AuthorInputList'
 import TagInputList from '../common/chips/TagInputList'
-import {BadgeInput }from '../common/Badge'
+import {StatusInput }from '../common/Status'
 
 
 export default class Filters extends Component{
@@ -174,7 +174,7 @@ export default class Filters extends Component{
               </IconButton>
               <div className = "col-1 filter-label" style = {{textAlign : "left", marginLeft : -12}} >Status</div>
               <div className = "col-2" style = {{marginTop : -3}}>
-                <BadgeInput onChange = {this.handleStatusChange}
+                <StatusInput onChange = {this.handleStatusChange}
                             value = {this.state.status}
                 />
               </div>

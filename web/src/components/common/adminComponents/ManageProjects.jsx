@@ -3,7 +3,7 @@ import DataTable from '../../common/DataTable'
 import Backend from '../../common/Backend'
 
 
-export default class ShowProjects extends Component {
+export default class ManageProjects extends Component {
   constructor(props){
     super(props)
     this.state = {
@@ -27,11 +27,13 @@ export default class ShowProjects extends Component {
 
   render(){
     return (
-      <DataTable  columns = {['title', 'status', 'tags', 'authors', 'description', '_id', 'unarchive', 'delete' ]}
+      <div className = "container" >
+        <DataTable  columns = {['title', 'status', 'tags', 'authors', 'description', '_id', 'unarchive', 'delete' ]}
                     handler = {this.handler}
                     data = {this.state.projects}
                     loading = {this.state.loading}
-      />
+        />
+      </div>      
     )
   }
 }

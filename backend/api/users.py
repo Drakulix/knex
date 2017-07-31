@@ -348,10 +348,8 @@ def get_user_tags(mail):
                     ]
         taglist = sorted(list(g.projects.aggregate(pipeline)), key=lambda k: k['count'],
                          reverse=True) if g.projects.aggregate(pipeline) else []
-
         toptags = taglist[0:5] if len(taglist) > 5 else taglist
         return jsonify(sorted([x['_id'] for x in toptags], key=str.lower))
-
     except Exception as err:
         raise ApiException(str(err), 500)
 

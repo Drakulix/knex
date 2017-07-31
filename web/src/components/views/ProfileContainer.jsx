@@ -33,6 +33,7 @@ export default class ProfileContainer extends Component {
   handleChange = (value) => {
     this.setState({
       value : value,
+      snackbar : false
     })
   }
 
@@ -68,7 +69,6 @@ export default class ProfileContainer extends Component {
       }
     }).catch(ex => {
       this.setState({
-
         profile_exists : false,
         site_loaded : true
       })

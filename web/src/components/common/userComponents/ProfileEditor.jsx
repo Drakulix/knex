@@ -16,9 +16,7 @@ export default class ProfileEditor extends Component {
       email : props.profileInf.email,
       pw_old: '',
       pw_new: '',
-      pw_new_confirm: '',
-      snackbar : false,
-      snackbarText : ""
+      pw_new_confirm: ''
     }
     this.handlePwChangeSubmit = this.handlePwChangeSubmit.bind(this)
     this.handleProfileChangeSubmit = this.handleProfileChangeSubmit.bind(this)
@@ -60,18 +58,16 @@ export default class ProfileEditor extends Component {
       this.state.last_name,
       this.state.bio ).then((success) => {
       if(success){
-        this.props.profileChangeHandler("Profile changed", true)
+        this.props.profileChangeHandler("Profile updated", true)
       }else{
-        this.props.profileChangeHandler("Profile change failed",false)
+        this.props.profileChangeHandler("Profile update failed",false)
       }
     })
   }
 
 
   handleFile(event){
-
     var file = event.target.files[0]
-
     let reader = new FileReader();
     if (file.name.substring(file.name.lastIndexOf(".")+1) === "png"){
       reader.onload = () => {
@@ -80,7 +76,6 @@ export default class ProfileEditor extends Component {
           .then(
             this.props.profileChangeHandler("Avatar changed",true)
           )
-
         } catch(e) {
           alert(e)
         }
@@ -158,7 +153,7 @@ export default class ProfileEditor extends Component {
                       primary = {true}
                       style = {{width:'100%'}}>
                     <input type = "file" style = {styles.uploadInput}
-                      onChange = {this.handleFile} accept="image/png"/>
+                      onChange = {this.handleFile} accept=".png"/>
             </FlatButton>
         </div>
       </div>

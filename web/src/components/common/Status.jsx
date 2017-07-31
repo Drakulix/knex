@@ -9,7 +9,7 @@ const statusString = [
   {text : <Chip style = {{background : '#ffcc50',marginTop:4}}><span style= {{color:'#ffffff', fontWeight:'bold', fontSize:12}}>In progress</span></Chip>, value : "IN_PROGRESS"}
 ]
 
-export default class Badge extends Component {
+export default class Status extends Component {
 
   render () {
     for(let item in statusString){
@@ -18,11 +18,9 @@ export default class Badge extends Component {
     }
     return (<div>{this.props.value}</div>)
   }
-
 }
 
-
-export class BadgeInput extends Component {
+export class StatusInput extends Component {
 
   render (){
     return (

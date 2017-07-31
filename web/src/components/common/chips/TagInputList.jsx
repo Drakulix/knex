@@ -13,9 +13,9 @@ export default class TagInputList extends Component {
   }
 
   componentWillMount(){
-    Backend.getTags().then(function(tags) {
-          this.setState({suggestions : tags})
-    }.bind(this))
+    Backend.getTags().then((tags) => {
+      this.setState({suggestions : tags})
+    })
   }
 
   handleRequestAdd (chip) {

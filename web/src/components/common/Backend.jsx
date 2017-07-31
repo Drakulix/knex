@@ -309,10 +309,6 @@ class Backend {
         return this.getJson('/api/projects/'+id);
     }
 
-    getProjectArchived(id, archived) {
-        return this.getJson(`/api/projects/${encodeURIComponent(id)}/archive/${archived.toString()}`)
-    }
-
     updateProject(id, payload) {
         return this.putJson('/api/projects/'+id, payload);
     }
@@ -461,6 +457,10 @@ class Backend {
       return this.getJson('/api/users/projectids')
     }
 
+    getAllUsersTags(){
+      return this.getJson('/api/users/tags')
+    }
+
     async setUserRoles(mail, firstName, lastName, bio, roles){
       if (await this.putJson('/api/users', {
           'email': mail,
@@ -536,15 +536,11 @@ class Backend {
     }
 
     getUserNames(userList){
-      return this.postJson('/api/usernames',userList)
+      return this.postJson('/api/users/names',userList)
     }
 
     getTagsOfUser(mail) {
         return this.getJson(`/api/users/${encodeURIComponent(mail)}/tags`);
-    }
-
-    getMyTags() {
-        return this.getJson('/api/users/tags');
     }
 
     addBookmark(id) {

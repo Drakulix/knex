@@ -11,7 +11,7 @@ import ConfirmationPane from '../../common/ConfirmationPane'
 import Snackbar from 'material-ui/Snackbar'
 
 
-export default class ShowUsers extends Component {
+export default class ManageUsers extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -45,13 +45,13 @@ export default class ShowUsers extends Component {
     .then((data) => {
       this.setState({
         userList : data,
-        loading : false,
         filteredList : data,
       })
     })
     .then(() => {return  Backend.getProjectsForAllUsers()})
     .then((count) => {this.setState({projectCounts : count})})
     .then (() => this.filter ("default", ""))
+    .then(() => this.setState({loading : false}))
   }
 
 
@@ -77,8 +77,8 @@ export default class ShowUsers extends Component {
                          userInf.last_name,
                          userInf.bio,
                          userInf.roles)
+    .then(() => {this.loadUsers()})
     .then(() =>{this.setState({snackbar : true, snackbarText:text})})
-    .then(this.loadUsers())
     }
 
   handleSetActive(userInf){
@@ -89,8 +89,8 @@ export default class ShowUsers extends Component {
                            userInf.bio,
                            userInf.active === "false" ? "true" : "false"
                            )
+   .then(() => {this.loadUsers()})
    .then(() =>{this.setState({snackbar : true, snackbarText:text})})
-   .then(this.loadUsers())
   }
 
   intentionToDeleteUser(userID){
@@ -104,33 +104,23 @@ export default class ShowUsers extends Component {
     .then(() =>{this.setState({ open:false,
                                 snackbar: true,
                                 snackbarText : "User " + this.state.userID + " deleted"})})
-    .then(this.loadUsers())
+    .then(() => {this.loadUsers()})
   }
 
 
   filter(name, value){
-    var temp = []
+    var filteredList = []
     for(let dataObject of this.state.userList) {
-      var discard = true
-      var userName = dataObject.first_name + " " + dataObject.last_name
-      switch (name) {
-        case "email":
-          discard = value !== "" && dataObject.email.indexOf(value) === -1
-          discard = discard || (this.state.name !== "" && userName.indexOf(this.state.name) === -1)
-          break;
-        case "name":
-          discard = value !== "" && userName.indexOf(value) === -1
-          discard = discard || (this.state.email !== "" && dataObject.email.indexOf(this.state.email) === -1)
-          break;
-        default:
-          discard = false
-          break
-        }
-        if(!discard)
-          temp.push(dataObject)
-      }
+      var discard = false
+      var userName = (dataObject.first_name + " " + dataObject.last_name).toLowerCase()
+      var email = dataObject.email.toLowerCase()
+      discard = discard || email.indexOf(name === "email" ? value.toLowerCase() :  this.state.email.toLowerCase()) === -1
+      discard = discard || userName.indexOf(name === "name" ? value.toLowerCase() :  this.state.name.toLowerCase()) === -1
+      if(!discard)
+        filteredList.push(dataObject)
+    }
     this.setState({
-      filteredList : temp
+      filteredList : filteredList
     })
   }
 
@@ -263,56 +253,56 @@ export default class ShowUsers extends Component {
           message={this.state.snackbarText}
           autoHideDuration={10000}
         />
-      <Spinner loading = {this.state.loading} text ={"Loading users"} />
+        <Spinner loading = {this.state.loading} text ={"Loading users"} />
         <div style = {{display : (!this.state.loading ? "block" : "none")}}>
-          <div style = {{marginBottom : 20, width:"100%"}}>
-            <Card  onExpandChange = {() => this.setState({expanded : !this.state.expanded})}>
-              <CardHeader
-                  title = "Filter"
-                  subtitle = "Define filters for your list"
-                  actAsExpander = {true}
-                  showExpandableButton = {true}
-              />
-              <CardText expandable = {true}>
-                <div className = "row">
-                  <div className = "col-1 filter-label">Name</div>
-                  <div className = "col-5">
-                    <TextField style = {{width : '100%'}}
-                        value = {this.state.name}
-                        name = "name"
-                        onChange = {this.handleChange}
-                        type = "text" placeholder = "Enter username..."
-                    />
-                  </div>
-                  <div className = "col-1 filter-label">Email</div>
-                  <div className = "col-5">
-                    <TextField style = {{width : '100%'}}
-                        value = {this.state.email}
-                        name = "email"
-                        onChange = {this.handleChange}
-                        type = "text" placeholder = "Enter email adress..."
-                    />
-                  </div>
+        <div style = {{marginBottom : 20, width:"100%"}}>
+          <Card  onExpandChange = {() => this.setState({expanded : !this.state.expanded})}>
+            <CardHeader
+                title = "Filter"
+                subtitle = "Define filters for your list"
+                actAsExpander = {true}
+                showExpandableButton = {true}
+            />
+            <CardText expandable = {true}>
+              <div className = "row">
+                <div className = "col-1 filter-label">Name</div>
+                <div className = "col-5">
+                  <TextField style = {{width : '100%'}}
+                      value = {this.state.name}
+                      name = "name"
+                      onChange = {this.handleChange}
+                      type = "text" placeholder = "Enter username..."
+                  />
                 </div>
-              </CardText>
-            </Card>
-          </div>
-          <ReactTable style = {{width : "100%"}}
-                   data = {this.state.filteredList}
-                   columns = {columns}
-                   defaultExpanded = {{1 : true}}
-                   filterable = {false}
-                   minRows = {3}
-                   noDataText = 'No users found'
-                   showPageSizeOptions = {false}
-                   defaultPageSize = {10}
-                   defaultSorted = {[{
-                      id : 'userID',
-                      desc : true
-                    }]}
-          />
+                <div className = "col-1 filter-label">Email</div>
+                <div className = "col-5">
+                  <TextField style = {{width : '100%'}}
+                      value = {this.state.email}
+                      name = "email"
+                      onChange = {this.handleChange}
+                      type = "text" placeholder = "Enter email adress..."
+                  />
+                </div>
+              </div>
+            </CardText>
+          </Card>
         </div>
+        <ReactTable style = {{width : "100%"}}
+                 data = {this.state.filteredList}
+                 columns = {columns}
+                 defaultExpanded = {{1 : true}}
+                 filterable = {false}
+                 minRows = {3}
+                 noDataText = 'No users found'
+                 showPageSizeOptions = {false}
+                 defaultPageSize = {10}
+                 defaultSorted = {[{
+                    id : 'userID',
+                    desc : true
+                  }]}
+        />
       </div>
+    </div>
     )
   }
 }

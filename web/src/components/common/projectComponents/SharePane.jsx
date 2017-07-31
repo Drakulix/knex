@@ -1,8 +1,8 @@
 import React from 'react'
 import Dialog from 'material-ui/Dialog'
 import RaisedButton from 'material-ui/RaisedButton'
-import AuthorInputList from '../common/chips/AuthorInputList.jsx'
-import Backend from '../common/Backend.jsx'
+import AuthorInputList from '../chips/AuthorInputList.jsx'
+import Backend from '../Backend.jsx'
 
 export default class SharePane extends React.Component {
   constructor(props) {
