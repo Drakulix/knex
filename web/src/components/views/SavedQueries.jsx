@@ -41,6 +41,7 @@ export default class SavedQueries extends Component {
     })
     Backend.getSavedSearches()
     .then((queries) => {
+      queries.sort(function (a,b) {return a.query.label.localeCompare(b.query.label)})
       this.setState({
         queries : queries,
         loading : false
@@ -82,12 +83,11 @@ export default class SavedQueries extends Component {
               : ""
             }
             {this.state.queries.map(item =>
-              <div key = {item.id}>
-                <SavedQuery savedSearch = {item}
+              <SavedQuery key = {item.id} 
+                            savedSearch = {item}
                             userNames = {this.state.userNames}
                             snackbarHandler = {this.snackbarHandler}
-                />
-              </div>
+              />
             )}
           </div>
         </div>

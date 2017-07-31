@@ -29,7 +29,7 @@ export default class SavedQuery extends Component {
 
     render() {
       return(
-        <div style={{marginBottom:20}}>
+        <div style={{marginBottom:40}}>
           <div className="row" style={{marginBottom : 20}}>
             <div className="col-2 filter-label" style= {{fontSize : 22}}>
                {this.state.query.label}
