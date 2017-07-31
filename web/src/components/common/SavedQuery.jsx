@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import IconButton from 'material-ui/IconButton'
 import styles from '../common/Styles.jsx'
+import RaisedButton from 'material-ui/RaisedButton'
+
 import Backend from '../common/Backend'
 import AuthorOutputList from '../common/chips/AuthorOutputList'
 import TagOutputList from '../common/chips/TagOutputList'
@@ -29,37 +31,33 @@ export default class SavedQuery extends Component {
       return(
         <div style={{marginBottom:20}}>
           <div className="row" style={{marginBottom : 20}}>
-            <div className="col-2 filter-label">
+            <div className="col-2 filter-label" style= {{fontSize : 22}}>
                {this.state.query.label}
             </div>
-            <div className="col-6"></div>
-            <div className="col-1 filter-label">Hits</div>
-            <div className="col-1" style= {{marginTop : 13}}>{this.props.savedSearch.count}</div>
-            <div className="col-1" style={{textAlign:"right",marginTop: 10}}>
+            <div className="col-4"></div>
+            <div className="col-1 filter-label" style= {{fontSize : 22}}>Hits</div>
+            <div className="col-1" style= {{fontSize : 22, marginTop:13}}>{this.props.savedSearch.count}</div>
+            <div className="col-2" style={{textAlign:"right",marginTop: 10}}>
               <Link to={"/discovery/"+ JSON.stringify(this.state.query)}>
-                <IconButton
+                <RaisedButton
                   onClick={this.runQuery}
-                 touch={true}
-                 style = {styles.largeIcon}
-                 tooltipPosition="top-center"
-                 tooltip="Execute Query"
-                 iconStyle={{fontSize: '32px'}}
+                  label = {"Run query"}
+                  primary = {true}
+                  style = {{width : "100%"}}
+                  icon = {<i className="material-icons" style = {{color: "#ffffff", marginTop: 0}}>search</i>}
                  >
-                  <i className="material-icons">search</i>
-                </IconButton>
+                </RaisedButton>
               </Link>
             </div>
-            <div className="col-1" style={{textAlign:"right",marginTop: 10}}>
-              <IconButton
+            <div className="col-2" style={{textAlign:"right",marginTop: 10}}>
+              <RaisedButton
                  onClick={this.deleteQuery}
-                 touch={true}
-                 style = {styles.largeIcon}
-                 tooltipPosition="top-center"
-                 tooltip="Delete Query"
-                 iconStyle={{fontSize: '32px'}}
+                 primary = {true}
+                 style = {{width : "100%"}}
+                 label="Delete Query"
+                 icon = {<i className="material-icons" style = {{color: "#ffffff", marginTop: 0}}>delete</i>}
                  >
-                 <i className="material-icons">delete</i>
-              </IconButton>
+              </RaisedButton>
             </div>
           </div>
           <Card  expanded = {this.state.expanded} onExpandChange={() => this.setState({expanded : !this.state.expanded})}>
