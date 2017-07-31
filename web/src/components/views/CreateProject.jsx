@@ -27,7 +27,6 @@ export default class CreateProject extends Component {
     } else {
       this.state = {
         projectID : this.props.match.params.uuid,
-        authors : [],
         projectInf : {
           status : "IN_PROGRESS",
           title : "",
@@ -81,7 +80,6 @@ export default class CreateProject extends Component {
   }
 
   loadProjectInf(uuid) {
-    // Load Project info into state
     Backend.getProject(uuid).then(data => {
       this.setState({projectInf : data})
       if(!data){
@@ -169,7 +167,7 @@ export default class CreateProject extends Component {
                   />
               </div>
               <div className = "col-2">
-                <RaisedButton label = {this.state.projectID === undefined ? "Add Project" : "Submit changes"}
+                <RaisedButton label = {this.state.projectID === undefined ? "create Project" : "Submit changes"}
                                 disabled = {this.isInValid()}
                                 onClick = {this.handleUpload}
                                 style = {{width : "100%"}}
