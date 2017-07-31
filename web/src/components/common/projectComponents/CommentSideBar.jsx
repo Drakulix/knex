@@ -207,7 +207,7 @@ export default class CommentSideBar extends React.Component {
           </div>
         </div>
         {this.state.comments.map(item =>
-          <div>
+          <div key ={this.props.uuid}>
             <Divider/>
             <CommentItem comment={item} p_id={this.props.uuid} handleUpdateList={this.handleUpdateList}/>
           </div>)

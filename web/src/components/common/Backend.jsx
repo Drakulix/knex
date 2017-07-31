@@ -261,7 +261,7 @@ class Backend {
         let response = await fetch(url, {
             method: 'POST',
             credentials: 'same-origin',
-      
+
             body: payload
         })
         .catch(ex => {
@@ -511,6 +511,10 @@ class Backend {
 
     updateAvatar(email, image){
       return this.postImage("/api/users/"+email+"/avatar", image)
+    }
+
+    deleteAvatar(email){
+      return this.delete("/api/users/"+email+"/avatar")
     }
 
     updatePassword(mail, old_pass, new_pass) {

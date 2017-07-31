@@ -22,6 +22,7 @@ export default class ProfileEditor extends Component {
     this.handleProfileChangeSubmit = this.handleProfileChangeSubmit.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleFile = this.handleFile.bind(this)
+    this.handleDeleteAvatar = this.handleDeleteAvatar.bind(this)
   }
 
   handleInputChange(event) {
@@ -81,6 +82,10 @@ export default class ProfileEditor extends Component {
     }
   }
 
+  handleDeleteAvatar(){
+    Backend.deleteAvatar(this.state.email)
+    .then(this.props.profileChangeHandler("Avatar deleted",true))
+  }
 
   render(){
     return (
@@ -149,6 +154,12 @@ export default class ProfileEditor extends Component {
                     <input type = "file" style = {styles.uploadInput}
                       onChange = {this.handleFile} accept=".png"/>
             </FlatButton>
+            <FlatButton
+                      label = "Delete avatar"
+                      containerElement = "label"
+                      onClick = {this.handleDeleteAvatar}
+                      primary = {true}
+                      style = {{width:'100%'}}/>
         </div>
       </div>
       <div className = "row">

@@ -6,6 +6,7 @@ import RaisedButton from 'material-ui/RaisedButton'
 import TextField from 'material-ui/TextField'
 import styles from '../common/Styles.jsx'
 import Snackbar from 'material-ui/Snackbar'
+import MultiFileUploader from '../common/MultiFileUploader'
 
 const JSON5 = require('json5')
 
@@ -19,6 +20,7 @@ export default class CreateProjectChoice extends Component {
      snackbarText : "",
      data : null,
      uploaded : false,
+     multiFileUploader : false,
     }
     this.submitForm = this.submitForm.bind(this)
     this.handleFile = this.handleFile.bind(this)
@@ -133,6 +135,10 @@ export default class CreateProjectChoice extends Component {
           message = {this.state.snackbarText}
           autoHideDuration = {10000}
           />
+        <MultiFileUploader open = {this.state.multiFileUploader}
+          handleClose = {() => this.setState({multiFileUploader : false})}
+          confirmAction = {() => this.setState({multiFileUploader : false})}
+        />
         <div className = "headerCreation">Create a new project</div>
           <form onSubmit = {this.submitForm}>
             <div>
@@ -170,6 +176,16 @@ export default class CreateProjectChoice extends Component {
                       primary = {true}
                       style = {{ width:'300px'}}/>
           </Link>
+        </div>
+        <div className = "text" >or</div>
+        <div>
+
+            <RaisedButton label = "Upload multiple files"
+                      icon = {<i className = "material-icons" style = {{color: "#ffffff", marginTop:-3}}>playlist_add</i>}
+                      primary = {true}
+                      onClick = {() => this.setState({multiFileUploader : true})}
+                      style = {{ width:'300px'}}/>
+
         </div>
       </div>
     )

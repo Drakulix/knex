@@ -100,7 +100,7 @@ export default class Filters extends Component{
                   />
               </div>
               <IconButton style = {{color : 'gray', marginLeft : -30, visibility : (this.state.title !== '') ? "visible" : "hidden"}} onClick = {() => this.handleChange({target : {name :"title", value :""}})}>
-                <i className = "material-icons">cancel</i>
+                <i className = "material-icons" style = {{color : 'gray'}}>cancel</i>
               </IconButton>
               <div className = "col-1 filter-label" style = {{textAlign : "left"}}>Description</div>
               <div className = "col-5">
@@ -113,7 +113,7 @@ export default class Filters extends Component{
                   />
               </div>
               <IconButton style = {{color : 'gray', marginLeft : -30, visibility : (this.state.description !== "") ? "visible" : "hidden"}} onClick = {() => this.handleChange({target : {name :"description", value :""}})}>
-                <i className = "material-icons">cancel</i>
+                <i className = "material-icons" style = {{color : 'gray'}}>cancel</i>
               </IconButton>
             </div>
             <div className = "row">
@@ -126,7 +126,7 @@ export default class Filters extends Component{
                   />
               </div>
               <IconButton style = {{color : 'gray', marginLeft : -30, visibility : (this.state.tags.length !== 0) ? "visible" : "hidden"}} onClick = {() => this.handleChange({target : {name :"tags", value :[]}})}>
-                <i className = "material-icons">cancel</i>
+                <i className = "material-icons" style = {{color : 'gray'}}>cancel</i>
               </IconButton>
               <div className = "col-1 filter-label"> Authors</div>
               <div  className = "col-5">
@@ -137,7 +137,7 @@ export default class Filters extends Component{
                   />
               </div>
               <IconButton style = {{color : 'gray', marginLeft : -30, visibility : (this.state.authors.length !== 0) ? "visible" : "hidden"}} onClick = {() => this.handleChange({target : {name :"authors", value :[]}})}>
-                <i className = "material-icons">cancel</i>
+                <i className = "material-icons" style = {{color : 'gray'}}>cancel</i>
               </IconButton>
             </div>
             <div className = "row">
@@ -154,7 +154,7 @@ export default class Filters extends Component{
                   />
               </div>
               <IconButton style = {{color : 'gray', marginLeft : -30, visibility : (this.state.picker_date_from != null) ? "visible" : "hidden"}} onClick = {()=> this.handleDateDelete('from')}>
-                <i className = "material-icons">cancel</i>
+                <i className = "material-icons" style = {{color : 'gray'}}>cancel</i>
               </IconButton>
               <div className = "col-1 filter-label" style = {{textAlign : "left", marginLeft : -20}}>To</div>
               <div className = "col-2" style = {{marginTop : 2}}>
