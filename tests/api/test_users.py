@@ -28,3 +28,16 @@ class TestUsers(object):
         response = session.put(flask_api_url + "/api/users",
                                json={"email": "user@knex.com", "roles": ["user"]})
         assert response.status_code == 200
+
+    def test_avatar_upload(self, session, flask_api_url, pytestconfig):
+        test_avatar = os.path.join(
+            str(pytestconfig.rootdir),
+            'tests',
+            'testmanifests',
+            'exampleavatar.png'
+        )
+        with open(test_avatar, 'rb') as tf:
+            response = session.put(flask_api_url + "/api/users/avatar", files={'image': tf},
+                                   headers={'Content-Type': 'image/png'})
+        print(response.text)
+        assert response.status_code == 200

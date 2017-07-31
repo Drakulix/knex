@@ -16,6 +16,7 @@ from mongoengine.fields import ObjectId
 
 from api.projects import get_all_authors
 from api.helper.apiexception import ApiException
+from globals import ADMIN_PERMISSION
 
 
 users = Blueprint('api_users', __name__)
@@ -273,6 +274,7 @@ def get_user_avatar(mail):
 
 @users.route('/api/users/<email:mail>/avatar', methods=['PUT'])
 @login_required
+@ADMIN_PERMISSION.require()
 def set_user_avatar(mail):
     user = g.user_datastore.get_user(mail)
     if not user:
@@ -288,12 +290,40 @@ def set_user_avatar(mail):
     return make_response("Avatar successfully replaced.", 200)
 
 
+@users.route('/api/users/avatar', methods=['PUT'])
+@login_required
+def set_user_avatar():
+    user = current_user
+    if 'image' not in request.files:
+        raise ApiException("request.files contains no image", 400)
+    if 'image/' not in request.content_type:
+        raise ApiException("Content-Type must be set to 'image/<filetype>'", 400)
+    file = request.files['image']
+    user.avatar_name = file.filename
+    user.avatar = base64.b64encode(file.read()).decode()
+    user.save()
+    return make_response("Avatar successfully replaced.", 200)
+
+
 @users.route('/api/users/<email:mail>/avatar', methods=['DELETE'])
 @login_required
+@ADMIN_PERMISSION.require()
 def reset_user_avatar(mail):
     user = g.user_datastore.get_user(mail)
     if not user:
         raise ApiException("Unknown User with Email-address: " + str(mail), 404)
+    with open(os.path.join(sys.path[0], "default_avatar.png"), 'rb') as tf:
+        imgtext = base64.b64encode(tf.read())
+    user.avatar = imgtext.decode()
+    user.avatar_name = "default_avatar.png"
+    user.save()
+    return make_response("Success", 200)
+
+
+@users.route('/api/users/avatar', methods=['DELETE'])
+@login_required
+def reset_user_avatar():
+    user = current_user
     with open(os.path.join(sys.path[0], "default_avatar.png"), 'rb') as tf:
         imgtext = base64.b64encode(tf.read())
     user.avatar = imgtext.decode()
