@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import TextField from "material-ui/TextField"
 import RaisedButton from "material-ui/RaisedButton"
-import Backend from '../../common/Backend.jsx'
+import Backend from '../../common/Backend'
 import Snackbar from 'material-ui/Snackbar'
 
 

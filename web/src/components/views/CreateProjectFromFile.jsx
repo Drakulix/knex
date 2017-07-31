@@ -1,6 +1,6 @@
 import React from 'react'
 
-import CreateProject from './CreateProject.jsx'
+import CreateProject from './CreateProject'
 import Moment from 'moment'
 
 

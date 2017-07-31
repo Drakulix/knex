@@ -1,13 +1,10 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import IconButton from 'material-ui/IconButton'
-import styles from '../common/Styles.jsx'
 import RaisedButton from 'material-ui/RaisedButton'
-
+import {Card, CardHeader, CardText} from 'material-ui/Card'
 import Backend from '../common/Backend'
 import AuthorOutputList from '../common/chips/AuthorOutputList'
 import TagOutputList from '../common/chips/TagOutputList'
-import {Card, CardHeader, CardText} from 'material-ui/Card'
 
 
 export default class SavedQuery extends Component {

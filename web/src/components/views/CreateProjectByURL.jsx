@@ -1,6 +1,6 @@
 import React from 'react'
 
-import CreateProject from './CreateProject.jsx'
+import CreateProject from './CreateProject'
 
 const JSON5 = require('json5')
 
