@@ -194,39 +194,6 @@ def delete_project(project_id):
     return make_response("Success")
 
 
-@projects.route('/api/projects/<uuid:project_id>/archive/<string:archived>', methods=['GET'])
-@login_required
-def archive_project(project_id, archived):
-    """Archives a project by ID.
-
-    Args:
-        project_id: ID of a project
-        archived: 'true' or 'false', whether to archive project.
-
-    Returns:
-        response: Success response or 404 if project is not found, 403 lacking permission
-    """
-    if archived not in ["true", "false"]:
-        raise ApiException("Argument <string:archived> must be 'true' or 'false'", 400)
-    archived = True if archived == "true" else False
-    manifest = g.projects.find_one({'_id': project_id})
-    if not manifest:
-        raise ApiException("Project not found", 404)
-    if not is_permitted(current_user, manifest):
-        raise ApiException("User is not permitted to archive this project", 403)
-    manifest['archived'] = archived
-    g.projects.find_one_and_replace({'_id': project_id}, manifest,
-                                    return_document=ReturnDocument.AFTER)
-    g.notify_users(
-        list(set(
-            manifest['authors'] +
-            g.users_with_bookmark(str(manifest['_id'])))),
-        "Project was (un)archived", manifest['title'],
-        '/project/' + str(manifest['_id']))
-    g.rerun_saved_searches()
-    return make_response("Project was successfully archived.", 200)
-
-
 @projects.route('/api/projects/<uuid:project_id>', methods=['PUT'])
 @login_required
 def update_project(project_id):
