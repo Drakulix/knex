@@ -40,7 +40,7 @@ class TestUsers(object):
         )
         with open(test_avatar, 'rb') as tf:
             response = session.post(flask_api_url + "/api/users/admin@knex.com/avatar",
-                                    files={'image': ('exampleavatar.png', tf, 'image/png')})
+                                    files={'file': ('exampleavatar.png', tf, 'image/png')})
         print(response.text)
         assert response.status_code == 200
 
