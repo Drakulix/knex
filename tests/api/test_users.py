@@ -38,7 +38,7 @@ class TestUsers(object):
             'exampleavatar.png'
         )
         with open(test_avatar, 'rb') as tf:
-            response = session.post(flask_api_url + "/api/users/avatar",
+            response = session.post(flask_api_url + "/api/users/admin@knex.com/avatar",
                                     files={'image': ('exampleavatar.png', tf, 'image/png')})
         print(response.text)
         assert response.status_code == 200
@@ -48,5 +48,5 @@ class TestUsers(object):
         assert response.status_code == 200
 
     def test_avatar_delete(self, session, flask_api_url):
-        response = session.delete(flask_api_url + "/api/users/avatar")
+        response = session.delete(flask_api_url + "/api/users/admin@knex.com/avatar")
         assert response.status_code == 200
