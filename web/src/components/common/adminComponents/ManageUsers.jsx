@@ -253,56 +253,56 @@ export default class ManageUsers extends Component {
           message={this.state.snackbarText}
           autoHideDuration={10000}
         />
-      <Spinner loading = {this.state.loading} text ={"Loading users"} />
+        <Spinner loading = {this.state.loading} text ={"Loading users"} />
         <div style = {{display : (!this.state.loading ? "block" : "none")}}>
-          <div style = {{marginBottom : 20, width:"100%"}}>
-            <Card  onExpandChange = {() => this.setState({expanded : !this.state.expanded})}>
-              <CardHeader
-                  title = "Filter"
-                  subtitle = "Define filters for your list"
-                  actAsExpander = {true}
-                  showExpandableButton = {true}
-              />
-              <CardText expandable = {true}>
-                <div className = "row">
-                  <div className = "col-1 filter-label">Name</div>
-                  <div className = "col-5">
-                    <TextField style = {{width : '100%'}}
-                        value = {this.state.name}
-                        name = "name"
-                        onChange = {this.handleChange}
-                        type = "text" placeholder = "Enter username..."
-                    />
-                  </div>
-                  <div className = "col-1 filter-label">Email</div>
-                  <div className = "col-5">
-                    <TextField style = {{width : '100%'}}
-                        value = {this.state.email}
-                        name = "email"
-                        onChange = {this.handleChange}
-                        type = "text" placeholder = "Enter email adress..."
-                    />
-                  </div>
+        <div style = {{marginBottom : 20, width:"100%"}}>
+          <Card  onExpandChange = {() => this.setState({expanded : !this.state.expanded})}>
+            <CardHeader
+                title = "Filter"
+                subtitle = "Define filters for your list"
+                actAsExpander = {true}
+                showExpandableButton = {true}
+            />
+            <CardText expandable = {true}>
+              <div className = "row">
+                <div className = "col-1 filter-label">Name</div>
+                <div className = "col-5">
+                  <TextField style = {{width : '100%'}}
+                      value = {this.state.name}
+                      name = "name"
+                      onChange = {this.handleChange}
+                      type = "text" placeholder = "Enter username..."
+                  />
                 </div>
-              </CardText>
-            </Card>
-          </div>
-          <ReactTable style = {{width : "100%"}}
-                   data = {this.state.filteredList}
-                   columns = {columns}
-                   defaultExpanded = {{1 : true}}
-                   filterable = {false}
-                   minRows = {3}
-                   noDataText = 'No users found'
-                   showPageSizeOptions = {false}
-                   defaultPageSize = {10}
-                   defaultSorted = {[{
-                      id : 'userID',
-                      desc : true
-                    }]}
-          />
+                <div className = "col-1 filter-label">Email</div>
+                <div className = "col-5">
+                  <TextField style = {{width : '100%'}}
+                      value = {this.state.email}
+                      name = "email"
+                      onChange = {this.handleChange}
+                      type = "text" placeholder = "Enter email adress..."
+                  />
+                </div>
+              </div>
+            </CardText>
+          </Card>
         </div>
+        <ReactTable style = {{width : "100%"}}
+                 data = {this.state.filteredList}
+                 columns = {columns}
+                 defaultExpanded = {{1 : true}}
+                 filterable = {false}
+                 minRows = {3}
+                 noDataText = 'No users found'
+                 showPageSizeOptions = {false}
+                 defaultPageSize = {10}
+                 defaultSorted = {[{
+                    id : 'userID',
+                    desc : true
+                  }]}
+        />
       </div>
+    </div>
     )
   }
 }

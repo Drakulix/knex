@@ -87,7 +87,6 @@ export default class SavedQueries extends Component {
                             userNames = {this.state.userNames}
                             snackbarHandler = {this.snackbarHandler}
                 />
-                <hr></hr>
               </div>
             )}
           </div>

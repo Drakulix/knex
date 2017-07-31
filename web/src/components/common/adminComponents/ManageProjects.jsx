@@ -27,11 +27,13 @@ export default class ManageProjects extends Component {
 
   render(){
     return (
-      <DataTable  columns = {['title', 'status', 'tags', 'authors', 'description', '_id', 'unarchive', 'delete' ]}
+      <div className = "container" >
+        <DataTable  columns = {['title', 'status', 'tags', 'authors', 'description', '_id', 'unarchive', 'delete' ]}
                     handler = {this.handler}
                     data = {this.state.projects}
                     loading = {this.state.loading}
-      />
+        />
+      </div>      
     )
   }
 }
