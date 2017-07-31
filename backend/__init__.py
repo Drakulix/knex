@@ -299,7 +299,7 @@ def initialize_users():
             imgtext = base64.b64encode(tf.read()).decode()
         USER_DATASTORE.create_user(
             email=config["administration_user"]["email"], password=adminpw,
-            first_name="", last_name=config["administration_user"]["username"],
+            first_name="default", last_name=config["administration_user"]["username"],
             bio="Lead developer proxy of knex.", roles=[user_role, admin_role],
             avatar_name="default_avatar.png", avatar=imgtext)
 

@@ -5,16 +5,5 @@
         date_creation        :    '2006-03-09',
         url            :    ['http://example7.org'],
         tags             :     ['context-awareness', 'music recommendation system', 'fuzzy system', 'Bayesian networks', 'utility theory'],
-        authors         :    [
-            {    name        :    'Han-Saem Park',
-                email        :    'sammy@sclab.yonsei.ac.kr'
-
-            },
-            {    name        :    'Ji-Oh Yoo',
-                email        :    'taiji391@sclab.yonsei.ac.kr'
-            },
-            {    name        :    'Sung-Bae Cho',
-                email        :    'sbcho@cs.yonsei.ac.kr'
-            }
-        ]
+        authors         :    ['sammy@sclab.yonsei.ac.kr','taiji391@sclab.yonsei.ac.kr','sbcho@cs.yonsei.ac.kr']
 }

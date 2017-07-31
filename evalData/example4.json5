@@ -5,22 +5,5 @@
         date_creation        :    '2009-06-03',
         url            :    ['http://example4.org'],
         tags             :     ['Music information retrieval','Mood detection', 'Algotithms'],
-        authors         :    [
-            {    name        :    'Cyril Laurier',
-                email        :    'cyril.laurier@upf.edu'
-
-            },
-            {    name        :    'Owen Meyers',
-                email        :    'owen.meyers@upf.edu'
-            },
-            {    name        :    'Joan Serrà',
-                email        :    'joan.serraj@upf.edu'
-            },
-            {    name        :    'Martín Blech',
-                email        :    'martin.blech@upf.edu'
-            },
-            {    name        :    'Perfecto Herrera',
-                email        :    'perfecto.herrera@upf.edu'
-            }
-        ]
+        authors         :    ['cyril.laurier@upf.edu','owen.meyers@upf.edu','joan.serraj@upf.edu','martin.blech@upf.edu','perfecto.herrera@upf.edu']
 }
