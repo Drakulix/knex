@@ -74,8 +74,7 @@ export default class ProfileEditor extends Component {
       var data = new FormData()
       data.append('file', event.target.files[0])
       Backend.updateAvatar(this.state.email, data)
-      .then(
-        this.props.profileChangeHandler("Avatar changed",true))
+      .then(this.props.profileChangeHandler("Avatar changed",true))
     }
     else {
       this.props.profileChangeHandler("Invalid format for picture",false)
