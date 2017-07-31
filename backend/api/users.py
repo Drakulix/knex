@@ -179,15 +179,28 @@ def update_user():
         res.first_name = user.get('first_name', res.first_name)
         res.last_name = user.get('last_name', res.last_name)
         res.bio = user.get('bio', res.bio)
-        res.active = True if user.get('active') == 'true' else\
-            False if user.get('active') == 'false' else res.active
+
+        if 'active' in user:
+            if not current_user.has_role('admin'):
+                raise ApiException("Users cannot de/activate themselves.", 403)
+            if user.get('active') == 'false':
+                for usr in g.user_datastore.user_model.objects:
+                    if usr.has_role('admin') and usr.active and usr['email'] != user['email']:
+                        res.active = False
+                        break
+                else:
+                    raise ApiException("Can't deactivate the last admin.", 400)
+            elif user.get('active') == 'true':
+                res.active = True
+            else:
+                raise ApiException("user['active'] must be either 'true' or 'false", 400)
 
         if 'roles' in user:
             if 'admin' in user['roles'] and not current_user.has_role('admin'):
                 raise ApiException("Current user has no permission to assign admin role.", 403)
             if 'admin' not in user['roles'] and res.has_role('admin'):
                 for usr in g.user_datastore.user_model.objects:
-                    if usr.has_role('admin') and usr['email'] != user['email']:
+                    if usr.has_role('admin') and usr.active and usr['email'] != user['email']:
                         res.roles = [g.user_datastore.find_or_create_role(role)
                                      for role in user['roles']]
                         break
@@ -243,7 +256,7 @@ def delete_user(mail):
             return make_response("deleted non admin", 200)
         else:
             for usr in g.user_datastore.user_model.objects:
-                if usr.has_role('admin') and usr['email'] != user['email']:
+                if usr.has_role('admin') and usr.active and usr['email'] != user['email']:
                     g.user_datastore.delete_user(user)
                     return make_response("deleted", 200)
             raise ApiException("You are the last surviving admin, "
