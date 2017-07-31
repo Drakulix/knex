@@ -5,16 +5,5 @@
         date_creation        :    '2012-09-30',
         url            :    ['http://example6.org'],
         tags             :     ['Music recommender systems', 'Location-aware services', 'Mobile services', 'Social tagging', 'Affective computing'],
-        authors         :    [
-            {    name        :    'Matthias Braunhofer',
-                email        :    'mbraunhofer@unibz.it'
-
-            },
-            {    name        :    'Marius Kaminskas',
-                email        :    ' mkaminskas@unibz.it'
-            },
-            {    name        :    'Francesco Ricci',
-                email        :    'fricci@unibz.it'
-            }
-        ]
+        authors         :    ['mbraunhofer@unibz.it',' mkaminskas@unibz.it','fricci@unibz.it']
 }

@@ -1,14 +1,7 @@
 {
   "title": "Contextual music information retrieval and recommendation: State of the art and challenges",
   "url": ["http://example.org"],
-  "authors":[
-    {"name": "Marius Kaminskas",
-     "email": "mkaminskas@unibz.it"
-    },
-    {"name": "Francesco Ricci",
-     "email": "fricci@unibz.it"
-    }
-  ],
+  "authors":["mkaminskas@unibz.it","fricci@unibz.it"],
   "status": "DONE",
   "description": "Increasing amount of online music content has opened new opportunities for implementing new effective information access services – commonly known as music recommender systems – that support music navigation, discovery, sharing, and formation of user communities. In the recent years a new research area of contextual (or situational) music recommendation and retrieval has emerged. The basic idea is to retrieve and suggest music depending on the user’s actual situation, for instance emotional state, or any other contextual conditions that might influence the user’s perception of music. Despite the high potential of such idea, the development of real-world applications that retrieve or recommend music depending on the user’s context is still in its early stages. This survey illustrates various tools and techniques that can be used for addressing the research challenges posed by context-aware music retrieval and recommendation. This survey covers a broad range of topics, starting from classical music information retrieval (MIR)and recommender system (RS) techniques, and then focusing on context-aware music applications as well as the newer trends of affective and social computing applied to the music domain.",
   "date_creation": "2012-07-09",

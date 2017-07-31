@@ -13,6 +13,7 @@ from flask_security import login_required, login_user, logout_user, current_user
 from flask_security.utils import verify_password, hash_password
 from mongoengine import NotUniqueError
 from mongoengine.fields import ObjectId
+from werkzeug.utils import secure_filename
 
 from api.projects import get_all_authors
 from api.helper.apiexception import ApiException
@@ -79,6 +80,16 @@ def get_all_users_project_ids():
         projects = json.loads(get_user_projects(user['email']).get_data().decode())
         project_ids = [project['_id'] for project in projects]
         dic[user['email']] = project_ids
+    return jsonify(dic)
+
+
+@users.route('/api/users/tags', methods=['GET'])
+@login_required
+def get_all_users_tags():
+    dic = {}
+    for user in g.user_datastore.user_model.objects:
+        tags = json.loads(get_user_tags(user['email']).get_data().decode())
+        dic[user['email']] = tags
     return jsonify(dic)
 
 
@@ -271,18 +282,20 @@ def get_user_avatar(mail):
     return response
 
 
-@users.route('/api/users/<email:mail>/avatar', methods=['PUT'])
+@users.route('/api/users/<email:mail>/avatar', methods=['POST'])
 @login_required
 def set_user_avatar(mail):
     user = g.user_datastore.get_user(mail)
     if not user:
         raise ApiException("Unknown User with Email-address: " + str(mail), 404)
+    if not is_permitted(current_user, user):
+        raise ApiException("Current User has no permission for the requested user.", 403)
     if 'image' not in request.files:
         raise ApiException("request.files contains no image", 400)
-    if 'image/' not in request.content_type:
-        raise ApiException("Content-Type must be set to 'image/<filetype>'", 400)
     file = request.files['image']
-    user.avatar_name = file.filename
+    if 'image/' not in file.mimetype:
+        raise ApiException("File mimetype must be 'image/<filetype>'", 400)
+    user.avatar_name = secure_filename(file.filename)
     user.avatar = base64.b64encode(file.read()).decode()
     user.save()
     return make_response("Avatar successfully replaced.", 200)
@@ -294,6 +307,8 @@ def reset_user_avatar(mail):
     user = g.user_datastore.get_user(mail)
     if not user:
         raise ApiException("Unknown User with Email-address: " + str(mail), 404)
+    if not is_permitted(current_user, user):
+        raise ApiException("Current User has no permission for the requested user.", 403)
     with open(os.path.join(sys.path[0], "default_avatar.png"), 'rb') as tf:
         imgtext = base64.b64encode(tf.read())
     user.avatar = imgtext.decode()
@@ -320,7 +335,7 @@ def get_user_projects(mail):
 @users.route('/api/users/<email:mail>/tags', methods=['GET'])
 @login_required
 def get_user_tags(mail):
-    """Return topten tags of user
+    """Return top five tags of user
 
         Returns:
             res: Array with topten tags lexicographical order
@@ -333,34 +348,8 @@ def get_user_tags(mail):
                     ]
         taglist = sorted(list(g.projects.aggregate(pipeline)), key=lambda k: k['count'],
                          reverse=True) if g.projects.aggregate(pipeline) else []
-
-        toptags = taglist[0:5] if len(taglist) > 4 else taglist
+        toptags = taglist[0:5] if len(taglist) > 5 else taglist
         return jsonify(sorted([x['_id'] for x in toptags], key=str.lower))
-
-    except Exception as err:
-        raise ApiException(str(err), 500)
-
-
-@users.route('/api/users/tags', methods=['GET'])
-@login_required
-def get_cur_user_tags():
-    """Return topten tags of current_user
-
-        Returns:
-            res: Array with topten tags lexicographical order
-    """
-    try:
-        pipeline = [{"$unwind": "$authors"},
-                    {"$match": {"authors": current_user['email']}},
-                    {"$unwind": "$tags"},
-                    {"$group": {"_id": "$tags", "count": {"$sum": 1}}}
-                    ]
-        taglist = sorted(list(g.projects.aggregate(pipeline)), key=lambda k: k['count'],
-                         reverse=True) if g.projects.aggregate(pipeline) else []
-
-        toptags = taglist[0:5] if len(taglist) > 4 else taglist
-        return jsonify(sorted([x['_id'] for x in toptags], key=str.lower))
-
     except Exception as err:
         raise ApiException(str(err), 500)
 
