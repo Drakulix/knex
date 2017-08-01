@@ -102,7 +102,7 @@ export default class ProfileContainer extends Component {
             <div className = "col-3">
               {Backend.isAdmin?
                 <RaisedButton
-                  style  = {{width : "100%"}}
+                  fullWidth={true}
                   label = {(this.state.showRegistration) ? "Hide registration" : "Do you want to register user" }
                   primary = {true}
                   onClick = {() => this.setState ({showRegistration : !this.state.showRegistration})}/>

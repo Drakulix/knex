@@ -135,7 +135,7 @@ export default class ProfileEditor extends Component {
                     type="Submit"
                     label="Submit changes"
                     primary={true}
-                    style={{width: "100%"}}
+                    fullWidth={true}
                     disabled={(this.state.last_name === "" || this.state.first_name === "" || this.state.bio.length >255) ? true : false}
                     />
               </div>
@@ -148,7 +148,8 @@ export default class ProfileEditor extends Component {
                       label = "Upload new avatar"
                       containerElement = "label"
                       primary = {true}
-                      style = {{width:'100%'}}>
+                      fullWidth={true}
+                      >
                     <input type = "file" style = {styles.uploadInput}
                       onChange = {this.handleFile} accept=".png"/>
             </FlatButton>
@@ -157,7 +158,8 @@ export default class ProfileEditor extends Component {
                       containerElement = "label"
                       onClick = {this.handleDeleteAvatar}
                       primary = {true}
-                      style = {{width:'100%'}}/>
+                      fullWidth={true}
+            />
         </div>
       </div>
       <div className = "row">
@@ -216,7 +218,7 @@ export default class ProfileEditor extends Component {
                           type="Submit"
                           label="Change Password"
                           primary={true}
-                          style={{width: "100%"}}
+                          fullWidth={true}
                           disabled= {(this.state.pw_new !== this.state.pw_new_confirm || this.state.pw_new === "" || !(Backend.isAdmin() || this.state.pw_old !== "")) ? true : false}
                           />
             </div>

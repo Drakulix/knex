@@ -14,7 +14,6 @@ p {
 
 a {
   vertical-align: center;
-  color: #000000;
   font-family: 'Roboto', sans-serif !important;
   font-weight: 300;
 }
@@ -158,7 +157,6 @@ a:hover {
   font-family: 'Roboto', sans-serif;
   font-weight: 300;
   font-size: 30px;
-  color: #000000;
   margin-top: 100px;
   margin-bottom: 50px;
   text-align: center;
@@ -202,7 +200,6 @@ a:hover {
   font-family: 'Roboto', sans-serif;
   font-weight: 300;
   font-size: 25px;
-  color: #000000;
   margin-top: 2em;
   margin-bottom: 2em;
   text-align: left;

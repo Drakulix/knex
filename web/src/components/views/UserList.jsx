@@ -6,6 +6,7 @@ import {Card, CardHeader, CardText} from 'material-ui/Card'
 import TextField from 'material-ui/TextField'
 import TagInputList from '../common/chips/TagInputList'
 import SkillOutputList from '../common/chips/SkillOutputList'
+import Styles from '../common/Styles.jsx'
 
 
 export default class ShowUsers extends Component {
@@ -101,8 +102,7 @@ export default class ShowUsers extends Component {
             <div className = "headerCreation">Looking for a user?</div>
             <Card  onExpandChange = {() => this.setState({expanded : !this.state.expanded})}>
               <CardHeader
-                  title = "Filter"
-                  subtitle = "Define filters for your list"
+                  title = "Apply filters to your search"
                   actAsExpander = {true}
                   showExpandableButton = {true}
               />
@@ -110,7 +110,8 @@ export default class ShowUsers extends Component {
                 <div className = "row">
                   <div className = "col-1 filter-label">Name</div>
                   <div className = "col-3">
-                    <TextField style = {{width : '100%'}}
+                    <TextField
+                        fullWidth={true}
                         value = {this.state.name}
                         name = "name"
                         onChange = {this.handleChange}
@@ -119,7 +120,8 @@ export default class ShowUsers extends Component {
                   </div>
                   <div className = "col-1 filter-label">Email</div>
                   <div className = "col-3">
-                    <TextField style = {{width : '100%'}}
+                    <TextField
+                        fullWidth={true}
                         value = {this.state.email}
                         name = "email"
                         onChange = {this.handleChange}
@@ -136,10 +138,11 @@ export default class ShowUsers extends Component {
                 </div>
               </CardText>
             </Card>
-            <div style={{marginTop:20}} >
+            <div style = {{marginTop:20}} >
                 {this.state.filteredList.map((user) => (
-                    <div key={user.email} style={{width : "31%", float:"left", marginRight: 20, marginBottom : 20}}>
-                      <Link to={"/profile/"+user.email} >
+                    <div key = {user.email} style={{width : "31%", float:"left", marginRight: 20, marginBottom : 20}}>
+                      <Link to = {"/profile/"+user.email}
+                            style = {{color : Styles.palette.textColor}}>
                         <div className = "row">
                           <div className = "col-4">
                             <img src = {"/api/users/"+user.email+"/avatar"}

@@ -82,7 +82,7 @@ export default class SignIn extends Component {
                 type="Submit"
                 label="Login"
                 primary={true}
-                style={{width: 250, marginTop:40}}
+                buttonStyle={{width: 250, marginTop:40}}
               />
           </div>
           </form>
@@ -93,7 +93,7 @@ export default class SignIn extends Component {
               type="Submit"
               label="Register"
               primary={true}
-              style={{width: 250}}
+              buttonStyle={{width: 250}}
               required
             />
             </Link>

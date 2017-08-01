@@ -3,7 +3,6 @@ import SavedQuery from "../common/SavedQuery"
 import Backend from '../common/Backend'
 import Snackbar from 'material-ui/Snackbar'
 import Spinner from '../common/Spinner'
-import history from '../common/history'
 import RaisedButton from 'material-ui/RaisedButton'
 import Filters from '../common/Filters'
 
@@ -43,7 +42,7 @@ export default class SavedQueries extends Component {
     this.setState({
       loading : true,
     })
-    Backend.getSavedSearches()
+    return Backend.getSavedSearches()
     .then((queries) => {
       queries.sort(function (a,b) {return a.query.label.localeCompare(b.query.label)})
       this.setState({
@@ -140,10 +139,10 @@ export default class SavedQueries extends Component {
               <div style = {{textAlign : "center", fontSize : 24}} >
                 <div>You don't have a saved query</div>
                 <RaisedButton
-                    style = {{marginTop : 35}}
-                   label = {"Do you want to create one?"}
-                   primary = {true}
-                   onClick = {() => history.push("/discovery")}
+                  style = {{marginTop : 35}}
+                  label = {"Do you want to create one?"}
+                  primary = {true}
+                  href = "/discovery"
                 />
               </div>
               : ""

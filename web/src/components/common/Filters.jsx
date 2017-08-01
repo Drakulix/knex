@@ -92,7 +92,7 @@ export default class Filters extends Component{
               <div className = "col-1 filter-label" style = {{textAlign : "left"}}>Title</div>
               <div className = "col-5" style = {{marginLeft : -40}}>
                 <TextField
-                  style = {{width : "100%"}}
+                  fullWidth={true}
                   name  = "title"
                   value = {this.state.title}
                   onChange = {this.handleChange}
@@ -105,7 +105,7 @@ export default class Filters extends Component{
               <div className = "col-1 filter-label" style = {{textAlign : "left"}}>Description</div>
               <div className = "col-5">
                 <TextField
-                  style = {{width : "100%"}}
+                  fullWidth={true}
                   name  = "description"
                   value = {this.state.description}
                   onChange = {this.handleChange}

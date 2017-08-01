@@ -267,9 +267,10 @@ export default class ManageUsers extends Component {
               <div className = "row">
                 <div className = "col-1 filter-label">Name</div>
                 <div className = "col-5">
-                  <TextField style = {{width : '100%'}}
+                  <TextField 
                       value = {this.state.name}
                       name = "name"
+                      fullWidth={true}
                       onChange = {this.handleChange}
                       type = "text" placeholder = "Enter username..."
                   />

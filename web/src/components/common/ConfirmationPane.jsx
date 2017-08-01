@@ -26,7 +26,6 @@ export default class ConfirmationPane extends Component {
         actions = {actions}
         modal = {false}
         open = {this.props.open}
-        onRequestClose = {this.props.handleClose}
         >
       </Dialog>
     )

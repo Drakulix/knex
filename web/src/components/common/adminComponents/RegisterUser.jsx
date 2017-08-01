@@ -82,7 +82,7 @@ export default class RegisterUser extends Component {
 
   render(){
     return (
-      <div style = {{textAlign : "left"}}>
+      <div className = "container" style = {{textAlign : "left"}}>
         <Snackbar
                 open={this.state.snackbar}
                 message={this.state.snackbarText}
@@ -156,7 +156,7 @@ export default class RegisterUser extends Component {
                 label="Register User"
                 disabled={this.isInValidInput()}
                 primary={true}
-                style={{width: "100%"}}
+                fullWidth={true}
                 required
                 />
             </div>

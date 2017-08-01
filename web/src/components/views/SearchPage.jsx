@@ -139,8 +139,9 @@ export default class SearchPage extends Component {
           </div>
           <div className="row" style={{textAlign:"center"}}>
             <div className="col-10">
-              <TextField  style={{width:"100%"}}
+              <TextField 
                 name="searchString"
+                fullWidth={true}
                 value = {this.state.searchString}
                 placeholder="Enter your query here..."
                 onChange={this.handleChange} />

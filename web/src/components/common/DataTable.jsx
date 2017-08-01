@@ -11,6 +11,7 @@ import TagOutputList from '../common/chips/TagOutputList'
 import ConfirmationPane from '../common/ConfirmationPane'
 import Status from '../common/Status'
 import Spinner from '../common/Spinner'
+import CircularProgress from 'material-ui/CircularProgress'
 
 
 export default class BookmarksTable extends Component {
@@ -34,6 +35,11 @@ export default class BookmarksTable extends Component {
     }
 
     this.handleFilterChange = this.handleFilterChange.bind(this)
+    this.handleClose = this.handleClose.bind(this)
+  }
+
+  handleClose(){
+    this.setState({dialogOpen : false, snackbar : false})
   }
 
   handleDelete(projectInf){
@@ -43,7 +49,7 @@ export default class BookmarksTable extends Component {
       buttonText : "Delete",
       dialogOpen : true,
       action : () => {
-        this.setState({dialogOpen:false})
+        this.setState({loading : true,dialogOpen:false})
         Backend.deleteProject(projectInf._id)
         .then(() => {this.props.handler(this.state.filters)})
         .then(this.setState({snackbar : true,
@@ -58,16 +64,16 @@ export default class BookmarksTable extends Component {
       dialogText : "Do you want to archive project " + projectInf.title + "?",
       buttonText : "Archive",
       dialogOpen : true,
-      loading : true,
       action : () => {
+        this.setState({loading : true,dialogOpen:false})
         var project = projectInf
         delete project.is_bookmark
         delete project.is_owner
         project['archived'] = true
         Backend.updateProject(projectInf._id, project)
-            .then(() => {this.props.handler(this.state.filters)})
-            .then(() => {this.setState({snackbar : true,
-            snackbarText : "Project "+ projectInf.title +" archived"})})
+        .then(() => {this.props.handler(this.state.filters)})
+        .then(this.setState({snackbar : true,
+          snackbarText : "Project "+ projectInf.title +" archived"}))
       }
     })
   }
@@ -327,9 +333,9 @@ export default class BookmarksTable extends Component {
       })
     }
     return (
-      <div className = "container" >
+      <div>
         <ConfirmationPane   open = {this.state.dialogOpen}
-                            handleClose = {() => {this.setState({dialogOpen : false, snackbar : false})}}
+                            handleClose = {this.handleClose}
                             title = {this.state.dialogText}
                             confirmationLabel = {this.state.buttonText}
                             confirmAction = {this.state.action}
@@ -354,7 +360,10 @@ export default class BookmarksTable extends Component {
               filterable = {false}
               showPageSizeOptions = {false}
               minRows = {3}
-              noDataText = 'No projects found'
+              noDataText = {() =>
+                (this.state.loading) ?
+                  <CircularProgress  size = {45} thickness = {5} /> : "No projects found"
+              }
               defaultPageSize = {10}/>
         </div>
       </div>

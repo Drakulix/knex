@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import styles from '../Styles.jsx'
 import Backend from '../Backend'
-import history from '../history'
 import IconButton from 'material-ui/IconButton'
 import SharePane from './SharePane'
 import Snackbar from 'material-ui/Snackbar'
@@ -23,7 +22,6 @@ export default class ProjectControls extends Component{
       comments_count: 0,
     }
 
-    this.handleEdit = this.handleEdit.bind(this)
     this.handleComment = this.handleComment.bind(this)
     this.handleBookmark = this.handleBookmark.bind(this)
     this.handleShare = this.handleShare.bind(this)
@@ -70,11 +68,6 @@ export default class ProjectControls extends Component{
 
   componentWillMount(){
     this.loadComments()
-  }
-
-  handleEdit(event){
-    event.preventDefault()
-    history.push("/update/" + this.props.id)
   }
 
   handleClose(){
@@ -193,7 +186,7 @@ export default class ProjectControls extends Component{
                     disabled = {! (this.props.isOwner || Backend.isAdmin())}
                     tooltipPosition = "top-center"
                     tooltip = "Edit project"
-                    onClick = {this.handleEdit}
+                    href = {"/update/" + this.props.id}
                     iconStyle = {{fontSize : '24px'}}
                     >
                     <i className = "material-icons">mode_edit</i>

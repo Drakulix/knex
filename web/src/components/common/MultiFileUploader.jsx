@@ -38,7 +38,13 @@ export default class MultiFileUploader extends Component {
 
   remove(id){
     var files = this.state.files.filter((c) => c.name !== id)
-    this.setState({files : files})
+    this.setState({files : files, snackbar : false})
+  }
+
+  componentWillReceiveProps(props){
+    if(props.open === false){
+      this.setState({snackbar : false})
+    }
   }
 
   handleFile(event){
@@ -47,7 +53,7 @@ export default class MultiFileUploader extends Component {
     let reader = new FileReader();
     switch (file.name.substring(file.name.lastIndexOf(".")+1)){
       case "json":
-        reader.onload = () => {
+        reader.onload = function() {
         try {
               var json = JSON.parse(reader.result);
               var files = this.state.files
@@ -61,10 +67,11 @@ export default class MultiFileUploader extends Component {
            } catch(e) {
              this.setState({
                snackbar : true,
-               snackbarText : "File is not a valid JSON file"
+               snackbarText : "File is not a valid JSON file",
+               loading : false
              })
            }
-         }
+         }.bind(this)
         reader.readAsText(file);
         break
       case "json5":
@@ -82,7 +89,8 @@ export default class MultiFileUploader extends Component {
            } catch(e) {
              this.setState({
                snackbar : true,
-               snackbarText : "File is not a valid JSON5 file"
+               snackbarText : "File is not a valid JSON5 file",
+               loading : false
              })
            }
          }
@@ -102,14 +110,14 @@ export default class MultiFileUploader extends Component {
       <RaisedButton
         label = "Cancel"
         primary = {true}
-        style = {{width : 160}}
+        buttonStyle = {{width : 160}}
         onTouchTap = {this.props.handleClose}
         disabled = {this.state.loading}
         />,
       <RaisedButton
         label = "Upload projects"
         primary = {true}
-        style = {{width : 160, marginLeft : 26, marginRight : 15}}
+        buttonStyle = {{width : 160, marginLeft : 26, marginRight : 15}}
         onTouchTap = {this.uploadAllFiles}
         disabled = {this.state.loading || this.state.files.length === 0}
         />,
@@ -136,7 +144,8 @@ export default class MultiFileUploader extends Component {
                       icon = {<i className = "material-icons" style = {{color: Styles.palette.alternateTextColor, marginTop:-3}}>file_upload</i>}
                       containerElement = "label"
                       primary = {true}
-                      style = {{width : "100%", display : (this.state.loading) ? "none" : "block"}}>
+                      fullWidth={true}
+                      style = {{display : (this.state.loading) ? "none" : "block"}}>
                     <input type = "file" style = {Styles.uploadInput} onChange = {this.handleFile} />
             </RaisedButton>
           </div>

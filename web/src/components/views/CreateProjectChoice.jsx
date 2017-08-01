@@ -150,7 +150,8 @@ export default class CreateProjectChoice extends Component {
                   value = {this.state.sourceURL}/>
             </div>
             <div >
-              <RaisedButton style = {{width:'300px'}}
+              <RaisedButton
+                          buttonStyle = {{width:'300px'}}
                           icon = {<i className = "material-icons" style = {{color: Styles.palette.alternateTextColor, marginTop:-3}}>cloud_download</i>}
                           label = "import online json"
                           primary = {true}
@@ -164,7 +165,7 @@ export default class CreateProjectChoice extends Component {
                     icon = {<i className = "material-icons" style = {{color: Styles.palette.alternateTextColor, marginTop:-3}}>file_upload</i>}
                     containerElement = "label"
                     primary = {true}
-                    style = {{width:'300px'}}>
+                    buttonStyle = {{width:'300px'}}>
                   <input type = "file" style = {Styles.uploadInput} onChange = {this.handleFile} />
           </RaisedButton>
         </div>
@@ -174,7 +175,7 @@ export default class CreateProjectChoice extends Component {
             <RaisedButton label = "Use online formular"
                       icon = {<i className = "material-icons" style = {{color: Styles.palette.alternateTextColor, marginTop:-3}}>keyboard</i>}
                       primary = {true}
-                      style = {{ width:'300px'}}/>
+                      buttonStyle = {{ width:'300px'}}/>
           </Link>
         </div>
         <div className = "text" >or</div>
@@ -184,7 +185,7 @@ export default class CreateProjectChoice extends Component {
                       icon = {<i className = "material-icons" style = {{color: Styles.palette.alternateTextColor, marginTop:-3}}>playlist_add</i>}
                       primary = {true}
                       onClick = {() => this.setState({multiFileUploader : true})}
-                      style = {{ width:'300px'}}/>
+                      buttonStyle = {{ width:'300px', height:300, textAlign:"left"}}/>
 
         </div>
       </div>

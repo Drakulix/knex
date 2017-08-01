@@ -41,7 +41,7 @@ export default class SavedQuery extends Component {
                   onClick={this.runQuery}
                   label = {"Run query"}
                   primary = {true}
-                  style = {{width : "100%"}}
+                  fullWidth={true}
                   icon = {<i className="material-icons" style = {{color: Styles.palette.alternateTextColor, marginTop: 0}}>search</i>}
                  >
                 </RaisedButton>
@@ -51,7 +51,7 @@ export default class SavedQuery extends Component {
               <RaisedButton
                  onClick={this.deleteQuery}
                  primary = {true}
-                 style = {{width : "100%"}}
+                 fullWidth={true}
                  label="Delete Query"
                  icon = {<i className="material-icons" style = {{color: Styles.palette.alternateTextColor, marginTop: 0}}>delete</i>}
                  >
