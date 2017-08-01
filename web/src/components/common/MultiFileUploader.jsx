@@ -51,7 +51,7 @@ export default class MultiFileUploader extends Component {
     this.setState({loading : true})
     var file = event.target.files[0]
     let reader = new FileReader();
-    switch (file.name.substring(file.name.lastIndexOf(".")+1)){
+    switch (file.name.substring(file.name.lastIndexOf(".") + 1)){
       case "json":
         reader.onload = function() {
         try {

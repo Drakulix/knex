@@ -55,7 +55,7 @@ export default class ProjectContainer extends Component {
     this.setState({
       dialogOpen : false,
       snackbar : true,
-      snackbarText : "Project " + project.title + " unarchived"
+      snackbarText : `Project ${project.title} unarchived`
     }))
   }
 
@@ -112,7 +112,7 @@ export default class ProjectContainer extends Component {
     this.setState({
       dialogOpen : false,
       snackbar : true,
-      snackbarText : "Project " + project.title + " archived"
+      snackbarText : `Project ${project.title} archived`
     }))
   }
 
@@ -164,8 +164,10 @@ export default class ProjectContainer extends Component {
           projectInf.is_bookmark = this.state.projectInf.is_bookmark === "true" ? "false" : "true"
           this.setState({projectInf : projectInf})
     })
-    .then(() => {this.setState({snackbar :true,
-      snackbarText : "Project bookmark"+(this.state.projectInf.is_bookmark === "true" ? "ed" : " removed")})})
+    .then(() => {this.setState({
+      snackbar :true,
+      snackbarText : `Project bookmark${this.state.projectInf.is_bookmark === "true" ? "ed" : " removed"}`})
+    })
   }
 
   render(){
@@ -192,7 +194,7 @@ export default class ProjectContainer extends Component {
           <CommentSideBar handleUpdateComments = {this.handleUpdateComments} value = {this.state.commentBar} uuid = {this.state.projectID}></CommentSideBar>
           <ConfirmationPane open = {this.state.dialogOpen}
                             handleClose = {this.handleClose}
-                            title = {"Do you want to archive project " + this.state.projectInf.title}
+                            title = {`Do you want to archive project ${this.state.projectInf.title}`}
                             confirmationLabel = {"Archive project"}
                             confirmAction = {this.handleDelete}
           />
@@ -289,7 +291,7 @@ export default class ProjectContainer extends Component {
                         disabled = {! (this.state.isOwner || Backend.isAdmin())}
                         tooltipPosition = "top-center"
                         tooltip = "Edit project"
-                        href = {"/update/" + this.state.projectID}
+                        href = {`/update/${this.state.projectID}`}
                         iconStyle = {{fontSize : '24px', marginTop:-5}}
                         >
                         <i className = "material-icons">mode_edit</i>

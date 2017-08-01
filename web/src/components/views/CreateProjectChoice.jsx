@@ -31,7 +31,7 @@ export default class CreateProjectChoice extends Component {
   handleFile(event){
     var file = event.target.files[0]
     let reader = new FileReader();
-    switch (file.name.substring(file.name.lastIndexOf(".")+1)){
+    switch (file.name.substring(file.name.lastIndexOf(".") + 1)){
       case "json":
         reader.onload = () => {
         try {
@@ -122,12 +122,11 @@ export default class CreateProjectChoice extends Component {
 
   render() {
     if (this.state.redirect){
-      return <Redirect to = {'/createByURL/'+encodeURIComponent(this.state.sourceURL)}/>
+      return <Redirect to = {`/createByURL/${encodeURIComponent(this.state.sourceURL)}`}/>
     }
     if(this.state.uploaded){
       var data = encodeURIComponent(JSON5.stringify(this.state.data));
-      return(<Redirect to = {
-        '/createFromFile/'+data
+      return(<Redirect to = {`/createFromFile/${data}`
       }/>);
     }
     const actions = [

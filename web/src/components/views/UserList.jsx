@@ -73,7 +73,7 @@ export default class ShowUsers extends Component {
     var filteredList = []
     for(let dataObject of this.state.userList) {
       var discard = false
-      var userName = (dataObject.first_name + " " + dataObject.last_name).toLowerCase()
+      var userName = (`${dataObject.first_name} ${dataObject.last_name}`).toLowerCase()
       var email = dataObject.email.toLowerCase()
       discard = discard || email.indexOf(name === "email" ? value.toLowerCase() :  this.state.email.toLowerCase()) === -1
       discard = discard || userName.indexOf(name === "name" ? value.toLowerCase() :  this.state.name.toLowerCase()) === -1
@@ -141,11 +141,11 @@ export default class ShowUsers extends Component {
             <div style = {{marginTop:20}} >
                 {this.state.filteredList.map((user) => (
                     <div key = {user.email} style = {{width : "31%", float:"left", marginRight: 20, marginBottom : 20}}>
-                      <Link to = {"/profile/"+user.email}
+                      <Link to = {`/profile/${user.email}`}
                             style = {{color : Styles.palette.textColor}}>
                         <div className = "row">
                           <div className = "col-4">
-                            <img src = {"/api/users/"+user.email+"/avatar"}
+                            <img src = {`/api/users/${user.email}/avatar`}
                               width = "140"
                               height = "140"
                               alt = {user.email}
@@ -153,7 +153,7 @@ export default class ShowUsers extends Component {
                           </div>
                           <div className = "col-1"></div>
                           <div className = "col-6" style = {{marginTop:20}}>
-                            <div style = {{fontWeight : "bold", fontSize : 20}}>{user.first_name + " " +user.last_name}</div>
+                            <div style = {{fontWeight : "bold", fontSize : 20}}>{`${user.first_name} ${user.last_name}`}</div>
                             <div style = {{fontSize : 14}}>{user.email}</div>
                             <div style = {{fontSize : 16}}>{this.state.projectCounts[user.email] !== undefined ? this.state.projectCounts[user.email].length :0} Projects</div>
                             <div style = {{width : 200}}><SkillOutputList value = {this.state.userTags[user.email]} /></div>

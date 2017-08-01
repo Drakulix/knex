@@ -11,7 +11,7 @@ export default class UrlOutputList extends Component{
         { this.props.value !== undefined ?
           this.props.value.map(item =>
             <Chip style = {{margin: '8px 8px 0 0', background : Styles.palette.primary1Color, float: 'left' }} key = {item}>
-              <Link to = {"/discovery/"+ JSON.stringify({tags : [item]})}
+              <Link to = {`/discovery/${JSON.stringify({tags : [item]})}`}
                     style = {{color:Styles.palette.alternateTextColor, fontWeight:'bold'}}>
                 {item}
               </Link>

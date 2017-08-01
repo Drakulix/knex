@@ -69,7 +69,7 @@ export default class ProfileEditor extends Component {
 
   handleFile(event){
     var file = event.target.files[0]
-    if (file.name.substring(file.name.lastIndexOf(".")+1) === "png"){
+    if (file.name.substring(file.name.lastIndexOf(".") + 1) === "png"){
       var data = new FormData()
       data.append('file', event.target.files[0])
       Backend.updateAvatar(this.state.email, data)
@@ -143,7 +143,11 @@ export default class ProfileEditor extends Component {
           </form>
         </div>
         <div className = "col-3">
-          <img src = {"/api/users/"+this.props.profileInf.email+"/avatar"} width = "200px" height = "200px" alt = "..." className = "rounded-circle profile-icon" />
+          <img  src = {`/api/users/${this.props.profileInf.email}/avatar`}
+                width = "200px"
+                height = "200px"
+                alt = "..."
+                className = "rounded-circle profile-icon" />
             <FlatButton
                       label = "Upload new avatar"
                       containerElement = "label"

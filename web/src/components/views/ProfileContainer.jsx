@@ -112,7 +112,7 @@ export default class ProfileContainer extends Component {
             {Backend.isAdmin ?
               <div style = {{textAlign : "center", marginBottom : 40, display : (this.state.showRegistration) ? "block" : "none" }}>
                 <RegisterUser email = {this.props.match.params.email}
-                              handleUserUpdate = {() => {history.push("/profile/"+this.props.match.params.email)}}/>
+                              handleUserUpdate = {() => {history.push(`/profile/${this.props.match.params.email}`)}}/>
               </div>
               :  "" }
             <ProfileProjects

@@ -3,12 +3,12 @@ import 'isomorphic-fetch'
 function setCookie(cname, cvalue, exdays) {
     var d = new Date();
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-    var expires = "expires="+d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    var expires = `${expires}=d.toUTCString()`;
+    document.cookie = `${cname}=${cvalue};${expires};path=/`;
 }
 
 function getCookie(cname) {
-    var name = cname + "=";
+    var name = `${cname}=`;
     var ca = document.cookie.split(';');
     for(var i = 0; i < ca.length; i++) {
         var c = ca[i];
@@ -304,15 +304,15 @@ class Backend {
     }
 
     getProject(id) {
-        return this.getJson('/api/projects/'+id);
+        return this.getJson(`/api/projects/${id}`);
     }
 
     updateProject(id, payload) {
-        return this.putJson('/api/projects/'+id, payload);
+        return this.putJson(`/api/projects/${id}`, payload);
     }
 
     deleteProject(id) {
-        return this.delete('/api/projects/'+id);
+        return this.delete(`/api/projects/${id}`);
     }
 
     async addProjectComment(id, message) {
@@ -440,7 +440,7 @@ class Backend {
     }
 
     deleteSavedSearch(id) {
-        return this.delete('/api/users/saved_searches/'+encodeURIComponent(id));
+        return this.delete(`/api/users/saved_searches/${encodeURIComponent(id)}`);
     }
 
     getUsers() {
@@ -510,11 +510,11 @@ class Backend {
     }
 
     updateAvatar(email, image){
-      return this.postImage("/api/users/"+email+"/avatar", image)
+      return this.postImage(`/api/users/${email}/avatar`, image)
     }
 
     deleteAvatar(email){
-      return this.delete("/api/users/"+email+"/avatar")
+      return this.delete(`/api/users/${email}/avatar`)
     }
 
     updatePassword(mail, old_pass, new_pass) {
@@ -526,11 +526,11 @@ class Backend {
     }
 
     deleteUser(mail) {
-        return this.delete('/api/users/'+encodeURIComponent(mail))
+        return this.delete(`/api/users/${encodeURIComponent(mail)}`)
     }
 
     async getProfile(mail = this.mail) {
-        let profile = await this.getJson('/api/users/'+encodeURIComponent(mail));
+        let profile = await this.getJson(`/api/users/${encodeURIComponent(mail)}`);
         if (mail == this.mail) {
           this.profile = profile;
         }
@@ -546,19 +546,19 @@ class Backend {
     }
 
     addBookmark(id) {
-        return this.postJson('/api/users/bookmarks/'+encodeURIComponent(id));
+        return this.postJson(`/api/users/bookmarks/${encodeURIComponent(id)}`);
     }
 
     deleteBookmark(id) {
-        return this.delete('/api/users/bookmarks/'+encodeURIComponent(id));
+        return this.delete(`/api/users/bookmarks/${encodeURIComponent(id)}`);
     }
 
     handleBookmark(id, shouldBookmark){
       if(shouldBookmark === "true") {
-        return this.delete('/api/users/bookmarks/'+encodeURIComponent(id));
+        return this.delete(`/api/users/bookmarks/${encodeURIComponent(id)}`);
       }
       else{
-        return this.postJson('/api/users/bookmarks/'+encodeURIComponent(id));
+        return this.postJson(`/api/users/bookmarks/${encodeURIComponent(id)}`);
       }
     }
 
@@ -571,7 +571,7 @@ class Backend {
     }
 
     deleteNotification(id) {
-        return this.delete('/api/users/notifications/'+encodeURIComponent(id));
+        return this.delete(`/api/users/notifications/${encodeURIComponent(id)}`);
     }
 }
 

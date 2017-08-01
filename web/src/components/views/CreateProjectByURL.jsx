@@ -57,7 +57,7 @@ export default class CreateProjectByURL extends React.Component {
         }
       },
       function(exception){
-        alert("Connection Error:\n"+exception)
+        alert(`Connection Error:\n${exception}`)
       }
     )
   }

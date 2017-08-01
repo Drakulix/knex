@@ -123,7 +123,7 @@ export default class ProjectControls extends Component{
       this.setState({bookmark : this.state.is_bookmark === "true" ? "false" : "true" })
     })
     .then(() => {this.setState({snackbar :true,
-      snackbarText : "Project bookmark"+(this.state.is_bookmark === "true" ? "ed" : " removed")})})
+      snackbarText : `Project bookmark${this.state.is_bookmark === "true" ? "ed" : " removed"}`})})
   }
 
   render(){
@@ -134,10 +134,12 @@ export default class ProjectControls extends Component{
                     open = {this.state.sharePane}
                     handleClosedSharePane = {this.handleClose}
         />
-        <CommentSideBar handleUpdateComments = {this.handleUpdateComments} value = {this.state.commentBar} uuid = {this.props.projectInf.projectID}></CommentSideBar>
+        <CommentSideBar handleUpdateComments = {this.handleUpdateComments}
+                        value = {this.state.commentBar}
+                        uuid = {this.props.projectInf.projectID}/>
         <ConfirmationPane open = {this.state.dialogOpen}
                           handleClose = {this.handleClose}
-                          title = {"Do you want to archive project " + this.props.projectInf.title}
+                          title = {`Do you want to archive project${this.props.projectInf.title}`}
                           confirmationLabel = {"Archive project"}
                           confirmAction = {this.handleDelete}
         />
@@ -187,7 +189,7 @@ export default class ProjectControls extends Component{
                       disabled = {! (this.props.isOwner || Backend.isAdmin())}
                       tooltipPosition = "top-center"
                       tooltip = "Edit project"
-                      href = {"/update/" + this.state.projectInf._id}
+                      href = {`/update/${this.state.projectInf._id}`}
                       iconStyle = {{fontSize : '24px', marginTop:-5}}
                       >
                       <i className = "material-icons">mode_edit</i>

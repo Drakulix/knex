@@ -63,14 +63,14 @@ export default class ManageUsers extends Component {
   }
 
   handleSetAdmin(userInf){
-    var text = "User " + userInf.first_name + " " + userInf.last_name + " ";
+    var text = `User ${userInf.first_name} ${userInf.last_name} `;
     if(userInf.roles.includes("admin")){
       userInf.roles.splice(userInf.roles.indexOf("admin"))
-      text = text + " is not admin anymore"
+      text = `${text} is not admin anymore`
     }
     else {
       userInf.roles.push("admin")
-      text = text + " is now admin"
+      text = `${text} is now admin`
     }
     Backend.setUserRoles(userInf.email,
                          userInf.first_name,
@@ -82,7 +82,7 @@ export default class ManageUsers extends Component {
     }
 
   handleSetActive(userInf){
-    var text = "User " + userInf.first_name + " " + userInf.last_name + " is "+ (userInf.active ? "de-" : "") + "activated"
+    var text = `User ${userInf.first_name} ${userInf.last_name}  is ${userInf.active ? "de-" : ""}activated`
     Backend.setActivation( userInf.email,
                            userInf.first_name,
                            userInf.last_name,
@@ -103,7 +103,7 @@ export default class ManageUsers extends Component {
     Backend.deleteUser(this.state.userID)
     .then(() =>{this.setState({ open:false,
                                 snackbar: true,
-                                snackbarText : "User " + this.state.userID + " deleted"})})
+                                snackbarText : `User ${this.state.userID} deleted`})})
     .then(() => {this.loadUsers()})
   }
 
@@ -112,7 +112,7 @@ export default class ManageUsers extends Component {
     var filteredList = []
     for(let dataObject of this.state.userList) {
       var discard = false
-      var userName = (dataObject.first_name + " " + dataObject.last_name).toLowerCase()
+      var userName = `${dataObject.first_name} ${dataObject.last_name}`.toLowerCase()
       var email = dataObject.email.toLowerCase()
       discard = discard || email.indexOf(name === "email" ? value.toLowerCase() :  this.state.email.toLowerCase()) === -1
       discard = discard || userName.indexOf(name === "name" ? value.toLowerCase() :  this.state.name.toLowerCase()) === -1
@@ -123,8 +123,6 @@ export default class ManageUsers extends Component {
       filteredList : filteredList
     })
   }
-
-
 
   render(){
     var columns = []
@@ -137,7 +135,7 @@ export default class ManageUsers extends Component {
           <div style = {{whiteSpace : "normal", marginTop:5}}>
             <Link to = {`profile/${props.value.email}`}
               className = "table-link-text">
-              {props.value.first_name + " " + props.value.last_name }
+              {`${props.value.first_name} ${props.value.last_name}`}
             </Link>
           </div>
         )
@@ -208,17 +206,15 @@ export default class ManageUsers extends Component {
       sortable : false,
       width : 60,
       style : {textAlign : "center"},
-      Cell : props => <Link
-                      to = {"/profile/"+props.value.email}>
-                      <IconButton
+      Cell : props => <IconButton
                           touch = {true}
+                          href = {`/profile/${props.value.email}`}
                           style = {styles.largeIcon}
                           iconStyle = {{fontSize : '24px'}}
                           value = {props.value._id}
                           >
                             <i className = "material-icons">mode_edit</i>
                           </IconButton>
-                    </Link>
     })
 
     columns.push({
@@ -243,7 +239,7 @@ export default class ManageUsers extends Component {
       <div className = "container" >
         <ConfirmationPane open = {this.state.open}
                           handleClose = {() => {this.setState({open : false})}}
-                          title = {"Do you want to delete user " + this.state.userID}
+                          title = {`Do you want to delete user ${this.state.userID}`}
                           confirmationLabel = {"Delete User"}
                           confirmAction = {this.handleDelete}
         />
