@@ -206,6 +206,7 @@ export default class ProjectContainer extends Component {
               <div style = {{fontSize : '20px'}}> {this.state.projectInf.title}</div>
                 {this.state.projectInf.archived ? <i style = {{fontSize : '20px'}}>Archived project</i> : ""}
               </div>
+              <ProjectControls projectInf = {this.state.projectInf} isOwner = {this.state.isOwner}/>
           </div>
           <div className = "row">
             <div className = "col-5">
@@ -290,7 +291,7 @@ export default class ProjectContainer extends Component {
                         tooltipPosition = "top-center"
                         tooltip = "Edit project"
                         href = {"/update/" + this.state.projectID}
-                        iconStyle = {{fontSize : '24px'}}
+                        iconStyle = {{fontSize : '24px', marginTop:-5}}
                         >
                         <i className = "material-icons">mode_edit</i>
             </IconButton>

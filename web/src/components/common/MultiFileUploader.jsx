@@ -58,6 +58,7 @@ export default class MultiFileUploader extends Component {
               var json = JSON.parse(reader.result);
               var files = this.state.files
               files.push ({name : file.name, project : json})
+              files.sort(function (a,b) {return a.title.localeCompare(b.title)})
               this.setState({
                 snackbar : true,
                 snackbarText : "File uploaded",
@@ -80,6 +81,7 @@ export default class MultiFileUploader extends Component {
               var json5 = JSON5.parse(reader.result);
               var files = this.state.files
               files.push ({name : file.name, project : json5})
+              files.sort(function (a,b) {return a.title.localeCompare(b.title)})
               this.setState({
                 snackbar : true,
                 snackbarText : "File uploaded",
@@ -110,15 +112,15 @@ export default class MultiFileUploader extends Component {
       <RaisedButton
         label = "Cancel"
         primary = {true}
-        buttonStyle = {{width : 160}}
-        onTouchTap = {this.props.handleClose}
+        style = {{width : 160}}
+        onClick = {this.props.handleClose}
         disabled = {this.state.loading}
         />,
       <RaisedButton
         label = "Upload projects"
         primary = {true}
-        buttonStyle = {{width : 160, marginLeft : 26, marginRight : 15}}
-        onTouchTap = {this.uploadAllFiles}
+        style = {{width : 160, marginLeft : 26, marginRight : 15}}
+        onClick = {this.uploadAllFiles}
         disabled = {this.state.loading || this.state.files.length === 0}
         />,
     ]
@@ -151,15 +153,15 @@ export default class MultiFileUploader extends Component {
           </div>
         </div>
         <Spinner loading = {this.state.loading} text = {"Uploading project"}/>
-        <List style = {{display : (this.state.loading) ? "none" : "block"}}>
+        <List style = {{display : (this.state.loading) ? "none" : "block", maxHeight : 500, overflowY: "auto"}}>
           {this.state.files.map(item =>
-            <div  key = {item.name}>  <ListItem
+            <ListItem
+                key = {item.name}
                 rightIcon = {<i className = "material-icons" style = {{color : 'gray'}}>cancel</i>}
                 primaryText = {item.project.title}
                 secondaryText = {item.name}
                 onClick = {() => {this.remove(item.name)}}
               />
-            </div>
           )}
         </List>
       </Dialog>
