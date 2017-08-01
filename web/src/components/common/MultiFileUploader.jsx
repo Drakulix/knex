@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import Dialog from 'material-ui/Dialog'
-import RaisedButton from 'material-ui/RaisedButton'
 import {List, ListItem} from 'material-ui/List';
-import styles from '../common/Styles.jsx'
+import RaisedButton from 'material-ui/RaisedButton'
+import Snackbar from 'material-ui/Snackbar'
+import Styles from '../common/Styles.jsx'
 import Spinner from '../common/Spinner'
 import Backend from '../common/Backend'
 import history from '../common/history'
-import Snackbar from 'material-ui/Snackbar'
+
 
 const JSON5 = require('json5')
 
@@ -55,11 +56,11 @@ export default class MultiFileUploader extends Component {
                 snackbar : true,
                 snackbarText : "File uploaded",
                 files : files,
-                //loading : false
+                loading : false
               })
            } catch(e) {
              this.setState({
-               //snackbar : true,
+               snackbar : true,
                snackbarText : "File is not a valid JSON file"
              })
            }
@@ -76,7 +77,7 @@ export default class MultiFileUploader extends Component {
                 snackbar : true,
                 snackbarText : "File uploaded",
                 files : files,
-                //loading : false
+                loading : false
               })
            } catch(e) {
              this.setState({
@@ -96,7 +97,6 @@ export default class MultiFileUploader extends Component {
     }
   }
 
-
   render() {
     const actions = [
       <RaisedButton
@@ -114,7 +114,6 @@ export default class MultiFileUploader extends Component {
         disabled = {this.state.loading || this.state.files.length === 0}
         />,
     ]
-
     return (<div>
       <Snackbar
         open = {this.state.snackbar}
@@ -134,11 +133,11 @@ export default class MultiFileUploader extends Component {
           <div className="col-6" style = {{marginLeft: 0}}>
             <RaisedButton
                       label = "add a file"
-                      icon = {<i className = "material-icons" style = {{color: "#ffffff", marginTop:-3}}>file_upload</i>}
+                      icon = {<i className = "material-icons" style = {{color: Styles.palette.alternateTextColor, marginTop:-3}}>file_upload</i>}
                       containerElement = "label"
                       primary = {true}
                       style = {{width : "100%", display : (this.state.loading) ? "none" : "block"}}>
-                    <input type = "file" style = {styles.uploadInput} onChange = {this.handleFile} />
+                    <input type = "file" style = {Styles.uploadInput} onChange = {this.handleFile} />
             </RaisedButton>
           </div>
         </div>

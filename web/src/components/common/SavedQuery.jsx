@@ -5,6 +5,7 @@ import {Card, CardHeader, CardText} from 'material-ui/Card'
 import Backend from '../common/Backend'
 import AuthorOutputList from '../common/chips/AuthorOutputList'
 import TagOutputList from '../common/chips/TagOutputList'
+import Styles from './Styles.jsx'
 
 
 export default class SavedQuery extends Component {
@@ -41,7 +42,7 @@ export default class SavedQuery extends Component {
                   label = {"Run query"}
                   primary = {true}
                   style = {{width : "100%"}}
-                  icon = {<i className="material-icons" style = {{color: "#ffffff", marginTop: 0}}>search</i>}
+                  icon = {<i className="material-icons" style = {{color: Styles.palette.alternateTextColor, marginTop: 0}}>search</i>}
                  >
                 </RaisedButton>
               </Link>
@@ -52,7 +53,7 @@ export default class SavedQuery extends Component {
                  primary = {true}
                  style = {{width : "100%"}}
                  label="Delete Query"
-                 icon = {<i className="material-icons" style = {{color: "#ffffff", marginTop: 0}}>delete</i>}
+                 icon = {<i className="material-icons" style = {{color: Styles.palette.alternateTextColor, marginTop: 0}}>delete</i>}
                  >
               </RaisedButton>
             </div>

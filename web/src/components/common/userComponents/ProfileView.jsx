@@ -22,7 +22,7 @@ export default class ProfileView extends Component {
               <div className="profile-info" style={{marginTop:16}}>{this.props.projectsContributed}</div>
             </div>
             <div className ="col-8">
-              <div className="profile-header" style ={{marginLeft : 16}}>Knowledge in</div>
+              <div className="profile-header">Knowledge in</div>
               <TagOutputList value = {this.props.topTenTags} />
             </div>
           </div>

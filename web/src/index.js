@@ -43,10 +43,6 @@ var injectTapEventPlugin = require("react-tap-event-plugin")
 injectTapEventPlugin()
 
 
-
-const muiTheme = getMuiTheme(styles)
-
-
 const PageRoute = ({ component: Component, path, sitePath, ...rest }) => (
   <Route {...rest} path={path} render={props => {
     return (
@@ -65,7 +61,7 @@ const PageRoute = ({ component: Component, path, sitePath, ...rest }) => (
 
 init(() => {
   ReactDOM.render(
-    <MuiThemeProvider  muiTheme={muiTheme}>
+    <MuiThemeProvider  muiTheme={getMuiTheme(styles)}>
       <Router history={history}>
         <Switch>
           <PageRoute sitePath="/discovery" path="/discovery/:query" component={SearchPage} />

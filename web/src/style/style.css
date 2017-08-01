@@ -170,20 +170,15 @@ a:hover {
   font-family: 'Roboto', sans-serif;
   font-weight: 300;
   font-size: 18px;
-  color: #000000;
   margin-top:46px;
-
   display: block;
   margin-left: auto;
   margin-right: auto;
 }
 
-
-
 .menu-indicator {
   width: 4px;
   height: 48px;
-  background-color: #ff5500;
   left: 0px;
   position: absolute;
   top: 0px;

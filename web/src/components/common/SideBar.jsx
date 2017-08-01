@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import logo from '../../style/img/white_logo_title.svg'
-import Backend from '../common/Backend.jsx'
+import Backend from '../common/Backend'
+import Styles from './Styles.jsx'
+
 
 export default class SideBar extends Component {
   constructor(props) {
@@ -39,12 +41,12 @@ export default class SideBar extends Component {
                 <SideBarEntry icon = "work" name = {this.state.menu.userprojects} to = "/yourprojects" active = {this.isActive("/yourprojects")} />
                 <SideBarEntry icon = "delete" name = {this.state.menu.trashcan} to = '/trashcan/' active = {this.isActive("/trashcan")} />
                 <SideBarEntry icon = "account_circle" name = {this.state.menu.profile} to = {'/profile/' + this.state.myProfile } active = {this.isActive("/profile")} />
-                <SideBarEntry
+                {Backend.isAdmin ?  <SideBarEntry
                   icon = "settings"
                   name = {this.state.menu.adminArea}
                   to = "/admin" active = {this.isActive("/admin")}
-                  style = {{display : (Backend.isAdmin()) ? "block" : "none"}}
                 />
+                : ""}
             </ul>
         </div>
     )
@@ -54,9 +56,11 @@ export default class SideBar extends Component {
 const SideBarEntry = ({to, icon, icon2, name, active, style}) => {
     return (
         <Link to = {to}  >
-        <li className = {"list-group-item " + (active ? "active" : "") } style = {style}>
-            {active && (<div className = "menu-indicator" />)}
-            <div style = {{display : "inline", paddingTop : 3, float : "left", marginRight : 8}}><i className = "material-icons" style = {{color : "#ffffff", fontSize : '20px',marginTop : -15}}>{icon}</i></div>{name}
+        <li className = {"list-group-item " + (active ? "active" : "") } style = {{color : Styles.palette.alternateTextColor}}>
+            {active && (<div className = "menu-indicator" style = {{backgroundColor : Styles.palette.primary1Color }}/>)}
+            <div style = {{display : "inline", paddingTop : 3, float : "left", marginRight : 8}}>
+              <i className = "material-icons" style = {{color : Styles.palette.alternateTextColor, fontSize : '20px',marginTop : -15}}>{icon}</i>
+            </div>{name}
         </li>
         </Link>
     )

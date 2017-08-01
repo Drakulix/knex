@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import 'isomorphic-fetch'
 import RaisedButton from 'material-ui/RaisedButton'
 import TextField from 'material-ui/TextField'
-import styles from '../common/Styles.jsx'
+import Styles from '../common/Styles.jsx'
 import Snackbar from 'material-ui/Snackbar'
 import MultiFileUploader from '../common/MultiFileUploader'
 
@@ -151,7 +151,7 @@ export default class CreateProjectChoice extends Component {
             </div>
             <div >
               <RaisedButton style = {{width:'300px'}}
-                          icon = {<i className = "material-icons" style = {{color: "#ffffff", marginTop:-3}}>cloud_download</i>}
+                          icon = {<i className = "material-icons" style = {{color: Styles.palette.alternateTextColor, marginTop:-3}}>cloud_download</i>}
                           label = "import online json"
                           primary = {true}
                           type = "submit"/>
@@ -161,18 +161,18 @@ export default class CreateProjectChoice extends Component {
         <div>
           <RaisedButton
                     label = "Upload local json"
-                    icon = {<i className = "material-icons" style = {{color: "#ffffff", marginTop:-3}}>file_upload</i>}
+                    icon = {<i className = "material-icons" style = {{color: Styles.palette.alternateTextColor, marginTop:-3}}>file_upload</i>}
                     containerElement = "label"
                     primary = {true}
                     style = {{width:'300px'}}>
-                  <input type = "file" style = {styles.uploadInput} onChange = {this.handleFile} />
+                  <input type = "file" style = {Styles.uploadInput} onChange = {this.handleFile} />
           </RaisedButton>
         </div>
         <div className = "text" >or</div>
         <div>
           <Link to="/createNew">
             <RaisedButton label = "Use online formular"
-                      icon = {<i className = "material-icons" style = {{color: "#ffffff", marginTop:-3}}>keyboard</i>}
+                      icon = {<i className = "material-icons" style = {{color: Styles.palette.alternateTextColor, marginTop:-3}}>keyboard</i>}
                       primary = {true}
                       style = {{ width:'300px'}}/>
           </Link>
@@ -181,7 +181,7 @@ export default class CreateProjectChoice extends Component {
         <div>
 
             <RaisedButton label = "Upload multiple files"
-                      icon = {<i className = "material-icons" style = {{color: "#ffffff", marginTop:-3}}>playlist_add</i>}
+                      icon = {<i className = "material-icons" style = {{color: Styles.palette.alternateTextColor, marginTop:-3}}>playlist_add</i>}
                       primary = {true}
                       onClick = {() => this.setState({multiFileUploader : true})}
                       style = {{ width:'300px'}}/>
