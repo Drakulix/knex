@@ -72,7 +72,7 @@ app = Flask(__name__, static_url_path='')
 CORS(app)
 
 app.config['DEBUG'] = True
-app.config['TESTING'] = False
+app.config['TESTING'] = True
 app.config['SECRET_KEY'] = config["mongo_db"]["secret_key"]
 app.config['MONGODB_DB'] = "knexdb"
 app.config['MONGODB_HOST'] = config["mongo_db"]["hostname"]
