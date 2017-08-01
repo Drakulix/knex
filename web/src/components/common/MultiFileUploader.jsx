@@ -6,6 +6,7 @@ import styles from '../common/Styles.jsx'
 import Spinner from '../common/Spinner'
 import Backend from '../common/Backend'
 import history from '../common/history'
+import Snackbar from 'material-ui/Snackbar'
 
 const JSON5 = require('json5')
 
@@ -17,7 +18,10 @@ export default class MultiFileUploader extends Component {
     this.state = {
       loading : false,
       files : [],
-      spinnerText : ""
+      spinnerText : "",
+      snackbar : false,
+      snackbarText : "File uploaded",
+
     }
     this.handleFile = this.handleFile.bind(this)
     this.uploadAllFiles = this.uploadAllFiles.bind(this)
@@ -26,7 +30,6 @@ export default class MultiFileUploader extends Component {
   uploadAllFiles(){
     this.setState({loading : true, spinnerText : "Uploading projects"})
     var files = this.state.files.map(file => {return file.project})
-
     Backend.addProject(files).then(
       history.push("/discovery")
     )
@@ -52,11 +55,11 @@ export default class MultiFileUploader extends Component {
                 snackbar : true,
                 snackbarText : "File uploaded",
                 files : files,
-                loading : false
+                //loading : false
               })
            } catch(e) {
              this.setState({
-               snackbar : true,
+               //snackbar : true,
                snackbarText : "File is not a valid JSON file"
              })
            }
@@ -73,7 +76,7 @@ export default class MultiFileUploader extends Component {
                 snackbar : true,
                 snackbarText : "File uploaded",
                 files : files,
-                loading : false
+                //loading : false
               })
            } catch(e) {
              this.setState({
@@ -112,7 +115,12 @@ export default class MultiFileUploader extends Component {
         />,
     ]
 
-    return (
+    return (<div>
+      <Snackbar
+        open = {this.state.snackbar}
+        message = {this.state.snackbarText}
+        autoHideDuration = {10000}
+      />
       <Dialog
         actions = {actions}
         modal = {false}
@@ -147,6 +155,7 @@ export default class MultiFileUploader extends Component {
           )}
         </List>
       </Dialog>
+      </div>
     )
   }
 }
