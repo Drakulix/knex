@@ -11,12 +11,13 @@ export default class ConfirmationPane extends Component {
         label = "Cancel"
         primary = {true}
         onTouchTap = {this.props.handleClose}
+        style = {{ width : 160}}
         />,
       <RaisedButton
         label = {this.props.confirmationLabel}
         primary = {true}
         onTouchTap = {this.props.confirmAction}
-        style = {{marginLeft : 20}}
+        style = {{marginLeft : 20, width : 160}}
         />,
     ]
 

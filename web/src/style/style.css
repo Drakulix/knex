@@ -163,15 +163,15 @@ a:hover {
 }
 
 .text{
-  width: 30px;
   height: 41px;
   font-family: 'Roboto', sans-serif;
   font-weight: 300;
-  font-size: 18px;
-  margin-top:46px;
+  font-size: 20px;
+  margin-top:20px;
   display: block;
   margin-left: auto;
   margin-right: auto;
+  text-align: center;
 }
 
 .menu-indicator {
