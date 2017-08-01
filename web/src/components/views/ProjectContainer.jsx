@@ -187,7 +187,7 @@ export default class ProjectContainer extends Component {
           <SharePane  uuid = {this.state.projectID}
                       handleSharedProject = {this.handleSharedProject}
                       open = {this.state.sharePane}
-                      handleClosedSharePane ={this.handleClose}
+                      handleClosedSharePane = {this.handleClose}
           />
           <CommentSideBar handleUpdateComments = {this.handleUpdateComments} value = {this.state.commentBar} uuid = {this.state.projectID}></CommentSideBar>
           <ConfirmationPane open = {this.state.dialogOpen}
@@ -212,15 +212,15 @@ export default class ProjectContainer extends Component {
               <div className = "row">
                 <div className = "col-4">
                   <div className = "profile-info">Status</div>
-                    <Status value ={this.state.projectInf.status}/>
+                    <Status value = {this.state.projectInf.status}/>
                 </div>
                 <div className = "col-4">
                   <div className = "profile-info">Creation date</div>
-                  <div style={{marginTop:16}}>{this.state.projectInf.date_creation}</div>
+                  <div style = {{marginTop:16}}>{this.state.projectInf.date_creation}</div>
                 </div>
                 <div className = "col-4">
                   <div className = "profile-info">Last update </div>
-                  <div style={{marginTop:16}}> {this.state.projectInf.date_last_updated}</div>
+                  <div style = {{marginTop:16}}> {this.state.projectInf.date_last_updated}</div>
                 </div>
               </div>
               <div style = {{marginTop : 30}}>
@@ -295,7 +295,7 @@ export default class ProjectContainer extends Component {
                         <i className = "material-icons">mode_edit</i>
             </IconButton>
             <IconButton
-                      onClick ={() => this.setState({dialogOpen : true})}
+                      onClick = {() => this.setState({dialogOpen : true})}
                       touch = {true}
                       style = {styles.largeIcon}
                       disabled = {! (this.state.isOwner || Backend.isAdmin())}
@@ -309,7 +309,7 @@ export default class ProjectContainer extends Component {
               :
           <div style = {{textAlign : "center", marginTop : 75}} >
             <IconButton
-                      onClick ={() => this.handleUnArchive()}
+                      onClick = {() => this.handleUnArchive()}
                       touch = {true}
                       style = {styles.largeIcon}
                       disabled = {! (this.state.isOwner || Backend.isAdmin())}

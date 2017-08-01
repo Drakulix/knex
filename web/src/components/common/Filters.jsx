@@ -80,7 +80,7 @@ export default class Filters extends Component{
   render(){
     return (
       <div style = {{marginBottom : 20}}>
-        <Card  expanded = {this.state.expanded} onExpandChange={() => this.setState({expanded : !this.state.expanded})}>
+        <Card  expanded = {this.state.expanded} onExpandChange = {() => this.setState({expanded : !this.state.expanded})}>
         <CardHeader
           title = {this.props.title}
           actAsExpander = {true}
@@ -92,7 +92,7 @@ export default class Filters extends Component{
               <div className = "col-1 filter-label" style = {{textAlign : "left"}}>Title</div>
               <div className = "col-5" style = {{marginLeft : -40}}>
                 <TextField
-                  fullWidth={true}
+                  fullWidth = {true}
                   name  = "title"
                   value = {this.state.title}
                   onChange = {this.handleChange}
@@ -105,7 +105,7 @@ export default class Filters extends Component{
               <div className = "col-1 filter-label" style = {{textAlign : "left"}}>Description</div>
               <div className = "col-5">
                 <TextField
-                  fullWidth={true}
+                  fullWidth = {true}
                   name  = "description"
                   value = {this.state.description}
                   onChange = {this.handleChange}

@@ -51,7 +51,7 @@ export default class UrlInputList extends Component {
         fullWidth
         chipRenderer = {({ value, isFocused, isDisabled, handleClick, handleRequestDelete }, key) => (
           <Chip
-            key ={key}
+            key = {key}
             style = {{margin: '8px 8px 0 0',float: 'left'}}
             backgroundColor = {Styles.palette.primary1Color}
             onTouchTap = {handleClick}

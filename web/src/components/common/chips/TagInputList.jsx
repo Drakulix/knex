@@ -50,22 +50,22 @@ export default class TagInputList extends Component {
   render(){
     return(
       <ChipInput
-        dataSource={this.state.suggestions}
-        value={this.state.list}
-        filter={AutoComplete.fuzzyFilter}
-        onRequestAdd={(chip) => this.handleRequestAdd(chip)}
-        onRequestDelete={(deletedChip) => this.handleRequestDelete(deletedChip)}
-        errorText={this.props.errorText}
+        dataSource = {this.state.suggestions}
+        value = {this.state.list}
+        filter = {AutoComplete.fuzzyFilter}
+        onRequestAdd = {(chip) => this.handleRequestAdd(chip)}
+        onRequestDelete = {(deletedChip) => this.handleRequestDelete(deletedChip)}
+        errorText = {this.props.errorText}
         hintText = {'Add tags...'}
         fullWidth
-        chipRenderer={({ value, text, isFocused, isDisabled, handleClick, handleRequestDelete }, key) => (
+        chipRenderer = {({ value, text, isFocused, isDisabled, handleClick, handleRequestDelete }, key) => (
           <Chip
-            key={key}
+            key = {key}
             style= {{margin: '8px 8px 0 0',float: 'left'}}
-            backgroundColor={Styles.palette.primary1Color}
-            onTouchTap={handleClick}
-            onRequestDelete={handleRequestDelete}>
-            <span style={{color : Styles.palette.alternateTextColor, fontWeight : 'bold'}}> {value} </span>
+            backgroundColor = {Styles.palette.primary1Color}
+            onTouchTap = {handleClick}
+            onRequestDelete = {handleRequestDelete}>
+            <span style = {{color : Styles.palette.alternateTextColor, fontWeight : 'bold'}}> {value} </span>
           </Chip>
         )}/>
       )

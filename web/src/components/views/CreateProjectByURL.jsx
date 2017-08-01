@@ -67,9 +67,9 @@ export default class CreateProjectByURL extends React.Component {
     if(this.state.done){
       return(
         <CreateProject
-            projectInf={this.state.projectInf}
-            date={this.state.date}
-            fromURL={true}
+            projectInf = {this.state.projectInf}
+            date = {this.state.date}
+            fromURL = {true}
         />
       )
     } else {

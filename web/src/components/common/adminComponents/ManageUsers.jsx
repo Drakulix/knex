@@ -180,10 +180,9 @@ export default class ManageUsers extends Component {
       style : {textAlign : "center"},
       Cell : props =>{
         return(
-          <div onClick = {() => this.handleSetActive(props.value)}><i className="material-icons" style={{fontSize : '24px',padding:3}}>
+          <div onClick = {() => this.handleSetActive(props.value)}><i className = "material-icons" style = {{fontSize : '24px',padding:3}}>
             {props.value.active === "false" ?  "clear" : "done"}
           </i></div>)
-
       }
     })
 
@@ -196,7 +195,7 @@ export default class ManageUsers extends Component {
       accessor : d => d,
       Cell : props =>{
         return(
-          <div onClick = {() => this.handleSetAdmin(props.value)}><i className="material-icons" style={{fontSize : '24px',padding:3}}>
+          <div onClick = {() => this.handleSetAdmin(props.value)}><i className = "material-icons" style = {{fontSize : '24px',padding:3}}>
             {(props.value.roles.indexOf("admin") !== -1) ?  "done" : "clear"}
           </i></div>)
       }
@@ -249,11 +248,11 @@ export default class ManageUsers extends Component {
                           confirmAction = {this.handleDelete}
         />
         <Snackbar
-          open={this.state.snackbar}
-          message={this.state.snackbarText}
-          autoHideDuration={10000}
+          open = {this.state.snackbar}
+          message = {this.state.snackbarText}
+          autoHideDuration = {10000}
         />
-        <Spinner loading = {this.state.loading} text ={"Loading users"} />
+        <Spinner loading = {this.state.loading} text = {"Loading users"} />
         <div style = {{display : (!this.state.loading ? "block" : "none")}}>
         <div style = {{marginBottom : 20, width:"100%"}}>
           <Card  onExpandChange = {() => this.setState({expanded : !this.state.expanded})}>
@@ -267,10 +266,10 @@ export default class ManageUsers extends Component {
               <div className = "row">
                 <div className = "col-1 filter-label">Name</div>
                 <div className = "col-5">
-                  <TextField 
+                  <TextField
                       value = {this.state.name}
                       name = "name"
-                      fullWidth={true}
+                      fullWidth = {true}
                       onChange = {this.handleChange}
                       type = "text" placeholder = "Enter username..."
                   />

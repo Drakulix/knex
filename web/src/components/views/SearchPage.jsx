@@ -12,7 +12,7 @@ export default class SearchPage extends Component {
   constructor(props) {
     super(props)
 
-    var query  = this.props.match.params.query !== undefined ? JSON.parse(this.props.match.params.query) : {}
+    var query = this.props.match.params.query !== undefined ? JSON.parse(this.props.match.params.query) : {}
     this.state = {
         label : "",
         searchString : query.searchString === undefined ? "" : query.searchString,
@@ -102,59 +102,59 @@ export default class SearchPage extends Component {
   render() {
     const actions = [
       <RaisedButton
-        label="Cancel"
-        primary={true}
-        onTouchTap={this.handleClose}
+        label = "Cancel"
+        primary = {true}
+        onTouchTap = {this.handleClose}
         />,
       <RaisedButton
-        label="Save"
-        primary={true}
-        onTouchTap={this.saveSearch}
-        style={{marginLeft:20}}
+        label = "Save"
+        primary = {true}
+        onTouchTap = {this.saveSearch}
+        style = {{marginLeft:20}}
         disabled= {(this.state.label === ""  || this.state.label === undefined) ? true : false}
         />,
     ]
     return(
-      <div className="container">
-        <div className="innerContainer">
+      <div className = "container">
+        <div className = "innerContainer">
           <Snackbar
             open = {this.state.snackbar}
             message = {this.state.snackbarText}
             autoHideDuration = {10000}/>
           <Dialog
-            title="Enter a label for your query"
-            actions={actions}
-            modal={false}
-            open={this.state.open}
-            onRequestClose={this.saveSearch}
+            title = "Enter a label for your query"
+            actions = {actions}
+            modal = {false}
+            open = {this.state.open}
+            onRequestClose = {this.saveSearch}
             >
             <TextField value = {this.state.label}
-              placeholder="Enter label here ... "
-              errorText={(this.state.label === "" || this.state.label === undefined) ? "Please provide a label " : ""}
-              onChange={this.handleLabelChange}
+              placeholder = "Enter label here ... "
+              errorText = {(this.state.label === "" || this.state.label === undefined) ? "Please provide a label " : ""}
+              onChange = {this.handleLabelChange}
               ></TextField>
             </Dialog>
-          <div className="headerCreation" style={{width:"100%"}}>
+          <div className = "headerCreation" style = {{width:"100%"}}>
             Looking for a project?
           </div>
-          <div className="row" style={{textAlign:"center"}}>
-            <div className="col-10">
-              <TextField 
-                name="searchString"
-                fullWidth={true}
+          <div className = "row" style = {{textAlign:"center"}}>
+            <div className = "col-10">
+              <TextField
+                name = "searchString"
+                fullWidth = {true}
                 value = {this.state.searchString}
-                placeholder="Enter your query here..."
-                onChange={this.handleChange} />
+                placeholder = "Enter your query here..."
+                onChange = {this.handleChange} />
             </div>
             <div className = "col-2">
               <RaisedButton style = {{width:"100%"}}
-                label="Save search"
-                icon={<i className="material-icons" style={{color: Styles.palette.alternateTextColor, marginTop:-3}}>save</i>}
-                onClick={this.handleOpen}
-                primary={true}/>
+                label = "Save search"
+                icon = {<i className = "material-icons" style = {{color: Styles.palette.alternateTextColor, marginTop:-3}}>save</i>}
+                onClick = {this.handleOpen}
+                primary = {true}/>
             </div>
           </div>
-          <div style={{marginTop:20}}>
+          <div style = {{marginTop:20}}>
             <DataTable columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'date_creation' ,'bookmarked']}
               handleFilter= {this.handleFilterChange}
               predefinedFilter = {this.state.query}

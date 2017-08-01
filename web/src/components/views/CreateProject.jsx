@@ -161,7 +161,7 @@ export default class CreateProject extends Component {
                   name = "title"
                   onChange = {this.handleChange}
                   hintText = "Add title..."
-                  fullWidth={true}
+                  fullWidth = {true}
                   errorText = {(this.state.projectInf.title === "") ?
                                 "Please provide a title" : ""}
                   />
@@ -170,7 +170,7 @@ export default class CreateProject extends Component {
                 <RaisedButton label = {this.state.projectID === undefined ? "create Project" : "Submit changes"}
                                 disabled = {this.isInValid()}
                                 onClick = {this.handleUpload}
-                                fullWidth={true}
+                                fullWidth = {true}
                                 primary = {true}/>
               </div>
             </div>

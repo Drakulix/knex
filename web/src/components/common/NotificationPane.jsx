@@ -28,7 +28,7 @@ export default class NotificationPane extends Component {
         onRequestClose = {this.props.onRequestClose}>
         <Menu>
           {this.props.notifications.map(notification =>
-            <MenuItem key={notification.id}>
+            <MenuItem key = {notification.id}>
               <Link style = {{color : Styles.palette.textColor}}
                     onClick = {()=>this.resolveNotification(notification.id)}
                     to = {notification.link}>

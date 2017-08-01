@@ -186,9 +186,9 @@ export default class BookmarksTable extends Component {
         },
         accessor: d => d,
         Cell: props =>
-            <div style={{whiteSpace : "normal", marginTop:8}}>
-              <Link to={`/project/${props.value._id}`}
-                className="table-link-text">
+            <div style = {{whiteSpace : "normal", marginTop:8}}>
+              <Link to = {`/project/${props.value._id}`}
+                className = "table-link-text">
                 {props.value.title}
               </Link>
             </div>
@@ -210,7 +210,7 @@ export default class BookmarksTable extends Component {
         id:'status',
         style: {align:"center", width : 100},
               width: 100,
-        Cell: props => <Status value={props.value} />
+        Cell: props => <Status value = {props.value} />
       })
     }
     if(this.props.columns.indexOf("tags") !== -1){
@@ -240,7 +240,7 @@ export default class BookmarksTable extends Component {
           var text = (props.value !== undefined) ? props.value.substring(0,250).trim(): "";
           text = text + ((text.length >= 250) ? "..." : "")
           return(
-            <div style ={{whiteSpace : "normal", marginTop:8}}>
+            <div style = {{whiteSpace : "normal", marginTop:8}}>
             {text}
             </div>
           )
@@ -256,11 +256,11 @@ export default class BookmarksTable extends Component {
         width: 85,
         style: {textAlign:"center"},
         Cell: props =>
-          <IconButton onClick={()=>this.handleBookmark(props.value)}
-                      touch={true}
+          <IconButton onClick = {()=>this.handleBookmark(props.value)}
+                      touch = {true}
                       style = {styles.largeIcon}
-                      iconStyle={{fontSize: '24px'}}>
-            <i className="material-icons">{props.value.is_bookmark === "true" ? "star" : "star_border"}</i>
+                      iconStyle = {{fontSize: '24px'}}>
+            <i className = "material-icons">{props.value.is_bookmark === "true" ? "star" : "star_border"}</i>
           </IconButton>
       })
     }
@@ -284,7 +284,7 @@ export default class BookmarksTable extends Component {
           style = {styles.largeIcon}
           iconStyle = {{fontSize: '24px'}}
           value = {props.value._id}>
-            <i className="material-icons">unarchive</i>
+            <i className = "material-icons">unarchive</i>
           </IconButton>
           : ""}
       })
@@ -309,7 +309,7 @@ export default class BookmarksTable extends Component {
           style = {styles.largeIcon}
           iconStyle = {{fontSize: '24px'}}
           value = {props.value._id}>
-            <i className="material-icons">archive</i>
+            <i className = "material-icons">archive</i>
           </IconButton>
           : "" }
       })
@@ -328,7 +328,7 @@ export default class BookmarksTable extends Component {
           style = {styles.largeIcon}
           iconStyle = {{fontSize: '24px'}}
           value = {props.value._id}>
-            <i className="material-icons">delete</i>
+            <i className = "material-icons">delete</i>
           </IconButton>
       })
     }
@@ -340,15 +340,15 @@ export default class BookmarksTable extends Component {
                             confirmationLabel = {this.state.buttonText}
                             confirmAction = {this.state.action}
         />
-        <Snackbar open={this.state.snackbar}
-                  message={this.state.snackbarText}
-                  autoHideDuration={10000}
+        <Snackbar open = {this.state.snackbar}
+                  message = {this.state.snackbarText}
+                  autoHideDuration = {10000}
         />
-      <Spinner loading = {this.state.loading} text ={"Loading projects"}/>
+      <Spinner loading = {this.state.loading} text = {"Loading projects"}/>
         <div style = {{display : (!this.state.loading ? "block" : "none")}}>
-          <Filters value={this.state.filters}
-                   title ={"Apply filters to your search"}
-                   onChange={this.handleFilterChange}/>
+          <Filters value = {this.state.filters}
+                   title = {"Apply filters to your search"}
+                   onChange = {this.handleFilterChange}/>
           <ReactTable
               data = {this.state.filteredData}
               columns = {columns}

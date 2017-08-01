@@ -131,7 +131,7 @@ export default class ProjectControls extends Component{
         <SharePane  uuid = {this.props.projectInf}
                     handleSharedProject = {this.handleSharedProject}
                     open = {this.state.sharePane}
-                    handleClosedSharePane ={this.handleClose}
+                    handleClosedSharePane = {this.handleClose}
         />
       <CommentSideBar handleUpdateComments = {this.handleUpdateComments} value = {this.state.commentBar} uuid = {this.props.projectInf.projectID}></CommentSideBar>
         <ConfirmationPane open = {this.state.dialogOpen}
@@ -192,7 +192,7 @@ export default class ProjectControls extends Component{
                     <i className = "material-icons">mode_edit</i>
         </IconButton>
         <IconButton
-                  onClick ={() => this.setState({dialogOpen : true})}
+                  onClick = {() => this.setState({dialogOpen : true})}
                   touch = {true}
                   style = {styles.largeIcon}
                   disabled = {! (this.props.isOwner || Backend.isAdmin())}
@@ -206,7 +206,7 @@ export default class ProjectControls extends Component{
           :
       <div style = {{textAlign : "center", marginTop : 75}} >
         <IconButton
-                  onClick ={() => this.handleUnArchive()}
+                  onClick = {() => this.handleUnArchive()}
                   touch = {true}
                   style = {styles.largeIcon}
                   disabled = {! (this.props.isOwner || Backend.isAdmin())}

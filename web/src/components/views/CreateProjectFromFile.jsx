@@ -39,9 +39,9 @@ export default class CreateProjectByURL extends React.Component {
   render() {
     return(
       <CreateProject
-        projectInf={this.state.projectInf}
-        date={this.state.date}
-        fromURL={true}
+        projectInf = {this.state.projectInf}
+        date = {this.state.date}
+        fromURL = {true}
       />
     )
   }

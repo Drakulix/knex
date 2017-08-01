@@ -130,11 +130,11 @@ export default class SavedQueries extends Component {
             open = {this.state.snackbar}
             message = {this.state.snackbarText}
             autoHideDuration = {10000}/>
-          <div className="headerCreation" style={{width:"100%"}}>Your Saved Queries</div>
+          <div className = "headerCreation" style = {{width:"100%"}}>Your Saved Queries</div>
           <Filters  value = {this.state.filters}
                     title = {"Filter your queries by search fields"}
                     onChange = {this.handleFilterChange}/>
-                  <div style ={{marginTop : 20, paddingLeft : 20, paddingRight : 20}}>
+                  <div style = {{marginTop : 20, paddingLeft : 20, paddingRight : 20}}>
             {(this.state.queries.length === 0) ?
               <div style = {{textAlign : "center", fontSize : 24}} >
                 <div>You don't have a saved query</div>

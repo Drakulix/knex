@@ -51,49 +51,49 @@ export default class SignIn extends Component {
     }
 
     return (
-      <section className="sign-container">
+      <section className = "sign-container">
 
         {/*Information*/}
-        <img className="service-name" src={logo} alt="Logo"/>
-        <h2 className="team-name">brings light to the cloud</h2>
-        <div className="rectangle-sign">
-          <h3 className="sign-type-desc">Login</h3>
-          <form onSubmit={this.handleSubmit}>
+        <img className = "service-name" src = {logo} alt = "Logo"/>
+        <h2 className = "team-name">brings light to the cloud</h2>
+        <div className = "rectangle-sign">
+          <h3 className = "sign-type-desc">Login</h3>
+          <form onSubmit = {this.handleSubmit}>
             {/*Input Email*/}
-            <div className="input-group input-login">
+            <div className = "input-group input-login">
               <TextField
-                type="text"
-                value={this.state.email}
-                onChange={this.handleChangeEmail}
-                hintText="Email"
+                type = "text"
+                value = {this.state.email}
+                onChange = {this.handleChangeEmail}
+                hintText = "Email"
               />
             </div>
             {/*Input password*/}
-            <div className="input-group input-login">
+            <div className = "input-group input-login">
               <TextField
-                type="password"
-                value={this.state.password}
-                onChange={this.handleChangePassword}
-                hintText="Password"
+                type = "password"
+                value = {this.state.password}
+                onChange = {this.handleChangePassword}
+                hintText = "Password"
               />
             </div>
             <div>
               <RaisedButton
-                type="Submit"
-                label="Login"
-                primary={true}
-                buttonStyle={{width: 250, marginTop:40}}
+                type = "Submit"
+                label = "Login"
+                primary = {true}
+                buttonStyle = {{width: 250, marginTop:40}}
               />
           </div>
           </form>
           <div>
             <br/>
-            <Link to="/register">
+            <Link to = "/register">
             <RaisedButton
-              type="Submit"
-              label="Register"
-              primary={true}
-              buttonStyle={{width: 250}}
+              type = "Submit"
+              label = "Register"
+              primary = {true}
+              buttonStyle = {{width: 250}}
               required
             />
             </Link>

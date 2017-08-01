@@ -144,19 +144,19 @@ export default class MultiFileUploader extends Component {
                       icon = {<i className = "material-icons" style = {{color: Styles.palette.alternateTextColor, marginTop:-3}}>file_upload</i>}
                       containerElement = "label"
                       primary = {true}
-                      fullWidth={true}
+                      fullWidth = {true}
                       style = {{display : (this.state.loading) ? "none" : "block"}}>
                     <input type = "file" style = {Styles.uploadInput} onChange = {this.handleFile} />
             </RaisedButton>
           </div>
         </div>
-        <Spinner loading = {this.state.loading} text ={"Uploading project"}/>
+        <Spinner loading = {this.state.loading} text = {"Uploading project"}/>
         <List style = {{display : (this.state.loading) ? "none" : "block"}}>
           {this.state.files.map(item =>
-            <div  key={item.name}>  <ListItem
-                rightIcon={<i className = "material-icons" style = {{color : 'gray'}}>cancel</i>}
-                primaryText={item.project.title}
-                secondaryText={item.name}
+            <div  key = {item.name}>  <ListItem
+                rightIcon = {<i className = "material-icons" style = {{color : 'gray'}}>cancel</i>}
+                primaryText = {item.project.title}
+                secondaryText = {item.name}
                 onClick = {() => {this.remove(item.name)}}
               />
             </div>

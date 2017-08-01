@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import RaisedButton from 'material-ui/RaisedButton'
 import Dialog from 'material-ui/Dialog'
-
+import RaisedButton from 'material-ui/RaisedButton'
 
 export default class ConfirmationPane extends Component {
 

@@ -96,7 +96,7 @@ export default class ShowUsers extends Component {
   render(){
     return (
       <div className = "container">
-        <Spinner loading = {this.state.loading} text ={"Loading users"} />
+        <Spinner loading = {this.state.loading} text = {"Loading users"} />
         <div style = {{width:"100%", display : (!this.state.loading ? "block" : "none")}}>
           <div>
             <div className = "headerCreation">Looking for a user?</div>
@@ -111,7 +111,7 @@ export default class ShowUsers extends Component {
                   <div className = "col-1 filter-label">Name</div>
                   <div className = "col-3">
                     <TextField
-                        fullWidth={true}
+                        fullWidth = {true}
                         value = {this.state.name}
                         name = "name"
                         onChange = {this.handleChange}
@@ -121,7 +121,7 @@ export default class ShowUsers extends Component {
                   <div className = "col-1 filter-label">Email</div>
                   <div className = "col-3">
                     <TextField
-                        fullWidth={true}
+                        fullWidth = {true}
                         value = {this.state.email}
                         name = "email"
                         onChange = {this.handleChange}
@@ -140,7 +140,7 @@ export default class ShowUsers extends Component {
             </Card>
             <div style = {{marginTop:20}} >
                 {this.state.filteredList.map((user) => (
-                    <div key = {user.email} style={{width : "31%", float:"left", marginRight: 20, marginBottom : 20}}>
+                    <div key = {user.email} style = {{width : "31%", float:"left", marginRight: 20, marginBottom : 20}}>
                       <Link to = {"/profile/"+user.email}
                             style = {{color : Styles.palette.textColor}}>
                         <div className = "row">
@@ -152,7 +152,7 @@ export default class ShowUsers extends Component {
                               />
                           </div>
                           <div className = "col-1"></div>
-                          <div className = "col-6" style ={{marginTop:20}}>
+                          <div className = "col-6" style = {{marginTop:20}}>
                             <div style = {{fontWeight : "bold", fontSize : 20}}>{user.first_name + " " +user.last_name}</div>
                             <div style = {{fontSize : 14}}>{user.email}</div>
                             <div style = {{fontSize : 16}}>{this.state.projectCounts[user.email] !== undefined ? this.state.projectCounts[user.email].length :0} Projects</div>
