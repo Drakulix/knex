@@ -26,8 +26,8 @@ export default class MultiFileUploader extends Component {
   uploadAllFiles(){
     this.setState({loading : true, spinnerText : "Uploading projects"})
     var files = this.state.files.map(file => {return file.project})
-    alert(JSON.stringify(files))
-    Backend.addProject().then(
+
+    Backend.addProject(files).then(
       history.push("/discovery")
     )
   }
@@ -99,14 +99,14 @@ export default class MultiFileUploader extends Component {
       <RaisedButton
         label = "Cancel"
         primary = {true}
-        style = {{width : 140}}
+        style = {{width : 160}}
         onTouchTap = {this.props.handleClose}
         disabled = {this.state.loading}
         />,
       <RaisedButton
-        label = "Upload all projects"
+        label = "Upload projects"
         primary = {true}
-        style = {{width : 140, marginLeft : 20, marginRight : 15}}
+        style = {{width : 160, marginLeft : 26, marginRight : 15}}
         onTouchTap = {this.uploadAllFiles}
         disabled = {this.state.loading || this.state.files.length === 0}
         />,
@@ -123,13 +123,13 @@ export default class MultiFileUploader extends Component {
           <div className="col-6">
             <h3>Upload multiple projects</h3>
           </div>
-          <div className="col-6" style = {{marginLeft: "auto"}}>
+          <div className="col-6" style = {{marginLeft: 0}}>
             <RaisedButton
                       label = "add a file"
                       icon = {<i className = "material-icons" style = {{color: "#ffffff", marginTop:-3}}>file_upload</i>}
                       containerElement = "label"
                       primary = {true}
-                      style = {{width : 300, display : (this.state.loading) ? "none" : "block"}}>
+                      style = {{width : "100%", display : (this.state.loading) ? "none" : "block"}}>
                     <input type = "file" style = {styles.uploadInput} onChange = {this.handleFile} />
             </RaisedButton>
           </div>
