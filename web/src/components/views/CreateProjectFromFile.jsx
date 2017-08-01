@@ -1,6 +1,6 @@
 import React from 'react'
 
-import CreateProject from './CreateProject.jsx'
+import CreateProject from './CreateProject'
 import Moment from 'moment'
 
 
@@ -39,9 +39,9 @@ export default class CreateProjectByURL extends React.Component {
   render() {
     return(
       <CreateProject
-        projectInf={this.state.projectInf}
-        date={this.state.date}
-        fromURL={true}
+        projectInf = {this.state.projectInf}
+        date = {this.state.date}
+        fromURL = {true}
       />
     )
   }

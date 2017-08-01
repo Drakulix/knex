@@ -14,7 +14,6 @@ p {
 
 a {
   vertical-align: center;
-  color: #000000;
   font-family: 'Roboto', sans-serif !important;
   font-weight: 300;
 }
@@ -56,12 +55,6 @@ a:hover {
   position: fixed;
   width: 100%;
 }
-
-.-previous button, .-next button, .-next, .-previous{
-  background-color: #ff5000;
-  font-weight: bold  !important;
-}
-
 
 /* Start Sidebar Styling */
 
@@ -164,32 +157,26 @@ a:hover {
   font-family: 'Roboto', sans-serif;
   font-weight: 300;
   font-size: 30px;
-  color: #000000;
   margin-top: 100px;
   margin-bottom: 50px;
   text-align: center;
 }
 
 .text{
-  width: 30px;
   height: 41px;
   font-family: 'Roboto', sans-serif;
   font-weight: 300;
-  font-size: 18px;
-  color: #000000;
-  margin-top:46px;
-
+  font-size: 20px;
+  margin-top:20px;
   display: block;
   margin-left: auto;
   margin-right: auto;
+  text-align: center;
 }
-
-
 
 .menu-indicator {
   width: 4px;
   height: 48px;
-  background-color: #ff5500;
   left: 0px;
   position: absolute;
   top: 0px;
@@ -213,7 +200,6 @@ a:hover {
   font-family: 'Roboto', sans-serif;
   font-weight: 300;
   font-size: 25px;
-  color: #000000;
   margin-top: 2em;
   margin-bottom: 2em;
   text-align: left;
@@ -293,6 +279,18 @@ a:hover {
 
 .rt-td > a {
     color: black !important;
+}
+
+.-previous button, .-next button, .-next, .-previous{
+  background-color: #ff5000;
+  color : #ffffff !important;
+  font-family: 'Roboto', sans-serif !important;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+.ReactTable .-pagination .-btn{
+  background: #ff5000 !important;
+  opacity: 1.0 !important;
 }
 
 .table-link-text {

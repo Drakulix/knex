@@ -257,13 +257,11 @@ class Backend {
         }
     }
 
-    async putImage(url, payload) {
+    async postImage(url, payload) {
         let response = await fetch(url, {
-            method: 'PUT',
+            method: 'POST',
             credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'image/png'
-            },
+
             body: payload
         })
         .catch(ex => {
@@ -512,7 +510,11 @@ class Backend {
     }
 
     updateAvatar(email, image){
-      return this.putImage("/api/users/"+email+"/avatar", image)
+      return this.postImage("/api/users/"+email+"/avatar", image)
+    }
+
+    deleteAvatar(email){
+      return this.delete("/api/users/"+email+"/avatar")
     }
 
     updatePassword(mail, old_pass, new_pass) {

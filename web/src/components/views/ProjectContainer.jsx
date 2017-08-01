@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import styles from '../common/Styles.jsx'
 import Backend from '../common/Backend'
-import history from '../common/history'
 import IconButton from 'material-ui/IconButton'
 import SharePane from '../common/projectComponents/SharePane'
 import Snackbar from 'material-ui/Snackbar'
@@ -34,7 +33,6 @@ export default class ProjectContainer extends Component {
       comments_count: 0
     }
 
-    this.handleEdit = this.handleEdit.bind(this)
     this.handleComment = this.handleComment.bind(this)
     this.handleBookmark = this.handleBookmark.bind(this)
     this.handleShare = this.handleShare.bind(this)
@@ -86,11 +84,6 @@ export default class ProjectContainer extends Component {
   componentWillReceiveProps(nextProps){
     this.setState({projectID : nextProps.uuid})
     this.loadSiteInf(this.state.projectID)
-  }
-
-  handleEdit(event){
-    event.preventDefault()
-    history.push("/update/" + this.state.projectID)
   }
 
   handleClose(){
@@ -194,7 +187,7 @@ export default class ProjectContainer extends Component {
           <SharePane  uuid = {this.state.projectID}
                       handleSharedProject = {this.handleSharedProject}
                       open = {this.state.sharePane}
-                      handleClosedSharePane ={this.handleClose}
+                      handleClosedSharePane = {this.handleClose}
           />
           <CommentSideBar handleUpdateComments = {this.handleUpdateComments} value = {this.state.commentBar} uuid = {this.state.projectID}></CommentSideBar>
           <ConfirmationPane open = {this.state.dialogOpen}
@@ -213,21 +206,22 @@ export default class ProjectContainer extends Component {
               <div style = {{fontSize : '20px'}}> {this.state.projectInf.title}</div>
                 {this.state.projectInf.archived ? <i style = {{fontSize : '20px'}}>Archived project</i> : ""}
               </div>
+              <ProjectControls projectInf = {this.state.projectInf} isOwner = {this.state.isOwner}/>
           </div>
           <div className = "row">
             <div className = "col-5">
               <div className = "row">
                 <div className = "col-4">
                   <div className = "profile-info">Status</div>
-                    <Status value ={this.state.projectInf.status}/>
+                    <Status value = {this.state.projectInf.status}/>
                 </div>
                 <div className = "col-4">
                   <div className = "profile-info">Creation date</div>
-                  <div style={{marginTop:16}}>{this.state.projectInf.date_creation}</div>
+                  <div style = {{marginTop:16}}>{this.state.projectInf.date_creation}</div>
                 </div>
                 <div className = "col-4">
                   <div className = "profile-info">Last update </div>
-                  <div style={{marginTop:16}}> {this.state.projectInf.date_last_updated}</div>
+                  <div style = {{marginTop:16}}> {this.state.projectInf.date_last_updated}</div>
                 </div>
               </div>
               <div style = {{marginTop : 30}}>
@@ -296,13 +290,13 @@ export default class ProjectContainer extends Component {
                         disabled = {! (this.state.isOwner || Backend.isAdmin())}
                         tooltipPosition = "top-center"
                         tooltip = "Edit project"
-                        onClick = {this.handleEdit}
-                        iconStyle = {{fontSize : '24px'}}
+                        href = {"/update/" + this.state.projectID}
+                        iconStyle = {{fontSize : '24px', marginTop:-5}}
                         >
                         <i className = "material-icons">mode_edit</i>
             </IconButton>
             <IconButton
-                      onClick ={() => this.setState({dialogOpen : true})}
+                      onClick = {() => this.setState({dialogOpen : true})}
                       touch = {true}
                       style = {styles.largeIcon}
                       disabled = {! (this.state.isOwner || Backend.isAdmin())}
@@ -316,7 +310,7 @@ export default class ProjectContainer extends Component {
               :
           <div style = {{textAlign : "center", marginTop : 75}} >
             <IconButton
-                      onClick ={() => this.handleUnArchive()}
+                      onClick = {() => this.handleUnArchive()}
                       touch = {true}
                       style = {styles.largeIcon}
                       disabled = {! (this.state.isOwner || Backend.isAdmin())}

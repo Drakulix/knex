@@ -1,8 +1,8 @@
 import React from 'react'
 import Dialog from 'material-ui/Dialog'
 import RaisedButton from 'material-ui/RaisedButton'
-import AuthorInputList from '../chips/AuthorInputList.jsx'
-import Backend from '../Backend.jsx'
+import AuthorInputList from '../chips/AuthorInputList'
+import Backend from '../Backend'
 
 export default class SharePane extends React.Component {
   constructor(props) {
@@ -29,25 +29,25 @@ export default class SharePane extends React.Component {
   render() {
     const actions = [
       <RaisedButton
-        label="Cancel"
-        primary={true}
-        onTouchTap={this.props.handleClosedSharePane}
+        label = "Cancel"
+        primary = {true}
+        onTouchTap = {this.props.handleClosedSharePane}
         />,
       <RaisedButton
-        label="Share"
-        primary={true}
-        onTouchTap={this.shareProject}
-        style={{marginLeft : 20}}
-        disabled ={this.state.authors.length === 0}
+        label = "Share"
+        primary = {true}
+        onTouchTap = {this.shareProject}
+        style = {{marginLeft : 20}}
+        disabled = {this.state.authors.length === 0}
         />,
     ]
     return (
       <Dialog
-        title="Share project with"
-        actions={actions}
-        modal={false}
-        open={this.props.open}
-        onRequestClose={this.handleClosedSharePane}
+        title = "Share project with"
+        actions = {actions}
+        modal = {false}
+        open = {this.props.open}
+        onRequestClose = {this.handleClosedSharePane}
         >
         <AuthorInputList
           onChange = {this.handleAuthorChange}

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import TextField from "material-ui/TextField"
 import RaisedButton from "material-ui/RaisedButton"
-import Backend from '../../common/Backend.jsx'
+import Backend from '../../common/Backend'
 import Snackbar from 'material-ui/Snackbar'
 
 
@@ -31,7 +31,7 @@ export default class RegisterUser extends Component {
 
   handleInputChange(event) {
     const target = event.target
-    const value =  target.value
+    const value = target.value
     const name = target.name
     this.setState({
       [name]: value,
@@ -82,81 +82,81 @@ export default class RegisterUser extends Component {
 
   render(){
     return (
-      <div style = {{textAlign : "left"}}>
+      <div className = "container" style = {{textAlign : "left"}}>
         <Snackbar
-                open={this.state.snackbar}
-                message={this.state.snackbarText}
-                autoHideDuration={10000}
+                open = {this.state.snackbar}
+                message = {this.state.snackbarText}
+                autoHideDuration = {10000}
         />
-        <form onSubmit={this.handleRegister}>
-          <div className="row">
-            <div className="profile-info col-2">First name</div>
-            <div className="col-3">
+        <form onSubmit = {this.handleRegister}>
+          <div className = "row">
+            <div className = "profile-info col-2">First name</div>
+            <div className = "col-3">
               <TextField
-                name="first_name"
-                onChange={this.handleInputChange}
-                value={this.state.first_name}
-                hintText="Enter the first name"
-                errorText={(this.state.first_name === "") ? "Field is required" : ""}
+                name = "first_name"
+                onChange = {this.handleInputChange}
+                value = {this.state.first_name}
+                hintText = "Enter the first name"
+                errorText = {(this.state.first_name === "") ? "Field is required" : ""}
                       />
             </div>
-            <div className ="col-2"/>
-            <div className="profile-info col-2">Password</div>
-            <div className="col-3">
+            <div className = "col-2"/>
+            <div className = "profile-info col-2">Password</div>
+            <div className = "col-3">
               <TextField
-                type="password"
-                value={this.state.password}
-                onChange={this.handleInputChange}
-                hintText="Password"
-                name="password"
-                errorText={(this.state.password === "") ? "Field is required" : ""}
+                type = "password"
+                value = {this.state.password}
+                onChange = {this.handleInputChange}
+                hintText = "Password"
+                name = "password"
+                errorText = {(this.state.password === "") ? "Field is required" : ""}
                 />
             </div>
           </div>
-          <div className="row">
-            <div className="profile-info col-2">Last name</div>
-            <div className="col-3">
+          <div className = "row">
+            <div className = "profile-info col-2">Last name</div>
+            <div className = "col-3">
               <TextField
-                name="last_name"
-                onChange={this.handleInputChange}
-                value={this.state.last_name}
-                hintText="Enter your last name"
-                errorText={(this.state.last_name === "") ? "Field is required" : ""}
+                name = "last_name"
+                onChange = {this.handleInputChange}
+                value = {this.state.last_name}
+                hintText = "Enter your last name"
+                errorText = {(this.state.last_name === "") ? "Field is required" : ""}
               />
             </div>
-            <div className ="col-2"/>
-            <div className="profile-info col-2">Confirm Password</div>
-            <div className="col-3">
+            <div className = "col-2"/>
+            <div className = "profile-info col-2">Confirm Password</div>
+            <div className = "col-3">
               <TextField
-                type="password"
-                value={this.state.password_confirm}
-                onChange={this.handleInputChange}
-                hintText="Confirm password"
-                name="password_confirm"
-                errorText={( this.state.password !== this.state.password_confirm ) ? "Passwords do not match" : "" }
+                type = "password"
+                value = {this.state.password_confirm}
+                onChange = {this.handleInputChange}
+                hintText = "Confirm password"
+                name = "password_confirm"
+                errorText = {( this.state.password !== this.state.password_confirm ) ? "Passwords do not match" : "" }
                 />
             </div>
           </div>
-          <div className="row">
-            <div className="profile-info col-2">Email</div>
-            <div className="col-3">
+          <div className = "row">
+            <div className = "profile-info col-2">Email</div>
+            <div className = "col-3">
                 <TextField
-                  type="email"
-                  value={this.state.email}
-                  onChange={this.handleInputChange}
-                  hintText="Email"
-                  name="email"
-                  errorText={(!this.isValidEmailAddress()) ? "Needs to be a valid email" : ""}
+                  type = "email"
+                  value = {this.state.email}
+                  onChange = {this.handleInputChange}
+                  hintText = "Email"
+                  name = "email"
+                  errorText = {(!this.isValidEmailAddress()) ? "Needs to be a valid email" : ""}
                   />
             </div>
-            <div className ="col-4"/>
-            <div className="col-3">
+            <div className = "col-4"/>
+            <div className = "col-3">
               <RaisedButton
-                type="Submit"
-                label="Register User"
-                disabled={this.isInValidInput()}
-                primary={true}
-                style={{width: "100%"}}
+                type = "Submit"
+                label = "Register User"
+                disabled = {this.isInValidInput()}
+                primary = {true}
+                fullWidth = {true}
                 required
                 />
             </div>

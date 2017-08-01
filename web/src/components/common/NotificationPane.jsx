@@ -3,12 +3,7 @@ import Popover from 'material-ui/Popover'
 import Menu from 'material-ui/Menu'
 import MenuItem from 'material-ui/MenuItem'
 import { Link } from 'react-router-dom'
-
-const styles = {
-  linkStyle : {
-    color : '#000000',
-  }
-}
+import Styles from './Styles.jsx'
 
 export default class NotificationPane extends Component {
 
@@ -20,8 +15,6 @@ export default class NotificationPane extends Component {
   resolveNotification(notificationID){
     this.props.resolveNotification(notificationID)
   }
-
-
 
   render() {
     return (
@@ -35,8 +28,8 @@ export default class NotificationPane extends Component {
         onRequestClose = {this.props.onRequestClose}>
         <Menu>
           {this.props.notifications.map(notification =>
-            <MenuItem key={notification.id}>
-              <Link style = {styles["linkStyle"]}
+            <MenuItem key = {notification.id}>
+              <Link style = {{color : Styles.palette.textColor}}
                     onClick = {()=>this.resolveNotification(notification.id)}
                     to = {notification.link}>
                 <div style = {{marginBottom : -25}}>{notification.title}</div>

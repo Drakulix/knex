@@ -5,8 +5,8 @@ import Chip from 'material-ui/Chip'
 
 const statusString = [
   {text : <Chip style = {{background : '#ff5000', marginTop:4}}><span style= {{color:'#ffffff', fontWeight:'bold', fontSize:12}}>Done</span></Chip>, value : "DONE"},
-  {text : <Chip style = {{background : '#ffb400',marginTop:4}}><span style= {{color:'#ffffff', fontWeight:'bold', fontSize:12}}>In review</span></Chip>, value : "IN_REVIEW"},
-  {text : <Chip style = {{background : '#ffcc50',marginTop:4}}><span style= {{color:'#ffffff', fontWeight:'bold', fontSize:12}}>In progress</span></Chip>, value : "IN_PROGRESS"}
+  {text : <Chip style = {{background : '#ffb400', marginTop:4}}><span style= {{color:'#ffffff', fontWeight:'bold', fontSize:12}}>In review</span></Chip>, value : "IN_REVIEW"},
+  {text : <Chip style = {{background : '#ffcc50', marginTop:4}}><span style= {{color:'#ffffff', fontWeight:'bold', fontSize:12}}>In progress</span></Chip>, value : "IN_PROGRESS"}
 ]
 
 export default class Status extends Component {

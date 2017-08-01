@@ -24,8 +24,11 @@ export default {
     selectColor : '#ff5000'
   },
   palette : {
-      primary1Color : "#ff5000",
-      accent1Color : "#000000",
-      pickerHeaderColor: "#ff5000",
+    primary1Color : "#ff5000",
+    accent1Color : "#292b2c",
+    pickerHeaderColor: "#ff5000",
+    textColor: '#000000',
+    secondaryTextColor: '#808080',
+    alternateTextColor: '#ffffff'
   }
 }

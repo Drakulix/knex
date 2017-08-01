@@ -11,6 +11,7 @@ import TagOutputList from '../common/chips/TagOutputList'
 import ConfirmationPane from '../common/ConfirmationPane'
 import Status from '../common/Status'
 import Spinner from '../common/Spinner'
+import CircularProgress from 'material-ui/CircularProgress'
 
 
 export default class BookmarksTable extends Component {
@@ -34,6 +35,11 @@ export default class BookmarksTable extends Component {
     }
 
     this.handleFilterChange = this.handleFilterChange.bind(this)
+    this.handleClose = this.handleClose.bind(this)
+  }
+
+  handleClose(){
+    this.setState({dialogOpen : false, snackbar : false})
   }
 
   handleDelete(projectInf){
@@ -43,7 +49,7 @@ export default class BookmarksTable extends Component {
       buttonText : "Delete",
       dialogOpen : true,
       action : () => {
-        this.setState({dialogOpen:false})
+        this.setState({loading : true,dialogOpen:false})
         Backend.deleteProject(projectInf._id)
         .then(() => {this.props.handler(this.state.filters)})
         .then(this.setState({snackbar : true,
@@ -58,16 +64,16 @@ export default class BookmarksTable extends Component {
       dialogText : "Do you want to archive project " + projectInf.title + "?",
       buttonText : "Archive",
       dialogOpen : true,
-      loading : true,
       action : () => {
+        this.setState({loading : true,dialogOpen:false})
         var project = projectInf
         delete project.is_bookmark
         delete project.is_owner
         project['archived'] = true
         Backend.updateProject(projectInf._id, project)
-            .then(() => {this.props.handler(this.state.filters)})
-            .then(() => {this.setState({snackbar : true,
-            snackbarText : "Project "+ projectInf.title +" archived"})})
+        .then(() => {this.props.handler(this.state.filters)})
+        .then(this.setState({snackbar : true,
+          snackbarText : "Project "+ projectInf.title +" archived"}))
       }
     })
   }
@@ -180,9 +186,9 @@ export default class BookmarksTable extends Component {
         },
         accessor: d => d,
         Cell: props =>
-            <div style={{whiteSpace : "normal", marginTop:8}}>
-              <Link to={`/project/${props.value._id}`}
-                className="table-link-text">
+            <div style = {{whiteSpace : "normal", marginTop:8}}>
+              <Link to = {`/project/${props.value._id}`}
+                className = "table-link-text">
                 {props.value.title}
               </Link>
             </div>
@@ -204,7 +210,7 @@ export default class BookmarksTable extends Component {
         id:'status',
         style: {align:"center", width : 100},
               width: 100,
-        Cell: props => <Status value={props.value} />
+        Cell: props => <Status value = {props.value} />
       })
     }
     if(this.props.columns.indexOf("tags") !== -1){
@@ -234,7 +240,7 @@ export default class BookmarksTable extends Component {
           var text = (props.value !== undefined) ? props.value.substring(0,250).trim(): "";
           text = text + ((text.length >= 250) ? "..." : "")
           return(
-            <div style ={{whiteSpace : "normal", marginTop:8}}>
+            <div style = {{whiteSpace : "normal", marginTop:8}}>
             {text}
             </div>
           )
@@ -250,11 +256,11 @@ export default class BookmarksTable extends Component {
         width: 85,
         style: {textAlign:"center"},
         Cell: props =>
-          <IconButton onClick={()=>this.handleBookmark(props.value)}
-                      touch={true}
+          <IconButton onClick = {()=>this.handleBookmark(props.value)}
+                      touch = {true}
                       style = {styles.largeIcon}
-                      iconStyle={{fontSize: '24px'}}>
-            <i className="material-icons">{props.value.is_bookmark === "true" ? "star" : "star_border"}</i>
+                      iconStyle = {{fontSize: '24px'}}>
+            <i className = "material-icons">{props.value.is_bookmark === "true" ? "star" : "star_border"}</i>
           </IconButton>
       })
     }
@@ -278,7 +284,7 @@ export default class BookmarksTable extends Component {
           style = {styles.largeIcon}
           iconStyle = {{fontSize: '24px'}}
           value = {props.value._id}>
-            <i className="material-icons">unarchive</i>
+            <i className = "material-icons">unarchive</i>
           </IconButton>
           : ""}
       })
@@ -303,7 +309,7 @@ export default class BookmarksTable extends Component {
           style = {styles.largeIcon}
           iconStyle = {{fontSize: '24px'}}
           value = {props.value._id}>
-            <i className="material-icons">archive</i>
+            <i className = "material-icons">archive</i>
           </IconButton>
           : "" }
       })
@@ -322,26 +328,27 @@ export default class BookmarksTable extends Component {
           style = {styles.largeIcon}
           iconStyle = {{fontSize: '24px'}}
           value = {props.value._id}>
-            <i className="material-icons">delete</i>
+            <i className = "material-icons">delete</i>
           </IconButton>
       })
     }
     return (
-      <div className = "container" >
+      <div>
         <ConfirmationPane   open = {this.state.dialogOpen}
-                            handleClose = {() => {this.setState({dialogOpen : false, snackbar : false})}}
+                            handleClose = {this.handleClose}
                             title = {this.state.dialogText}
                             confirmationLabel = {this.state.buttonText}
                             confirmAction = {this.state.action}
         />
-        <Snackbar open={this.state.snackbar}
-                  message={this.state.snackbarText}
-                  autoHideDuration={10000}
+        <Snackbar open = {this.state.snackbar}
+                  message = {this.state.snackbarText}
+                  autoHideDuration = {10000}
         />
-      <Spinner loading = {this.state.loading} text ={"Loading projects"}/>
+      <Spinner loading = {this.state.loading} text = {"Loading projects"}/>
         <div style = {{display : (!this.state.loading ? "block" : "none")}}>
-          <Filters value={this.state.filters}
-                   onChange={this.handleFilterChange}/>
+          <Filters value = {this.state.filters}
+                   title = {"Apply filters to your search"}
+                   onChange = {this.handleFilterChange}/>
           <ReactTable
               data = {this.state.filteredData}
               columns = {columns}
@@ -353,7 +360,10 @@ export default class BookmarksTable extends Component {
               filterable = {false}
               showPageSizeOptions = {false}
               minRows = {3}
-              noDataText = 'No projects found'
+              noDataText = {() =>
+                (this.state.loading) ?
+                  <CircularProgress  size = {45} thickness = {5} /> : "No projects found"
+              }
               defaultPageSize = {10}/>
         </div>
       </div>

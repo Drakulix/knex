@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import RaisedButton from 'material-ui/RaisedButton'
 import Dialog from 'material-ui/Dialog'
-
+import RaisedButton from 'material-ui/RaisedButton'
 
 export default class ConfirmationPane extends Component {
 
@@ -11,12 +10,13 @@ export default class ConfirmationPane extends Component {
         label = "Cancel"
         primary = {true}
         onTouchTap = {this.props.handleClose}
+        style = {{ width : 160}}
         />,
       <RaisedButton
         label = {this.props.confirmationLabel}
         primary = {true}
         onTouchTap = {this.props.confirmAction}
-        style = {{marginLeft : 20}}
+        style = {{marginLeft : 20, width : 160}}
         />,
     ]
 
@@ -26,7 +26,6 @@ export default class ConfirmationPane extends Component {
         actions = {actions}
         modal = {false}
         open = {this.props.open}
-        onRequestClose = {this.props.handleClose}
         >
       </Dialog>
     )

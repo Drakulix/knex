@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import ChipInput from 'material-ui-chip-input'
 import Chip from 'material-ui/Chip'
 import AutoComplete from 'material-ui/AutoComplete'
+import Styles from '../Styles.jsx'
 
 export default class UrlInputList extends Component {
   constructor(props) {
@@ -50,12 +51,12 @@ export default class UrlInputList extends Component {
         fullWidth
         chipRenderer = {({ value, isFocused, isDisabled, handleClick, handleRequestDelete }, key) => (
           <Chip
-            key ={key}
+            key = {key}
             style = {{margin: '8px 8px 0 0',float: 'left'}}
-            backgroundColor = {'#ff5000'}
+            backgroundColor = {Styles.palette.primary1Color}
             onTouchTap = {handleClick}
             onRequestDelete = {handleRequestDelete}>
-            <span style = {{color : '#ffffff', fontWeight: 'bold'}}> {value} </span>
+            <span style = {{color : Styles.palette.alternateTextColor, fontWeight: 'bold'}}> {value} </span>
           </Chip>
         )}/>
       )

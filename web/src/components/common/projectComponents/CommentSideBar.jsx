@@ -60,30 +60,30 @@ class CommentItem extends React.Component {
   render(){
     const actions = [
       <FlatButton
-        label="Cancel"
-        primary={true}
-        onTouchTap={this.handleClose}
+        label = "Cancel"
+        primary = {true}
+        onTouchTap = {this.handleClose}
       />,
       <FlatButton
-        label="Submit"
-        primary={true}
-        keyboardFocused={true}
-        onTouchTap={this.handleSubmitEdit}
+        label = "Submit"
+        primary = {true}
+        keyboardFocused = {true}
+        onTouchTap = {this.handleSubmitEdit}
       />,
     ];
 
     const iconButtonElement = (
       <IconButton
-        touch={true}
-        tooltip="more"
-        tooltipPosition="bottom-left"
+        touch = {true}
+        tooltip = "more"
+        tooltipPosition = "bottom-left"
       >
-        <MoreVertIcon color={grey400} />
+        <MoreVertIcon color = {grey400} />
       </IconButton>
     );
 
     const rightIconMenu = (
-      <IconMenu iconButtonElement={iconButtonElement}>
+      <IconMenu iconButtonElement = {iconButtonElement}>
         <MenuItem onClick = {()=>this.handleEdit()}>Edit</MenuItem>
         <MenuItem onClick = {()=>this.handleDelete()} >Delete</MenuItem>
       </IconMenu>
@@ -91,11 +91,11 @@ class CommentItem extends React.Component {
     return (
     <div>
     <Dialog
-          title="Edit Comment"
-          actions={actions}
-          modal={false}
-          open={this.state.open}
-          onRequestClose={this.handleClose}
+          title = "Edit Comment"
+          actions = {actions}
+          modal = {false}
+          open = {this.state.open}
+          onRequestClose = {this.handleClose}
         >
         <TextField  value = {this.state.message}
           name = "Change Comment."
@@ -106,12 +106,12 @@ class CommentItem extends React.Component {
           />
 
         </Dialog>
-    <ListItem primaryText={this.props.comment.message}
-              secondaryText={<div>
-                <span style={{float : "left"}}>{this.props.comment.author.email}</span>
-                <span style={{float : "right"}}> {this.props.comment.datetime}</span>
+    <ListItem primaryText = {this.props.comment.message}
+              secondaryText = {<div>
+                <span style = {{float : "left"}}>{this.props.comment.author.email}</span>
+                <span style = {{float : "right"}}> {this.props.comment.datetime}</span>
               </div>}
-              rightIconButton={rightIconMenu}
+              rightIconButton = {rightIconMenu}
     />
     </div>
   )
@@ -187,29 +187,29 @@ export default class CommentSideBar extends React.Component {
   render() {
     return (
       <Drawer
-        docked={false}
-        width={600}
-        open={this.state.showCommentBar}
-        onRequestChange={(showCommentBar) => this.setState({showCommentBar})}>
+        docked = {false}
+        width = {600}
+        open = {this.state.showCommentBar}
+        onRequestChange = {(showCommentBar) => this.setState({showCommentBar})}>
         <List>
-          <div style={{padding : 20}}>
-          <TextField  value={this.state.comment}
-                      onChange={this.handleChange}
-                      hintText="Add a comment"
-                      style={{width : '100%'}}
+          <div style = {{padding : 20}}>
+          <TextField  value = {this.state.comment}
+                      onChange = {this.handleChange}
+                      hintText = "Add a comment"
+                      style = {{width : '100%'}}
                       multiLine = {true}
           />
-          <div style={{textAlign : "center", marginBottom : 25}}>
-            <RaisedButton label="Comment"
-                          disabled={this.state.comment === ""}
-                          onClick={this.handleSubmit}
-                          primary={true}/>
+          <div style = {{textAlign : "center", marginBottom : 25}}>
+            <RaisedButton label = "Comment"
+                          disabled = {this.state.comment === ""}
+                          onClick = {this.handleSubmit}
+                          primary = {true}/>
           </div>
         </div>
         {this.state.comments.map(item =>
-          <div>
+          <div key = {this.props.uuid}>
             <Divider/>
-            <CommentItem comment={item} p_id={this.props.uuid} handleUpdateList={this.handleUpdateList}/>
+            <CommentItem comment = {item} p_id = {this.props.uuid} handleUpdateList = {this.handleUpdateList}/>
           </div>)
         }
       </List>
