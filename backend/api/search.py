@@ -47,7 +47,8 @@ def prepare_es_query(query):
     title = query.get('title')
 
     request_json = {
-        'from' : 0, 'size' : 10000,
+        'from': 0,
+        'size': 10000,
         'query': {
             'bool': {
                 'should': {
