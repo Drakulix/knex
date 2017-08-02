@@ -29,6 +29,7 @@ export default {
     pickerHeaderColor: "#ff5000",
     textColor: '#000000',
     secondaryTextColor: '#808080',
-    alternateTextColor: '#ffffff'
+    alternateTextColor: '#ffffff',
+    canvasColor : '#ffffff'
   }
 }

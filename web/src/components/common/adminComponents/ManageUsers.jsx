@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import ReactTable from 'react-table'
 import { Link } from 'react-router-dom'
 import IconButton from 'material-ui/IconButton'
-import styles from '../../common/Styles'
+import Styles from '../../common/Styles'
 import Backend from '../../common/Backend'
 import Spinner from '../../common/Spinner'
 import {Card, CardHeader, CardText} from 'material-ui/Card'
@@ -63,14 +63,14 @@ export default class ManageUsers extends Component {
   }
 
   handleSetAdmin(userInf){
-    var text = "User " + userInf.first_name + " " + userInf.last_name + " ";
+    var text = `User ${userInf.first_name} ${userInf.last_name} `;
     if(userInf.roles.includes("admin")){
       userInf.roles.splice(userInf.roles.indexOf("admin"))
-      text = text + " is not admin anymore"
+      text = `${text} is not admin anymore`
     }
     else {
       userInf.roles.push("admin")
-      text = text + " is now admin"
+      text = `${text} is now admin`
     }
     Backend.setUserRoles(userInf.email,
                          userInf.first_name,
@@ -82,7 +82,7 @@ export default class ManageUsers extends Component {
     }
 
   handleSetActive(userInf){
-    var text = "User " + userInf.first_name + " " + userInf.last_name + " is "+ (userInf.active ? "de-" : "") + "activated"
+    var text = `User ${userInf.first_name} ${userInf.last_name}  is ${userInf.active ? "de-" : ""}activated`
     Backend.setActivation( userInf.email,
                            userInf.first_name,
                            userInf.last_name,
@@ -103,7 +103,7 @@ export default class ManageUsers extends Component {
     Backend.deleteUser(this.state.userID)
     .then(() =>{this.setState({ open:false,
                                 snackbar: true,
-                                snackbarText : "User " + this.state.userID + " deleted"})})
+                                snackbarText : `User ${this.state.userID} deleted`})})
     .then(() => {this.loadUsers()})
   }
 
@@ -112,7 +112,7 @@ export default class ManageUsers extends Component {
     var filteredList = []
     for(let dataObject of this.state.userList) {
       var discard = false
-      var userName = (dataObject.first_name + " " + dataObject.last_name).toLowerCase()
+      var userName = `${dataObject.first_name} ${dataObject.last_name}`.toLowerCase()
       var email = dataObject.email.toLowerCase()
       discard = discard || email.indexOf(name === "email" ? value.toLowerCase() :  this.state.email.toLowerCase()) === -1
       discard = discard || userName.indexOf(name === "name" ? value.toLowerCase() :  this.state.name.toLowerCase()) === -1
@@ -124,8 +124,6 @@ export default class ManageUsers extends Component {
     })
   }
 
-
-
   render(){
     var columns = []
     columns.push({
@@ -136,8 +134,8 @@ export default class ManageUsers extends Component {
         return(
           <div style = {{whiteSpace : "normal", marginTop:5}}>
             <Link to = {`profile/${props.value.email}`}
-              className = "table-link-text">
-              {props.value.first_name + " " + props.value.last_name }
+              style = {{fontWeight : "bold", color : Styles.palette.textColor}}>
+              {`${props.value.first_name} ${props.value.last_name}`}
             </Link>
           </div>
         )
@@ -154,7 +152,7 @@ export default class ManageUsers extends Component {
         return(
           <div style = {{whiteSpace : "normal"}}>
             <Link to = {`profile/${props.value.email}`}
-              className = "table-link-text">
+              style = {{fontWeight : "bold", color : Styles.palette.textColor}}>
               {props.value.email}
             </Link>
           </div>
@@ -180,7 +178,11 @@ export default class ManageUsers extends Component {
       style : {textAlign : "center"},
       Cell : props =>{
         return(
-          <div onClick = {() => this.handleSetActive(props.value)}><i className = "material-icons" style = {{fontSize : '24px',padding:3}}>
+          <div onClick = {() => this.handleSetActive(props.value)}>
+            <i  className = "material-icons"
+                style = {{fontSize : '24px',
+                          padding:3,
+                          color : Styles.palette.textColor}}>
             {props.value.active === "false" ?  "clear" : "done"}
           </i></div>)
       }
@@ -195,7 +197,11 @@ export default class ManageUsers extends Component {
       accessor : d => d,
       Cell : props =>{
         return(
-          <div onClick = {() => this.handleSetAdmin(props.value)}><i className = "material-icons" style = {{fontSize : '24px',padding:3}}>
+          <div onClick = {() => this.handleSetAdmin(props.value)}>
+            <i  className = "material-icons"
+                style = {{fontSize : '24px',
+                          padding : 3,
+                          color : Styles.palette.textColor}}>
             {(props.value.roles.indexOf("admin") !== -1) ?  "done" : "clear"}
           </i></div>)
       }
@@ -208,17 +214,15 @@ export default class ManageUsers extends Component {
       sortable : false,
       width : 60,
       style : {textAlign : "center"},
-      Cell : props => <Link
-                      to = {"/profile/"+props.value.email}>
-                      <IconButton
+      Cell : props => <IconButton
                           touch = {true}
-                          style = {styles.largeIcon}
-                          iconStyle = {{fontSize : '24px'}}
+                          href = {`/profile/${props.value.email}`}
+                          style = {Styles.largeIcon}
+                          iconStyle = {{fontSize: '24px',color:Styles.palette.textColor}}
                           value = {props.value._id}
                           >
                             <i className = "material-icons">mode_edit</i>
                           </IconButton>
-                    </Link>
     })
 
     columns.push({
@@ -231,8 +235,8 @@ export default class ManageUsers extends Component {
       Cell : props => <IconButton
             onClick = {()=>this.intentionToDeleteUser(props.value.email)}
             touch = {true}
-            style = {styles.largeIcon}
-            iconStyle = {{fontSize : '24px'}}
+            style = {Styles.largeIcon}
+            iconStyle = {{fontSize: '24px',color:Styles.palette.textColor}}
             value = {props.value._id}
             >
               <i className = "material-icons">delete</i>
@@ -243,7 +247,7 @@ export default class ManageUsers extends Component {
       <div className = "container" >
         <ConfirmationPane open = {this.state.open}
                           handleClose = {() => {this.setState({open : false})}}
-                          title = {"Do you want to delete user " + this.state.userID}
+                          title = {`Do you want to delete user ${this.state.userID}`}
                           confirmationLabel = {"Delete User"}
                           confirmAction = {this.handleDelete}
         />

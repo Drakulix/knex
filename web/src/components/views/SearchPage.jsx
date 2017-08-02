@@ -13,6 +13,7 @@ export default class SearchPage extends Component {
     super(props)
 
     var query = this.props.match.params.query !== undefined ? JSON.parse(this.props.match.params.query) : {}
+    query["archived"] = "false"
     this.state = {
         label : "",
         searchString : query.searchString === undefined ? "" : query.searchString,

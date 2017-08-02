@@ -4,7 +4,7 @@ import ReactTable from 'react-table'
 import Backend from './Backend'
 import Filters from './Filters'
 import IconButton from 'material-ui/IconButton'
-import styles from '../common/Styles.jsx'
+import Styles from '../common/Styles.jsx'
 import Snackbar from 'material-ui/Snackbar'
 import AuthorOutputList from '../common/chips/AuthorOutputList'
 import TagOutputList from '../common/chips/TagOutputList'
@@ -45,7 +45,7 @@ export default class BookmarksTable extends Component {
   handleDelete(projectInf){
     this.setState({
       snackbar : false,
-      dialogText : "Do you want to delete project " + projectInf.title + "?",
+      dialogText : `Do you want to delete project ${projectInf.title}?`,
       buttonText : "Delete",
       dialogOpen : true,
       action : () => {
@@ -53,7 +53,7 @@ export default class BookmarksTable extends Component {
         Backend.deleteProject(projectInf._id)
         .then(() => {this.props.handler(this.state.filters)})
         .then(this.setState({snackbar : true,
-          snackbarText : "Project "+ projectInf.title +" deleted"}))
+          snackbarText : `Project ${projectInf.title} deleted`}))
       }
     })
   }
@@ -61,7 +61,7 @@ export default class BookmarksTable extends Component {
   handleArchive(projectInf){
     this.setState({
       snackbar : false,
-      dialogText : "Do you want to archive project " + projectInf.title + "?",
+      dialogText : `Do you want to archive project ${projectInf.title}?`,
       buttonText : "Archive",
       dialogOpen : true,
       action : () => {
@@ -73,7 +73,7 @@ export default class BookmarksTable extends Component {
         Backend.updateProject(projectInf._id, project)
         .then(() => {this.props.handler(this.state.filters)})
         .then(this.setState({snackbar : true,
-          snackbarText : "Project "+ projectInf.title +" archived"}))
+          snackbarText : `Project ${projectInf.title} archived`}))
       }
     })
   }
@@ -87,30 +87,35 @@ export default class BookmarksTable extends Component {
     Backend.updateProject(projectInf._id, project)
         .then(() => {this.props.handler(this.state.filters)})
         .then(() => {this.setState({snackbar : true,
-          snackbarText : "Project " + projectInf.title + " unarchived"})})
+          snackbarText : `Project ${projectInf.title} unarchived`})})
   }
 
   handleBookmark(projectInf){
     Backend.handleBookmark(projectInf._id, projectInf.is_bookmark)
     .then(() => {this.props.handler(this.state.filters)})
     .then(() => {this.setState({snackbar : true,
-      snackbarText : "Project bookmark"+(projectInf.is_bookmark === "true" ? " removed" : "ed")})})
+      snackbarText : `Project bookmark${projectInf.is_bookmark === "true" ? " removed" : "ed"}`})})
   }
 
   componentWillReceiveProps(props){
+    if(!this.props.loading && ! props.loading){
+      this.setState({snackbar : false})
+    }
     this.setState({
       filteredData : (this.props.isBookmarkTable
                       ? this.filter(props.data, this.state.filters) : props.data),
       })
-    Backend.getAuthors()
-    .then((authors) => {
-      Backend.getUserNames(authors)
-      .then ((userNames) => {
-        this.setState({
-          userNames : JSON.parse(userNames)
+    if(this.props.loading && ! props.loading){
+      Backend.getAuthors()
+      .then((authors) => {
+        Backend.getUserNames(authors)
+        .then ((userNames) => {
+          this.setState({
+            userNames : JSON.parse(userNames)
+          })
         })
       })
-    })
+    }
   }
 
   componentDidUpdate(prevProps, prevState){
@@ -179,16 +184,17 @@ export default class BookmarksTable extends Component {
       columns.push({
         Header: 'Project title',
         id: 'title',
-        width: 180,
+        width: 160,
         sortMethod: (a,b) => {
           return  a.title.toLowerCase() === b.title.toLowerCase() ? 0
                     : a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1
         },
         accessor: d => d,
         Cell: props =>
-            <div style = {{whiteSpace : "normal", marginTop:8}}>
+            <div style = {{whiteSpace : "normal", textAlign : 'left', marginTop:8}}>
               <Link to = {`/project/${props.value._id}`}
-                className = "table-link-text">
+                style = {{fontWeight : "bold", color : Styles.palette.textColor}}
+                >
                 {props.value.title}
               </Link>
             </div>
@@ -217,7 +223,7 @@ export default class BookmarksTable extends Component {
       columns.push({
         Header: 'Tags',
         accessor: "tags",
-        width: 220,
+        width: 230,
         style: {textAlign:"center", width : 220},
         Cell: props => <TagOutputList value = {props.value} />
       })
@@ -226,7 +232,7 @@ export default class BookmarksTable extends Component {
       columns.push({
         Header: 'Authors',
         accessor: "authors",
-        width: 180,
+        width: 200,
         Cell: props => <AuthorOutputList value = {props.value} userNames = {this.state.userNames} />
       })
     }
@@ -237,10 +243,10 @@ export default class BookmarksTable extends Component {
         style: {width: "100%"},
         accessor: 'description',
         Cell: props =>{
-          var text = (props.value !== undefined) ? props.value.substring(0,250).trim(): "";
-          text = text + ((text.length >= 250) ? "..." : "")
+          var text = (props.value !== undefined) ? props.value.substring(0,200).trim(): "";
+          text = text + ((props.value.length > 200) ? "..." : "")
           return(
-            <div style = {{whiteSpace : "normal", marginTop:8}}>
+            <div style = {{whiteSpace : "normal", textAlign : "justify", marginTop:8, color : Styles.palette.textColor}}>
             {text}
             </div>
           )
@@ -258,8 +264,8 @@ export default class BookmarksTable extends Component {
         Cell: props =>
           <IconButton onClick = {()=>this.handleBookmark(props.value)}
                       touch = {true}
-                      style = {styles.largeIcon}
-                      iconStyle = {{fontSize: '24px'}}>
+                      style = {Styles.largeIcon}
+                      iconStyle = {{fontSize: '24px',color:Styles.palette.textColor}}>
             <i className = "material-icons">{props.value.is_bookmark === "true" ? "star" : "star_border"}</i>
           </IconButton>
       })
@@ -281,8 +287,8 @@ export default class BookmarksTable extends Component {
           <IconButton
           onClick = {()=>this.handleUnArchive(props.value)}
           touch = {true}
-          style = {styles.largeIcon}
-          iconStyle = {{fontSize: '24px'}}
+          style = {Styles.largeIcon}
+          iconStyle = {{fontSize: '24px',color:Styles.palette.textColor}}
           value = {props.value._id}>
             <i className = "material-icons">unarchive</i>
           </IconButton>
@@ -306,8 +312,8 @@ export default class BookmarksTable extends Component {
           <IconButton
           onClick = {()=>this.handleArchive(props.value)}
           touch = {true}
-          style = {styles.largeIcon}
-          iconStyle = {{fontSize: '24px'}}
+          style = {Styles.largeIcon}
+          iconStyle = {{fontSize: '24px',color:Styles.palette.textColor}}
           value = {props.value._id}>
             <i className = "material-icons">archive</i>
           </IconButton>
@@ -325,8 +331,8 @@ export default class BookmarksTable extends Component {
         Cell: props => <IconButton
           onClick = {()=>this.handleDelete(props.value)}
           touch = {true}
-          style = {styles.largeIcon}
-          iconStyle = {{fontSize: '24px'}}
+          style = {Styles.largeIcon}
+          iconStyle = {{fontSize: '24px', color:Styles.palette.textColor}}
           value = {props.value._id}>
             <i className = "material-icons">delete</i>
           </IconButton>

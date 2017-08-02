@@ -36,7 +36,7 @@ export default class SavedQuery extends Component {
             <div className = "col-1 filter-label" style= {{fontSize : 22}}>Hits</div>
             <div className = "col-1" style= {{fontSize : 22, marginTop:13}}>{this.props.savedSearch.count}</div>
             <div className = "col-2" style = {{textAlign:"right",marginTop: 10}}>
-              <Link to = {"/discovery/"+ JSON.stringify(this.state.query)}>
+              <Link to = {`/discovery/${JSON.stringify(this.state.query)}`}>
                 <RaisedButton
                   onClick = {this.runQuery}
                   label = {"Run query"}

@@ -105,12 +105,12 @@ export default class CreateProject extends Component {
     if( this.state.projectID === undefined){
       Backend.addProject(projectInf)
       .then((id) =>{
-        history.push("/project/"+ JSON.parse(id)[0])
+        history.push(`/project/${JSON.parse(id)[0]}`)
       })
     }
     else{
       Backend.updateProject(this.state.projectID, projectInf).then(
-        history.push("/project/" + this.state.projectID)
+        history.push(`/project/${this.state.projectID}`)
       )
     }
   }

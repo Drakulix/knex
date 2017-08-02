@@ -16,7 +16,7 @@ export default class Filters extends Component{
     var filters = (props.value === undefined) ? {} : props.value
 
     this.state = {
-      expanded : Object.keys(filters).length > 0,
+      expanded : Object.keys(filters).length > 1,
       authors : filters.authors !== undefined ? filters.authors : [],
       title : filters.title !== undefined ? filters.title : "",
       tags : filters.tags !== undefined ? filters.tags : [],
@@ -136,14 +136,14 @@ export default class Filters extends Component{
                                   value = {this.state.authors}
                   />
               </div>
-              <IconButton style = {{color : 'red', marginLeft : -30, visibility : (this.state.authors.length !== 0) ? "visible" : "hidden"}} onClick = {() => this.handleChange({target : {name :"authors", value :[]}})}>
+              <IconButton style = {{color : Styles.palette.accent1Color, marginLeft : -30, visibility : (this.state.authors.length !== 0) ? "visible" : "hidden"}} onClick = {() => this.handleChange({target : {name :"authors", value :[]}})}>
                 <i className = "material-icons">cancel</i>
               </IconButton>
             </div>
             <div className = "row">
               <div className = "col-1 filter-label" style = {{textAlign : "left" , marginLeft : 2}}>From</div>
               <div className = "col-2" style = {{marginTop : 2}}>
-                <DatePicker hintText = "Pick date"
+                <DatePicker hintText = "Pick a date..."
                   mode = "landscape"
                   name  = "date_from"
                   style = {{marginLeft : -40}}
@@ -158,7 +158,7 @@ export default class Filters extends Component{
               </IconButton>
               <div className = "col-1 filter-label" style = {{textAlign : "left", marginLeft : -20}}>To</div>
               <div className = "col-2" style = {{marginTop : 2}}>
-                <DatePicker hintText = "Pick date"
+                <DatePicker hintText = "Pick a date..."
                   mode = "landscape"
                   style = {{marginLeft : -50}}
                   name  = "date_to"

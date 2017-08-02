@@ -98,12 +98,12 @@ export default class ProfileContainer extends Component {
             <div className = "col-2 " style = {{fontSize : "30px", height:41, textAlign: "center"}}>
               Profile not found
             </div>
-            <div className = "col-2"></div>
-            <div className = "col-3">
+            <div className = "col-1"></div>
+            <div className = "col-4">
               {Backend.isAdmin?
                 <RaisedButton
                   fullWidth = {true}
-                  label = {(this.state.showRegistration) ? "Hide registration" : "Do you want to register user" }
+                  label = {(this.state.showRegistration) ? "Hide registration" : "Do you want to register the user" }
                   primary = {true}
                   onClick = {() => this.setState ({showRegistration : !this.state.showRegistration})}/>
                 :""}
@@ -112,7 +112,7 @@ export default class ProfileContainer extends Component {
             {Backend.isAdmin ?
               <div style = {{textAlign : "center", marginBottom : 40, display : (this.state.showRegistration) ? "block" : "none" }}>
                 <RegisterUser email = {this.props.match.params.email}
-                              handleUserUpdate = {() => {history.push("/profile/"+this.props.match.params.email)}}/>
+                              handleUserUpdate = {() => {history.push(`/profile/${this.props.match.params.email}`)}}/>
               </div>
               :  "" }
             <ProfileProjects

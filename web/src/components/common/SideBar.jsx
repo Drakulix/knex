@@ -40,7 +40,7 @@ export default class SideBar extends Component {
                 <SideBarEntry icon = "star_half" name = {this.state.menu.bookmarks} to = "/bookmarks" active = {this.isActive("/bookmarks")} />
                 <SideBarEntry icon = "work" name = {this.state.menu.userprojects} to = "/yourprojects" active = {this.isActive("/yourprojects")} />
                 <SideBarEntry icon = "delete" name = {this.state.menu.trashcan} to = '/trashcan/' active = {this.isActive("/trashcan")} />
-                <SideBarEntry icon = "account_circle" name = {this.state.menu.profile} to = {'/profile/' + this.state.myProfile } active = {this.isActive("/profile")} />
+                <SideBarEntry icon = "account_circle" name = {this.state.menu.profile} to = {`/profile/${this.state.myProfile}`} active = {this.isActive("/profile")} />
                 {Backend.isAdmin ?  <SideBarEntry
                   icon = "settings"
                   name = {this.state.menu.adminArea}
@@ -56,7 +56,7 @@ export default class SideBar extends Component {
 const SideBarEntry = ({to, icon, icon2, name, active, style}) => {
     return (
         <Link to = {to}  >
-        <li className = {"list-group-item " + (active ? "active" : "") } style = {{color : Styles.palette.alternateTextColor}}>
+        <li className = {`list-group-item ${active ? "active" : ""}` } style = {{color : Styles.palette.alternateTextColor}}>
             {active && (<div className = "menu-indicator" style = {{backgroundColor : Styles.palette.primary1Color }}/>)}
             <div style = {{display : "inline", paddingTop : 3, float : "left", marginRight : 8}}>
               <i className = "material-icons" style = {{color : Styles.palette.alternateTextColor, fontSize : '20px',marginTop : -15}}>{icon}</i>

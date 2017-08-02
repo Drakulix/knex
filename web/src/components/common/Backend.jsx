@@ -3,12 +3,12 @@ import 'isomorphic-fetch'
 function setCookie(cname, cvalue, exdays) {
     var d = new Date();
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-    var expires = "expires="+d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    var expires = `expires=${d.toUTCString()}`;
+    document.cookie = `${cname}=${cvalue};${expires};path=/`;
 }
 
 function getCookie(cname) {
-    var name = cname + "=";
+    var name = `${cname}=`;
     var ca = document.cookie.split(';');
     for(var i = 0; i < ca.length; i++) {
         var c = ca[i];
@@ -19,7 +19,7 @@ function getCookie(cname) {
             return c.substring(name.length, c.length);
         }
     }
-    return "";
+    return '';
 }
 
 class Backend {
@@ -77,7 +77,7 @@ class Backend {
             throw ex;
         });
 
-        if (response.status == 403) {
+        if (response.status === 403) {
             return false
         } else if (response.ok) {
             setCookie('email', mail);
@@ -94,18 +94,18 @@ class Backend {
     }
 
     register(firstname, lastname, mail, password, password_confirm, role) {
-        if (password != password_confirm) {
-            alert("Passwords do not match");
+        if (password !== password_confirm) {
+            alert('Passwords do not match');
             return false;
         }
 
         return this.postJson('/api/users', {
-            "first_name": firstname,
-            "last_name": lastname,
-            "email": mail,
-            "password": password,
-            "bio": "",
-            "roles": role
+            'first_name': firstname,
+            'last_name': lastname,
+            'email': mail,
+            'password': password,
+            'bio': '',
+            'roles': role
         })
     }
 
@@ -143,13 +143,13 @@ class Backend {
             throw ex;
         });
 
-        if (response.status == 403) {
+        if (response.status === 403) {
             this.loggedIn = false;
             this.mail = '';
             this.profile = '';
             window.location = '/';
             return undefined;
-        } else if (response.status == 404) {
+        } else if (response.status === 404) {
             return null;
         } else if (response.ok) {
             return await response.json();
@@ -175,13 +175,13 @@ class Backend {
             throw ex;
         });
 
-        if (response.status == 403) {
+        if (response.status === 403) {
             this.loggedIn = false;
             this.mail = '';
             this.profile = '';
             window.location = '/';
             return undefined;
-        } else if (response.status == 404) {
+        } else if (response.status === 404) {
             return false;
         } else if (response.ok) {
             return true;
@@ -208,7 +208,7 @@ class Backend {
             throw ex;
         });
 
-        if (response.status == 403) {
+        if (response.status === 403) {
             this.loggedIn = false;
             this.mail = '';
             this.profile = '';
@@ -239,13 +239,13 @@ class Backend {
             throw ex;
         });
 
-        if (response.status == 403) {
+        if (response.status === 403) {
             this.loggedIn = false;
             this.mail = '';
             this.profile = '';
             window.location = '/';
             return undefined;
-        } else if (response.status == 404) {
+        } else if (response.status === 404) {
             return false;
         } else if (response.ok) {
             return true;
@@ -269,13 +269,13 @@ class Backend {
             throw ex;
         });
 
-        if (response.status == 403) {
+        if (response.status === 403) {
             this.loggedIn = false;
             this.mail = '';
             this.profile = '';
             window.location = '/';
             return undefined;
-        } else if (response.status == 404) {
+        } else if (response.status === 404) {
             return false;
         } else if (response.ok) {
             return true;
@@ -304,15 +304,15 @@ class Backend {
     }
 
     getProject(id) {
-        return this.getJson('/api/projects/'+id);
+        return this.getJson(`/api/projects/${id}`);
     }
 
     updateProject(id, payload) {
-        return this.putJson('/api/projects/'+id, payload);
+        return this.putJson(`/api/projects/${id}`, payload);
     }
 
     deleteProject(id) {
-        return this.delete('/api/projects/'+id);
+        return this.delete(`/api/projects/${id}`);
     }
 
     async addProjectComment(id, message) {
@@ -329,7 +329,7 @@ class Backend {
             throw ex;
         });
 
-        if (response.status == 403) {
+        if (response.status === 403) {
             this.loggedIn = false;
             this.mail = '';
             this.profile = '';
@@ -367,13 +367,13 @@ class Backend {
             throw ex;
         });
 
-        if (response.status == 403) {
+        if (response.status === 403) {
             this.loggedIn = false;
             this.mail = '';
             this.profile = '';
             window.location = '/';
             return undefined;
-        } else if (response.status == 404) {
+        } else if (response.status === 404) {
             return false;
         } else if (response.ok) {
             return true;
@@ -402,7 +402,7 @@ class Backend {
             throw ex;
         });
 
-        if (response.status == 403) {
+        if (response.status === 403) {
             this.loggedIn = false;
             this.mail = '';
             this.profile = '';
@@ -440,7 +440,7 @@ class Backend {
     }
 
     deleteSavedSearch(id) {
-        return this.delete('/api/users/saved_searches/'+encodeURIComponent(id));
+        return this.delete(`/api/users/saved_searches/${encodeURIComponent(id)}`);
     }
 
     getUsers() {
@@ -467,7 +467,7 @@ class Backend {
           'bio': bio,
           'roles' : roles
         })) {
-          if (this.mail == mail) {
+          if (this.mail === mail) {
             await this.getProfile();
           }
           return true;
@@ -483,7 +483,7 @@ class Backend {
           'last_name': lastName,
           'bio': bio,
         })) {
-          if (this.mail == mail) {
+          if (this.mail === mail) {
             await this.getProfile();
           }
           return true;
@@ -500,7 +500,7 @@ class Backend {
           'bio': bio,
           'active' : active
         })) {
-          if (this.mail == mail) {
+          if (this.mail === mail) {
             await this.getProfile();
           }
           return true;
@@ -510,11 +510,11 @@ class Backend {
     }
 
     updateAvatar(email, image){
-      return this.postImage("/api/users/"+email+"/avatar", image)
+      return this.postImage(`/api/users/${email}/avatar`, image)
     }
 
     deleteAvatar(email){
-      return this.delete("/api/users/"+email+"/avatar")
+      return this.delete(`/api/users/${email}/avatar`)
     }
 
     updatePassword(mail, old_pass, new_pass) {
@@ -526,12 +526,12 @@ class Backend {
     }
 
     deleteUser(mail) {
-        return this.delete('/api/users/'+encodeURIComponent(mail))
+        return this.delete(`/api/users/${encodeURIComponent(mail)}`)
     }
 
     async getProfile(mail = this.mail) {
-        let profile = await this.getJson('/api/users/'+encodeURIComponent(mail));
-        if (mail == this.mail) {
+        let profile = await this.getJson(`/api/users/${encodeURIComponent(mail)}`);
+        if (mail === this.mail) {
           this.profile = profile;
         }
         return profile;
@@ -546,19 +546,19 @@ class Backend {
     }
 
     addBookmark(id) {
-        return this.postJson('/api/users/bookmarks/'+encodeURIComponent(id));
+        return this.postJson(`/api/users/bookmarks/${encodeURIComponent(id)}`);
     }
 
     deleteBookmark(id) {
-        return this.delete('/api/users/bookmarks/'+encodeURIComponent(id));
+        return this.delete(`/api/users/bookmarks/${encodeURIComponent(id)}`);
     }
 
     handleBookmark(id, shouldBookmark){
-      if(shouldBookmark === "true") {
-        return this.delete('/api/users/bookmarks/'+encodeURIComponent(id));
+      if(shouldBookmark === 'true') {
+        return this.delete(`/api/users/bookmarks/${encodeURIComponent(id)}`);
       }
       else{
-        return this.postJson('/api/users/bookmarks/'+encodeURIComponent(id));
+        return this.postJson(`/api/users/bookmarks/${encodeURIComponent(id)}`);
       }
     }
 
@@ -571,7 +571,7 @@ class Backend {
     }
 
     deleteNotification(id) {
-        return this.delete('/api/users/notifications/'+encodeURIComponent(id));
+        return this.delete(`/api/users/notifications/${encodeURIComponent(id)}`);
     }
 }
 
