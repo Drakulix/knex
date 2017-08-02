@@ -138,7 +138,7 @@ export default class SignUp extends Component {
               label = "Register"
               disabled = {this.isInValidInput()}
               primary = {true}
-              buttonStyle = {{width: 250}}
+              style = {{width: 250}}
               required
               />
           </form>
