@@ -3,6 +3,7 @@ import ChipInput from 'material-ui-chip-input'
 import Chip from 'material-ui/Chip'
 import AutoComplete from 'material-ui/AutoComplete'
 import Backend from '../../common/Backend'
+import Styles from '../Styles.jsx'
 
 export default class AuthorInputList extends Component {
   constructor(props) {
@@ -89,7 +90,7 @@ export default class AuthorInputList extends Component {
             backgroundColor = {'#ffffff'}
             onTouchTap = {handleClick}
             onRequestDelete = {handleRequestDelete}>
-            <span style = {{color : '#000000', fontWeight: 'bold'}}> {text} </span>
+            <span style = {{color : Styles.palette.textColor, fontWeight: 'bold'}}> {text} </span>
           </Chip>
         )}/>
       )

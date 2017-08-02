@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import styles from '../Styles.jsx'
+import Styles from '../Styles.jsx'
 import Backend from '../Backend'
 import IconButton from 'material-ui/IconButton'
 import SharePane from './SharePane'
@@ -132,10 +132,10 @@ export default class ProjectControls extends Component{
             <IconButton
                         onClick = {this.handleComment}
                         touch = {true}
-                        style = {styles.largeIcon}
-                        tooltipPosition = "top-center"
+                        style = {Styles.largeIcon}
+                        tooltipPosition = "bottom-center"
                         tooltip = "Comment project"
-                        iconStyle = {{fontSize : '24px'}}
+                        iconStyle = {{fontSize : '24px', color:Styles.palette.textColor}}
                         >
                         <i className = "material-icons">comment</i>
                         <Badge  badgeContent = {this.state.comments_count} primary = {true}
@@ -144,10 +144,10 @@ export default class ProjectControls extends Component{
             <IconButton
                         onClick = {this.handleBookmark}
                         touch = {true}
-                        style = {styles.largeIcon}
-                        tooltipPosition = "top-center"
+                        style = {Styles.largeIcon}
+                        tooltipPosition = "bottom-center"
                         tooltip = "Bookmark project"
-                        iconStyle = {{fontSize : '24px'}}
+                        iconStyle = {{fontSize : '24px', color:Styles.palette.textColor}}
                         >
                         <i className = "material-icons">
                           {this.props.projectInf.is_bookmark === "true" ? "star" : "star_border"}
@@ -156,46 +156,46 @@ export default class ProjectControls extends Component{
             <IconButton
                         onClick = {this.handleShare}
                         touch = {true}
-                        style = {styles.largeIcon}
-                        tooltipPosition = "top-center"
+                        style = {Styles.largeIcon}
+                        tooltipPosition = "bottom-center"
                         tooltip = "Share project"
-                        iconStyle = {{fontSize : '24px'}}
+                        iconStyle = {{fontSize : '24px', color:Styles.palette.textColor}}
                         >
                         <i className = "material-icons">share</i>
             </IconButton>
             <IconButton
                         touch = {true}
-                        style = {styles.largeIcon}
+                        style = {Styles.largeIcon}
                         disabled = {! (this.props.isOwner || Backend.isAdmin())}
-                        tooltipPosition = "top-center"
+                        tooltipPosition = "bottom-center"
                         tooltip = "Edit project"
                         href = {`/update/${this.props.projectID}`}
-                        iconStyle = {{fontSize : '24px'}}
+                        iconStyle = {{fontSize : '24px', color:Styles.palette.textColor}}
                         >
                         <i className = "material-icons">mode_edit</i>
             </IconButton>
             <IconButton
                       onClick = {() => this.setState({dialogOpen : true})}
                       touch = {true}
-                      style = {styles.largeIcon}
+                      style = {Styles.largeIcon}
                       disabled = {! (this.props.isOwner || Backend.isAdmin())}
-                      tooltipPosition = "top-center"
+                      tooltipPosition = "bottom-center"
                       tooltip = "Archive project"
-                      iconStyle = {{fontSize : '24px'}}
+                      iconStyle = {{fontSize : '24px', color:Styles.palette.textColor}}
                       >
                       <i className = "material-icons">archive</i>
             </IconButton>
           </div>
             :
-          <div style = {{textAlign : "center", marginTop : 75}} >
+          <div style = {{textAlign : "center"}} >
             <IconButton
                       onClick = {() => this.handleUnArchive()}
                       touch = {true}
-                      style = {styles.largeIcon}
+                      style = {Styles.largeIcon}
                       disabled = {! (this.props.isOwner || Backend.isAdmin())}
-                      tooltipPosition = "top-center"
+                      tooltipPosition = "bottom-center"
                       tooltip = "Unarchive project"
-                      iconStyle = {{fontSize : '24px'}}
+                      iconStyle = {{fontSize : '24px', color:Styles.palette.textColor}}
                       >
                       <i className = "material-icons">unarchive</i>
             </IconButton>

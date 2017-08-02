@@ -292,9 +292,3 @@ a:hover {
   background: #ff5000 !important;
   opacity: 1.0 !important;
 }
-
-.table-link-text {
-  font-weight: bold !important;
-  color: black !important;
-  width: 100px;
-}

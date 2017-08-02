@@ -25,7 +25,6 @@ export default class ProjectContainer extends Component {
     }
 
     this.updateBookmarkState = this.updateBookmarkState.bind(this)
-
   }
 
   componentDidMount(){
@@ -56,6 +55,11 @@ export default class ProjectContainer extends Component {
           userNames : JSON.parse(userNames)
         })
       })
+    }).catch(ex => {
+      this.setState({
+        project_exists : false,
+        site_loaded : true
+      })
     })
   }
 
@@ -75,18 +79,19 @@ export default class ProjectContainer extends Component {
 
       return(
         <div className = "container">
-          />
           <div className = "row headerCreation" style = {{width : "100%"}}>
             <div className = "col-12">
               <div>Project</div>
               <div style = {{fontSize : '20px'}}> {this.state.projectInf.title}</div>
-                {this.state.projectInf.archived ? <i style = {{fontSize : '20px'}}>Archived project</i> : ""}
+              {this.state.projectInf.archived ? <i style = {{fontSize : '20px'}}>Archived project</i> : ""}
+              <div style = {{marginTop : 20}}>
                 <ProjectControls  projectInf = {this.state.projectInf}
                                   isOwner = {this.state.isOwner}
                                   projectID = {this.state.projectID}
                                   userNames = {this.state.userNames}
                                   updateBookmarkState = {this.updateBookmarkState} />
               </div>
+            </div>
           </div>
           <div className = "row">
             <div className = "col-5">
@@ -106,7 +111,9 @@ export default class ProjectContainer extends Component {
               </div>
               <div style = {{marginTop : 30}}>
                 <div className = "profile-info">Authors</div>
-                <AuthorOutputList value = {this.state.projectInf.authors} userNames = {this.state.userNames} />
+                <div style = {{marginLeft : -16}}>
+                  <AuthorOutputList value = {this.state.projectInf.authors} userNames = {this.state.userNames} />
+                </div>
               </div>
               <div style = {{marginTop : 30}}>
               <div className = "profile-info">Links</div>
@@ -128,80 +135,6 @@ export default class ProjectContainer extends Component {
               </div>
             </div>
           </div>
-          {!this.state.projectInf.archived ?
-            <div style = {{textAlign : "center", marginTop : 75}} >
-            <IconButton
-                        onClick = {this.handleComment}
-                        touch = {true}
-                        style = {styles.largeIcon}
-                        tooltipPosition = "top-center"
-                        tooltip = "Comment project"
-                        iconStyle = {{fontSize : '24px'}}
-                        >
-                        <i className = "material-icons">comment</i>
-                        <Status  badgeContent = {this.state.comments_count} primary = {true}
-                          badgeStyle = {{top : -30, height : 20, width : 20}} />
-            </IconButton>
-            <IconButton
-                        onClick = {this.handleBookmark}
-                        touch = {true}
-                        style = {styles.largeIcon}
-                        tooltipPosition = "top-center"
-                        tooltip = "Bookmark project"
-                        iconStyle = {{fontSize : '24px'}}
-                        >
-                        <i className = "material-icons">
-                          {this.state.projectInf.is_bookmark === "true" ? "star" : "star_border"}
-                        </i>
-            </IconButton>
-            <IconButton
-                        onClick = {this.handleShare}
-                        touch = {true}
-                        style = {styles.largeIcon}
-                        tooltipPosition = "top-center"
-                        tooltip = "Share project"
-                        iconStyle = {{fontSize : '24px'}}
-                        >
-                        <i className = "material-icons">share</i>
-            </IconButton>
-            <IconButton
-                        touch = {true}
-                        style = {styles.largeIcon}
-                        disabled = {! (this.state.isOwner || Backend.isAdmin())}
-                        tooltipPosition = "top-center"
-                        tooltip = "Edit project"
-                        href = {`/update/${this.state.projectID}`}
-                        iconStyle = {{fontSize : '24px', marginTop:-5}}
-                        >
-                        <i className = "material-icons">mode_edit</i>
-            </IconButton>
-            <IconButton
-                      onClick = {() => this.setState({dialogOpen : true})}
-                      touch = {true}
-                      style = {styles.largeIcon}
-                      disabled = {! (this.state.isOwner || Backend.isAdmin())}
-                      tooltipPosition = "top-center"
-                      tooltip = "Archive project"
-                      iconStyle = {{fontSize : '24px'}}
-                      >
-                      <i className = "material-icons">archive</i>
-            </IconButton>
-          </div>
-              :
-          <div style = {{textAlign : "center", marginTop : 75}} >
-            <IconButton
-                      onClick = {() => this.handleUnArchive()}
-                      touch = {true}
-                      style = {styles.largeIcon}
-                      disabled = {! (this.state.isOwner || Backend.isAdmin())}
-                      tooltipPosition = "top-center"
-                      tooltip = "Unarchive project"
-                      iconStyle = {{fontSize : '24px'}}
-                      >
-                      <i className = "material-icons">unarchive</i>
-            </IconButton>
-          </div>
-        }
         </div>
       )
     }
