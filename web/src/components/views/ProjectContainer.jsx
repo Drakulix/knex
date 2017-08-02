@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
-import styles from '../common/Styles.jsx'
 import Backend from '../common/Backend'
-import IconButton from 'material-ui/IconButton'
 import AuthorOutputList from '../common/chips/AuthorOutputList'
 import TagOutputList from '../common/chips/TagOutputList'
 import UrlOutputList from '../common/chips/UrlOutputList'

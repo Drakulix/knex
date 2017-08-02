@@ -3,7 +3,7 @@ import 'isomorphic-fetch'
 function setCookie(cname, cvalue, exdays) {
     var d = new Date();
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-    var expires = `${expires}=d.toUTCString()`;
+    var expires = `expires=${d.toUTCString()}`;
     document.cookie = `${cname}=${cvalue};${expires};path=/`;
 }
 
@@ -19,7 +19,7 @@ function getCookie(cname) {
             return c.substring(name.length, c.length);
         }
     }
-    return "";
+    return '';
 }
 
 class Backend {
@@ -77,7 +77,7 @@ class Backend {
             throw ex;
         });
 
-        if (response.status == 403) {
+        if (response.status === 403) {
             return false
         } else if (response.ok) {
             setCookie('email', mail);
@@ -94,18 +94,18 @@ class Backend {
     }
 
     register(firstname, lastname, mail, password, password_confirm, role) {
-        if (password != password_confirm) {
-            alert("Passwords do not match");
+        if (password !== password_confirm) {
+            alert('Passwords do not match');
             return false;
         }
 
         return this.postJson('/api/users', {
-            "first_name": firstname,
-            "last_name": lastname,
-            "email": mail,
-            "password": password,
-            "bio": "",
-            "roles": role
+            'first_name': firstname,
+            'last_name': lastname,
+            'email': mail,
+            'password': password,
+            'bio': '',
+            'roles': role
         })
     }
 
@@ -143,13 +143,13 @@ class Backend {
             throw ex;
         });
 
-        if (response.status == 403) {
+        if (response.status === 403) {
             this.loggedIn = false;
             this.mail = '';
             this.profile = '';
             window.location = '/';
             return undefined;
-        } else if (response.status == 404) {
+        } else if (response.status === 404) {
             return null;
         } else if (response.ok) {
             return await response.json();
@@ -175,13 +175,13 @@ class Backend {
             throw ex;
         });
 
-        if (response.status == 403) {
+        if (response.status === 403) {
             this.loggedIn = false;
             this.mail = '';
             this.profile = '';
             window.location = '/';
             return undefined;
-        } else if (response.status == 404) {
+        } else if (response.status === 404) {
             return false;
         } else if (response.ok) {
             return true;
@@ -208,7 +208,7 @@ class Backend {
             throw ex;
         });
 
-        if (response.status == 403) {
+        if (response.status === 403) {
             this.loggedIn = false;
             this.mail = '';
             this.profile = '';
@@ -239,13 +239,13 @@ class Backend {
             throw ex;
         });
 
-        if (response.status == 403) {
+        if (response.status === 403) {
             this.loggedIn = false;
             this.mail = '';
             this.profile = '';
             window.location = '/';
             return undefined;
-        } else if (response.status == 404) {
+        } else if (response.status === 404) {
             return false;
         } else if (response.ok) {
             return true;
@@ -269,13 +269,13 @@ class Backend {
             throw ex;
         });
 
-        if (response.status == 403) {
+        if (response.status === 403) {
             this.loggedIn = false;
             this.mail = '';
             this.profile = '';
             window.location = '/';
             return undefined;
-        } else if (response.status == 404) {
+        } else if (response.status === 404) {
             return false;
         } else if (response.ok) {
             return true;
@@ -329,7 +329,7 @@ class Backend {
             throw ex;
         });
 
-        if (response.status == 403) {
+        if (response.status === 403) {
             this.loggedIn = false;
             this.mail = '';
             this.profile = '';
@@ -367,13 +367,13 @@ class Backend {
             throw ex;
         });
 
-        if (response.status == 403) {
+        if (response.status === 403) {
             this.loggedIn = false;
             this.mail = '';
             this.profile = '';
             window.location = '/';
             return undefined;
-        } else if (response.status == 404) {
+        } else if (response.status === 404) {
             return false;
         } else if (response.ok) {
             return true;
@@ -402,7 +402,7 @@ class Backend {
             throw ex;
         });
 
-        if (response.status == 403) {
+        if (response.status === 403) {
             this.loggedIn = false;
             this.mail = '';
             this.profile = '';
@@ -467,7 +467,7 @@ class Backend {
           'bio': bio,
           'roles' : roles
         })) {
-          if (this.mail == mail) {
+          if (this.mail === mail) {
             await this.getProfile();
           }
           return true;
@@ -483,7 +483,7 @@ class Backend {
           'last_name': lastName,
           'bio': bio,
         })) {
-          if (this.mail == mail) {
+          if (this.mail === mail) {
             await this.getProfile();
           }
           return true;
@@ -500,7 +500,7 @@ class Backend {
           'bio': bio,
           'active' : active
         })) {
-          if (this.mail == mail) {
+          if (this.mail === mail) {
             await this.getProfile();
           }
           return true;
@@ -531,7 +531,7 @@ class Backend {
 
     async getProfile(mail = this.mail) {
         let profile = await this.getJson(`/api/users/${encodeURIComponent(mail)}`);
-        if (mail == this.mail) {
+        if (mail === this.mail) {
           this.profile = profile;
         }
         return profile;
@@ -554,7 +554,7 @@ class Backend {
     }
 
     handleBookmark(id, shouldBookmark){
-      if(shouldBookmark === "true") {
+      if(shouldBookmark === 'true') {
         return this.delete(`/api/users/bookmarks/${encodeURIComponent(id)}`);
       }
       else{
