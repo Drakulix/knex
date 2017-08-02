@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import ReactTable from 'react-table'
 import { Link } from 'react-router-dom'
 import IconButton from 'material-ui/IconButton'
-import styles from '../../common/Styles'
+import Styles from '../../common/Styles'
 import Backend from '../../common/Backend'
 import Spinner from '../../common/Spinner'
 import {Card, CardHeader, CardText} from 'material-ui/Card'
@@ -134,7 +134,7 @@ export default class ManageUsers extends Component {
         return(
           <div style = {{whiteSpace : "normal", marginTop:5}}>
             <Link to = {`profile/${props.value.email}`}
-              className = "table-link-text">
+              style = {{fontWeight : "bold", color : Styles.palette.textColor}}>
               {`${props.value.first_name} ${props.value.last_name}`}
             </Link>
           </div>
@@ -152,7 +152,7 @@ export default class ManageUsers extends Component {
         return(
           <div style = {{whiteSpace : "normal"}}>
             <Link to = {`profile/${props.value.email}`}
-              className = "table-link-text">
+              style = {{fontWeight : "bold", color : Styles.palette.textColor}}>
               {props.value.email}
             </Link>
           </div>
@@ -178,7 +178,11 @@ export default class ManageUsers extends Component {
       style : {textAlign : "center"},
       Cell : props =>{
         return(
-          <div onClick = {() => this.handleSetActive(props.value)}><i className = "material-icons" style = {{fontSize : '24px',padding:3}}>
+          <div onClick = {() => this.handleSetActive(props.value)}>
+            <i  className = "material-icons"
+                style = {{fontSize : '24px',
+                          padding:3,
+                          color : Styles.palette.textColor}}>
             {props.value.active === "false" ?  "clear" : "done"}
           </i></div>)
       }
@@ -193,7 +197,11 @@ export default class ManageUsers extends Component {
       accessor : d => d,
       Cell : props =>{
         return(
-          <div onClick = {() => this.handleSetAdmin(props.value)}><i className = "material-icons" style = {{fontSize : '24px',padding:3}}>
+          <div onClick = {() => this.handleSetAdmin(props.value)}>
+            <i  className = "material-icons"
+                style = {{fontSize : '24px',
+                          padding : 3,
+                          color : Styles.palette.textColor}}>
             {(props.value.roles.indexOf("admin") !== -1) ?  "done" : "clear"}
           </i></div>)
       }
@@ -209,8 +217,8 @@ export default class ManageUsers extends Component {
       Cell : props => <IconButton
                           touch = {true}
                           href = {`/profile/${props.value.email}`}
-                          style = {styles.largeIcon}
-                          iconStyle = {{fontSize : '24px'}}
+                          style = {Styles.largeIcon}
+                          iconStyle = {{fontSize: '24px',color:Styles.palette.textColor}}
                           value = {props.value._id}
                           >
                             <i className = "material-icons">mode_edit</i>
@@ -227,8 +235,8 @@ export default class ManageUsers extends Component {
       Cell : props => <IconButton
             onClick = {()=>this.intentionToDeleteUser(props.value.email)}
             touch = {true}
-            style = {styles.largeIcon}
-            iconStyle = {{fontSize : '24px'}}
+            style = {Styles.largeIcon}
+            iconStyle = {{fontSize: '24px',color:Styles.palette.textColor}}
             value = {props.value._id}
             >
               <i className = "material-icons">delete</i>

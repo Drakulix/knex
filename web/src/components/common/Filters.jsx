@@ -143,7 +143,7 @@ export default class Filters extends Component{
             <div className = "row">
               <div className = "col-1 filter-label" style = {{textAlign : "left" , marginLeft : 2}}>From</div>
               <div className = "col-2" style = {{marginTop : 2}}>
-                <DatePicker hintText = "Pick date"
+                <DatePicker hintText = "Pick a date..."
                   mode = "landscape"
                   name  = "date_from"
                   style = {{marginLeft : -40}}
@@ -158,7 +158,7 @@ export default class Filters extends Component{
               </IconButton>
               <div className = "col-1 filter-label" style = {{textAlign : "left", marginLeft : -20}}>To</div>
               <div className = "col-2" style = {{marginTop : 2}}>
-                <DatePicker hintText = "Pick date"
+                <DatePicker hintText = "Pick a date..."
                   mode = "landscape"
                   style = {{marginLeft : -50}}
                   name  = "date_to"
