@@ -108,8 +108,11 @@ class CommentItem extends React.Component {
         </Dialog>
     <ListItem primaryText = {this.props.comment.message}
               secondaryText = {<div>
-                <span style = {{float : "left"}}>{this.props.comment.author.email}</span>
-                <span style = {{float : "right"}}> {this.props.comment.datetime}</span>
+                <span style = {{float : "left"}}>
+                  {this.props.userNames!== undefined ? this.props.userNames[this.props.comment.author]
+                                                    : this.props.comment.author}
+                </span>
+                <span style = {{float : "right"}}>{this.props.comment.datetime}</span>
               </div>}
               rightIconButton = {rightIconMenu}
     />
@@ -122,12 +125,15 @@ export default class CommentSideBar extends React.Component {
 
   constructor(props) {
     super(props)
-    this.state = {showCommentBar : false,
-    comment : "",
-    comments : []}
+    this.state = {
+      showCommentBar : false,
+      comment : "",
+      comments : []
+    }
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleUpdateList = this.handleUpdateList.bind(this)
+    this.loadComments = this.loadComments.bind(this)
   }
 
   transformArray(dataArray) {
@@ -162,13 +168,12 @@ export default class CommentSideBar extends React.Component {
       comment : ""
     })
     this.loadComments()
-    this.props.handleUpdateComments()
   }
 
   handleToggle = () => this.setState({showCommentBar : !this.state.showCommentBar})
 
   componentWillReceiveProps(props){
-    this.setState({showCommentBar : props.value})
+    this.setState({showCommentBar : props.open})
   }
 
   componentWillMount(){
@@ -176,12 +181,13 @@ export default class CommentSideBar extends React.Component {
   }
 
   loadComments(){
-    Backend.getProjectComments(this.props.uuid).then(function(data) {
+    return Backend.getProjectComments(this.props.uuid).then((data) => {
       var filteredData = this.transformArray(data)
+      this.props.loadComments(data.length)
       this.setState({
         comments : filteredData
       })
-    }.bind(this))
+    })
   }
 
   render() {
@@ -191,25 +197,25 @@ export default class CommentSideBar extends React.Component {
         width = {600}
         open = {this.state.showCommentBar}
         onRequestChange = {(showCommentBar) => this.setState({showCommentBar})}>
-        <List>
-          <div style = {{padding : 20}}>
+        <div style = {{padding : 20}}>
           <TextField  value = {this.state.comment}
-                      onChange = {this.handleChange}
-                      hintText = "Add a comment"
-                      style = {{width : '100%'}}
-                      multiLine = {true}
+                    onChange = {this.handleChange}
+                    hintText = "Add a comment"
+                    style = {{width : '100%'}}
+                    multiLine = {true}
           />
           <div style = {{textAlign : "center", marginBottom : 25}}>
             <RaisedButton label = "Comment"
-                          disabled = {this.state.comment === ""}
-                          onClick = {this.handleSubmit}
-                          primary = {true}/>
+                        disabled = {this.state.comment === ""}
+                        onClick = {this.handleSubmit}
+                        primary = {true}/>
           </div>
         </div>
+        <List>
         {this.state.comments.map(item =>
-          <div key = {this.props.uuid}>
+          <div key = {item.id}>
             <Divider/>
-            <CommentItem comment = {item} p_id = {this.props.uuid} handleUpdateList = {this.handleUpdateList}/>
+            <CommentItem comment = {item} userNames = {this.props.userNames} p_id = {this.props.uuid} handleUpdateList = {this.handleUpdateList}/>
           </div>)
         }
       </List>
