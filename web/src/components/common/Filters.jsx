@@ -16,7 +16,7 @@ export default class Filters extends Component{
     var filters = (props.value === undefined) ? {} : props.value
 
     this.state = {
-      expanded : Object.keys(filters).length > 0,
+      expanded : Object.keys(filters).length > 1,
       authors : filters.authors !== undefined ? filters.authors : [],
       title : filters.title !== undefined ? filters.title : "",
       tags : filters.tags !== undefined ? filters.tags : [],
