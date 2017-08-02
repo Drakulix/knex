@@ -136,7 +136,7 @@ export default class Filters extends Component{
                                   value = {this.state.authors}
                   />
               </div>
-              <IconButton style = {{color : 'red', marginLeft : -30, visibility : (this.state.authors.length !== 0) ? "visible" : "hidden"}} onClick = {() => this.handleChange({target : {name :"authors", value :[]}})}>
+              <IconButton style = {{color : Styles.palette.accent1Color, marginLeft : -30, visibility : (this.state.authors.length !== 0) ? "visible" : "hidden"}} onClick = {() => this.handleChange({target : {name :"authors", value :[]}})}>
                 <i className = "material-icons">cancel</i>
               </IconButton>
             </div>
