@@ -130,7 +130,7 @@ export default class SavedQueries extends Component {
             open = {this.state.snackbar}
             message = {this.state.snackbarText}
             autoHideDuration = {10000}/>
-          <div className = "headerCreation" style = {{width:"100%"}}>Your Saved Queries</div>
+          <div className = "headerCreation" style = {{width : "100%"}}>Your Saved Queries</div>
           <Filters  value = {this.state.filters}
                     title = {"Filter your queries by search fields"}
                     onChange = {this.handleFilterChange}/>

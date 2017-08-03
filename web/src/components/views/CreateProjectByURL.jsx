@@ -21,9 +21,9 @@ export default class CreateProjectByURL extends React.Component {
   if(this.props.match.params.getURL !== undefined){
     var URL = encodeURI(decodeURIComponent(this.props.match.params.getURL))
     var request = new Request(URL,{
-      method:'GET',
-      mode: 'cors',
-      header:{
+      method : 'GET',
+      mode : 'cors',
+      header : {
       'Access-Control-Allow-Origin':'*'
       },
     })
@@ -57,7 +57,7 @@ export default class CreateProjectByURL extends React.Component {
         }
       },
       function(exception){
-        alert(`Connection Error:\n${exception}`)
+        alert(`Connection Error : \n${exception}`)
       }
     )
   }

@@ -465,7 +465,7 @@ class Backend {
           'first_name': firstName,
           'last_name': lastName,
           'bio': bio,
-          'roles' : roles
+          'roles': roles
         })) {
           if (this.mail === mail) {
             await this.getProfile();
@@ -498,7 +498,7 @@ class Backend {
           'first_name': firstName,
           'last_name': lastName,
           'bio': bio,
-          'active' : active
+          'active': active
         })) {
           if (this.mail === mail) {
             await this.getProfile();

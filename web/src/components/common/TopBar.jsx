@@ -10,12 +10,12 @@ export default class TopBar extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      redirect : false,
-      popoverOpen : false,
-      logo : 'Company Logo',
-      notifications : [],
-      snackbar : false,
-      popover : false,
+      redirect: false,
+      popoverOpen: false,
+      logo: 'Company Logo',
+      notifications: [],
+      snackbar: false,
+      popover: false,
     }
     this.handleLogout = this.handleLogout.bind(this)
     this.handleNotificationClick = this.handleNotificationClick.bind(this)
@@ -30,38 +30,38 @@ export default class TopBar extends Component {
   loadNotifications() {
     Backend.getNotifications().then(function (data) {
       this.setState({
-          notifications : data
+          notifications: data
           })
       }.bind(this))
   }
 
   resolveNotification(notificationID){
     var list = this.state.notifications.filter((c) => c.id !== notificationID)
-    this.setState({notifications : list,
-                  popover : false})
+    this.setState({notifications: list,
+                  popover: false})
     Backend.deleteNotification(notificationID)
   }
 
   handleNotificationClick(event){
     event.preventDefault()
     this.setState({
-      popover : true,
-      anchorEl : event.currentTarget,
+      popover: true,
+      anchorEl: event.currentTarget,
     })
   }
 
   handleRequestClose(){
-    this.setState({popover : false})
+    this.setState({popover: false})
   }
 
   handleLogout(event){
     event.preventDefault()
     Backend.logout().then((success) => {
       if(success){
-        this.setState({ redirect : true })
+        this.setState({ redirect: true })
       }else{
-        this.setState({ redirect : false})
-        this.setState({snackbar : true})
+        this.setState({ redirect: false})
+        this.setState({snackbar: true})
       }
     })
   }
@@ -75,13 +75,13 @@ export default class TopBar extends Component {
         <div className = "row">
           <div className = "col-10">
           </div>
-          <div className = "col-1" style = {{marginTop : 2}}>
-            <IconButton tooltip = "Notifications" style = {{color : 'white', marginLeft:80}} onClick = {this.handleNotificationClick}>
+          <div className = "col-1" style = {{marginTop: 2}}>
+            <IconButton tooltip = "Notifications" style = {{color: 'white', marginLeft: 80}} onClick = {this.handleNotificationClick}>
               <i className = "material-icons">notifications</i>
               { this.state.notifications.length !== 0 ?
                 <Badge  badgeContent = {this.state.notifications.length} primary = {true}
-                  badgeStyle = {{top : -30, height : 20, width : 20}} />
-                : ""
+                  badgeStyle = {{top: -30, height: 20, width: 20}} />
+               : ""
               }
             </IconButton>
             <NotificationPane value = {this.state.popover}
@@ -90,8 +90,8 @@ export default class TopBar extends Component {
                               notifications = {this.state.notifications}
                               resolveNotification = {this.resolveNotification}/>
           </div>
-          <div className = "col-1" style = {{marginTop : 2}}>
-            <IconButton tooltip = "Log out" style = {{color : 'white'}} onClick = {this.handleLogout}>
+          <div className = "col-1" style = {{marginTop: 2}}>
+            <IconButton tooltip = "Log out" style = {{color: 'white'}} onClick = {this.handleLogout}>
               <i className = "material-icons">exit_to_app</i>
             </IconButton>
           </div>

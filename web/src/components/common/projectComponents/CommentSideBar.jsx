@@ -17,7 +17,7 @@ import FlatButton from 'material-ui/FlatButton';
 class CommentItem extends React.Component {
   constructor(){
     super();
-    this.state = {open : false}
+    this.state = {open: false}
 
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmitEdit = this.handleSubmitEdit.bind(this)
@@ -38,7 +38,7 @@ class CommentItem extends React.Component {
 
   handleEdit(event){
     this.setState({
-      message : this.props.comment.message
+      message: this.props.comment.message
     })
     this.handleOpen()
   }
@@ -101,18 +101,18 @@ class CommentItem extends React.Component {
           name = "Change Comment."
           onChange = {this.handleChange}
           hintText = "Change Comment."
-          style = {{width : '100%', marginTop : 6}}
+          style = {{width: '100%', marginTop: 6}}
           multiLine = {true}
           />
 
         </Dialog>
-    <ListItem primaryText = {this.props.comment.message}
+        <ListItem primaryText = {this.props.comment.message}
               secondaryText = {<div>
-                <span style = {{float : "left"}}>
+                <span style = {{float: "left"}}>
                   {this.props.userNames!== undefined ? this.props.userNames[this.props.comment.author]
-                                                    : this.props.comment.author}
+                                                   : this.props.comment.author}
                 </span>
-                <span style = {{float : "right"}}>{this.props.comment.datetime}</span>
+                <span style = {{float: "right"}}>{this.props.comment.datetime}</span>
               </div>}
               rightIconButton = {rightIconMenu}
     />
@@ -126,9 +126,9 @@ export default class CommentSideBar extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      showCommentBar : false,
-      comment : "",
-      comments : []
+      showCommentBar: false,
+      comment: "",
+      comments: []
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -147,7 +147,7 @@ export default class CommentSideBar extends React.Component {
   handleChange(event){
     const value = event.target.value
     this.setState({
-      comment : value
+      comment: value
     })
   }
 
@@ -165,15 +165,15 @@ export default class CommentSideBar extends React.Component {
         }
       })
     this.setState({
-      comment : ""
+      comment: ""
     })
     this.loadComments()
   }
 
-  handleToggle = () => this.setState({showCommentBar : !this.state.showCommentBar})
+  handleToggle = () => this.setState({showCommentBar: !this.state.showCommentBar})
 
   componentWillReceiveProps(props){
-    this.setState({showCommentBar : props.open})
+    this.setState({showCommentBar: props.open})
   }
 
   componentWillMount(){
@@ -185,7 +185,7 @@ export default class CommentSideBar extends React.Component {
       var filteredData = this.transformArray(data)
       this.props.loadComments(data.length)
       this.setState({
-        comments : filteredData
+        comments: filteredData
       })
     })
   }
@@ -197,14 +197,14 @@ export default class CommentSideBar extends React.Component {
         width = {600}
         open = {this.state.showCommentBar}
         onRequestChange = {(showCommentBar) => this.setState({showCommentBar})}>
-        <div style = {{padding : 20}}>
+        <div style = {{padding: 20}}>
           <TextField  value = {this.state.comment}
                     onChange = {this.handleChange}
                     hintText = "Add a comment"
-                    style = {{width : '100%'}}
+                    style = {{width: '100%'}}
                     multiLine = {true}
           />
-          <div style = {{textAlign : "center", marginBottom : 25}}>
+          <div style = {{textAlign: "center", marginBottom: 25}}>
             <RaisedButton label = "Comment"
                         disabled = {this.state.comment === ""}
                         onClick = {this.handleSubmit}

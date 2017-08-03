@@ -14,13 +14,13 @@ export default class ProjectControls extends Component{
     super(props)
 
     this.state = {
-      sharePane : false,
-      commentBar : false,
-      dialogOpen : false,
-      snackbar : false,
-      snackbarText : "",
+      sharePane: false,
+      commentBar: false,
+      dialogOpen: false,
+      snackbar: false,
+      snackbarText: "",
       comments_count: 0,
-      is_bookmark : false
+      is_bookmark: false
     }
 
     this.handleComment = this.handleComment.bind(this)
@@ -40,30 +40,30 @@ export default class ProjectControls extends Component{
     project['archived'] = false
     Backend.updateProject(this.props.projectID, project).then(
     this.setState({
-      dialogOpen : false,
-      snackbar : true,
-      snackbarText : `Project ${this.props.projectInf.title} unarchived`
+      dialogOpen: false,
+      snackbar: true,
+      snackbarText: `Project ${this.props.projectInf.title} unarchived`
     }))
   }
 
   updateCommentCount(count){
-    this.setState({comments_count : count})
+    this.setState({comments_count: count})
   }
 
   handleClose(){
     this.setState({
-      dialogOpen : false,
-      snackbar : false,
-      sharePane : false,
-      commentBar : false
+      dialogOpen: false,
+      snackbar: false,
+      sharePane: false,
+      commentBar: false
     })
   }
 
   handleSharedProject(){
     this.handleClose()
     this.setState({
-      snackbar : true,
-      snackbarText : `Project ${this.props.projectInf.title} shared`
+      snackbar: true,
+      snackbarText: `Project ${this.props.projectInf.title} shared`
     })
   }
 
@@ -74,23 +74,23 @@ export default class ProjectControls extends Component{
     project['archived'] = true
     Backend.updateProject(this.props.projectID, project).then(
     this.setState({
-      dialogOpen : false,
-      snackbar : true,
-      snackbarText : `Project ${this.props.projectInf.title} archived`
+      dialogOpen: false,
+      snackbar: true,
+      snackbarText: `Project ${this.props.projectInf.title} archived`
     }))
   }
 
   handleComment(event){
     this.handleClose()
     this.setState({
-      commentBar : true,
+      commentBar: true,
     })
   }
 
   handleShare(event){
     this.handleClose()
     this.setState({
-      sharePane : true,
+      sharePane: true,
     })
   }
 
@@ -99,9 +99,9 @@ export default class ProjectControls extends Component{
     this.handleClose()
     Backend.handleBookmark(this.props.projectID, this.props.projectInf.is_bookmark )
     .then(res => {
-      this.props.updateBookmarkState(this.props.projectInf.is_bookmark === "true" ? "false" : "true" )
-      this.setState({snackbar :true,
-        snackbarText : `Project bookmark${this.props.projectInf.is_bookmark === "true" ? "ed" : " removed"}`})
+      this.props.updateBookmarkState(this.props.projectInf.is_bookmark === "true" ? "false": "true" )
+      this.setState({snackbar: true,
+        snackbarText: `Project bookmark${this.props.projectInf.is_bookmark === "true" ? "ed": " removed"}`})
     })
   }
 
@@ -128,18 +128,18 @@ export default class ProjectControls extends Component{
                   autoHideDuration = {10000}
         />
         {!this.props.projectInf.archived ?
-          <div style = {{textAlign : "center"}} >
+          <div style = {{textAlign: "center"}} >
             <IconButton
                         onClick = {this.handleComment}
                         touch = {true}
                         style = {Styles.largeIcon}
                         tooltipPosition = "bottom-center"
                         tooltip = "Comment project"
-                        iconStyle = {{fontSize : '24px', color:Styles.palette.textColor}}
+                        iconStyle = {{fontSize: '24px', color: Styles.palette.textColor}}
                         >
                         <i className = "material-icons">comment</i>
                         <Badge   badgeContent = {this.state.comments_count} primary = {true}
-                          badgeStyle = {{top : -30, height : 20, width : 20, display : (this.state.comments_count === 0) ? "none" : "block"}} />
+                          badgeStyle = {{top: -30, height: 20, width: 20, display: (this.state.comments_count === 0) ? "none": "block"}} />
             </IconButton>
             <IconButton
                         onClick = {this.handleBookmark}
@@ -147,10 +147,10 @@ export default class ProjectControls extends Component{
                         style = {Styles.largeIcon}
                         tooltipPosition = "bottom-center"
                         tooltip = "Bookmark project"
-                        iconStyle = {{fontSize : '24px', color:Styles.palette.textColor}}
+                        iconStyle = {{fontSize: '24px', color: Styles.palette.textColor}}
                         >
                         <i className = "material-icons">
-                          {this.props.projectInf.is_bookmark === "true" ? "star" : "star_border"}
+                          {this.props.projectInf.is_bookmark === "true" ? "star": "star_border"}
                         </i>
             </IconButton>
             <IconButton
@@ -159,7 +159,7 @@ export default class ProjectControls extends Component{
                         style = {Styles.largeIcon}
                         tooltipPosition = "bottom-center"
                         tooltip = "Share project"
-                        iconStyle = {{fontSize : '24px', color:Styles.palette.textColor}}
+                        iconStyle = {{fontSize: '24px', color: Styles.palette.textColor}}
                         >
                         <i className = "material-icons">share</i>
             </IconButton>
@@ -170,24 +170,24 @@ export default class ProjectControls extends Component{
                         tooltipPosition = "bottom-center"
                         tooltip = "Edit project"
                         href = {`/update/${this.props.projectID}`}
-                        iconStyle = {{fontSize : '24px', color:Styles.palette.textColor}}
+                        iconStyle = {{fontSize: '24px', color: Styles.palette.textColor}}
                         >
                         <i className = "material-icons">mode_edit</i>
             </IconButton>
             <IconButton
-                      onClick = {() => this.setState({dialogOpen : true})}
+                      onClick = {() => this.setState({dialogOpen: true})}
                       touch = {true}
                       style = {Styles.largeIcon}
                       disabled = {! (this.props.isOwner || Backend.isAdmin())}
                       tooltipPosition = "bottom-center"
                       tooltip = "Archive project"
-                      iconStyle = {{fontSize : '24px', color:Styles.palette.textColor}}
+                      iconStyle = {{fontSize: '24px', color: Styles.palette.textColor}}
                       >
                       <i className = "material-icons">archive</i>
             </IconButton>
           </div>
-            :
-          <div style = {{textAlign : "center"}} >
+           :
+          <div style = {{textAlign: "center"}} >
             <IconButton
                       onClick = {() => this.handleUnArchive()}
                       touch = {true}
@@ -195,7 +195,7 @@ export default class ProjectControls extends Component{
                       disabled = {! (this.props.isOwner || Backend.isAdmin())}
                       tooltipPosition = "bottom-center"
                       tooltip = "Unarchive project"
-                      iconStyle = {{fontSize : '24px', color:Styles.palette.textColor}}
+                      iconStyle = {{fontSize: '24px', color: Styles.palette.textColor}}
                       >
                       <i className = "material-icons">unarchive</i>
             </IconButton>

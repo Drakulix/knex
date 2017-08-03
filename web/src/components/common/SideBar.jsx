@@ -9,20 +9,20 @@ export default class SideBar extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      menu : {
-        discoverProjects : 'Discover projects',
-        createProject : 'Create a new project',
-        queries : "Your saved queries",
-        bookmarks : 'Your Bookmarks',
-        userprojects : 'Your projects',
-        profile : 'Your profile',
-        adminArea : 'Admin area',
-        trashcan : "Your trash",
-        people : "Search users"
+      menu: {
+        discoverProjects: 'Discover projects',
+        createProject: 'Create a new project',
+        queries: "Your saved queries",
+        bookmarks: 'Your Bookmarks',
+        userprojects: 'Your projects',
+        profile: 'Your profile',
+        adminArea: 'Admin area',
+        trashcan: "Your trash",
+        people: "Search users"
 
       },
-      myProfile : Backend.getMail(),
-      data : "",
+      myProfile: Backend.getMail(),
+      data: "",
     }
   }
 
@@ -46,7 +46,7 @@ export default class SideBar extends Component {
                   name = {this.state.menu.adminArea}
                   to = "/admin" active = {this.isActive("/admin")}
                 />
-                : ""}
+              : ""}
             </ul>
         </div>
     )
@@ -56,10 +56,10 @@ export default class SideBar extends Component {
 const SideBarEntry = ({to, icon, icon2, name, active, style}) => {
     return (
         <Link to = {to}  >
-        <li className = {`list-group-item ${active ? "active" : ""}` } style = {{color : Styles.palette.alternateTextColor}}>
-            {active && (<div className = "menu-indicator" style = {{backgroundColor : Styles.palette.primary1Color }}/>)}
-            <div style = {{display : "inline", paddingTop : 3, float : "left", marginRight : 8}}>
-              <i className = "material-icons" style = {{color : Styles.palette.alternateTextColor, fontSize : '20px',marginTop : -15}}>{icon}</i>
+        <li className = {`list-group-item ${active ? "active": ""}` } style = {{color: Styles.palette.alternateTextColor}}>
+            {active && (<div className = "menu-indicator" style = {{backgroundColor: Styles.palette.primary1Color }}/>)}
+            <div style = {{display: "inline", paddingTop: 3, float: "left", marginRight: 8}}>
+              <i className = "material-icons" style = {{color: Styles.palette.alternateTextColor, fontSize: '20px',marginTop: -15}}>{icon}</i>
             </div>{name}
         </li>
         </Link>

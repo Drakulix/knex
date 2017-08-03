@@ -7,7 +7,7 @@ export default class ProfileView extends Component {
   render(){
     return (
       <div className = "row">
-        <div className = "col-9" style = {{marginTop : -30}}>
+        <div className = "col-9" style = {{marginTop: -30}}>
           <div className = "profile-header">Name</div>
           <div className = "profile-info">
             {this.props.profileInf.first_name} {this.props.profileInf.last_name}
@@ -19,7 +19,7 @@ export default class ProfileView extends Component {
           <div className = "row">
             <div className = "col-4">
               <div className = "profile-header">Projects contributed to</div>
-              <div className = "profile-info" style = {{marginTop:16}}>{this.props.projectsContributed}</div>
+              <div className = "profile-info" style = {{marginTop: 16}}>{this.props.projectsContributed}</div>
             </div>
             <div className = "col-8">
               <div className = "profile-header">Knowledge in</div>
@@ -27,7 +27,7 @@ export default class ProfileView extends Component {
             </div>
           </div>
           <div className = "profile-header">Biography</div>
-          <div className = "profile-info" style = {{width:"100%"}}>
+          <div className = "profile-info" style = {{width: "100%"}}>
             <table style = {{tableLayout: "fixed", width: "80%", wordWrap: "break-word"}}><tbody><tr><td>
               {this.props.profileInf.bio}
             </td></tr></tbody></table>

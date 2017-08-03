@@ -22,15 +22,15 @@ export default class BookmarksTable extends Component {
       filters = props.predefinedFilter
     }
     this.state = {
-      filters : filters,
-      filteredData : [],
-      dialogOpen : false,
-      dialogText : "Delete Project",
-      action : null,
-      loading : true,
-      buttonText : "Delete",
-      snackbar : false,
-      snackbarText : "",
+      filters: filters,
+      filteredData: [],
+      dialogOpen: false,
+      dialogText: "Delete Project",
+      action: null,
+      loading: true,
+      buttonText: "Delete",
+      snackbar: false,
+      snackbarText: "",
     }
 
     this.handleFilterChange = this.handleFilterChange.bind(this)
@@ -39,25 +39,25 @@ export default class BookmarksTable extends Component {
 
   handleError(){
     this.setState({
-      dialogOpen : false,
-      snackbar : true,
-      snackbarText : "Error while loading projects",
-      loading : false
+      dialogOpen: false,
+      snackbar: true,
+      snackbarText: "Error while loading projects",
+      loading: false
     })
   }
 
   handleDelete(projectInf){
     this.setState({
-      snackbar : false,
-      dialogText : `Do you want to delete project ${projectInf.title}?`,
-      buttonText : "Delete",
-      dialogOpen : true,
-      action : () => {
-        this.setState({loading : true, dialogOpen:false, filteredData : []})
+      snackbar: false,
+      dialogText: `Do you want to delete project ${projectInf.title}?`,
+      buttonText: "Delete",
+      dialogOpen: true,
+      action: () => {
+        this.setState({loading: true, dialogOpen: false, filteredData: []})
         Backend.deleteProject(projectInf._id)
         .then(() => {this.props.handler(this.state.filters)})
-        .then(this.setState({snackbar : true,
-          snackbarText : `Project ${projectInf.title} deleted`}))
+        .then(this.setState({snackbar: true,
+          snackbarText: `Project ${projectInf.title} deleted`}))
         .catch(() => {this.handleError()})
       }
     })
@@ -65,50 +65,50 @@ export default class BookmarksTable extends Component {
 
   handleArchive(projectInf){
     this.setState({
-      snackbar : false,
-      dialogText : `Do you want to archive project ${projectInf.title}?`,
-      buttonText : "Archive",
-      dialogOpen : true,
-      action : () => {
-        this.setState({loading : true,dialogOpen:false, filteredData : []})
+      snackbar: false,
+      dialogText: `Do you want to archive project ${projectInf.title}?`,
+      buttonText: "Archive",
+      dialogOpen: true,
+      action: () => {
+        this.setState({loading: true,dialogOpen: false, filteredData: []})
         var project = projectInf
         delete project.is_bookmark
         delete project.is_owner
         project['archived'] = true
         Backend.updateProject(projectInf._id, project)
         .then(() => {this.props.handler(this.state.filters)})
-        .then(this.setState({snackbar : true,
-          snackbarText : `Project ${projectInf.title} archived`}))
+        .then(this.setState({snackbar: true,
+          snackbarText: `Project ${projectInf.title} archived`}))
         .catch((e) => {alert(JSON.stringify(e));this.handleError()})
       }
     })
   }
 
   handleUnArchive(projectInf){
-    this.setState({loading : true, filteredData : []})
+    this.setState({loading: true, filteredData: []})
     var project = projectInf
     delete project.is_bookmark
     delete project.is_owner
     project['archived'] = false
     Backend.updateProject(projectInf._id, project)
         .then(() => {this.props.handler(this.state.filters)})
-        .then(() => {this.setState({snackbar : true,
-          snackbarText : `Project ${projectInf.title} unarchived`})})
+        .then(() => {this.setState({snackbar: true,
+          snackbarText: `Project ${projectInf.title} unarchived`})})
         .catch(() => {this.handleError()})
   }
 
   handleBookmark(projectInf){
-    this.setState({loading : true, filteredData : []})
+    this.setState({loading: true, filteredData: []})
     Backend.handleBookmark(projectInf._id, projectInf.is_bookmark)
     .then(() => {this.props.handler(this.state.filters)})
-    .then(() => {this.setState({snackbar : true,
-      snackbarText : `Project bookmark${projectInf.is_bookmark === "true" ? " removed" : "ed"}`})})
+    .then(() => {this.setState({snackbar: true,
+      snackbarText: `Project bookmark${projectInf.is_bookmark === "true" ? " removed": "ed"}`})})
     .catch(() => {this.handleError()})
   }
 
   componentWillReceiveProps(props){
     if(!this.props.loading && ! props.loading){
-      this.setState({snackbar : false})
+      this.setState({snackbar: false})
     }
     if(this.props.loading && ! props.loading){
       Backend.getAuthors()
@@ -116,23 +116,23 @@ export default class BookmarksTable extends Component {
         Backend.getUserNames(authors)
         .then ((userNames) => {
           this.setState({
-            userNames : JSON.parse(userNames),
-            filteredData : (this.props.isBookmarkTable
-                            ? this.filter(props.data, this.state.filters) : props.data),
+            userNames: JSON.parse(userNames),
+            filteredData: (this.props.isBookmarkTable
+                            ? this.filter(props.data, this.state.filters): props.data),
           })
         })
       })
     }else{
       this.setState({
-        filteredData : (this.props.isBookmarkTable
-                        ? this.filter(props.data, this.state.filters) : props.data),
+        filteredData: (this.props.isBookmarkTable
+                        ? this.filter(props.data, this.state.filters): props.data),
         })
     }
   }
 
   componentDidUpdate(prevProps, prevState){
     if(prevProps.loading !== this.props.loading){
-      this.setState({ loading : this.props.loading})
+      this.setState({ loading: this.props.loading})
     }
   }
 
@@ -144,14 +144,13 @@ export default class BookmarksTable extends Component {
     else  {
       state[key] = value
     }
-    this.setState({filters : state})
+    this.setState({filters: state})
     if(this.props.handleFilter !== undefined)
       this.props.handleFilter(key,value)
     this.props.handler(state)
   }
 
   filter(data, filters){
-    this.setState({loading : true})
     var array = []
     for(let dataObject of data){
       var discard = false
@@ -168,13 +167,13 @@ export default class BookmarksTable extends Component {
         }
         else{
           switch (key){
-            case "date_to":
+            case "date_to" :
               discard = dataObject.date_creation  > value
               break
-            case "date_from":
+            case "date_from" :
               discard = dataObject.date_creation  < value
               break
-            default:
+            default :
               discard = dataObject[key].toLowerCase().indexOf(value.toLowerCase()) === -1
               break
           }
@@ -199,13 +198,13 @@ export default class BookmarksTable extends Component {
         width: 160,
         sortMethod: (a,b) => {
           return  a.title.toLowerCase() === b.title.toLowerCase() ? 0
-                    : a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1
+               : a.title.toLowerCase() > b.title.toLowerCase() ? 1: -1
         },
         accessor: d => d,
         Cell: props =>
-            <div style = {{whiteSpace : "normal", textAlign : 'left', marginTop:8}}>
+            <div style = {{whiteSpace: "normal", textAlign: 'left', marginTop: 8}}>
               <Link to = {`/project/${props.value._id}`}
-                style = {{fontWeight : "bold", color : Styles.palette.textColor}}
+                style = {{fontWeight: "bold", color: Styles.palette.textColor}}
                 >
                 {props.value.title}
               </Link>
@@ -217,16 +216,16 @@ export default class BookmarksTable extends Component {
         Header: 'Date',
         accessor: 'date_creation',
         pivot: true,
-        width:95,
-        style: {textAlign:"center", marginTop:9},
+        width: 95,
+        style: {textAlign: "center", marginTop: 9},
       })
     }
     if(this.props.columns.indexOf("status") !== -1){
       columns.push({
         Header: 'Status',
         accessor: 'status',
-        id:'status',
-        style: {align:"center", width : 100},
+        id: 'status',
+        style: {align: "center", width: 100},
               width: 100,
         Cell: props => <Status value = {props.value} />
       })
@@ -236,7 +235,7 @@ export default class BookmarksTable extends Component {
         Header: 'Tags',
         accessor: "tags",
         width: 230,
-        style: {textAlign:"center", width : 220},
+        style: {textAlign: "center", width: 220},
         Cell: props => <TagOutputList value = {props.value} />
       })
     }
@@ -256,9 +255,9 @@ export default class BookmarksTable extends Component {
         accessor: 'description',
         Cell: props =>{
           var text = (props.value !== undefined) ? props.value.substring(0,200).trim(): "";
-          text = text + ((props.value.length > 200) ? "..." : "")
+          text = text + ((props.value.length > 200) ? "...": "")
           return(
-            <div style = {{whiteSpace : "normal", marginTop:8, color : Styles.palette.textColor}}>
+            <div style = {{whiteSpace: "normal", marginTop: 8, color: Styles.palette.textColor}}>
             {text}
             </div>
           )
@@ -272,13 +271,13 @@ export default class BookmarksTable extends Component {
         accessor: d=>d,
         pivot: true,
         width: 85,
-        style: {textAlign:"center"},
+        style: {textAlign: "center"},
         Cell: props =>
           <IconButton onClick = {()=>this.handleBookmark(props.value)}
                       touch = {true}
                       style = {Styles.largeIcon}
-                      iconStyle = {{fontSize: '24px',color:Styles.palette.textColor}}>
-            <i className = "material-icons">{props.value.is_bookmark === "true" ? "star" : "star_border"}</i>
+                      iconStyle = {{fontSize: '24px',color: Styles.palette.textColor}}>
+            <i className = "material-icons">{props.value.is_bookmark === "true" ? "star": "star_border"}</i>
           </IconButton>
       })
     }
@@ -287,24 +286,24 @@ export default class BookmarksTable extends Component {
         Header: 'Unarchive',
         accessor: d => d,
         id: 'unarchive',
-        sortable:true,
+        sortable: true,
         sortMethod: (a,b) => {
           return  a.archived === b.archived ?
-          (a.title < b.title ? 1 : -1)
-           :
-          (a.archived  ? 1 : -1)},
+          (a.title < b.title ? 1: -1)
+         :
+          (a.archived  ? 1: -1)},
         width: 100,
-        style: {textAlign:"center"},
+        style: {textAlign: "center"},
         Cell: props => { return props.value.archived  ?
           <IconButton
           onClick = {()=>this.handleUnArchive(props.value)}
           touch = {true}
           style = {Styles.largeIcon}
-          iconStyle = {{fontSize: '24px',color:Styles.palette.textColor}}
+          iconStyle = {{fontSize: '24px',color: Styles.palette.textColor}}
           value = {props.value._id}>
             <i className = "material-icons">unarchive</i>
           </IconButton>
-          : ""}
+     : ""}
       })
     }
     if(this.props.columns.indexOf("archive") !== -1){
@@ -312,24 +311,24 @@ export default class BookmarksTable extends Component {
         Header: 'Archive',
         accessor: d => d,
         id: 'archive',
-        sortable:true,
+        sortable: true,
         sortMethod: (a,b) => {
           return  a.archived === b.archived ?
-          (a.title < b.title ? -1 : 1)
-           :
-          (a.archived  ? 1 : -1)},
+          (a.title < b.title ? -1: 1)
+         :
+          (a.archived  ? 1: -1)},
         width: 80,
-        style: {textAlign:"center"},
+        style: {textAlign: "center"},
         Cell: props => { return !props.value.archived  ?
           <IconButton
           onClick = {()=>this.handleArchive(props.value)}
           touch = {true}
           style = {Styles.largeIcon}
-          iconStyle = {{fontSize: '24px',color:Styles.palette.textColor}}
+          iconStyle = {{fontSize: '24px',color: Styles.palette.textColor}}
           value = {props.value._id}>
             <i className = "material-icons">archive</i>
           </IconButton>
-          : "" }
+     : "" }
       })
     }
     if(this.props.columns.indexOf("delete") !== -1){
@@ -337,14 +336,14 @@ export default class BookmarksTable extends Component {
         Header: 'Delete',
         accessor: d => d,
         id: 'delete',
-        sortable:false,
+        sortable: false,
         width: 60,
-        style: {textAlign:"center"},
+        style: {textAlign: "center"},
         Cell: props => <IconButton
           onClick = {()=>this.handleDelete(props.value)}
           touch = {true}
           style = {Styles.largeIcon}
-          iconStyle = {{fontSize: '24px', color:Styles.palette.textColor}}
+          iconStyle = {{fontSize: '24px', color: Styles.palette.textColor}}
           value = {props.value._id}>
             <i className = "material-icons">delete</i>
           </IconButton>
@@ -353,7 +352,7 @@ export default class BookmarksTable extends Component {
     return (
       <div>
         <ConfirmationPane   open = {this.state.dialogOpen}
-                            handleClose = {() => {this.setState({dialogOpen : false, snackbar : false})}}
+                            handleClose = {() => {this.setState({dialogOpen: false, snackbar: false})}}
                             title = {this.state.dialogText}
                             confirmationLabel = {this.state.buttonText}
                             confirmAction = {this.state.action}
@@ -379,7 +378,7 @@ export default class BookmarksTable extends Component {
               minRows = {3}
               noDataText = {() =>
                 (this.state.loading) ?
-                  <CircularProgress  size = {45} thickness = {5} /> : "No projects found"
+                  <CircularProgress  size = {45} thickness = {5} />: "No projects found"
               }
               defaultPageSize = {10}/>
         </div>

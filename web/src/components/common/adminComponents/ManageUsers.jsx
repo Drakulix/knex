@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import IconButton from 'material-ui/IconButton'
 import Styles from '../../common/Styles'
 import Backend from '../../common/Backend'
-import Spinner from '../../common/Spinner'
+import CircularProgress from 'material-ui/CircularProgress'
 import {Card, CardHeader, CardText} from 'material-ui/Card'
 import TextField from 'material-ui/TextField'
 import ConfirmationPane from '../../common/ConfirmationPane'
@@ -15,16 +15,16 @@ export default class ManageUsers extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      open : false,
-      loading : false,
-      snackbar : false,
-      snackbarText : false,
-      expanded : true,
-      data : [],
-      filteredList : [],
-      email : "",
-      name : "",
-      projectCounts : []
+      open: false,
+      loading: false,
+      snackbar: false,
+      snackbarText: false,
+      expanded: true,
+      data: [],
+      filteredList: [],
+      email: "",
+      name: "",
+      projectCounts: []
     }
     this.handleDelete = this.handleDelete.bind(this)
     this.handleChange = this.handleChange.bind(this)
@@ -37,28 +37,30 @@ export default class ManageUsers extends Component {
   }
 
   loadUsers(){
-    this.setState({loading : true,
-      open : false,
-      snackbar : false
+    this.setState({loading: true,
+      userList: [],
+      filteredList: [],
+      open: false,
+      snackbar: false
     })
     Backend.getUsers()
     .then((data) => {
       this.setState({
-        userList : data,
-        filteredList : data,
+        userList: data,
+        filteredList: data,
       })
     })
     .then(() => {return  Backend.getProjectsForAllUsers()})
-    .then((count) => {this.setState({projectCounts : count})})
+    .then((count) => {this.setState({projectCounts: count})})
     .then (() => this.filter ("default", ""))
-    .then(() => this.setState({loading : false}))
+    .then(() => this.setState({loading: false}))
   }
 
 
   handleChange(event) {
     const name = event.target.name
     const value = event.target.value
-    this.setState({ [name] : value})
+    this.setState({ [name]: value})
     this.filter(name, value)
   }
 
@@ -78,32 +80,32 @@ export default class ManageUsers extends Component {
                          userInf.bio,
                          userInf.roles)
     .then(() => {this.loadUsers()})
-    .then(() =>{this.setState({snackbar : true, snackbarText:text})})
+    .then(() =>{this.setState({snackbar: true, snackbarTex: text})})
     }
 
   handleSetActive(userInf){
-    var text = `User ${userInf.first_name} ${userInf.last_name}  is ${userInf.active ? "de-" : ""}activated`
+    var text = `User ${userInf.first_name} ${userInf.last_name}  is ${userInf.active ? "de-": ""}activated`
     Backend.setActivation( userInf.email,
                            userInf.first_name,
                            userInf.last_name,
                            userInf.bio,
-                           userInf.active === "false" ? "true" : "false"
+                           userInf.active === "false" ? "true": "false"
                            )
    .then(() => {this.loadUsers()})
-   .then(() =>{this.setState({snackbar : true, snackbarText:text})})
+   .then(() =>{this.setState({snackbar: true, snackbarTex: text})})
   }
 
   intentionToDeleteUser(userID){
     this.setState({
-      open : true,
-      userID : userID})
+      open: true,
+      userID: userID})
   }
 
   handleDelete(){
     Backend.deleteUser(this.state.userID)
-    .then(() =>{this.setState({ open:false,
-                                snackbar: true,
-                                snackbarText : `User ${this.state.userID} deleted`})})
+    .then(() =>{this.setState({ ope: false,
+                                snackba: true,
+                                snackbarText: `User ${this.state.userID} deleted`})})
     .then(() => {this.loadUsers()})
   }
 
@@ -114,27 +116,27 @@ export default class ManageUsers extends Component {
       var discard = false
       var userName = `${dataObject.first_name} ${dataObject.last_name}`.toLowerCase()
       var email = dataObject.email.toLowerCase()
-      discard = discard || email.indexOf(name === "email" ? value.toLowerCase() :  this.state.email.toLowerCase()) === -1
-      discard = discard || userName.indexOf(name === "name" ? value.toLowerCase() :  this.state.name.toLowerCase()) === -1
+      discard = discard || email.indexOf(name === "email" ? value.toLowerCase(): this.state.email.toLowerCase()) === -1
+      discard = discard || userName.indexOf(name === "name" ? value.toLowerCase(): this.state.name.toLowerCase()) === -1
       if(!discard)
         filteredList.push(dataObject)
     }
     this.setState({
-      filteredList : filteredList
+      filteredList: filteredList
     })
   }
 
   render(){
     var columns = []
     columns.push({
-      Header : 'Name',
-      id : 'userID',
-      accessor : d => d,
-      Cell : props =>{
+      Header: 'Name',
+      id: 'userID',
+      accessor: d => d,
+      Cell: props =>{
         return(
-          <div style = {{whiteSpace : "normal", marginTop:5}}>
+          <div style = {{whiteSpace: "normal", marginTo: 5}}>
             <Link to = {`profile/${props.value.email}`}
-              style = {{fontWeight : "bold", color : Styles.palette.textColor}}>
+              style = {{fontWeight: "bold", color: Styles.palette.textColor}}>
               {`${props.value.first_name} ${props.value.last_name}`}
             </Link>
           </div>
@@ -143,16 +145,16 @@ export default class ManageUsers extends Component {
     })
 
     columns.push({
-      Header : 'Email',
-      id : 'email',
-      width : 300,
-      style : {textAlign : "center", marginTop:5},
-      accessor : d => d,
-      Cell : props =>{
+      Header: 'Email',
+      id: 'email',
+      width: 300,
+      style: {textAlign: "center", marginTo: 5},
+      accessor: d => d,
+      Cell: props =>{
         return(
-          <div style = {{whiteSpace : "normal"}}>
+          <div style = {{whiteSpace: "normal"}}>
             <Link to = {`profile/${props.value.email}`}
-              style = {{fontWeight : "bold", color : Styles.palette.textColor}}>
+              style = {{fontWeight: "bold", color: Styles.palette.textColor}}>
               {props.value.email}
             </Link>
           </div>
@@ -161,64 +163,64 @@ export default class ManageUsers extends Component {
     })
 
     columns.push({
-      Header : 'Projects',
-      id : 'projectCount',
+      Header: 'Projects',
+      id: 'projectCount',
       width :80,
-      style : {textAlign : "center", marginTop:5},
-      accessor : "email",
-      Cell : props => this.state.projectCounts[props.value] !== undefined ? this.state.projectCounts[props.value].length :0
+      style: {textAlign: "center", marginTo: 5},
+      accessor: "email",
+      Cell: props => this.state.projectCounts[props.value] !== undefined ? this.state.projectCounts[props.value].length :0
     })
 
     columns.push({
-      Header : 'Active',
-      id : 'active',
-      accessor : d => d,
-      filterable : false,
-      width : 60,
-      style : {textAlign : "center"},
-      Cell : props =>{
+      Header: 'Active',
+      id: 'active',
+      accessor: d => d,
+      filterable: false,
+      width: 60,
+      style: {textAlign: "center"},
+      Cell: props =>{
         return(
           <div onClick = {() => this.handleSetActive(props.value)}>
             <i  className = "material-icons"
-                style = {{fontSize : '24px',
-                          padding:3,
-                          color : Styles.palette.textColor}}>
-            {props.value.active === "false" ?  "clear" : "done"}
+                style = {{fontSize: '24px',
+                          paddin: 3,
+                          color: Styles.palette.textColor}}>
+            {props.value.active === "false" ?  "clear": "done"}
           </i></div>)
       }
     })
 
     columns.push({
-      Header : 'Admin',
-      id : 'admin',
-      width : 60,
-      filterable : false,
-      style : {textAlign : "center"},
-      accessor : d => d,
-      Cell : props =>{
+      Header: 'Admin',
+      id: 'admin',
+      width: 60,
+      filterable: false,
+      style: {textAlign: "center"},
+      accessor: d => d,
+      Cell: props =>{
         return(
           <div onClick = {() => this.handleSetAdmin(props.value)}>
             <i  className = "material-icons"
-                style = {{fontSize : '24px',
-                          padding : 3,
-                          color : Styles.palette.textColor}}>
-            {(props.value.roles.indexOf("admin") !== -1) ?  "done" : "clear"}
+                style = {{fontSize: '24px',
+                          padding: 3,
+                          color: Styles.palette.textColor}}>
+            {(props.value.roles.indexOf("admin") !== -1) ?  "done": "clear"}
           </i></div>)
       }
     })
 
     columns.push({
-      Header : 'Edit',
-      accessor : d => d,
-      id : 'delete',
-      sortable : false,
-      width : 60,
-      style : {textAlign : "center"},
-      Cell : props => <IconButton
+      Header: 'Edit',
+      accessor: d => d,
+      id: 'delete',
+      sortable: false,
+      width: 60,
+      style: {textAlign: "center"},
+      Cell: props => <IconButton
                           touch = {true}
                           href = {`/profile/${props.value.email}`}
                           style = {Styles.largeIcon}
-                          iconStyle = {{fontSize: '24px',color:Styles.palette.textColor}}
+                          iconStyle = {{fontSiz: '24px',colo: Styles.palette.textColor}}
                           value = {props.value._id}
                           >
                             <i className = "material-icons">mode_edit</i>
@@ -226,17 +228,17 @@ export default class ManageUsers extends Component {
     })
 
     columns.push({
-      Header : 'Delete',
-      accessor : d => d,
-      id : 'delete',
-      sortable : false,
-      width : 60,
-      style : {textAlign : "center"},
-      Cell : props => <IconButton
+      Header: 'Delete',
+      accessor: d => d,
+      id: 'delete',
+      sortable: false,
+      width: 60,
+      style: {textAlign: "center"},
+      Cell: props => <IconButton
             onClick = {()=>this.intentionToDeleteUser(props.value.email)}
             touch = {true}
             style = {Styles.largeIcon}
-            iconStyle = {{fontSize: '24px',color:Styles.palette.textColor}}
+            iconStyle = {{fontSiz: '24px',colo: Styles.palette.textColor}}
             value = {props.value._id}
             >
               <i className = "material-icons">delete</i>
@@ -246,7 +248,7 @@ export default class ManageUsers extends Component {
     return (
       <div className = "container" >
         <ConfirmationPane open = {this.state.open}
-                          handleClose = {() => {this.setState({open : false})}}
+                          handleClose = {() => {this.setState({open: false})}}
                           title = {`Do you want to delete user ${this.state.userID}`}
                           confirmationLabel = {"Delete User"}
                           confirmAction = {this.handleDelete}
@@ -256,10 +258,8 @@ export default class ManageUsers extends Component {
           message = {this.state.snackbarText}
           autoHideDuration = {10000}
         />
-        <Spinner loading = {this.state.loading} text = {"Loading users"} />
-        <div style = {{display : (!this.state.loading ? "block" : "none")}}>
-        <div style = {{marginBottom : 20, width:"100%"}}>
-          <Card  onExpandChange = {() => this.setState({expanded : !this.state.expanded})}>
+        <div style = {{marginBottom: 20, widt: "100%"}}>
+          <Card  onExpandChange = {() => this.setState({expanded: !this.state.expanded})}>
             <CardHeader
                 title = "Filter"
                 subtitle = "Define filters for your list"
@@ -280,7 +280,7 @@ export default class ManageUsers extends Component {
                 </div>
                 <div className = "col-1 filter-label">Email</div>
                 <div className = "col-5">
-                  <TextField style = {{width : '100%'}}
+                  <TextField style = {{width: '100%'}}
                       value = {this.state.email}
                       name = "email"
                       onChange = {this.handleChange}
@@ -291,22 +291,25 @@ export default class ManageUsers extends Component {
             </CardText>
           </Card>
         </div>
-        <ReactTable style = {{width : "100%"}}
+        <ReactTable style = {{width: "100%"}}
                  data = {this.state.filteredList}
                  columns = {columns}
-                 defaultExpanded = {{1 : true}}
+                 defaultExpanded = {{1: true}}
                  filterable = {false}
                  minRows = {3}
                  noDataText = 'No users found'
                  showPageSizeOptions = {false}
+                 noDataText = {() =>
+                   (this.state.loading) ?
+                     <CircularProgress  size = {45} thickness = {5} />: "No users found"
+                 }
                  defaultPageSize = {10}
                  defaultSorted = {[{
-                    id : 'userID',
-                    desc : true
+                    id: 'userID',
+                    desc: true
                   }]}
         />
       </div>
-    </div>
     )
   }
 }
