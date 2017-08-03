@@ -80,9 +80,9 @@ export default class ShowUsers extends Component {
       var userEmail = dataObject.email.toLowerCase()
       discard = discard || userEmail.indexOf(name === "email" ? value.toLowerCase() :  email) === -1
       discard = discard || userName.indexOf(name === "name" ? value.toLowerCase() :  name) === -1
-      var temp = this.state.userTags[userEmail].join().toLowerCase()
+      var temp = `#${this.state.userTags[userEmail].join('#')}#`
       for(let item in tagsToCompare){
-        if (temp.indexOf(tagsToCompare[item]) === -1){
+        if (temp.indexOf(`#${tagsToCompare[item]}#`) === -1){
           discard = true
           break
         }
