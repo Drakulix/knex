@@ -26,7 +26,7 @@ export default {
   palette : {
     primary1Color : "#ff5000",
     accent1Color : "#292b2c",
-    disabledColor : "#a0a0a0",
+    disabledColor : "#b0b0b0",
     pickerHeaderColor: "#ff5000",
     textColor: '#000000',
     secondaryTextColor: '#808080',
