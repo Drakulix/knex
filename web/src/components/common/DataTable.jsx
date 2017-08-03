@@ -80,7 +80,7 @@ export default class BookmarksTable extends Component {
         .then(() => {this.props.handler(this.state.filters)})
         .then(this.setState({snackbar : true,
           snackbarText : `Project ${projectInf.title} archived`}))
-        .catch(() => {this.handleError()})
+        .catch((e) => {alert(JSON.stringify(e));this.handleError()})
       }
     })
   }
@@ -110,20 +110,23 @@ export default class BookmarksTable extends Component {
     if(!this.props.loading && ! props.loading){
       this.setState({snackbar : false})
     }
-    this.setState({
-      filteredData : (this.props.isBookmarkTable
-                      ? this.filter(props.data, this.state.filters) : props.data),
-      })
     if(this.props.loading && ! props.loading){
       Backend.getAuthors()
       .then((authors) => {
         Backend.getUserNames(authors)
         .then ((userNames) => {
           this.setState({
-            userNames : JSON.parse(userNames)
+            userNames : JSON.parse(userNames),
+            filteredData : (this.props.isBookmarkTable
+                            ? this.filter(props.data, this.state.filters) : props.data),
           })
         })
       })
+    }else{
+      this.setState({
+        filteredData : (this.props.isBookmarkTable
+                        ? this.filter(props.data, this.state.filters) : props.data),
+        })
     }
   }
 
