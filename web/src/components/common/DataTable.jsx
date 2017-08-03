@@ -10,7 +10,6 @@ import AuthorOutputList from '../common/chips/AuthorOutputList'
 import TagOutputList from '../common/chips/TagOutputList'
 import ConfirmationPane from '../common/ConfirmationPane'
 import Status from '../common/Status'
-import Spinner from '../common/Spinner'
 import CircularProgress from 'material-ui/CircularProgress'
 
 
@@ -54,7 +53,7 @@ export default class BookmarksTable extends Component {
       buttonText : "Delete",
       dialogOpen : true,
       action : () => {
-        this.setState({loading : true,dialogOpen:false})
+        this.setState({loading : true, dialogOpen:false, filteredData : []})
         Backend.deleteProject(projectInf._id)
         .then(() => {this.props.handler(this.state.filters)})
         .then(this.setState({snackbar : true,
@@ -71,7 +70,7 @@ export default class BookmarksTable extends Component {
       buttonText : "Archive",
       dialogOpen : true,
       action : () => {
-        this.setState({loading : true,dialogOpen:false})
+        this.setState({loading : true,dialogOpen:false, filteredData : []})
         var project = projectInf
         delete project.is_bookmark
         delete project.is_owner
@@ -86,7 +85,7 @@ export default class BookmarksTable extends Component {
   }
 
   handleUnArchive(projectInf){
-    this.setState({loading : true})
+    this.setState({loading : true, filteredData : []})
     var project = projectInf
     delete project.is_bookmark
     delete project.is_owner
@@ -99,6 +98,7 @@ export default class BookmarksTable extends Component {
   }
 
   handleBookmark(projectInf){
+    this.setState({loading : true, filteredData : []})
     Backend.handleBookmark(projectInf._id, projectInf.is_bookmark)
     .then(() => {this.props.handler(this.state.filters)})
     .then(() => {this.setState({snackbar : true,
@@ -362,8 +362,7 @@ export default class BookmarksTable extends Component {
                   message = {this.state.snackbarText}
                   autoHideDuration = {10000}
         />
-      <Spinner loading = {this.state.loading} text = {"Loading projects"}/>
-        <div style = {{display : (!this.state.loading ? "block" : "none")}}>
+        <div>
           <Filters value = {this.state.filters}
                    title = {"Apply filters to your search"}
                    onChange = {this.handleFilterChange}/>
