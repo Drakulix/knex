@@ -28,7 +28,7 @@ export default class ShowUsers extends Component {
   }
 
 
-  componentWillMount(){
+  componentDidMount(){
     this.loadUsers()
   }
 
@@ -71,16 +71,18 @@ export default class ShowUsers extends Component {
 
   filter(name, value){
     var filteredList = []
+    var tagsToCompare = (name === "tags") ? value : this.state.tags
+    var email = this.state.email.toLowerCase()
+    var name = this.state.name.toLowerCase()
     for(let dataObject of this.state.userList) {
       var discard = false
       var userName = (`${dataObject.first_name} ${dataObject.last_name}`).toLowerCase()
-      var email = dataObject.email.toLowerCase()
-      discard = discard || email.indexOf(name === "email" ? value.toLowerCase() :  this.state.email.toLowerCase()) === -1
-      discard = discard || userName.indexOf(name === "name" ? value.toLowerCase() :  this.state.name.toLowerCase()) === -1
-      value = (name === "tags") ? value : this.state.tags
-      var temp = this.state.userTags[email].join().toLowerCase()
-      for(let item in value){
-        if (temp.indexOf(value[item]) === -1){
+      var userEmail = dataObject.email.toLowerCase()
+      discard = discard || userEmail.indexOf(name === "email" ? value.toLowerCase() :  email) === -1
+      discard = discard || userName.indexOf(name === "name" ? value.toLowerCase() :  name) === -1
+      var temp = this.state.userTags[userEmail].join().toLowerCase()
+      for(let item in tagsToCompare){
+        if (temp.indexOf(tagsToCompare[item]) === -1){
           discard = true
           break
         }

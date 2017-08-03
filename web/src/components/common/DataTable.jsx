@@ -274,7 +274,7 @@ export default class BookmarksTable extends Component {
       columns.push({
         Header: 'Unarchive',
         accessor: d => d,
-        id: 'archived',
+        id: 'unarchive',
         sortable:true,
         sortMethod: (a,b) => {
           return  a.archived === b.archived ?
