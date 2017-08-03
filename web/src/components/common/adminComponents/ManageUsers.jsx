@@ -297,7 +297,6 @@ export default class ManageUsers extends Component {
                  defaultExpanded = {{1: true}}
                  filterable = {false}
                  minRows = {3}
-                 noDataText = 'No users found'
                  showPageSizeOptions = {false}
                  noDataText = {() =>
                    (this.state.loading) ?
