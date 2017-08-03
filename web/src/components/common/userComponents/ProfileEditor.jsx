@@ -99,6 +99,7 @@ export default class ProfileEditor extends Component {
                       onChange = {this.handleInputChange}
                       value = {this.state.first_name}
                       hintText = "Enter your first name"
+                      style = {{marginBottom : (this.state.first_name.length === 0) ? 0 : 17} }
                       errorText = {(this.state.first_name === "") ? "Field is required" : ""}
                       />
               </div>
@@ -111,6 +112,7 @@ export default class ProfileEditor extends Component {
                       onChange = {this.handleInputChange}
                       value = {this.state.last_name}
                       hintText = "Enter your last name"
+                      style = {{marginBottom : (this.state.last_name.length === 0) ? 0 : 17} }
                       errorText = {(this.state.last_name === "") ? "Field is required" : ""}
                       />
               </div>
@@ -185,6 +187,7 @@ export default class ProfileEditor extends Component {
                           name = "pw_old"
                           hintText = "Your old password"
                           onChange = {this.handleInputChange}
+                          style = {{marginBottom : (this.state.pw_old.length === 0) ? 0 : 17} }
                           errorText = {this.state.pw_old.length === 0 ? "Password can not be empty" :""}
                 />
               </div>
@@ -199,6 +202,7 @@ export default class ProfileEditor extends Component {
                           name = "pw_new"
                           hintText = "Your new password"
                           onChange = {this.handleInputChange}
+                          style = {{marginBottom : (this.state.pw_new.length === 0) ? 0 : 17} }
                           errorText = {this.state.pw_new.length === 0 ? "Password can not be empty" :""}
               />
             </div>
@@ -212,6 +216,7 @@ export default class ProfileEditor extends Component {
                           name = "pw_new_confirm"
                           hintText = "Confirm password"
                           onChange = {this.handleInputChange}
+                          style = {{marginBottom : (this.state.pw_new !== this.state.pw_new_confirm) ? 0 : 17} }
                           errorText = {this.state.pw_new !== this.state.pw_new_confirm ? "Passwords do not match" :""} />
             </div>
           </div>

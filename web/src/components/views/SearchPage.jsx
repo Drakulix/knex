@@ -131,6 +131,7 @@ export default class SearchPage extends Component {
             >
             <TextField value = {this.state.label}
               placeholder = "Enter label here ... "
+              style = {{marginBottom : (this.state.label === "" || this.state.label === undefined) ? 0 : 17} }
               errorText = {(this.state.label === "" || this.state.label === undefined) ? "Please provide a label " : ""}
               onChange = {this.handleLabelChange}
               ></TextField>

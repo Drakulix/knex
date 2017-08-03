@@ -54,6 +54,7 @@ export default class SharePane extends React.Component {
           name = "authors"
           filtered = {true}
           value = {this.state.authors}
+          style = {{marginBottom : (this.state.authors.length === 0) ? 0 : 17} }
           errorText = {(this.state.authors.length === 0) ?
                       "Please provide at least one author" : ""}
           />
