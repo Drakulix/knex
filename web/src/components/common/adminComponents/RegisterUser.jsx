@@ -97,7 +97,8 @@ export default class RegisterUser extends Component {
                 onChange = {this.handleInputChange}
                 value = {this.state.first_name}
                 hintText = "Enter the first name"
-                errorText = {(this.state.first_name === "") ? "Field is required" : ""}
+                style = {{marginBottom : (this.state.first_name.length === 0) ? 0 : 17} }
+                errorText = {(this.state.first_name.length === 0) ? "Field is required" : ""}
                       />
             </div>
             <div className = "col-2"/>
@@ -109,7 +110,8 @@ export default class RegisterUser extends Component {
                 onChange = {this.handleInputChange}
                 hintText = "Password"
                 name = "password"
-                errorText = {(this.state.password === "") ? "Field is required" : ""}
+                style = {{marginBottom : (this.state.password === 0) ? 0 : 17} }
+                errorText = {(this.state.password.length === 0) ? "Field is required" : ""}
                 />
             </div>
           </div>
@@ -121,7 +123,8 @@ export default class RegisterUser extends Component {
                 onChange = {this.handleInputChange}
                 value = {this.state.last_name}
                 hintText = "Enter your last name"
-                errorText = {(this.state.last_name === "") ? "Field is required" : ""}
+                style = {{marginBottom : (this.state.last_name.length === 0) ? 0 : 17} }
+                errorText = {(this.state.last_name.length === 0) ? "Field is required" : ""}
               />
             </div>
             <div className = "col-2"/>
@@ -133,6 +136,7 @@ export default class RegisterUser extends Component {
                 onChange = {this.handleInputChange}
                 hintText = "Confirm password"
                 name = "password_confirm"
+                style = {{marginBottom : (this.state.password !== this.state.password_confirm) ? 0 : 17} }
                 errorText = {( this.state.password !== this.state.password_confirm ) ? "Passwords do not match" : "" }
                 />
             </div>
