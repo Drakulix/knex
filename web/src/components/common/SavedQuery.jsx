@@ -68,40 +68,43 @@ export default class SavedQuery extends Component {
             <div style = {{ textAlign : "left", verticalAlign : "center", display : "block"}} >
               <div className = "row">
                 <div className = "col-1 filter-label" style = {{textAlign: "left"}}>Querystring</div>
-                <div className = "col-5 query-value" style = {{marginLeft:-40}}>
-                 {this.state.query.searchString}
-                </div>
-                <div className = "col-1 filter-label" style = {{textAlign: "left"}}>Title</div>
-                <div className = "col-5 query-value" style = {{marginLeft:-40}}>
-                 {this.state.query.title}
-                </div>
-                <div className = "col-1 filter-label" style = {{textAlign: "left"}}>Description</div>
                 <div className = "col-5 query-value">
-                 {this.state.query.description}
+                 {(this.state.query.searchString === undefined) ? <div style = {{color: Styles.palette.disabledColor }}>No value provided</div> : this.state.query.searchString}
+                </div>
+              </div>
+              <div className = "row">
+                <div className = "col-1 filter-label" style = {{textAlign: "left"}}>Title</div>
+                <div className = "col-5 query-value">
+                  {(this.state.query.title === undefined) ? <div style = {{color: Styles.palette.disabledColor }}>No value provided</div> : this.state.query.title}
+                </div>
+                <div className = "col-1 filter-label" style = {{textAlign: "left", marginLeft: -40}}>Description</div>
+                <div className = "col-5 query-value" style = {{marginLeft : 14}}>
+                  {(this.state.query.description === undefined) ? <div style = {{color: Styles.palette.disabledColor }}>No value provided</div> : this.state.query.description}
                 </div>
               </div>
               <div className = "row">
                 <div className = "col-1 filter-label">Tags</div>
-                <div  className = "col-5  query-value"  style = {{marginTop:4}}>
-                  <TagOutputList value = {this.state.query.tags} />
+                <div  className = "col-5  query-value"  style = {{marginTop : 5}}>
+                  {(this.state.query.tags === undefined) ? <div style = {{marginTop : 9, color: Styles.palette.disabledColor }}>No value provided</div> : <TagOutputList value = {this.state.query.tags} />}
                 </div>
                 <div className = "col-1 filter-label"  style = {{marginLeft:-40}}> Authors</div>
-                <div  className = "col-5  query-value" style = {{marginTop:4}}>
-                  <AuthorOutputList value = {this.state.query.authors} userNames = {this.props.userNames} />
+                <div  className = "col-5  query-value" style = {{marginTop : 5}}>
+                  {(this.state.query.authors === undefined) ? <div style = {{marginTop : 9, color: Styles.palette.disabledColor }}>No value provided</div> : <AuthorOutputList value = {this.state.query.authors} userNames = {this.props.userNames} />}
                 </div>
               </div>
               <div className = "row">
-                <div className = "col-1 filter-label" style = {{textAlign: "left" , marginLeft:2}}>From</div>
-                <div className = "col-2  query-value" style = {{marginLeft:-40}} >
-                   {this.state.query.date_from}
+                <div className = "col-1 filter-label" style = {{textAlign: "left"}}>From</div>
+                <div className = "col-2  query-value" >
+                   {(this.state.query.date_from === undefined) ? <div style = {{color: Styles.palette.disabledColor }}>No value provided</div> : this.state.query.date_from}
+
                 </div>
                 <div className = "col-1 filter-label" style = {{textAlign: "left"}}>To</div>
                 <div className = "col-2  query-value" style = {{marginLeft:-40}}>
-                   {this.state.query.date_to}
+                    {(this.state.query.date_to === undefined) ? <div style = {{color: Styles.palette.disabledColor }}>No value provided</div> : this.state.query.date_to}
                 </div>
-                <div className = "col-1 filter-label" style = {{textAlign: "left", marginLeft:37}} >Status</div>
+                <div className = "col-1 filter-label" style = {{textAlign: "left"}} >Status</div>
                 <div className = "col-2  query-value">
-                  {this.state.query.status}
+                  {(this.state.query.status === undefined) ? <div style = {{marginLeft : 14, color: Styles.palette.disabledColor }}>No value provided</div> : this.state.query.status}
                 </div>
               </div>
             </div>
