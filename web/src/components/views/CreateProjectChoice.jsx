@@ -32,7 +32,7 @@ export default class CreateProjectChoice extends Component {
     var file = event.target.files[0]
     let reader = new FileReader();
     switch (file.name.substring(file.name.lastIndexOf(".") + 1)){
-      case "json":
+      case "json" :
         reader.onload = () => {
         try {
               var json = JSON.parse(reader.result);
@@ -51,7 +51,7 @@ export default class CreateProjectChoice extends Component {
          }
         reader.readAsText(file);
         break
-      case "json5":
+      case "json5" :
         reader.onload = () => {
         try {
               var json5 = JSON5.parse(reader.result);
@@ -70,7 +70,7 @@ export default class CreateProjectChoice extends Component {
          }
          reader.readAsText(file);
         break
-      default:
+      default :
         this.setState({
           snackbar : true,
           snackbarText : "File is not a JSON file"
@@ -84,10 +84,10 @@ export default class CreateProjectChoice extends Component {
   submitForm(e){
       e.preventDefault()
       var request = new Request(this.state.sourceURL,{
-        method:'GET',
-        mode: 'cors',
-        header:{
-        'Access-Control-Allow-Origin':'*'
+        method : 'GET',
+        mode : 'cors',
+        header : {
+        'Access-Control-Allow-Origin' : '*'
         },
       })
       var that = this
@@ -171,18 +171,18 @@ export default class CreateProjectChoice extends Component {
           <div className ="col-4"></div>
           <div className ="col-2">
             <RaisedButton
-              icon = {<i className = "material-icons" style = {{fontSize:60,color: Styles.palette.alternateTextColor, marginTop:-3}}>cloud_download</i>}
+              icon = {<i className = "material-icons" style = {{fontSize : 60,color : Styles.palette.alternateTextColor, marginTop : -3}}>cloud_download</i>}
               primary = {true}
-              style = {{ width:120, height:120}}
+              style = {{ width : 120, height : 120}}
               onClick = {() => this.setState({urlDialog : true})}/>
             <div className = "text" >Import online Json</div>
           </div>
           <div className ="col-2">
             <RaisedButton
-              icon = {<i className = "material-icons" style = {{fontSize:60,color: Styles.palette.alternateTextColor, marginTop:-3}}>file_upload</i>}
+              icon = {<i className = "material-icons" style = {{fontSize : 60,color : Styles.palette.alternateTextColor, marginTop : -3}}>file_upload</i>}
               containerElement = "label"
               primary = {true}
-              style = {{ width:120, height:120}}>
+              style = {{ width : 120, height : 120}}>
               <input type = "file" style = {Styles.uploadInput} onChange = {this.handleFile} />
             </RaisedButton>
             <div className = "text" >Upload local Json</div>
@@ -192,18 +192,18 @@ export default class CreateProjectChoice extends Component {
           <div className ="col-4"></div>
             <div className = "col-2">
               <RaisedButton
-                icon = {<i className = "material-icons" style = {{marginLeft:18,fontSize:60, color: Styles.palette.alternateTextColor, marginTop:-3}}>playlist_add</i>}
+                icon = {<i className = "material-icons" style = {{marginLeft : 18,fontSize : 60, color : Styles.palette.alternateTextColor, marginTop : -3}}>playlist_add</i>}
                 primary = {true}
                 onClick = {() => this.setState({multiFileUploader : true})}
-                style = {{ width:120, height:120}}/>
+                style = {{ width : 120, height : 120}}/>
               <div className = "text" >Upload multiple files</div>
           </div>
           <div className = "col-2">
             <RaisedButton
-                icon = {<i className = "material-icons" style = {{fontSize:60,color: Styles.palette.alternateTextColor, marginTop:-3}}>keyboard</i>}
+                icon = {<i className = "material-icons" style = {{fontSize : 60,color : Styles.palette.alternateTextColor, marginTop : -3}}>keyboard</i>}
                 primary = {true}
                 href = "/createNew"
-                style = {{ width:120, height:120}}/>
+                style = {{ width : 120, height : 120}}/>
             <div className = "text" >Use online formular</div>
           </div>
         </div>

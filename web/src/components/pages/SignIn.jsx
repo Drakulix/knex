@@ -14,10 +14,10 @@ export default class SignIn extends Component {
     super(props)
     // set the initial component state
     this.state = {
-      redirect: false,
-      error: '',
-      email: Backend.getMail(),
-      password: '',
+      redirect : false,
+      error : '',
+      email : Backend.getMail(),
+      password : '',
     }
 
     this.handleChangeEmail = this.handleChangeEmail.bind(this)
@@ -26,20 +26,20 @@ export default class SignIn extends Component {
   }
 
   handleChangeEmail(event) {
-    this.setState({email: event.target.value})
+    this.setState({email : event.target.value})
   }
 
   handleChangePassword(event) {
-    this.setState({password: event.target.value})
+    this.setState({password : event.target.value})
   }
 
   handleSubmit(event){
     event.preventDefault()
     Backend.login(this.state.email, this.state.password).then((success) => {
       if(success){
-        this.setState({ redirect: true })
+        this.setState({ redirect : true })
       }else{
-        this.setState({ redirect: false, error: 'Login failed' })
+        this.setState({ redirect : false, error : 'Login failed' })
         alert("Login failed")
       }
     })
@@ -82,7 +82,7 @@ export default class SignIn extends Component {
                 type = "Submit"
                 label = "Login"
                 primary = {true}
-                style = {{width: 250, marginTop:40}}
+                style = {{width : 250, marginTop : 40}}
               />
           </div>
           </form>
@@ -93,7 +93,7 @@ export default class SignIn extends Component {
               type = "Submit"
               label = "Register"
               primary = {true}
-              style = {{width: 250}}
+              style = {{width : 250}}
               required
             />
             </Link>

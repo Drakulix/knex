@@ -9,7 +9,7 @@ export default class AuthorInputList extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      list : []
+      list: []
     }
   }
 
@@ -22,10 +22,10 @@ export default class AuthorInputList extends Component {
           break
         }
       }
-      return {email: email, name : name}
+      return {email: email, name: name}
     })
     this.setState({
-      list : list,
+      list: list,
     });
   }
 
@@ -37,8 +37,8 @@ export default class AuthorInputList extends Component {
           var suggestions = []
           for (let author in authors){
             var email = authors[author]
-            var name = (userNames[email] === undefined) ? email : userNames[email]
-            suggestions.push({email : email, name : name})
+            var name = (userNames[email] === undefined) ? email: userNames[email]
+            suggestions.push({email: email, name: name})
           }
           var list = this.props.value.map((email) => {
             var name = email
@@ -48,11 +48,11 @@ export default class AuthorInputList extends Component {
                 break
               }
             }
-            return {email: email, name : name}
+            return {email: email, name: name}
           })
           this.setState({
-            suggestions : suggestions,
-            list : list,
+            suggestions: suggestions,
+            list: list,
           })
       })
     })
@@ -63,22 +63,22 @@ export default class AuthorInputList extends Component {
       return
     var list = [...this.state.list, chip]
     this.setState({
-      list : list
+      list: list
     })
     var value = list.map((item) => {return item.email})
-    var event = {target : { name : this.props.name,
-      value : value}}
+    var event = {target: { name: this.props.name,
+      value: value}}
     this.props.onChange(event)
   }
 
   handleRequestDelete (deletedChip) {
     var list = this.state.list.filter((c) => c.email !== deletedChip)
     this.setState({
-      list : list
+      list: list
     })
     var value = list.map((item) => {return item.email})
-    var event = {target : { name : this.props.name,
-      value : value}}
+    var event = {target: { name: this.props.name,
+      value: value}}
     this.props.onChange(event)
   }
 
@@ -91,7 +91,7 @@ export default class AuthorInputList extends Component {
         onRequestAdd = {(chip) => this.handleRequestAdd(chip)}
         onRequestDelete = {(deletedChip) => this.handleRequestDelete(deletedChip)}
         errorText = {this.props.errorText}
-        dataSourceConfig = {{ text : 'name', value: 'email' }}
+        dataSourceConfig = {{ text: 'name', value: 'email' }}
         hintText = {'Add authors...'}
         fullWidth
         chipRenderer = {({ value, text, isFocused, isDisabled, handleClick, handleRequestDelete }, key) => (
@@ -101,7 +101,7 @@ export default class AuthorInputList extends Component {
             backgroundColor = {'#ffffff'}
             onTouchTap = {handleClick}
             onRequestDelete = {handleRequestDelete}>
-            <span style = {{color : Styles.palette.textColor, fontWeight: 'bold'}}> {text} </span>
+            <span style = {{color: Styles.palette.textColor, fontWeight: 'bold'}}> {text} </span>
           </Chip>
         )}/>
       )

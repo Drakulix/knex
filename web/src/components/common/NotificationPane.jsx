@@ -22,18 +22,18 @@ export default class NotificationPane extends Component {
         height = {200}
         open = {this.props.value}
         anchorEl = {this.props.anchorEl}
-        anchorOrigin = {{horizontal : 'middle', vertical : 'bottom'}}
-        targetOrigin = {{horizontal : 'left', vertical : 'top'}}
+        anchorOrigin = {{horizontal: 'middle', vertical: 'bottom'}}
+        targetOrigin = {{horizontal: 'left', vertical: 'top'}}
         canAutoPosition = {true}
         onRequestClose = {this.props.onRequestClose}>
         <Menu>
           {this.props.notifications.map(notification =>
             <MenuItem key = {notification.id}>
-              <Link style = {{color : Styles.palette.textColor}}
+              <Link style = {{color: Styles.palette.textColor}}
                     onClick = {()=>this.resolveNotification(notification.id)}
                     to = {notification.link}>
-                <div style = {{marginBottom : -25}}>{notification.title}</div>
-                <div style = {{fontSize : "12px"}}> {notification.description}</div>
+                <div style = {{marginBottom: -25}}>{notification.title}</div>
+                <div style = {{fontSize: "12px"}}> {notification.description}</div>
               </Link>
            </MenuItem>
          )}

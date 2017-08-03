@@ -24,9 +24,9 @@ export default class UserProjects extends Component {
     query.archived = "false"
     query.authors = query.authors !== undefined ? query.authors : []
     query.authors.push(Backend.getMail())
-    this.setState({loading: true})
+    this.setState({loading : true})
     return Backend.search(query)
-              .then ((data) => {this.setState({projects : data, loading:false}); return data;})
+              .then ((data) => {this.setState({projects : data, loading : false}); return data;})
   }
 
   render(){

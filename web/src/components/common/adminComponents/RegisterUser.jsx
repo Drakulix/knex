@@ -9,14 +9,14 @@ export default class RegisterUser extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      first_name : "",
-      last_name : "",
-      email : (this.props.email !== undefined) ? this.props.email : "",
-      password : "",
-      password_confirm : "",
-      role : 'user',
-      snackbar : false,
-      snackbarText : ""
+      first_name: "",
+      last_name: "",
+      email: (this.props.email !== undefined) ? this.props.email: "",
+      password: "",
+      password_confirm: "",
+      role: 'user',
+      snackbar: false,
+      snackbarText: ""
     }
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleRegister = this.handleRegister.bind(this)
@@ -26,7 +26,7 @@ export default class RegisterUser extends Component {
   }
 
   handleRegRoleChange(event, index, value){
-    this.setState({role : value})
+    this.setState({role: value})
   }
 
   handleInputChange(event) {
@@ -39,7 +39,7 @@ export default class RegisterUser extends Component {
   }
 
   componentWillReceiveProps(props){
-    this.setState({snackbar : false})
+    this.setState({snackbar: false})
   }
 
   isValidEmailAddress() {
@@ -65,13 +65,13 @@ export default class RegisterUser extends Component {
     .then((success) => {
         if(success){
           this.setState({
-            snackbar : true,
-            snackbarText : 'Registration successfull!'
+            snackbar: true,
+            snackbarText: 'Registration successfull!'
           })
         }else{
           this.setState({
-            snackbar : true,
-            snackbarText : 'Registration unsuccessfull!'
+            snackbar: true,
+            snackbarText: 'Registration unsuccessfull!'
           })
         }
         if(this.props.handleUserUpdate !== undefined){
@@ -82,7 +82,7 @@ export default class RegisterUser extends Component {
 
   render(){
     return (
-      <div className = "container" style = {{textAlign : "left"}}>
+      <div className = "container" style = {{textAlign: "left"}}>
         <Snackbar
                 open = {this.state.snackbar}
                 message = {this.state.snackbarText}
@@ -97,8 +97,8 @@ export default class RegisterUser extends Component {
                 onChange = {this.handleInputChange}
                 value = {this.state.first_name}
                 hintText = "Enter the first name"
-                style = {{marginBottom : (this.state.first_name.length === 0) ? 0 : 17} }
-                errorText = {(this.state.first_name.length === 0) ? "Field is required" : ""}
+                style = {{marginBottom: (this.state.first_name.length === 0) ? 0: 17} }
+                errorText = {(this.state.first_name.length === 0) ? "Field is required": ""}
                       />
             </div>
             <div className = "col-2"/>
@@ -110,8 +110,8 @@ export default class RegisterUser extends Component {
                 onChange = {this.handleInputChange}
                 hintText = "Password"
                 name = "password"
-                style = {{marginBottom : (this.state.password === 0) ? 0 : 17} }
-                errorText = {(this.state.password.length === 0) ? "Field is required" : ""}
+                style = {{marginBottom: (this.state.password === 0) ? 0: 17} }
+                errorText = {(this.state.password.length === 0) ? "Field is required": ""}
                 />
             </div>
           </div>
@@ -123,8 +123,8 @@ export default class RegisterUser extends Component {
                 onChange = {this.handleInputChange}
                 value = {this.state.last_name}
                 hintText = "Enter your last name"
-                style = {{marginBottom : (this.state.last_name.length === 0) ? 0 : 17} }
-                errorText = {(this.state.last_name.length === 0) ? "Field is required" : ""}
+                style = {{marginBottom: (this.state.last_name.length === 0) ? 0: 17} }
+                errorText = {(this.state.last_name.length === 0) ? "Field is required": ""}
               />
             </div>
             <div className = "col-2"/>
@@ -136,8 +136,8 @@ export default class RegisterUser extends Component {
                 onChange = {this.handleInputChange}
                 hintText = "Confirm password"
                 name = "password_confirm"
-                style = {{marginBottom : (this.state.password !== this.state.password_confirm) ? 0 : 17} }
-                errorText = {( this.state.password !== this.state.password_confirm ) ? "Passwords do not match" : "" }
+                style = {{marginBottom: (this.state.password !== this.state.password_confirm) ? 0: 17} }
+                errorText = {( this.state.password !== this.state.password_confirm ) ? "Passwords do not match": "" }
                 />
             </div>
           </div>
@@ -150,7 +150,7 @@ export default class RegisterUser extends Component {
                   onChange = {this.handleInputChange}
                   hintText = "Email"
                   name = "email"
-                  errorText = {(!this.isValidEmailAddress()) ? "Needs to be a valid email" : ""}
+                  errorText = {(!this.isValidEmailAddress()) ? "Needs to be a valid email": ""}
                   />
             </div>
             <div className = "col-4"/>

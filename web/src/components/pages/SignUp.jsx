@@ -13,7 +13,7 @@ export default class SignUp extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      redirect: false,
+      redirect : false,
       first_name : "",
       last_name : "",
       email : "",
@@ -30,7 +30,7 @@ export default class SignUp extends Component {
     const value = target.value
     const name = target.name
     this.setState({
-      [name]: value,
+      [name] : value,
     })
   }
 
@@ -57,9 +57,9 @@ export default class SignUp extends Component {
       if(success){
         Backend.login(this.state.email, this.state.password).then((success) => {
           if(success){
-            this.setState({ redirect: true })
+            this.setState({ redirect : true })
           }else{
-            this.setState({ redirect: false, error: 'Login failed' })
+            this.setState({ redirect : false, error : 'Login failed' })
             alert("Login failed")
           }
         })
@@ -138,7 +138,7 @@ export default class SignUp extends Component {
               label = "Register"
               disabled = {this.isInValidInput()}
               primary = {true}
-              style = {{width: 250}}
+              style = {{width : 250}}
               required
               />
           </form>

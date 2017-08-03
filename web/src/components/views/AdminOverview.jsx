@@ -27,7 +27,7 @@ export default class AdminOverview extends Component {
           inkBarStyle = {{marginTop : -5, height : 5}}
           value = {this.state.value}
           onChange = {this.handleChange}
-          contentContainerStyle = {{marginTop: 30}}
+          contentContainerStyle = {{marginTop : 30}}
         >
           <Tab label = "Archived Projects" value = "1">
             <ManageProjects/>

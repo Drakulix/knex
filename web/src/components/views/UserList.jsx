@@ -99,7 +99,7 @@ export default class ShowUsers extends Component {
     return (
       <div className = "container">
         <Spinner loading = {this.state.loading} text = {"Loading users"} />
-        <div style = {{width:"100%", display : (!this.state.loading ? "block" : "none")}}>
+        <div style = {{width : "100%", display : (!this.state.loading ? "block" : "none")}}>
           <div>
             <div className = "headerCreation">Looking for a user?</div>
             <Card  onExpandChange = {() => this.setState({expanded : !this.state.expanded})}>
@@ -140,9 +140,9 @@ export default class ShowUsers extends Component {
                 </div>
               </CardText>
             </Card>
-            <div style = {{marginTop:20}} >
+            <div style = {{marginTop : 20}} >
                 {this.state.filteredList.map((user) => (
-                    <div key = {user.email} style = {{width : "31%", float:"left", marginRight: 20, marginBottom : 20}}>
+                    <div key = {user.email} style = {{width : "31%", float : "left", marginRight : 20, marginBottom : 20}}>
                       <Link to = {`/profile/${user.email}`}
                             style = {{color : Styles.palette.textColor}}>
                         <div className = "row">
@@ -154,13 +154,13 @@ export default class ShowUsers extends Component {
                               />
                           </div>
                           <div className = "col-1"></div>
-                          <div className = "col-6" style = {{marginTop:20}}>
+                          <div className = "col-6" style = {{marginTop : 20}}>
                             <div style = {{fontWeight : "bold", fontSize : 20}}>{`${user.first_name} ${user.last_name}`}</div>
                             <div style = {{fontSize : 14}}>{user.email}</div>
-                            <div style = {{fontSize : 16}}>{this.state.projectCounts[user.email] !== undefined ? this.state.projectCounts[user.email].length :0} Projects</div>
+                            <div style = {{fontSize : 16}}>{this.state.projectCounts[user.email] !== undefined ? this.state.projectCounts[user.email].length : 0} Projects</div>
                           </div>
                         </div>
-                        <div style = {{width : "100%", textAlign:"left"}}><SkillOutputList value = {this.state.userTags[user.email]} /></div>
+                        <div style = {{width : "100%", textAlign : "left"}}><SkillOutputList value = {this.state.userTags[user.email]} /></div>
 
                       </Link>
                     </div>
