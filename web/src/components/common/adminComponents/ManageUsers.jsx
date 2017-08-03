@@ -63,7 +63,7 @@ export default class ManageUsers extends Component {
   }
 
   handleSetAdmin(userInf){
-    var text = `User ${userInf.first_name} ${userInf.last_name} `;
+    var text = `User ${userInf.first_name} ${userInf.last_name} `
     if(userInf.roles.includes("admin")){
       userInf.roles.splice(userInf.roles.indexOf("admin"))
       text = `${text} is not admin anymore`
