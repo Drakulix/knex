@@ -34,7 +34,7 @@ export default class ProfileView extends Component {
           </div>
         </div>
         <div className = "col-3">
-          <img src = {`/api/users/${this.props.profileInf.email}/avatar`} width = "200px" height = "200px" alt = "..." className = "rounded-circle profile-icon" />
+          <img src = {`/api/users/${this.props.profileInf.email}/avatar?${new Date().getTime()}`} width = "200px" height = "200px" alt = "..." className = "rounded-circle profile-icon" />
         </div>
       </div>
     )

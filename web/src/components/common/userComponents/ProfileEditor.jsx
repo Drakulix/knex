@@ -145,7 +145,7 @@ export default class ProfileEditor extends Component {
           </form>
         </div>
         <div className = "col-3">
-          <img  src = {`/api/users/${this.props.profileInf.email}/avatar`}
+          <img  src = {`/api/users/${this.props.profileInf.email}/avatar?${new Date().getTime()}`}
                 width = "200px"
                 height = "200px"
                 alt = "..."
