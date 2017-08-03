@@ -138,8 +138,8 @@ export default class ProjectControls extends Component{
                         iconStyle = {{fontSize : '24px', color:Styles.palette.textColor}}
                         >
                         <i className = "material-icons">comment</i>
-                        <Badge  badgeContent = {this.state.comments_count} primary = {true}
-                          badgeStyle = {{top : -30, height : 20, width : 20}} />
+                        <Badge   badgeContent = {this.state.comments_count} primary = {true}
+                          badgeStyle = {{top : -30, height : 20, width : 20, display : (this.state.comments_count === 0) ? "none" : "block"}} />
             </IconButton>
             <IconButton
                         onClick = {this.handleBookmark}

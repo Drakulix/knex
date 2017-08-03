@@ -40,8 +40,19 @@ export default class AuthorInputList extends Component {
             var name = (userNames[email] === undefined) ? email : userNames[email]
             suggestions.push({email : email, name : name})
           }
+          var list = this.props.value.map((email) => {
+            var name = email
+            for(let item in suggestions){
+              if(suggestions[item].email === email){
+                name = suggestions[item].name
+                break
+              }
+            }
+            return {email: email, name : name}
+          })
           this.setState({
-            suggestions : suggestions
+            suggestions : suggestions,
+            list : list,
           })
       })
     })
