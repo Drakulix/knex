@@ -185,7 +185,7 @@ export default class CreateProjectChoice extends Component {
               style = {{ width:120, height:120}}>
               <input type = "file" style = {Styles.uploadInput} onChange = {this.handleFile} />
             </RaisedButton>
-            <div className = "text" >Upload local json</div>
+            <div className = "text" >Upload local Json</div>
           </div>
         </div>
         <div className = "row" style = {{marginTop : 60}}>

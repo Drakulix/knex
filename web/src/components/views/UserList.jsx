@@ -72,14 +72,14 @@ export default class ShowUsers extends Component {
   filter(name, value){
     var filteredList = []
     var tagsToCompare = (name === "tags") ? value : this.state.tags
-    var email = this.state.email.toLowerCase()
-    var name = this.state.name.toLowerCase()
+    var emailValue = this.state.email.toLowerCase()
+    var nameValue = this.state.name.toLowerCase()
     for(let dataObject of this.state.userList) {
       var discard = false
       var userName = (`${dataObject.first_name} ${dataObject.last_name}`).toLowerCase()
       var userEmail = dataObject.email.toLowerCase()
-      discard = discard || userEmail.indexOf(name === "email" ? value.toLowerCase() :  email) === -1
-      discard = discard || userName.indexOf(name === "name" ? value.toLowerCase() :  name) === -1
+      discard = discard || userEmail.indexOf(name === "email" ? value.toLowerCase() :  emailValue) === -1
+      discard = discard || userName.indexOf(name === "name" ? value.toLowerCase() :  nameValue) === -1
       var temp = `#${this.state.userTags[userEmail].join('#')}#`
       for(let item in tagsToCompare){
         if (temp.indexOf(`#${tagsToCompare[item]}#`) === -1){
@@ -158,9 +158,10 @@ export default class ShowUsers extends Component {
                             <div style = {{fontWeight : "bold", fontSize : 20}}>{`${user.first_name} ${user.last_name}`}</div>
                             <div style = {{fontSize : 14}}>{user.email}</div>
                             <div style = {{fontSize : 16}}>{this.state.projectCounts[user.email] !== undefined ? this.state.projectCounts[user.email].length :0} Projects</div>
-                            <div style = {{width : 200}}><SkillOutputList value = {this.state.userTags[user.email]} /></div>
                           </div>
                         </div>
+                        <div style = {{width : "100%", textAlign:"left"}}><SkillOutputList value = {this.state.userTags[user.email]} /></div>
+
                       </Link>
                     </div>
                   ))}

@@ -35,11 +35,16 @@ export default class BookmarksTable extends Component {
     }
 
     this.handleFilterChange = this.handleFilterChange.bind(this)
-    this.handleClose = this.handleClose.bind(this)
+    this.handleError = this.handleError.bind(this)
   }
 
-  handleClose(){
-    this.setState({dialogOpen : false, snackbar : false})
+  handleError(){
+    this.setState({
+      dialogOpen : false,
+      snackbar : true,
+      snackbarText : "Error while loading projects",
+      loading : false
+    })
   }
 
   handleDelete(projectInf){
@@ -54,6 +59,7 @@ export default class BookmarksTable extends Component {
         .then(() => {this.props.handler(this.state.filters)})
         .then(this.setState({snackbar : true,
           snackbarText : `Project ${projectInf.title} deleted`}))
+        .catch(() => {this.handleError()})
       }
     })
   }
@@ -74,6 +80,7 @@ export default class BookmarksTable extends Component {
         .then(() => {this.props.handler(this.state.filters)})
         .then(this.setState({snackbar : true,
           snackbarText : `Project ${projectInf.title} archived`}))
+        .catch(() => {this.handleError()})
       }
     })
   }
@@ -88,6 +95,7 @@ export default class BookmarksTable extends Component {
         .then(() => {this.props.handler(this.state.filters)})
         .then(() => {this.setState({snackbar : true,
           snackbarText : `Project ${projectInf.title} unarchived`})})
+        .catch(() => {this.handleError()})
   }
 
   handleBookmark(projectInf){
@@ -95,6 +103,7 @@ export default class BookmarksTable extends Component {
     .then(() => {this.props.handler(this.state.filters)})
     .then(() => {this.setState({snackbar : true,
       snackbarText : `Project bookmark${projectInf.is_bookmark === "true" ? " removed" : "ed"}`})})
+    .catch(() => {this.handleError()})
   }
 
   componentWillReceiveProps(props){
@@ -246,7 +255,7 @@ export default class BookmarksTable extends Component {
           var text = (props.value !== undefined) ? props.value.substring(0,200).trim(): "";
           text = text + ((props.value.length > 200) ? "..." : "")
           return(
-            <div style = {{whiteSpace : "normal", textAlign : "justify", marginTop:8, color : Styles.palette.textColor}}>
+            <div style = {{whiteSpace : "normal", marginTop:8, color : Styles.palette.textColor}}>
             {text}
             </div>
           )
@@ -341,7 +350,7 @@ export default class BookmarksTable extends Component {
     return (
       <div>
         <ConfirmationPane   open = {this.state.dialogOpen}
-                            handleClose = {this.handleClose}
+                            handleClose = {() => {this.setState({dialogOpen : false, snackbar : false})}}
                             title = {this.state.dialogText}
                             confirmationLabel = {this.state.buttonText}
                             confirmAction = {this.state.action}
