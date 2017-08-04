@@ -1,7 +1,8 @@
 import React from 'react'
-
-import CreateProject from './CreateProject'
 import Moment from 'moment'
+import Snackbar from 'material-ui/Snackbar'
+import CreateProject from './CreateProject'
+
 
 
 const JSON5 = require('json5')
@@ -12,7 +13,8 @@ export default class CreateProjectByURL extends React.Component {
     super(props)
     this.state = {
       done : false,
-      status : "2",
+      snackbar: false,
+      snackbarText: ''
     }
   }
 
@@ -48,16 +50,16 @@ export default class CreateProjectByURL extends React.Component {
                   }
                 })
               } catch (error) {
-                alert(error)
+                this.setState ({snackbarText: error, snackbar:true})
               }
             }
           )
         } else {
-          alert("Connection Error.\n Unable to find anything at the given URL")
+          this.setState ({snackbarText: "Connection Error.\n Unable to find anything at the given URL", snackbar:true})
         }
       },
       function(exception){
-        alert(`Connection Error : \n${exception}`)
+        this.setState ({snackbarText: `Connection Error : \n${exception}`, snackbar:true})
       }
     )
   }
@@ -66,11 +68,16 @@ export default class CreateProjectByURL extends React.Component {
   render() {
     if(this.state.done){
       return(
-        <CreateProject
-            projectInf = {this.state.projectInf}
-            date = {this.state.date}
-            fromURL = {true}
-        />
+        <div>
+          <Snackbar open = {this.state.snackbar}
+                    message = {this.state.snackbarText}
+                    autoHideDuration = {10000}></Snackbar>
+          <CreateProject
+              projectInf = {this.state.projectInf}
+              date = {this.state.date}
+              fromURL = {true}
+          />
+        </div>
       )
     } else {
       return(<div/>)

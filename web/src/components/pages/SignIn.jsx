@@ -4,6 +4,7 @@ import {
   Redirect,
 } from 'react-router-dom'
 import RaisedButton from 'material-ui/RaisedButton'
+import Snackbar from 'material-ui/Snackbar'
 import TextField from 'material-ui/TextField'
 import logo from '../../style/img/black_logo_title_below.svg'
 import Backend from '../common/Backend'
@@ -14,10 +15,12 @@ export default class SignIn extends Component {
     super(props)
     // set the initial component state
     this.state = {
-      redirect : false,
-      error : '',
-      email : Backend.getMail(),
-      password : '',
+      redirect: false,
+      error: '',
+      email: Backend.getMail(),
+      password: '',
+      snackbar: false,
+      snackbarText: 'Login failed'
     }
 
     this.handleChangeEmail = this.handleChangeEmail.bind(this)
@@ -26,21 +29,20 @@ export default class SignIn extends Component {
   }
 
   handleChangeEmail(event) {
-    this.setState({email : event.target.value})
+    this.setState({email: event.target.value, snackbar: false})
   }
 
   handleChangePassword(event) {
-    this.setState({password : event.target.value})
+    this.setState({password: event.target.value, snackbar: false})
   }
 
   handleSubmit(event){
     event.preventDefault()
     Backend.login(this.state.email, this.state.password).then((success) => {
       if(success){
-        this.setState({ redirect : true })
+        this.setState({ redirect: true })
       }else{
-        this.setState({ redirect : false, error : 'Login failed' })
-        alert("Login failed")
+        this.setState({ redirect: false,: 'Login failed', snackbar: true })
       }
     })
   }
@@ -51,7 +53,10 @@ export default class SignIn extends Component {
     }
 
     return (
-      <section className = "sign-container">
+      <div className = "sign-container">
+        <Snackbar open = {this.state.snackbar}
+                  message = {this.state.snackbarText}
+                  autoHideDuration = {10000}
 
         {/*Information*/}
         <img className = "service-name" src = {logo} alt = "Logo"/>
@@ -82,7 +87,7 @@ export default class SignIn extends Component {
                 type = "Submit"
                 label = "Login"
                 primary = {true}
-                style = {{width : 250, marginTop : 40}}
+                style = {{width: 250, marginTop: 40}}
               />
           </div>
           </form>
@@ -93,13 +98,13 @@ export default class SignIn extends Component {
               type = "Submit"
               label = "Register"
               primary = {true}
-              style = {{width : 250}}
+              style = {{width: 250}}
               required
             />
             </Link>
           </div>
         </div>
-      </section>
+      </div>
     )
   }
 }

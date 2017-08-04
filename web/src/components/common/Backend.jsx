@@ -95,7 +95,6 @@ class Backend {
 
     register(firstname, lastname, mail, password, password_confirm, role) {
         if (password !== password_confirm) {
-            alert('Passwords do not match');
             return false;
         }
 
