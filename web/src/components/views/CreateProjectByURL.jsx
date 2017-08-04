@@ -71,7 +71,7 @@ export default class CreateProjectByURL extends React.Component {
         <div>
           <Snackbar open = {this.state.snackbar}
                     message = {this.state.snackbarText}
-                    autoHideDuration = {10000}></Snackbar>
+                    autoHideDuration = {10000}/>
           <CreateProject
               projectInf = {this.state.projectInf}
               date = {this.state.date}
