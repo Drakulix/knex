@@ -81,7 +81,7 @@ export default class SignUp extends Component {
       <div style = {{textAlign : "center"}}>
         <Snackbar open = {this.state.snackbar}
                   message = {this.state.snackbarText}
-                  autoHideDuration = {10000}
+                  autoHideDuration = {10000}/>
         <img className = "service-name" src = {logo} alt = "Logo"/>
         <h2 className = "team-name">brings light to the cloud</h2>
         <div className = "rectangle-sign">

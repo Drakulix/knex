@@ -42,7 +42,7 @@ export default class SignIn extends Component {
       if(success){
         this.setState({ redirect: true })
       }else{
-        this.setState({ redirect: false,: 'Login failed', snackbar: true })
+        this.setState({ redirect: false, snackbar: true })
       }
     })
   }
@@ -56,8 +56,7 @@ export default class SignIn extends Component {
       <div className = "sign-container">
         <Snackbar open = {this.state.snackbar}
                   message = {this.state.snackbarText}
-                  autoHideDuration = {10000}
-
+                  autoHideDuration = {10000}/>
         {/*Information*/}
         <img className = "service-name" src = {logo} alt = "Logo"/>
         <h2 className = "team-name">brings light to the cloud</h2>
