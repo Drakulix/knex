@@ -79,7 +79,7 @@ export default class BookmarksTable extends Component {
         .then(() => {this.props.handler(this.state.filters)})
         .then(this.setState({snackbar: true,
           snackbarText: `Project ${projectInf.title} archived`}))
-        .catch((e) => {alert(JSON.stringify(e));this.handleError()})
+        .catch((e) => {this.handleError()})
       }
     })
   }
