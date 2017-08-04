@@ -6,7 +6,6 @@ import uuid
 import base64
 
 import yaml
-from elasticsearch import Elasticsearch
 from flask import Flask, g, jsonify, request
 from flask.helpers import make_response
 from flask_cors import CORS
@@ -42,10 +41,6 @@ default_config = {
         "security_password_hash": 'pbkdf2_sha512',
         "security_password_salt": 'THISISMYOWNSALT'
     },
-    "elasticsearch": {
-        "hostname": "elasticsearch",
-        "port": 9200
-    },
     "administration_user": {
         "username": "admin",
         "password": "admin",
@@ -61,8 +56,6 @@ if os.path.isfile(os.path.join(config_file_path, "config.yml")):
             default_config["flask"].update(config["flask"])
         if "mongo_db" in config:
             default_config["mongo_db"].update(config["mongo_db"])
-        if "elasticsearch" in config:
-            default_config["elasticsearch"].update(config["elasticsearch"])
         if "administration_user" in config:
             default_config["administration_user"].update(config["administration_user"])
 
@@ -82,19 +75,6 @@ app.config['SECURITY_PASSWORD_SALT'] = config["mongo_db"]["security_password_sal
 app.config['MAX_CONTENT_PATH'] = 1000000  # 1.000.000 byte = 1mb
 
 DB = MongoEngine(app)
-
-
-@app.before_first_request
-def init_global_elasticsearch():
-    global ES
-    ES = Elasticsearch([{'host': config["elasticsearch"]["hostname"],
-                         'port': config["elasticsearch"]["port"]}])
-    ES.indices.create(index='knexdb', ignore=400)
-
-
-@app.before_request
-def set_global_elasticsearch():
-    g.es = ES
 
 
 @app.before_first_request
@@ -254,11 +234,9 @@ def save_search_func():
 
 def rerun_saved_searches():
     # This really is ugly but MongoConnector has to catch up for a valid count
-    time.sleep(1)
     for user in User.objects:
         for search in user.saved_searches:
-            projects = prepare_es_results(
-                ES.search(index="knexdb", body=json.loads(search['query'])))
+            projects = prepare_es_results(g.projects.find(search['query']))
             if search['count'] != len(projects):
                 search['count'] = len(projects)
                 search.save()

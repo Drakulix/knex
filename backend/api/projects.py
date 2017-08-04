@@ -101,11 +101,11 @@ def get_projects():
     elif archived == 'false':
         query = {'archived': False}
     if limit and skip:
-        res = g.projects.find(query, limit=limit, skip=skip)
+        res = g.projects.find(query, {'comments': 0}, limit=limit, skip=skip)
     elif limit:
-        res = g.projects.find(query, limit=limit)
+        res = g.projects.find(query, {'comments': 0}, limit=limit)
     elif skip:
-        res = g.projects.find(query, skip=skip)
+        res = g.projects.find(query, {'comments': 0}, skip=skip)
     else:
         res = g.projects.find(query)
 

@@ -13,23 +13,6 @@ services:
         depends_on:
             - "mongodb"
 
-    elasticsearch:
-        image: docker.elastic.co/elasticsearch/elasticsearch:5.4.1
-        environment:
-            - "http.host=0.0.0.0"
-            - "transport.host=127.0.0.1"
-            - "xpack.security.enabled=false"
-            - "action.auto_create_index=true"
-        ports:
-            - "9200:9200"
-        restart: "on-failure"
-
-    mongo-connector:
-        build: ./backend/mongo_connector
-        restart: "always"
-        depends_on:
-            - "elasticsearch"
-
     flask:
         build: .
         ports:

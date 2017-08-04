@@ -5,7 +5,6 @@
 import json
 
 from flask import request, jsonify, g, Blueprint, make_response
-from elasticsearch.exceptions import RequestError
 from flask_security import login_required, current_user
 from mongoengine.fields import ObjectId
 from uuid import UUID
@@ -19,10 +18,8 @@ search = Blueprint('api_projects_search', __name__)
 def prepare_es_results(res):
     """ Internal function to prepare ElasticSearch search results to send as json.
     """
+    projects = [x for x in res[:]]
     try:
-        for hit in res['hits']['hits']:
-            hit['_source']['_id'] = UUID(str(hit['_id']), version=4)  # necessary cast
-        projects = [hit['_source'] for hit in res['hits']['hits']]
         for project in projects:
             project['is_bookmark'] = 'true' if project['_id']\
                 in current_user.bookmarks else 'false'
@@ -36,7 +33,7 @@ def prepare_es_results(res):
 def prepare_es_query(query):
     """ Internal function to prepare the ElasticSearch search query from a given json
     """
-    search_string = query.get('searchString', '')
+    search_string = query.get('searchString')
     archived = query.get('archived')
     authors = query.get('authors')
     tags = query.get('tags')
@@ -46,76 +43,24 @@ def prepare_es_query(query):
     description = query.get('description')
     title = query.get('title')
 
-    request_json = {
-        'from': 0,
-        'size': 10000,
-        'query': {
-            'bool': {
-                'should': {
-                    'multi_match': {
-                        'query': search_string,
-                        'fields': [
-                            'tags^2',
-                            'title^2',
-                            'description',
-                        ],
-                    }
-                },
-                'filter': {
-                    'bool': {
-                        'must': []
-                    }
-                }
-            }
-        }
-    }
+    request_json = {}
 
     if authors:
-        for author in authors:
-            for part in author.split('@'):
-                request_json['query']['bool']['filter']['bool']['must'].append({
-                    'term': {'authors': part}
-                })
-
+        request_json['authors'] = {'$all': authors}
     if tags:
-        for tag in tags:
-            for part in tag.split(' '):
-                request_json['query']['bool']['filter']['bool']['must'].append({
-                    'term': {'tags': part}
-                })
-
+        request_json['tags'] =  {'$all': tags}
     if status:
-        request_json['query']['bool']['filter']['bool']['must'].append({
-            'term': {'status': status.lower()}
-        })
-
+        request_json['status'] = status
     if archived and archived in ['true', 'false']:
-        request_json['query']['bool']['filter']['bool']['must'].append({
-            'term': {'archived': (archived == 'true')}
-        })
-
-    if date_from or date_to:
-        date_filter = {
-            'range': {'date_creation': {}}
-        }
-
-        if date_from:
-            date_filter['range']['date_creation']['gte'] = date_from
-        if date_to:
-            date_filter['range']['date_creation']['lte'] = date_to
-
-        request_json['query']['bool']['filter']['bool']['must'].append(date_filter)
-
+        request_json['archived'] = (archived == 'true')
+    if date_from:
+        request_json['date_creation'] = {'$gte': date_from}
+    if date_to:
+        request_json['date_creation'] = {'$lte': tp}
     if description:
-        request_json['query']['bool']['filter']['bool']['must'].append({
-            'wildcard': {'description': '*' + description + '*'}
-        })
-
+        request_json['description'] = {'$regex': '(^| )'+ description, '$options': 'i' }
     if title:
-        request_json['query']['bool']['filter']['bool']['must'].append({
-            'wildcard': {'title': '*' + title + '*'}
-        })
-
+        request_json['title'] = {'$regex': '(^| )' + title, '$options': 'i' }
     return request_json
 
 
@@ -131,10 +76,10 @@ def search_es():
     query = request.get_json()
     request_json = prepare_es_query(query)
 
-    try:
-        projects = prepare_es_results(g.es.search(index="knexdb", body=request_json))
-    except RequestError as reqerr:
-        raise ApiException(str(reqerr), 400)
+    projects = g.projects.find(request_json, {'comments': 0})
+    projects = [x for x in projects[:]]
+
+    projects = prepare_es_results(projects)
 
     if 'label' in query:
         try:
@@ -158,7 +103,7 @@ def search_count():
     request_json = prepare_es_query(query)
 
     try:
-        res = g.es.search(index="knexdb", body=request_json)['hits']['total']
+        res = g.projects.find(request_json, {'comments': 0})
         return jsonify(res)
     except Exception as err:
         raise ApiException(str(err), 400)
@@ -185,7 +130,7 @@ def query_saved_search(id):
                 query = json.loads(cursearch['query'])
                 query['size'] = count
                 query['from'] = offset
-                projects = prepare_es_results(g.es.search(index="knexdb", body=query))
+                projects = prepare_es_results(g.projects.find(request_json, {'comments': 0}))
                 return jsonify(projects)
             except RequestError as reqerr:
                 return (str(reqerr), 400)

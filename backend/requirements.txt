@@ -1,6 +1,4 @@
 flask
-pymongo
-elasticsearch
 requests
 json5
 jsonschema
