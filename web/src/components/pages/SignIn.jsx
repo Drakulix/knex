@@ -42,7 +42,7 @@ export default class SignIn extends Component {
       if(success){
         this.setState({ redirect: true })
       }else{
-        this.setState({ redirect: false,: 'Login failed', snackbar: true })
+        this.setState({ redirect: false, snackbar: true })
       }
     })
   }
