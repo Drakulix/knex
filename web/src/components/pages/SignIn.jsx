@@ -40,9 +40,9 @@ export default class SignIn extends Component {
     event.preventDefault()
     Backend.login(this.state.email, this.state.password).then((success) => {
       if(success){
-        this.setState({ redirect : true })
+        this.setState({ redirect: true })
       }else{
-        this.setState({ redirect: false, snackbar: true })
+        this.setState({ redirect: false,: 'Login failed', snackbar: true })
       }
     })
   }
@@ -97,7 +97,7 @@ export default class SignIn extends Component {
               type = "Submit"
               label = "Register"
               primary = {true}
-              style = {{width : 250}}
+              style = {{width: 250}}
               required
             />
             </Link>
