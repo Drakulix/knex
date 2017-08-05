@@ -108,14 +108,13 @@ def query_saved_search(id):
     if count is None:
         count = 10
 
-    res = g.user_datastore.get_user(current_user['email'])
-    for cursearch in res.saved_searches:
+    for cursearch in current_user.saved_searches:
         if cursearch.saved_search_id == ObjectId(id):
             try:
                 query = json.loads(cursearch['query'])
                 query['size'] = count
                 query['from'] = offset
-                projects = prepare_search_results(g.projects.find(request_json, {'comments': 0}))
+                projects = prepare_search_results(g.projects.find(query, {'comments': 0}))
                 return jsonify(projects)
             except RequestError as reqerr:
                 return (str(reqerr), 400)
