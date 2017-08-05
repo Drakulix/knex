@@ -158,11 +158,11 @@ def get_project_by_id(project_id):
     """
     archived = request.args.get('archived', type=str, default="mixed")
     if archived == 'true':
-        res = g.projects.find_one({'_id': project_id, 'archived': True})
+        res = g.projects.find_one({'_id': project_id, 'archived': True}, {'comments': 0})
     elif archived == 'false':
-        res = g.projects.find_one({'_id': project_id, 'archived': False})
+        res = g.projects.find_one({'_id': project_id, 'archived': False}, {'comments': 0})
     elif archived == 'mixed':
-        res = g.projects.find_one({'_id': project_id})
+        res = g.projects.find_one({'_id': project_id}, {'comments': 0})
     else:
         return make_response('Invalid parameters', 400)
     if res is None:
@@ -221,7 +221,7 @@ def update_project(project_id):
                 res['title'] = manifest['title']
             if 'authors' in manifest:
                 res['authors'] = manifest['authors']
-            if tags in manifest:
+            if 'tags' in manifest:
                 res['tags'] = manifest['tags']
             if 'description' in manifest:
                 res['description'] = manifest['description']
