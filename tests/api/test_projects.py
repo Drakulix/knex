@@ -184,37 +184,6 @@ class TestPOST(object):
         print(response.text)
         assert response.status_code == 200
 
-    def test_inconsistent_post(self, session, flask_api_url,
-                               pytestconfig, mongo_client, elastic_client):
-        test_manifest = os.path.join(
-            str(pytestconfig.rootdir),
-            'tests',
-            'testmanifests',
-            'validexample0.json5'
-        )
-        with open(test_manifest, 'r', encoding='utf-8') as tf:
-            data = str(tf.read().replace('\n', ''))
-        response = session.post(flask_api_url + "/api/projects", data=data.encode('utf-8'),
-                                headers={'Content-Type': 'application/json5'})
-        print(response.text)
-        time.sleep(5)
-        for project_id in response.json():
-            # This should pass if post is working properly
-            assert UUID(project_id, version=4)
-            project_uuid = UUID(project_id, version=4)
-            print(project_id)
-            mongo_client.projects.find({})
-            mongo_result = mongo_client.projects.find_one(project_uuid)
-            print("mongo:", mongo_result)
-
-            # fails for mongo error
-            assert mongo_result["_id"] == project_uuid
-            es_result = elastic_client.get(index="knexdb", id=project_id)
-            print("es:", es_result)
-            # fails for es not found error
-            assert es_result['found']
-            # Start checking both databases
-
 
 class TestDELETE(object):
     def test_unknown_id(self, session, flask_api_url):
@@ -332,8 +301,6 @@ class TestGET(object):
 
     def test_get_archived_fail(self, session, flask_api_url, enter_archived_using_post):
         project_id = enter_archived_using_post.json()
-        print(project_id)
-        time.sleep(1)
         get_response = session.get(flask_api_url + "/api/projects/" + project_id.pop(0) +
                                    "?archived=false")
         print(get_response.text)
@@ -446,7 +413,6 @@ class TestPUT(object):
                                        project_id_not_archived[0], json=manifest_json)
         print(get_put_response.text)
         assert get_put_response.status_code == 200
-        time.sleep(2)
         get_again_response = session.get(flask_api_url + "/api/projects/" +
                                          project_id_not_archived[0] + "?archived=true")
         after_put_json = get_again_response.json()
@@ -467,8 +433,6 @@ class TestPUT(object):
         del manifest_json['is_owner']
         get_put_response = session.put(flask_api_url + "/api/projects/" + project_id_archived[0],
                                        json=manifest_json)
-        print("put:", get_put_response.text)
-        time.sleep(2)
         get_again_response = session.get(flask_api_url + "/api/projects/" + project_id_archived[0])
         print(get_again_response.text)
         after_put_json = get_again_response.json()
@@ -483,9 +447,6 @@ class TestPUT(object):
         response = session.put(flask_api_url + "/api/projects/" + invalid_id)
         print(response.text)
         assert response.status_code == 405
-
-    def test_success(self, session, flask_api_url):
-        assert True
 
     def test_unauthorized_update(self, flask_api_url, enter_default_user_users):
         """ Tests for 403 when attempting to update a different users project

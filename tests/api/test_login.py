@@ -9,11 +9,11 @@ def test_login_unsuccessful(flask_api_url):
     assert response.status_code == 403
 
 
-def test_login_successful(session, flask_api_url):
+def test_login_successful(flask_api_url):
     """ Tests for 200 when the login data is correct
     """
     data = {"email": "admin@knex.com", "password": "admin"}
-    response = session.post(flask_api_url + '/api/users/login', data=data)
+    response = requests.post(flask_api_url + '/api/users/login', data=data)
     assert response.status_code == 200
 
 
