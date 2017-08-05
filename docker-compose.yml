@@ -19,5 +19,4 @@ services:
             - "5000:5000"
         restart: "on-failure"
         depends_on:
-            - "elasticsearch"
             - "mongodb"

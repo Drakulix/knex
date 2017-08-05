@@ -184,37 +184,6 @@ class TestPOST(object):
         print(response.text)
         assert response.status_code == 200
 
-    def test_inconsistent_post(self, session, flask_api_url,
-                               pytestconfig, mongo_client, elastic_client):
-        test_manifest = os.path.join(
-            str(pytestconfig.rootdir),
-            'tests',
-            'testmanifests',
-            'validexample0.json5'
-        )
-        with open(test_manifest, 'r', encoding='utf-8') as tf:
-            data = str(tf.read().replace('\n', ''))
-        response = session.post(flask_api_url + "/api/projects", data=data.encode('utf-8'),
-                                headers={'Content-Type': 'application/json5'})
-        print(response.text)
-        time.sleep(5)
-        for project_id in response.json():
-            # This should pass if post is working properly
-            assert UUID(project_id, version=4)
-            project_uuid = UUID(project_id, version=4)
-            print(project_id)
-            mongo_client.projects.find({})
-            mongo_result = mongo_client.projects.find_one(project_uuid)
-            print("mongo:", mongo_result)
-
-            # fails for mongo error
-            assert mongo_result["_id"] == project_uuid
-            es_result = elastic_client.get(index="knexdb", id=project_id)
-            print("es:", es_result)
-            # fails for es not found error
-            assert es_result['found']
-            # Start checking both databases
-
 
 class TestDELETE(object):
     def test_unknown_id(self, session, flask_api_url):

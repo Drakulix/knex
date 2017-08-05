@@ -10,30 +10,15 @@ from mongoengine.fields import ObjectId
 from uuid import UUID
 
 from api.helper.apiexception import ApiException
+from api.helper.search import prepare_search_results
 
 
 search = Blueprint('api_projects_search', __name__)
 
 
-def prepare_es_results(res):
-    """ Internal function to prepare ElasticSearch search results to send as json.
-    """
-    projects = [x for x in res[:]]
-    try:
-        for project in projects:
-            project['is_bookmark'] = 'true' if project['_id']\
-                in current_user.bookmarks else 'false'
-            project['is_owner'] = 'true' if current_user['email'] in project['authors']\
-                else 'false'
-        return projects
-    except KeyError as keyerr:
-        raise ApiException(str(keyerr), 400)
-
-
-def prepare_es_query(query):
+def prepare_mongo_query(query):
     """ Internal function to prepare the ElasticSearch search query from a given json
     """
-    search_string = query.get('searchString')
     archived = query.get('archived')
     authors = query.get('authors')
     tags = query.get('tags')
@@ -48,19 +33,20 @@ def prepare_es_query(query):
     if authors:
         request_json['authors'] = {'$all': authors}
     if tags:
-        request_json['tags'] =  {'$all': tags}
+        request_json['tags'] = {'$all': tags}
     if status:
         request_json['status'] = status
-    if archived and archived in ['true', 'false']:
+    if archived in ['true', 'false']:
         request_json['archived'] = (archived == 'true')
     if date_from:
         request_json['date_creation'] = {'$gte': date_from}
     if date_to:
-        request_json['date_creation'] = {'$lte': tp}
+        request_json['date_creation'] = {'$lte': date_to}
     if description:
-        request_json['description'] = {'$regex': '(^| )'+ description, '$options': 'i' }
+        request_json['description'] = {'$regex': '(^| )' + description, '$options': 'i'}
     if title:
-        request_json['title'] = {'$regex': '(^| )' + title, '$options': 'i' }
+        request_json['title'] = {'$regex': '(^| )' + title, '$options': 'i'}
+
     return request_json
 
 
@@ -74,20 +60,19 @@ def search_es():
 
     """
     query = request.get_json()
-    request_json = prepare_es_query(query)
+    request_json = prepare_mongo_query(query)
 
     projects = g.projects.find(request_json, {'comments': 0})
-    projects = [x for x in projects[:]]
 
-    projects = prepare_es_results(projects)
+    projects = prepare_search_results(projects)
 
     if 'label' in query:
         try:
             return g.save_search(current_user, query, request_json, len(projects))
         except json.JSONDecodeError:
             return make_response('Invalid json', 400)
-    else:
-        return jsonify(projects)
+
+    return jsonify(projects)
 
 
 @search.route('/api/projects/search/count', methods=['POST'])
@@ -100,7 +85,7 @@ def search_count():
 
     """
     query = request.get_json()
-    request_json = prepare_es_query(query)
+    request_json = prepare_mongo_query(query)
 
     try:
         res = g.projects.find(request_json, {'comments': 0})
@@ -130,7 +115,7 @@ def query_saved_search(id):
                 query = json.loads(cursearch['query'])
                 query['size'] = count
                 query['from'] = offset
-                projects = prepare_es_results(g.projects.find(request_json, {'comments': 0}))
+                projects = prepare_search_results(g.projects.find(request_json, {'comments': 0}))
                 return jsonify(projects)
             except RequestError as reqerr:
                 return (str(reqerr), 400)
@@ -142,10 +127,7 @@ def query_saved_search(id):
 def get_saved_searches():
     """ Returns the saved searches for the current user.
     """
-    user = g.user_datastore.get_user(current_user['email'])
-    if not user:
-        raise ApiException("Couldn't find current_user in datastore", 500)
-    return jsonify([search.to_dict() for search in user.saved_searches])
+    return jsonify([search.to_dict() for search in current_user.saved_searches])
 
 
 @search.route('/api/users/saved_searches/<id>', methods=['DELETE'])
@@ -153,13 +135,9 @@ def get_saved_searches():
 def delete_saved_search(id):
     """ Deletes the saved search with <id> from the current_users saved searches.
     """
-    user = g.user_datastore.get_user(current_user['email'])
-    if not user:
-        raise ApiException("Couldn't find current_user in datastore", 500)
-
-    for cursearch in user.saved_searches:
+    for cursearch in current_user.saved_searches:
         if cursearch.saved_search_id == ObjectId(id):
-            user.saved_searches.remove(cursearch)
-            user.save()
+            current_user.saved_searches.remove(cursearch)
+            current_user.save()
             return make_response("Success", 200)
     return make_response("No search with the given id known", 404)

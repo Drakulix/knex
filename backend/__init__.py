@@ -23,7 +23,7 @@ from werkzeug.routing import BaseConverter
 
 from api.projects import projects
 from api.users import users
-from api.search import search, prepare_es_results
+from api.search import search, prepare_search_results
 from api.helper.apiexception import ApiException
 
 config_file_path = os.path.dirname(os.path.abspath(__file__))
@@ -233,10 +233,9 @@ def save_search_func():
 
 
 def rerun_saved_searches():
-    # This really is ugly but MongoConnector has to catch up for a valid count
     for user in User.objects:
         for search in user.saved_searches:
-            projects = prepare_es_results(g.projects.find(search['query']))
+            projects = prepare_search_results(g.projects.find(search['query']))
             if search['count'] != len(projects):
                 search['count'] = len(projects)
                 search.save()

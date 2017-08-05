@@ -7,3 +7,4 @@ flask_security
 flask_mongoengine
 passlib
 pyyaml
+pymongo
