@@ -448,7 +448,6 @@ class TestPUT(object):
         print(response.text)
         assert response.status_code == 405
 
- 
     def test_unauthorized_update(self, flask_api_url, enter_default_user_users):
         """ Tests for 403 when attempting to update a different users project
         """
