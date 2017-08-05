@@ -8,3 +8,4 @@ flask_mongoengine
 passlib
 pyyaml
 pymongo
+Pillow

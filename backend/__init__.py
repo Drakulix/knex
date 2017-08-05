@@ -25,6 +25,8 @@ from api.projects import projects
 from api.users import users
 from api.search import search, prepare_search_results
 from api.helper.apiexception import ApiException
+from api.helper.images import Identicon
+
 
 config_file_path = os.path.dirname(os.path.abspath(__file__))
 config = {}
@@ -271,14 +273,18 @@ def initialize_users():
     user_role = USER_DATASTORE.find_or_create_role('user')
     admin_role = USER_DATASTORE.find_or_create_role('admin')
     adminpw = hash_password(config["administration_user"]["password"])
+    admin_mail = config["administration_user"]["email"]
     try:
-        with open(os.path.join(sys.path[0], "default_avatar.png"), 'rb') as tf:
-            imgtext = base64.b64encode(tf.read()).decode()
+        image = Identicon(admin_mail)
+        result = image.generate()
+        with open(os.path.join(sys.path[0], 'identicon' + admin_mail + '.png'), 'rb') as tf:
+            imgtext = base64.b64encode(tf.read())
+            os.remove(sys.path[0] + '/identicon' + admin_mail + '.png')
         USER_DATASTORE.create_user(
-            email=config["administration_user"]["email"], password=adminpw,
+            email=admin_mail, password=adminpw,
             first_name="default", last_name=config["administration_user"]["username"],
             bio="Lead developer proxy of knex.", roles=[user_role, admin_role],
-            avatar_name="default_avatar.png", avatar=imgtext)
+            avatar_name='identicon' + admin_mail + '.png', avatar=imgtext)
 
     except NotUniqueError:
         pass
