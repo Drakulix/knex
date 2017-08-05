@@ -301,8 +301,6 @@ class TestGET(object):
 
     def test_get_archived_fail(self, session, flask_api_url, enter_archived_using_post):
         project_id = enter_archived_using_post.json()
-        print(project_id)
-        time.sleep(1)
         get_response = session.get(flask_api_url + "/api/projects/" + project_id.pop(0) +
                                    "?archived=false")
         print(get_response.text)
@@ -415,7 +413,6 @@ class TestPUT(object):
                                        project_id_not_archived[0], json=manifest_json)
         print(get_put_response.text)
         assert get_put_response.status_code == 200
-        time.sleep(2)
         get_again_response = session.get(flask_api_url + "/api/projects/" +
                                          project_id_not_archived[0] + "?archived=true")
         after_put_json = get_again_response.json()
@@ -436,8 +433,6 @@ class TestPUT(object):
         del manifest_json['is_owner']
         get_put_response = session.put(flask_api_url + "/api/projects/" + project_id_archived[0],
                                        json=manifest_json)
-        print("put:", get_put_response.text)
-        time.sleep(2)
         get_again_response = session.get(flask_api_url + "/api/projects/" + project_id_archived[0])
         print(get_again_response.text)
         after_put_json = get_again_response.json()
@@ -453,9 +448,7 @@ class TestPUT(object):
         print(response.text)
         assert response.status_code == 405
 
-    def test_success(self, session, flask_api_url):
-        assert True
-
+ 
     def test_unauthorized_update(self, flask_api_url, enter_default_user_users):
         """ Tests for 403 when attempting to update a different users project
         """
