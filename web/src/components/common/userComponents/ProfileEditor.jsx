@@ -13,7 +13,7 @@ export default class ProfileEditor extends Component {
       first_name: props.profileInf.first_name,
       last_name: props.profileInf.last_name,
       bio: props.profileInf.bio,
-      email : props.profileInf.email,
+      email: props.profileInf.email,
       pw_old: '',
       pw_new: '',
       pw_new_confirm: ''
@@ -31,7 +31,7 @@ export default class ProfileEditor extends Component {
     const name = target.name
     this.setState({
       [name]: value,
-      snackbar : false
+      snackbar: false
     })
   }
 
@@ -40,13 +40,13 @@ export default class ProfileEditor extends Component {
     Backend.updatePassword(this.state.email, this.state.pw_old, this.state.pw_new).then((success) => {
       if(success){
         this.setState({
-          snackbar : true,
-          snackbarText :  'Password change success'
+          snackbar: true,
+          snackbarText: 'Password change success'
         })
       }else{
         this.setState({
-          snackbar : true,
-          snackbarText :  'Password change failed'
+          snackbar: true,
+          snackbarText: 'Password change failed'
         })
       }
     })
@@ -99,7 +99,8 @@ export default class ProfileEditor extends Component {
                       onChange = {this.handleInputChange}
                       value = {this.state.first_name}
                       hintText = "Enter your first name"
-                      errorText = {(this.state.first_name === "") ? "Field is required" : ""}
+                      style = {{marginBottom: (this.state.first_name.length === 0) ? 0: 17} }
+                      errorText = {(this.state.first_name === "") ? "Field is required": ""}
                       />
               </div>
             </div>
@@ -111,7 +112,8 @@ export default class ProfileEditor extends Component {
                       onChange = {this.handleInputChange}
                       value = {this.state.last_name}
                       hintText = "Enter your last name"
-                      errorText = {(this.state.last_name === "") ? "Field is required" : ""}
+                      style = {{marginBottom: (this.state.last_name.length === 0) ? 0: 17} }
+                      errorText = {(this.state.last_name === "") ? "Field is required": ""}
                       />
               </div>
             </div>
@@ -124,7 +126,7 @@ export default class ProfileEditor extends Component {
                     multiLine = {true}
                     value = {this.state.bio}
                     rowsMax = {8}
-                    errorText = {(this.state.bio.length > 255) ? "Text to long" : ""}
+                    errorText = {(this.state.bio.length > 255) ? "Text to long": ""}
                     fullWidth = {true} />
               </div>
             </div>
@@ -136,14 +138,14 @@ export default class ProfileEditor extends Component {
                     label = "Submit changes"
                     primary = {true}
                     fullWidth = {true}
-                    disabled = {(this.state.last_name === "" || this.state.first_name === "" || this.state.bio.length >255) ? true : false}
+                    disabled = {(this.state.last_name === "" || this.state.first_name === "" || this.state.bio.length >255) ? true: false}
                     />
               </div>
             </div>
           </form>
         </div>
         <div className = "col-3">
-          <img  src = {`/api/users/${this.props.profileInf.email}/avatar`}
+          <img  src = {`/api/users/${this.props.profileInf.email}/avatar?${Date.now()}`}
                 width = "200px"
                 height = "200px"
                 alt = "..."
@@ -185,7 +187,8 @@ export default class ProfileEditor extends Component {
                           name = "pw_old"
                           hintText = "Your old password"
                           onChange = {this.handleInputChange}
-                          errorText = {this.state.pw_old.length === 0 ? "Password can not be empty" :""}
+                          style = {{marginBottom: (this.state.pw_old.length === 0) ? 0: 17} }
+                          errorText = {this.state.pw_old.length === 0 ? "Password can not be empty": ""}
                 />
               </div>
             </div>
@@ -199,7 +202,8 @@ export default class ProfileEditor extends Component {
                           name = "pw_new"
                           hintText = "Your new password"
                           onChange = {this.handleInputChange}
-                          errorText = {this.state.pw_new.length === 0 ? "Password can not be empty" :""}
+                          style = {{marginBottom: (this.state.pw_new.length === 0) ? 0: 17} }
+                          errorText = {this.state.pw_new.length === 0 ? "Password can not be empty": ""}
               />
             </div>
           </div>
@@ -212,7 +216,8 @@ export default class ProfileEditor extends Component {
                           name = "pw_new_confirm"
                           hintText = "Confirm password"
                           onChange = {this.handleInputChange}
-                          errorText = {this.state.pw_new !== this.state.pw_new_confirm ? "Passwords do not match" :""} />
+                          style = {{marginBottom: (this.state.pw_new !== this.state.pw_new_confirm) ? 0: 17} }
+                          errorText = {this.state.pw_new !== this.state.pw_new_confirm ? "Passwords do not match": ""} />
             </div>
           </div>
           <div className = "row">
@@ -223,7 +228,7 @@ export default class ProfileEditor extends Component {
                           label = "Change Password"
                           primary = {true}
                           fullWidth = {true}
-                          disabled= {(this.state.pw_new !== this.state.pw_new_confirm || this.state.pw_new === "" || !(Backend.isAdmin() || this.state.pw_old !== "")) ? true : false}
+                          disabled= {(this.state.pw_new !== this.state.pw_new_confirm || this.state.pw_new === "" || !(Backend.isAdmin() || this.state.pw_old !== "")) ? true: false}
                           />
             </div>
           </div>

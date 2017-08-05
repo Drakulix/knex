@@ -19,7 +19,7 @@ export default class ProfileContainer extends Component {
       profile_exists : false,
       site_loaded : false,
       isMe : this.props.match.params.email === Backend.getMail(),
-      profileInf: {},
+      profileInf : {},
       value : 'a',
       topTenTags : [],
       snackbar : false,
@@ -93,9 +93,9 @@ export default class ProfileContainer extends Component {
     if( !this.state.profile_exists){
       return (
         <div className = "container">
-          <div className = "row" style = {{marginTop: "100px", marginBottom: 100}}>
+          <div className = "row" style = {{marginTop : "100px", marginBottom : 100}}>
             <div className = "col-5 "></div>
-            <div className = "col-2 " style = {{fontSize : "30px", height:41, textAlign: "center"}}>
+            <div className = "col-2 " style = {{fontSize : "30px", height : 41, textAlign : "center"}}>
               Profile not found
             </div>
             <div className = "col-1"></div>
@@ -106,7 +106,7 @@ export default class ProfileContainer extends Component {
                   label = {(this.state.showRegistration) ? "Hide registration" : "Do you want to register the user" }
                   primary = {true}
                   onClick = {() => this.setState ({showRegistration : !this.state.showRegistration})}/>
-                :""}
+               : ""}
             </div>
           </div>
             {Backend.isAdmin ?
@@ -114,7 +114,7 @@ export default class ProfileContainer extends Component {
                 <RegisterUser email = {this.props.match.params.email}
                               handleUserUpdate = {() => {history.push(`/profile/${this.props.match.params.email}`)}}/>
               </div>
-              :  "" }
+             : "" }
             <ProfileProjects
               email = {this.state.email} />
 
@@ -130,7 +130,7 @@ export default class ProfileContainer extends Component {
             inkBarStyle = {{marginTop : -5, height : 5}}
             value = {this.state.value}
             onChange = {this.handleChange}
-            contentContainerStyle = {{marginTop: 30, paddingLeft:15, paddingRight:15}}
+            contentContainerStyle = {{marginTop : 30, paddingLeft : 15, paddingRight : 15}}
           >
             <Tab
               label = "Profile Info" value = "a">

@@ -95,7 +95,6 @@ class Backend {
 
     register(firstname, lastname, mail, password, password_confirm, role) {
         if (password !== password_confirm) {
-            alert('Passwords do not match');
             return false;
         }
 
@@ -105,7 +104,7 @@ class Backend {
             'email': mail,
             'password': password,
             'bio': '',
-            'roles': role
+            'roles': [role]
         })
     }
 
@@ -465,7 +464,7 @@ class Backend {
           'first_name': firstName,
           'last_name': lastName,
           'bio': bio,
-          'roles' : roles
+          'roles': roles
         })) {
           if (this.mail === mail) {
             await this.getProfile();
@@ -498,7 +497,7 @@ class Backend {
           'first_name': firstName,
           'last_name': lastName,
           'bio': bio,
-          'active' : active
+          'active': active
         })) {
           if (this.mail === mail) {
             await this.getProfile();

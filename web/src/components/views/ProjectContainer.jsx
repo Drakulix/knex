@@ -19,7 +19,7 @@ export default class ProjectContainer extends Component {
       is_bookmark : false,
       canEdit : false,
       myEmail : Backend.getMail(),
-      comments_count: 0
+      comments_count : 0
     }
 
     this.updateBookmarkState = this.updateBookmarkState.bind(this)
@@ -100,11 +100,11 @@ export default class ProjectContainer extends Component {
                 </div>
                 <div className = "col-4">
                   <div className = "profile-info">Creation date</div>
-                  <div style = {{marginTop:16}}>{this.state.projectInf.date_creation}</div>
+                  <div style = {{marginTop : 16}}>{this.state.projectInf.date_creation}</div>
                 </div>
                 <div className = "col-4">
                   <div className = "profile-info">Last update </div>
-                  <div style = {{marginTop:16}}> {this.state.projectInf.date_last_updated}</div>
+                  <div style = {{marginTop : 16}}> {this.state.projectInf.date_last_updated}</div>
                 </div>
               </div>
               <div style = {{marginTop : 30}}>

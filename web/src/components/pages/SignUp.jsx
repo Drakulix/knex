@@ -7,18 +7,22 @@ import RaisedButton from 'material-ui/RaisedButton'
 import TextField from 'material-ui/TextField'
 import logo from '../../style/img/black_logo_title_below.svg'
 import Backend from '../common/Backend'
+import Snackbar from 'material-ui/Snackbar'
+
 
 export default class SignUp extends Component {
 
   constructor(props) {
     super(props)
     this.state = {
-      redirect: false,
+      redirect : false,
       first_name : "",
       last_name : "",
       email : "",
       password : "",
-      password_confirm : ""
+      password_confirm : "",
+      snackbar : false,
+      snackbarText : 'Login failed'
     }
 
     this.handleInputChange = this.handleInputChange.bind(this)
@@ -31,6 +35,7 @@ export default class SignUp extends Component {
     const name = target.name
     this.setState({
       [name]: value,
+      snackbar: false
     })
   }
 
@@ -57,10 +62,9 @@ export default class SignUp extends Component {
       if(success){
         Backend.login(this.state.email, this.state.password).then((success) => {
           if(success){
-            this.setState({ redirect: true })
+            this.setState({ redirect: true, })
           }else{
-            this.setState({ redirect: false, error: 'Login failed' })
-            alert("Login failed")
+            this.setState({ redirect: false, snackbar: false })
           }
         })
       }
@@ -75,6 +79,9 @@ export default class SignUp extends Component {
 
     return (
       <div style = {{textAlign : "center"}}>
+        <Snackbar open = {this.state.snackbar}
+                  message = {this.state.snackbarText}
+                  autoHideDuration = {10000}/>
         <img className = "service-name" src = {logo} alt = "Logo"/>
         <h2 className = "team-name">brings light to the cloud</h2>
         <div className = "rectangle-sign">
@@ -138,7 +145,7 @@ export default class SignUp extends Component {
               label = "Register"
               disabled = {this.isInValidInput()}
               primary = {true}
-              buttonStyle = {{width: 250}}
+              style = {{width : 250}}
               required
               />
           </form>

@@ -15,7 +15,7 @@ export default class SavedQuery extends Component {
       var query = this.props.savedSearch.query
 
       this.state = {
-        query : query,
+        query: query,
       }
       this.deleteQuery = this.deleteQuery.bind(this)
     }
@@ -27,15 +27,15 @@ export default class SavedQuery extends Component {
 
     render() {
       return(
-        <div style = {{marginBottom:40}}>
-          <div className = "row" style = {{marginBottom : 20}}>
-            <div className = "col-2 filter-label" style= {{fontSize : 22}}>
+        <div style = {{marginBottom: 40}}>
+          <div className = "row" style = {{marginBottom: 20}}>
+            <div className = "col-2 filter-label" style= {{fontSize: 22}}>
                {this.state.query.label}
             </div>
             <div className = "col-4"></div>
-            <div className = "col-1 filter-label" style= {{fontSize : 22}}>Hits</div>
-            <div className = "col-1" style= {{fontSize : 22, marginTop:13}}>{this.props.savedSearch.count}</div>
-            <div className = "col-2" style = {{textAlign:"right",marginTop: 10}}>
+            <div className = "col-1 filter-label" style= {{fontSize: 22}}>Hits</div>
+            <div className = "col-1" style= {{fontSize: 22, marginTop: 13}}>{this.props.savedSearch.count}</div>
+            <div className = "col-2" style = {{textAlign: "right",marginTop: 10}}>
               <Link to = {`/discovery/${JSON.stringify(this.state.query)}`}>
                 <RaisedButton
                   onClick = {this.runQuery}
@@ -47,7 +47,7 @@ export default class SavedQuery extends Component {
                 </RaisedButton>
               </Link>
             </div>
-            <div className = "col-2" style = {{textAlign:"right",marginTop: 10}}>
+            <div className = "col-2" style = {{textAlign: "right",marginTop: 10}}>
               <RaisedButton
                  onClick = {this.deleteQuery}
                  primary = {true}
@@ -58,50 +58,53 @@ export default class SavedQuery extends Component {
               </RaisedButton>
             </div>
           </div>
-          <Card  expanded = {this.state.expanded} onExpandChange = {() => this.setState({expanded : !this.state.expanded})}>
+          <Card  expanded = {this.state.expanded} onExpandChange = {() => this.setState({expanded: !this.state.expanded})}>
             <CardHeader
               title = "Detailed view"
               actAsExpander = {true}
               showExpandableButton = {true}
             />
           <CardText expandable = {true}>
-            <div style = {{ textAlign : "left", verticalAlign : "center", display : "block"}} >
+            <div style = {{ textAlign: "left", verticalAlign: "center", display: "block"}} >
               <div className = "row">
                 <div className = "col-1 filter-label" style = {{textAlign: "left"}}>Querystring</div>
-                <div className = "col-5 query-value" style = {{marginLeft:-40}}>
-                 {this.state.query.searchString}
-                </div>
-                <div className = "col-1 filter-label" style = {{textAlign: "left"}}>Title</div>
-                <div className = "col-5 query-value" style = {{marginLeft:-40}}>
-                 {this.state.query.title}
-                </div>
-                <div className = "col-1 filter-label" style = {{textAlign: "left"}}>Description</div>
                 <div className = "col-5 query-value">
-                 {this.state.query.description}
+                 {(this.state.query.searchString === undefined) ? <div style = {{color: Styles.palette.disabledColor }}>No value provided</div>: this.state.query.searchString}
+                </div>
+              </div>
+              <div className = "row">
+                <div className = "col-1 filter-label" style = {{textAlign: "left"}}>Title</div>
+                <div className = "col-5 query-value">
+                  {(this.state.query.title === undefined) ? <div style = {{color: Styles.palette.disabledColor }}>No value provided</div>: this.state.query.title}
+                </div>
+                <div className = "col-1 filter-label" style = {{textAlign: "left", marginLeft: -40}}>Description</div>
+                <div className = "col-5 query-value" style = {{marginLeft: 14}}>
+                  {(this.state.query.description === undefined) ? <div style = {{color: Styles.palette.disabledColor }}>No value provided</div>: this.state.query.description}
                 </div>
               </div>
               <div className = "row">
                 <div className = "col-1 filter-label">Tags</div>
-                <div  className = "col-5  query-value"  style = {{marginTop:4}}>
-                  <TagOutputList value = {this.state.query.tags} />
+                <div  className = "col-5  query-value"  style = {{marginTop: 5}}>
+                  {(this.state.query.tags === undefined) ? <div style = {{marginTop: 9, color: Styles.palette.disabledColor }}>No value provided</div>: <TagOutputList value = {this.state.query.tags} />}
                 </div>
-                <div className = "col-1 filter-label"  style = {{marginLeft:-40}}> Authors</div>
-                <div  className = "col-5  query-value" style = {{marginTop:4}}>
-                  <AuthorOutputList value = {this.state.query.authors} userNames = {this.props.userNames} />
+                <div className = "col-1 filter-label"  style = {{marginLeft: -40}}> Authors</div>
+                <div  className = "col-5  query-value" style = {{marginTop: 5}}>
+                  {(this.state.query.authors === undefined) ? <div style = {{marginTop: 9, color: Styles.palette.disabledColor }}>No value provided</div>: <AuthorOutputList value = {this.state.query.authors} userNames = {this.props.userNames} />}
                 </div>
               </div>
               <div className = "row">
-                <div className = "col-1 filter-label" style = {{textAlign: "left" , marginLeft:2}}>From</div>
-                <div className = "col-2  query-value" style = {{marginLeft:-40}} >
-                   {this.state.query.date_from}
+                <div className = "col-1 filter-label" style = {{textAlign: "left"}}>From</div>
+                <div className = "col-2  query-value" >
+                   {(this.state.query.date_from === undefined) ? <div style = {{color: Styles.palette.disabledColor }}>No value provided</div>: this.state.query.date_from}
+
                 </div>
                 <div className = "col-1 filter-label" style = {{textAlign: "left"}}>To</div>
-                <div className = "col-2  query-value" style = {{marginLeft:-40}}>
-                   {this.state.query.date_to}
+                <div className = "col-2  query-value" style = {{marginLeft: -40}}>
+                    {(this.state.query.date_to === undefined) ? <div style = {{color: Styles.palette.disabledColor }}>No value provided</div>: this.state.query.date_to}
                 </div>
-                <div className = "col-1 filter-label" style = {{textAlign: "left", marginLeft:37}} >Status</div>
+                <div className = "col-1 filter-label" style = {{textAlign: "left"}} >Status</div>
                 <div className = "col-2  query-value">
-                  {this.state.query.status}
+                  {(this.state.query.status === undefined) ? <div style = {{marginLeft: 14, color: Styles.palette.disabledColor }}>No value provided</div>: this.state.query.status}
                 </div>
               </div>
             </div>

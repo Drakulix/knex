@@ -17,11 +17,11 @@ export default class MultiFileUploader extends Component {
   constructor(props){
     super(props)
     this.state = {
-      loading : false,
-      files : [],
-      spinnerText : "",
-      snackbar : false,
-      snackbarText : "File uploaded",
+      loading: false,
+      files: [],
+      spinnerText: "",
+      snackbar: false,
+      snackbarText: "File uploaded",
 
     }
     this.handleFile = this.handleFile.bind(this)
@@ -29,7 +29,7 @@ export default class MultiFileUploader extends Component {
   }
 
   uploadAllFiles(){
-    this.setState({loading : true, spinnerText : "Uploading projects"})
+    this.setState({loading: true, spinnerText: "Uploading projects"})
     var files = this.state.files.map(file => {return file.project})
     Backend.addProject(files).then(
       history.push("/discovery")
@@ -38,70 +38,70 @@ export default class MultiFileUploader extends Component {
 
   remove(id){
     var files = this.state.files.filter((c) => c.name !== id)
-    this.setState({files : files, snackbar : false})
+    this.setState({files: files, snackbar: false})
   }
 
   componentWillReceiveProps(props){
     if(props.open === false){
-      this.setState({snackbar : false})
+      this.setState({snackbar: false})
     }
   }
 
   handleFile(event){
-    this.setState({loading : true})
+    this.setState({loading: true})
     var file = event.target.files[0]
     let reader = new FileReader();
     switch (file.name.substring(file.name.lastIndexOf(".") + 1)){
-      case "json":
+      case "json" :
         reader.onload = function() {
         try {
               var json = JSON.parse(reader.result);
               var files = this.state.files
-              files.push ({name : file.name, project : json})
+              files.push ({name: file.name, project: json})
               files.sort(function (a,b) {return a.title.localeCompare(b.title)})
               this.setState({
-                snackbar : true,
-                snackbarText : "File uploaded",
-                files : files,
-                loading : false
+                snackbar: true,
+                snackbarText: "File uploaded",
+                files: files,
+                loading: false
               })
            } catch(e) {
              this.setState({
-               snackbar : true,
-               snackbarText : "File is not a valid JSON file",
-               loading : false
+               snackbar: true,
+               snackbarText: "File is not a valid JSON file",
+               loading: false
              })
            }
          }.bind(this)
         reader.readAsText(file);
         break
-      case "json5":
+      case "json5" :
         reader.onload = () => {
         try {
               var json5 = JSON5.parse(reader.result);
               var files = this.state.files
-              files.push ({name : file.name, project : json5})
+              files.push ({name: file.name, project: json5})
               files.sort(function (a,b) {return a.title.localeCompare(b.title)})
               this.setState({
-                snackbar : true,
-                snackbarText : "File uploaded",
-                files : files,
-                loading : false
+                snackbar: true,
+                snackbarText: "File uploaded",
+                files: files,
+                loading: false
               })
            } catch(e) {
              this.setState({
-               snackbar : true,
-               snackbarText : "File is not a valid JSON5 file",
-               loading : false
+               snackbar: true,
+               snackbarText: "File is not a valid JSON5 file",
+               loading: false
              })
            }
          }
          reader.readAsText(file);
         break
-      default:
+      default :
         this.setState({
-          snackbar : true,
-          snackbarText : "File is not a JSON file"
+          snackbar: true,
+          snackbarText: "File is not a JSON file"
         })
         break
     }
@@ -112,14 +112,14 @@ export default class MultiFileUploader extends Component {
       <RaisedButton
         label = "Cancel"
         primary = {true}
-        style = {{width : 160}}
+        style = {{width: 160}}
         onClick = {this.props.handleClose}
         disabled = {this.state.loading}
         />,
       <RaisedButton
         label = "Upload projects"
         primary = {true}
-        style = {{width : 160, marginLeft : 26, marginRight : 15}}
+        style = {{width: 160, marginLeft: 26, marginRight: 15}}
         onClick = {this.uploadAllFiles}
         disabled = {this.state.loading || this.state.files.length === 0}
         />,
@@ -143,21 +143,21 @@ export default class MultiFileUploader extends Component {
           <div className="col-6" style = {{marginLeft: 0}}>
             <RaisedButton
                       label = "add a file"
-                      icon = {<i className = "material-icons" style = {{color: Styles.palette.alternateTextColor, marginTop:-3}}>file_upload</i>}
+                      icon = {<i className = "material-icons" style = {{color: Styles.palette.alternateTextColor, marginTop: -3}}>file_upload</i>}
                       containerElement = "label"
                       primary = {true}
                       fullWidth = {true}
-                      style = {{display : (this.state.loading) ? "none" : "block"}}>
+                      style = {{display: (this.state.loading) ? "none": "block"}}>
                     <input type = "file" style = {Styles.uploadInput} onChange = {this.handleFile} />
             </RaisedButton>
           </div>
         </div>
         <Spinner loading = {this.state.loading} text = {"Uploading project"}/>
-        <List style = {{display : (this.state.loading) ? "none" : "block", maxHeight : 500, overflowY: "auto"}}>
+        <List style = {{display: (this.state.loading) ? "none": "block", maxHeight: 500, overflowY: "auto"}}>
           {this.state.files.map(item =>
             <ListItem
                 key = {item.name}
-                rightIcon = {<i className = "material-icons" style = {{color : 'gray'}}>cancel</i>}
+                rightIcon = {<i className = "material-icons" style = {{color: 'gray'}}>cancel</i>}
                 primaryText = {item.project.title}
                 secondaryText = {item.name}
                 onClick = {() => {this.remove(item.name)}}
