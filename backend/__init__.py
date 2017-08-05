@@ -235,7 +235,7 @@ def save_search_func():
 def rerun_saved_searches():
     for user in User.objects:
         for search in user.saved_searches:
-            projects = prepare_search_results(g.projects.find(search['query']))
+            projects = prepare_search_results(g.projects.find(search['query']), {'comments': 0})
             if search['count'] != len(projects):
                 search['count'] = len(projects)
                 search.save()
