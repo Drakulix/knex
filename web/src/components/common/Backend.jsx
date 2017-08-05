@@ -104,7 +104,7 @@ class Backend {
             'email': mail,
             'password': password,
             'bio': '',
-            'roles': role
+            'roles': [role]
         })
     }
 
