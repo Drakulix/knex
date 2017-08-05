@@ -19,13 +19,13 @@ export default class UserTrashcan extends Component {
   }
 
   handler (query){
-    this.setState({loading: true})
+    this.setState({loading : true})
     query = JSON.parse(JSON.stringify(query))
     query.archived = "true"
     query.authors = query.authors !== undefined ? query.authors : []
     query.authors.push(Backend.getMail())
     return Backend.search(query)
-              .then ((data) => {this.setState({projects : data, loading:false});return data;})
+              .then ((data) => {this.setState({projects : data, loading : false});return data;})
   }
 
   render(){

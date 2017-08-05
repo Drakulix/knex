@@ -1,6 +1,4 @@
 flask
-pymongo
-elasticsearch
 requests
 json5
 jsonschema
@@ -9,3 +7,4 @@ flask_security
 flask_mongoengine
 passlib
 pyyaml
+pymongo

@@ -5,7 +5,6 @@ import pytest
 import requests
 
 from os.path import abspath, dirname
-from elasticsearch import Elasticsearch
 from jsonschema import Draft4Validator, FormatChecker
 from pymongo import MongoClient
 
@@ -31,12 +30,6 @@ def mongo_client():
     client = MongoClient('localhost', 27017)
     db = client.knexdb
     return db
-
-
-@pytest.fixture(scope='session')
-def elastic_client():
-    es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
-    return es
 
 
 @pytest.fixture(scope='session')

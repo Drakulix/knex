@@ -34,7 +34,7 @@ export default class CreateProject extends Component {
           date_creation : Moment().format("YYYY-MM-DD"),
           tags : [],
           url : [],
-          authors : [],
+          authors : [Backend.getMail()],
         },
         date : Moment().toDate(),
         snackbar : false,
@@ -162,6 +162,7 @@ export default class CreateProject extends Component {
                   onChange = {this.handleChange}
                   hintText = "Add title..."
                   fullWidth = {true}
+                  style = {{marginBottom : (this.state.projectInf.title === "") ? 0 : 17} }
                   errorText = {(this.state.projectInf.title === "") ?
                                 "Please provide a title" : ""}
                   />
@@ -205,6 +206,7 @@ export default class CreateProject extends Component {
                                   name = "authors"
                                   filtered = {true}
                                   value = {this.state.projectInf.authors}
+                                  style = {{marginBottom : (this.state.projectInf.authors.length === 0) ? 0 : 17} }
                                   errorText = {(this.state.projectInf.authors.length === 0) ?
                                         "Please provide at least one author" : ""}
                 />
@@ -212,6 +214,7 @@ export default class CreateProject extends Component {
                 <UrlInputList name = "url"
                               value = {this.state.projectInf.url}
                               onChange = {this.handleChange}
+                              style = {{marginBottom : (this.state.projectInf.url.length === 0) ? 0 : 17} }
                               errorText = {(this.state.projectInf.url.length === 0
                                         ) ? "Please provide at least one url" : ""}
                 />
@@ -230,8 +233,9 @@ export default class CreateProject extends Component {
                             onChange = {this.handleChange}
                             name = "description"
                             hintText = "Add description..."
-                            style = {{width : '100%', marginTop : 6}}
+                            style = {{ marginTop : 6,   marginBottom : (this.state.projectInf.description === "") ? 0 : 17} }
                             multiLine = {true}
+                            fullWidth = {true}
                             errorText = {(this.state.projectInf.description === "") ?
                                   "Please provide a description" : ""}
                 />

@@ -17,6 +17,7 @@ from werkzeug.utils import secure_filename
 
 from api.projects import get_all_authors
 from api.helper.apiexception import ApiException
+from api.helper.search import prepare_search_results
 
 
 users = Blueprint('api_users', __name__)
@@ -419,21 +420,9 @@ def delete_bookmarks(id):
 @users.route('/api/users/bookmarks', methods=['GET'])
 @login_required
 def get_bookmarks():
-    user = g.user_datastore.get_user(current_user['email'])
-    if not user:
-        raise ApiException("Couldn't find current_user in datastore", 500)
-    projects = [g.projects.find_one({'_id': project_id}) for project_id in user['bookmarks']]
+    projects = [g.projects.find_one({'_id': project_id}) for project_id in current_user.bookmarks]
     projects = list(filter(None.__ne__, projects))
-    try:
-        for project in projects:
-            project['is_bookmark'] = 'true'
-            project['is_owner'] = 'true' if current_user['email'] in project['authors']\
-                else 'false'
-
-        return jsonify(projects)
-
-    except KeyError as err:
-        raise ApiException(str(err), 500)
+    return jsonify(prepare_search_results(projects))
 
 
 @users.route('/api/users/notifications', methods=['GET'])

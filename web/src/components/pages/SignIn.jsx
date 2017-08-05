@@ -4,6 +4,7 @@ import {
   Redirect,
 } from 'react-router-dom'
 import RaisedButton from 'material-ui/RaisedButton'
+import Snackbar from 'material-ui/Snackbar'
 import TextField from 'material-ui/TextField'
 import logo from '../../style/img/black_logo_title_below.svg'
 import Backend from '../common/Backend'
@@ -18,6 +19,8 @@ export default class SignIn extends Component {
       error: '',
       email: Backend.getMail(),
       password: '',
+      snackbar: false,
+      snackbarText: 'Login failed'
     }
 
     this.handleChangeEmail = this.handleChangeEmail.bind(this)
@@ -26,11 +29,11 @@ export default class SignIn extends Component {
   }
 
   handleChangeEmail(event) {
-    this.setState({email: event.target.value})
+    this.setState({email: event.target.value, snackbar: false})
   }
 
   handleChangePassword(event) {
-    this.setState({password: event.target.value})
+    this.setState({password: event.target.value, snackbar: false})
   }
 
   handleSubmit(event){
@@ -39,8 +42,7 @@ export default class SignIn extends Component {
       if(success){
         this.setState({ redirect: true })
       }else{
-        this.setState({ redirect: false, error: 'Login failed' })
-        alert("Login failed")
+        this.setState({ redirect: false, snackbar: true })
       }
     })
   }
@@ -51,8 +53,10 @@ export default class SignIn extends Component {
     }
 
     return (
-      <section className = "sign-container">
-
+      <div className = "sign-container">
+        <Snackbar open = {this.state.snackbar}
+                  message = {this.state.snackbarText}
+                  autoHideDuration = {10000}/>
         {/*Information*/}
         <img className = "service-name" src = {logo} alt = "Logo"/>
         <h2 className = "team-name">brings light to the cloud</h2>
@@ -82,7 +86,7 @@ export default class SignIn extends Component {
                 type = "Submit"
                 label = "Login"
                 primary = {true}
-                buttonStyle = {{width: 250, marginTop:40}}
+                style = {{width: 250, marginTop: 40}}
               />
           </div>
           </form>
@@ -93,13 +97,13 @@ export default class SignIn extends Component {
               type = "Submit"
               label = "Register"
               primary = {true}
-              buttonStyle = {{width: 250}}
+              style = {{width: 250}}
               required
             />
             </Link>
           </div>
         </div>
-      </section>
+      </div>
     )
   }
 }

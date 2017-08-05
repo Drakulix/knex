@@ -9,13 +9,13 @@ export default class TagInputList extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      list : this.props.value,
+      list: this.props.value,
     }
   }
 
   componentWillMount(){
     Backend.getTags().then((tags) => {
-      this.setState({suggestions : tags})
+      this.setState({suggestions: tags})
     })
   }
 
@@ -24,26 +24,26 @@ export default class TagInputList extends Component {
       return
     var list = [...this.state.list, chip]
     this.setState({
-      list : list
+      list: list
     })
-    var event = {target : { name : this.props.name,
-      value : list}}
+    var event = {target: { name: this.props.name,
+      value: list}}
     this.props.onChange(event)
   }
 
   handleRequestDelete (deletedChip) {
     var list = this.state.list.filter((c) => c !== deletedChip)
     this.setState({
-      list : list
+      list: list
     })
-    var event = {target : { name : this.props.name,
-      value : list}}
+    var event = {target: { name: this.props.name,
+      value: list}}
     this.props.onChange(event)
   }
 
   componentWillReceiveProps(props){
     this.setState({
-      list : props.value,
+      list: props.value,
     });
   }
 
@@ -65,7 +65,7 @@ export default class TagInputList extends Component {
             backgroundColor = {Styles.palette.primary1Color}
             onTouchTap = {handleClick}
             onRequestDelete = {handleRequestDelete}>
-            <span style = {{color : Styles.palette.alternateTextColor, fontWeight : 'bold'}}> {value} </span>
+            <span style = {{color: Styles.palette.alternateTextColor, fontWeight: 'bold'}}> {value} </span>
           </Chip>
         )}/>
       )

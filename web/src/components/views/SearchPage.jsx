@@ -42,9 +42,9 @@ export default class SearchPage extends Component {
   }
 
   handler(query){
-    this.setState({loading: true})
+    this.setState({loading : true})
     return Backend.search(query)
-              .then ((data) => {this.setState({projects : data, loading:false}); return data;})
+              .then ((data) => {this.setState({projects : data, loading : false}); return data;})
   }
 
   handleChange(event) {
@@ -72,7 +72,7 @@ export default class SearchPage extends Component {
     var toSaveQuery = JSON.parse(JSON.stringify(this.state.query))
     toSaveQuery["label"] = this.state.label
     Backend.saveSearch(toSaveQuery).then( function () {
-      this.setState({open: false,
+      this.setState({open : false,
         snackbar : true,
         snackbarText : "Query saved",
         label : ""
@@ -82,14 +82,14 @@ export default class SearchPage extends Component {
 
   handleClose = () => {
     this.setState({
-      open: false,
+      open : false,
       snackbar : false,
     })
   }
 
   handleOpen = () => {
     this.setState({
-      open: true,
+      open : true,
       snackbar : false,
     })
   }
@@ -111,7 +111,7 @@ export default class SearchPage extends Component {
         label = "Save"
         primary = {true}
         onTouchTap = {this.saveSearch}
-        style = {{marginLeft:20}}
+        style = {{marginLeft : 20}}
         disabled= {(this.state.label === ""  || this.state.label === undefined) ? true : false}
         />,
     ]
@@ -131,14 +131,15 @@ export default class SearchPage extends Component {
             >
             <TextField value = {this.state.label}
               placeholder = "Enter label here ... "
+              style = {{marginBottom : (this.state.label === "" || this.state.label === undefined) ? 0 : 17} }
               errorText = {(this.state.label === "" || this.state.label === undefined) ? "Please provide a label " : ""}
               onChange = {this.handleLabelChange}
               ></TextField>
             </Dialog>
-          <div className = "headerCreation" style = {{width:"100%"}}>
+          <div className = "headerCreation" style = {{width : "100%"}}>
             Looking for a project?
           </div>
-          <div className = "row" style = {{textAlign:"center"}}>
+          <div className = "row" style = {{textAlign : "center"}}>
             <div className = "col-10">
               <TextField
                 name = "searchString"
@@ -148,14 +149,14 @@ export default class SearchPage extends Component {
                 onChange = {this.handleChange} />
             </div>
             <div className = "col-2">
-              <RaisedButton style = {{width:"100%"}}
+              <RaisedButton style = {{width : "100%"}}
                 label = "Save search"
-                icon = {<i className = "material-icons" style = {{color: Styles.palette.alternateTextColor, marginTop:-3}}>save</i>}
+                icon = {<i className = "material-icons" style = {{color : Styles.palette.alternateTextColor, marginTop : -3}}>save</i>}
                 onClick = {this.handleOpen}
                 primary = {true}/>
             </div>
           </div>
-          <div style = {{marginTop:20}}>
+          <div style = {{marginTop : 20}}>
             <DataTable columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'date_creation' ,'bookmarked']}
               handleFilter= {this.handleFilterChange}
               predefinedFilter = {this.state.query}

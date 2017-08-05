@@ -101,11 +101,11 @@ def get_projects():
     elif archived == 'false':
         query = {'archived': False}
     if limit and skip:
-        res = g.projects.find(query, limit=limit, skip=skip)
+        res = g.projects.find(query, {'comments': 0}, limit=limit, skip=skip)
     elif limit:
-        res = g.projects.find(query, limit=limit)
+        res = g.projects.find(query, {'comments': 0}, limit=limit)
     elif skip:
-        res = g.projects.find(query, skip=skip)
+        res = g.projects.find(query, {'comments': 0}, skip=skip)
     else:
         res = g.projects.find(query)
 
@@ -158,11 +158,11 @@ def get_project_by_id(project_id):
     """
     archived = request.args.get('archived', type=str, default="mixed")
     if archived == 'true':
-        res = g.projects.find_one({'_id': project_id, 'archived': True})
+        res = g.projects.find_one({'_id': project_id, 'archived': True}, {'comments': 0})
     elif archived == 'false':
-        res = g.projects.find_one({'_id': project_id, 'archived': False})
+        res = g.projects.find_one({'_id': project_id, 'archived': False}, {'comments': 0})
     elif archived == 'mixed':
-        res = g.projects.find_one({'_id': project_id})
+        res = g.projects.find_one({'_id': project_id}, {'comments': 0})
     else:
         return make_response('Invalid parameters', 400)
     if res is None:
@@ -205,6 +205,7 @@ def update_project(project_id):
     Returns:
         response: Success response
                   or 400 in case of validation error
+                  or 403 if current user not permitted
                   or 404 if project is not found
                   or 409 if project_id differs from manifestID
     """
@@ -215,23 +216,48 @@ def update_project(project_id):
         elif request.is_json or "application/json5" in request.content_type:
             manifest = request.get_json() if request.is_json \
                 else json5.loads(request.data.decode("utf-8"))
-            if manifest['_id'] != str(project_id):
-                return make_response("project_id and json['_id'] do not match.", 409)
-            manifest['_id'] = str(project_id)
-            is_valid = g.validator.is_valid(manifest)
-            if is_valid and is_permitted(current_user, manifest):
-                manifest['date_last_updated'] = time.strftime("%Y-%m-%d")
-                manifest['_id'] = project_id
-                manifest['authors'] = sorted(list(set(manifest['authors'])))
-                manifest['tags'] = sorted(manifest['tags'])
-                g.projects.find_one_and_replace({'_id': project_id}, manifest,
+
+            if 'title' in manifest:
+                res['title'] = manifest['title']
+            if 'authors' in manifest:
+                res['authors'] = manifest['authors']
+            if 'tags' in manifest:
+                res['tags'] = manifest['tags']
+            if 'description' in manifest:
+                res['description'] = manifest['description']
+            if 'status' in manifest:
+                res['status'] = manifest['status']
+            if 'url' in manifest:
+                res['url'] = manifest['url']
+            if 'archived' in manifest:
+                res['archived'] = manifest['archived']
+            if 'analysis' in manifest:
+                res['analysis'] = manifest['analysis']
+            if 'hypothesis' in manifest:
+                res['hypothesis'] = manifest['hypothesis']
+            if 'team' in manifest:
+                res['team'] = manifest['team']
+            if 'futute_work' in manifest:
+                res['future_work'] = manifest['future_work']
+            if 'related_projects' in manifest:
+                res['related_projects'] = manifest['related_projects']
+            if 'date_creation' in manifest:
+                res['date_creation'] = manifest['date_creation']
+
+            res['_id'] = str(project_id)
+            is_valid = g.validator.is_valid(res)
+            if is_valid and is_permitted(current_user, res):
+                res['date_last_updated'] = time.strftime("%Y-%m-%d")
+                res['_id'] = project_id
+                res['authors'] = sorted(list(set(res['authors'])))
+                res['tags'] = sorted(res['tags'])
+                g.projects.find_one_and_replace({'_id': project_id}, res,
                                                 return_document=ReturnDocument.AFTER)
                 g.notify_users(
-                    list(set(
-                        manifest['authors'] +
-                        g.users_with_bookmark(str(manifest['_id'])))),
-                    "Project was updated", manifest['title'],
-                    '/project/' + str(manifest['_id']))
+                    list(set(res['authors'] +
+                             g.users_with_bookmark(str(project_id)))),
+                    "Project was updated", res['title'],
+                    '/project/' + str(project_id))
                 g.rerun_saved_searches()
                 return make_response("Success")
             elif not is_permitted(current_user, manifest):
