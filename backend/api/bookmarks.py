@@ -2,7 +2,7 @@ from flask import jsonify, make_response, g, Blueprint
 from flask_security import login_required, current_user
 
 
-bookmarks =  Blueprint('api_bookmarks', __name__)
+bookmarks = Blueprint('api_bookmarks', __name__)
 
 
 @bookmarks.route('/api/users/bookmarks/<uuid:id>', methods=['POST'])

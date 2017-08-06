@@ -10,7 +10,8 @@ from api.helper.permissions import current_user_has_permission_to_change
 
 from globals import ADMIN_PERMISSION
 
-comments =  Blueprint('api_comments', __name__)
+comments = Blueprint('api_comments', __name__)
+
 
 @comments.route('/api/projects/<uuid:project_id>/comment', methods=['POST'])
 @login_required
