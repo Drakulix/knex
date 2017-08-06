@@ -4,8 +4,9 @@
 
 import os
 import sys
-import json
 import base64
+import json
+
 import mimetypes
 
 from flask import request, jsonify, make_response, g, Blueprint
@@ -13,13 +14,12 @@ from flask_security import login_required, login_user, logout_user, current_user
 from flask_security.utils import verify_password, hash_password
 from mongoengine import NotUniqueError
 from mongoengine.fields import ObjectId
-from werkzeug.utils import secure_filename
 
 from api.projects import get_all_authors
 from api.helper.apiexception import ApiException
 from api.helper.search import prepare_search_results
-from api.helper.images import Identicon
 from api.helper.permissions import current_user_has_permission_to_change
+from api.avatars import reset_user_avatar
 
 
 users = Blueprint('api_users', __name__)
@@ -132,11 +132,8 @@ def create_user():
 
         roles = [g.user_datastore.find_or_create_role(role) for role in user['roles']]
 
-        image = Identicon(user['email'])
-        result = image.generate()
-        with open(os.path.join(sys.path[0], 'identicon' + user['email'] + '.png'), 'rb') as tf:
-            imgtext = base64.b64encode(tf.read())
-        os.remove(sys.path[0] + '/identicon' + user['email'] + '.png')
+
+        reset_user_avatar(user['email'])
 
         g.user_datastore.create_user(first_name=user['first_name'],
                                      last_name=user['last_name'],
@@ -274,57 +271,6 @@ def get_user(mail):
 
     res = user.to_dict()
     return jsonify(res)
-
-
-@users.route('/api/users/<email:mail>/avatar', methods=['GET'])
-@login_required
-def get_user_avatar(mail):
-    user = g.user_datastore.get_user(mail)
-    if not user:
-        raise ApiException("Unknown User with Email-address: " + str(mail), 404)
-    filedata = base64.b64decode(user.avatar)
-    response = make_response(filedata)
-    response.headers['Content-Type'] = mimetypes.guess_type(user.avatar_name)
-    response.headers['Content-Disposition'] = 'attachment; filename=' + user.avatar_name
-    return response
-
-
-@users.route('/api/users/<email:mail>/avatar', methods=['POST'])
-@login_required
-def set_user_avatar(mail):
-    user = g.user_datastore.get_user(mail)
-    if not user:
-        raise ApiException("Unknown User with Email-address: " + str(mail), 404)
-    if not current_user_has_permission_to_change(user):
-        raise ApiException("Current User has no permission for the requested user.", 403)
-    if 'file' not in request.files:
-        raise ApiException("request.files contains no image", 400)
-    file = request.files['file']
-    if 'image/' not in file.mimetype:
-        raise ApiException("File mimetype must be 'image/<filetype>'", 400)
-    user.avatar_name = secure_filename(file.filename)
-    user.avatar = base64.b64encode(file.read()).decode()
-    user.save()
-    return make_response("Avatar successfully replaced.", 200)
-
-
-@users.route('/api/users/<email:mail>/avatar', methods=['DELETE'])
-@login_required
-def reset_user_avatar(mail):
-    user = g.user_datastore.get_user(mail)
-    if not user:
-        raise ApiException("Unknown User with Email-address: " + str(mail), 404)
-    if not current_user_has_permission_to_change(user):
-        raise ApiException("Current User has no permission for the requested user.", 403)
-    image = Identicon(mail)
-    result = image.generate()
-    with open(os.path.join(sys.path[0], 'identicon' + mail + '.png'), 'rb') as tf:
-        imgtext = base64.b64encode(tf.read())
-    os.remove(sys.path[0] + '/identicon' + mail + '.png')
-    user.avatar = imgtext.decode()
-    user.avatar_name = 'identicon' + mail + '.png'
-    user.save()
-    return make_response("Success", 200)
 
 
 @users.route('/api/users/<email:mail>/projects', methods=['GET'])
