@@ -7,12 +7,10 @@ import sys
 import base64
 import mimetypes
 
-
 from api.helper.images import Identicon
 from api.helper.permissions import current_user_has_permission_to_change
 
-avatars =  Blueprint('api_avatars', __name__)
-
+avatars = Blueprint('api_avatars', __name__)
 
 
 @avatars.route('/api/users/<email:mail>/avatar', methods=['GET'])
