@@ -545,24 +545,24 @@ class Backend {
     }
 
     addBookmark(id) {
-        return this.postJson(`/api/users/bookmarks/${encodeURIComponent(id)}`);
+        return this.postJson(`/api/bookmarks/${encodeURIComponent(id)}`);
     }
 
     deleteBookmark(id) {
-        return this.delete(`/api/users/bookmarks/${encodeURIComponent(id)}`);
+        return this.delete(`/api/bookmarks/${encodeURIComponent(id)}`);
     }
 
     handleBookmark(id, shouldBookmark){
       if(shouldBookmark === 'true') {
-        return this.delete(`/api/users/bookmarks/${encodeURIComponent(id)}`);
+        return this.delete(`/api/bookmarks/${encodeURIComponent(id)}`);
       }
       else{
-        return this.postJson(`/api/users/bookmarks/${encodeURIComponent(id)}`);
+        return this.postJson(`/api/bookmarks/${encodeURIComponent(id)}`);
       }
     }
 
     getBookmarks() {
-        return this.getJson('/api/users/bookmarks');
+        return this.getJson('/api/bookmarks');
     }
 
     getNotifications() {

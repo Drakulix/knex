@@ -6,7 +6,6 @@ import os
 import sys
 import base64
 import json
-
 import mimetypes
 
 from flask import request, jsonify, make_response, g, Blueprint
@@ -21,9 +20,7 @@ from api.helper.search import prepare_search_results
 from api.helper.permissions import current_user_has_permission_to_change
 from api.helper.images import Identicon
 
-
 users = Blueprint('api_users', __name__)
-
 
 @users.route('/api/users/login', methods=['POST'])
 def login():
