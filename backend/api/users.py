@@ -19,21 +19,10 @@ from api.projects import get_all_authors
 from api.helper.apiexception import ApiException
 from api.helper.search import prepare_search_results
 from api.helper.images import Identicon
+from api.helper.permissions import current_user_has_permission_to_change
 
 
 users = Blueprint('api_users', __name__)
-
-
-def is_permitted(user, entry):
-    """ Internal function returning whether the user has permission to edit the (other) user.
-
-        Returns:
-            res: true if user has admin role or tries to edit himself.
-    """
-
-    if user.has_role('admin'):
-        return True
-    return user['email'] == entry['email']
 
 
 @users.route('/api/users/login', methods=['POST'])
@@ -176,7 +165,7 @@ def update_user():
         Returns: 400 if user unknown, 403 if no permissions, 200 on success.
     """
     user = request.get_json()
-    if is_permitted(current_user, user):
+    if current_user_has_permission_to_change(user):
         res = g.user_datastore.get_user(user['email'])
         if not res:
             return make_response("Unknown User with Email-address: " + user['email'], 400)
@@ -255,7 +244,7 @@ def delete_user(mail):
     user = g.user_datastore.get_user(mail)
     if not user:
         raise ApiException("user not found", 404)
-    if is_permitted(current_user, user):
+    if current_user_has_permission_to_change(user):
         if not user.has_role('admin'):
             g.user_datastore.delete_user(user)
             return make_response("deleted non admin", 200)
@@ -306,7 +295,7 @@ def set_user_avatar(mail):
     user = g.user_datastore.get_user(mail)
     if not user:
         raise ApiException("Unknown User with Email-address: " + str(mail), 404)
-    if not is_permitted(current_user, user):
+    if not current_user_has_permission_to_change(user):
         raise ApiException("Current User has no permission for the requested user.", 403)
     if 'file' not in request.files:
         raise ApiException("request.files contains no image", 400)
@@ -325,7 +314,7 @@ def reset_user_avatar(mail):
     user = g.user_datastore.get_user(mail)
     if not user:
         raise ApiException("Unknown User with Email-address: " + str(mail), 404)
-    if not is_permitted(current_user, user):
+    if not current_user_has_permission_to_change(user):
         raise ApiException("Current User has no permission for the requested user.", 403)
     image = Identicon(mail)
     result = image.generate()
@@ -373,63 +362,6 @@ def get_user_tags(mail):
         return jsonify(sorted([x['_id'] for x in toptags], key=str.lower))
     except Exception as err:
         raise ApiException(str(err), 500)
-
-
-@users.route('/api/users/bookmarks/<uuid:id>', methods=['POST'])
-@login_required
-def add_bookmarks(id):
-    user = g.user_datastore.get_user(current_user['email'])
-    if not user:
-        raise ApiException("Couldn't find current_user in datastore", 500)
-    if id in user.bookmarks:
-        return make_response("Project is already bookmarked.", 400)
-    user.bookmarks.append(id)
-    user.save()
-    projects = [g.projects.find_one({'_id': project_id})
-                for project_id in user.bookmarks]
-
-    try:
-        for project in projects:
-            project['is_bookmark'] = 'true'
-            project['is_owner'] = 'true' if current_user['email'] in project['authors']\
-                else 'false'
-
-        return jsonify(projects)
-
-    except KeyError as err:
-        raise ApiException(str(err), 500)
-
-
-@users.route('/api/users/bookmarks/<uuid:id>', methods=['DELETE'])
-@login_required
-def delete_bookmarks(id):
-    user = g.user_datastore.get_user(current_user['email'])
-    if not user:
-        raise ApiException("Couldn't find current_user in datastore", 500)
-    if id in user.bookmarks:
-        user.bookmarks.remove(id)
-        user.save()
-        projects = [g.projects.find_one({'_id': project_id}) for project_id in user['bookmarks']]
-
-        try:
-            for project in projects:
-                project['is_bookmark'] = 'true'
-                project['is_owner'] = 'true' if current_user['email'] in project['authors']\
-                    else 'false'
-
-            return make_response("Success", 200)
-
-        except KeyError as err:
-            raise ApiException(str(err), 500)
-    return make_response("Project is not bookmarked: " + str(id), 400)
-
-
-@users.route('/api/users/bookmarks', methods=['GET'])
-@login_required
-def get_bookmarks():
-    projects = [g.projects.find_one({'_id': project_id}) for project_id in current_user.bookmarks]
-    projects = list(filter(None.__ne__, projects))
-    return jsonify(prepare_search_results(projects))
 
 
 @users.route('/api/users/notifications', methods=['GET'])
