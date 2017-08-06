@@ -5,7 +5,7 @@ from flask_security import login_required, current_user
 bookmarks = Blueprint('api_bookmarks', __name__)
 
 
-@bookmarks.route('/api/users/bookmarks/<uuid:id>', methods=['POST'])
+@bookmarks.route('/api/bookmarks/<uuid:id>', methods=['POST'])
 @login_required
 def add_bookmarks(id):
     user = g.user_datastore.get_user(current_user['email'])
@@ -30,7 +30,7 @@ def add_bookmarks(id):
         raise ApiException(str(err), 500)
 
 
-@bookmarks.route('/api/users/bookmarks/<uuid:id>', methods=['DELETE'])
+@bookmarks.route('/api/bookmarks/<uuid:id>', methods=['DELETE'])
 @login_required
 def delete_bookmarks(id):
     user = g.user_datastore.get_user(current_user['email'])
@@ -54,7 +54,7 @@ def delete_bookmarks(id):
     return make_response("Project is not bookmarked: " + str(id), 400)
 
 
-@bookmarks.route('/api/users/bookmarks', methods=['GET'])
+@bookmarks.route('/api/bookmarks', methods=['GET'])
 @login_required
 def get_bookmarks():
     projects = [g.projects.find_one({'_id': project_id}) for project_id in current_user.bookmarks]
