@@ -23,7 +23,6 @@ from api.notifications import add_notification, add_self_action
 
 users = Blueprint('api_users', __name__)
 
-
 @users.route('/api/users/login', methods=['POST'])
 def login():
     """ Logs the user in. Expects a json in the format:
