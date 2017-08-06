@@ -23,6 +23,8 @@ from werkzeug.routing import BaseConverter
 
 from api.projects import projects
 from api.users import users
+from api.comments import comments
+from api.bookmarks import bookmarks
 from api.search import search, prepare_search_results
 from api.helper.apiexception import ApiException
 from api.helper.images import Identicon
@@ -333,6 +335,9 @@ def index():
 app.register_blueprint(projects)
 app.register_blueprint(users)
 app.register_blueprint(search)
+app.register_blueprint(comments)
+app.register_blueprint(bookmarks)
+
 
 if __name__ == "__main__":
     # remove debug for production
