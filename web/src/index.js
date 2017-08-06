@@ -38,7 +38,6 @@ import SideBar from './components/common/SideBar'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import styles from './components/common/Styles.jsx'
 
-
 var injectTapEventPlugin = require("react-tap-event-plugin")
 injectTapEventPlugin()
 
@@ -75,6 +74,7 @@ init(() => {
           <PageRoute sitePath="/project" path="/project/:uuid" component={ProjectContainer} />
           <PageRoute sitePath="/bookmarks" path="/bookmarks" component={BookmarksTable} />
           <PageRoute sitePath="/profile" path="/profile/:email" component={ProfileContainer} />
+          <PageRoute sitePath="/yourprofile"  path="/yourprofile" component={ProfileContainer} />
           <PageRoute sitePath="/yourprojects" path="/yourprojects" component={UserProjects} />
           <PageRoute sitePath="/queries" path="/queries" component={SavedQueries} />
           <PageRoute sitePath="/trashcan" path="/trashcan" component={UserTrashcan} />

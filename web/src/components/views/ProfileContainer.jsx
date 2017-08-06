@@ -9,13 +9,15 @@ import ProfileProjects from '../common/userComponents/ProfileProjects'
 import ProfileEditor from '../common/userComponents/ProfileEditor'
 import RegisterUser from '../common/adminComponents/RegisterUser'
 import RaisedButton from 'material-ui/RaisedButton'
+import {Redirect} from 'react-router-dom'
+
 
 
 export default class ProfileContainer extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      email : this.props.match.params.email,
+      email : this.props.match.params.email === undefined ? Backend.getMail() : this.props.match.params.email,
       profile_exists : false,
       site_loaded : false,
       isMe : this.props.match.params.email === Backend.getMail(),
@@ -38,7 +40,7 @@ export default class ProfileContainer extends Component {
   }
 
   componentWillReceiveProps(nextProps){
-    this.loadProfileInf(this.state.email)
+    this.loadProfileInf(nextProps.match.params.email === undefined ? Backend.getMail() : nextProps.params.email)
   }
 
   componentWillMount(){
@@ -89,6 +91,9 @@ export default class ProfileContainer extends Component {
       return (
         <Spinner loading = {true} text = {"Loading profile"}/>
       )
+    }
+    if(this.state.email === Backend.getMail() && this.props.match.url !== "/yourprofile"){
+      return <Redirect to = "/yourprofile"/>
     }
     if( !this.state.profile_exists){
       return (
