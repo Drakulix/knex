@@ -262,7 +262,7 @@ def get_projects():
         return jsonify(res)
     except KeyError as err:
         raise ApiException(str(err), 400)
-        
+
 
 @projects.route('/api/projects/<uuid:project_id>/share/<user_mail>', methods=['POST'])
 @login_required
