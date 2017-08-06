@@ -9,6 +9,8 @@ def current_user_has_permission_to_change(entry) -> bool:
         """
     if current_user.has_role('admin'):
         return True
+    elif 'email' in entry:
+        return current_user['email'] == entry['email']
     elif 'author' in entry:
         return current_user['email'] == entry['author']
     return current_user['email'] in entry['authors']
