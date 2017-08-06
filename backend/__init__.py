@@ -342,7 +342,6 @@ app.register_blueprint(bookmarks)
 app.register_blueprint(avatars)
 
 
-
 if __name__ == "__main__":
     # remove debug for production
     app.run(host=config["flask"]["hostname"], port=config["flask"]["port"],
