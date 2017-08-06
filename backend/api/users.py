@@ -131,8 +131,11 @@ def create_user():
 
         roles = [g.user_datastore.find_or_create_role(role) for role in user['roles']]
 
-
-        reset_user_avatar(user['email'])
+        image = Identicon(user['email'])
+        result = image.generate()
+        with open(os.path.join(sys.path[0], 'identicon' + user['email'] + '.png'), 'rb') as tf:
+            imgtext = base64.b64encode(tf.read())
+        os.remove(sys.path[0] + '/identicon' + user['email'] + '.png')
 
         g.user_datastore.create_user(first_name=user['first_name'],
                                      last_name=user['last_name'],
