@@ -305,7 +305,6 @@ app.register_blueprint(avatars)
 app.register_blueprint(notifications)
 app.register_blueprint(share)
 
-
 if __name__ == "__main__":
     # remove debug for production
     app.run(host=config["flask"]["hostname"], port=config["flask"]["port"],
