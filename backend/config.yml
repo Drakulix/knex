@@ -7,9 +7,6 @@ mongo_db:
     port: 27017
     security_password_hash: 'pbkdf2_sha512'
     security_password_salt: 'THISISMYOWNSALT'
-elasticsearch:
-    hostname: "elasticsearch"
-    port: 9200
 administration_user:
     username: "admin"
     password: "admin"

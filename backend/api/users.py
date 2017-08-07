@@ -18,6 +18,7 @@ from werkzeug.utils import secure_filename
 from api.projects import get_all_authors
 from api.helper.apiexception import ApiException
 from api.helper.search import prepare_search_results
+from api.helper.images import Identicon
 
 
 users = Blueprint('api_users', __name__)
@@ -142,15 +143,18 @@ def create_user():
 
         roles = [g.user_datastore.find_or_create_role(role) for role in user['roles']]
 
-        with open(os.path.join(sys.path[0], "default_avatar.png"), 'rb') as tf:
-            imgtext = base64.b64encode(tf.read()).decode()
+        image = Identicon(user['email'])
+        result = image.generate()
+        with open(os.path.join(sys.path[0], 'identicon' + user['email'] + '.png'), 'rb') as tf:
+            imgtext = base64.b64encode(tf.read())
+        os.remove(sys.path[0] + '/identicon' + user['email'] + '.png')
 
         g.user_datastore.create_user(first_name=user['first_name'],
                                      last_name=user['last_name'],
                                      email=user['email'],
                                      password=hash_password(user['password']),
                                      bio=user['bio'], roles=roles,
-                                     avatar_name="default_avatar.png",
+                                     avatar_name='identicon' + user['email'] + '.png',
                                      avatar=imgtext)
 
         usr = g.user_datastore.get_user(user['email'])
@@ -323,10 +327,13 @@ def reset_user_avatar(mail):
         raise ApiException("Unknown User with Email-address: " + str(mail), 404)
     if not is_permitted(current_user, user):
         raise ApiException("Current User has no permission for the requested user.", 403)
-    with open(os.path.join(sys.path[0], "default_avatar.png"), 'rb') as tf:
+    image = Identicon(mail)
+    result = image.generate()
+    with open(os.path.join(sys.path[0], 'identicon' + mail + '.png'), 'rb') as tf:
         imgtext = base64.b64encode(tf.read())
+    os.remove(sys.path[0] + '/identicon' + mail + '.png')
     user.avatar = imgtext.decode()
-    user.avatar_name = "default_avatar.png"
+    user.avatar_name = 'identicon' + mail + '.png'
     user.save()
     return make_response("Success", 200)
 

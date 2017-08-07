@@ -39,9 +39,9 @@ export default class SideBar extends Component {
                 <SideBarEntry icon = "archive" name = {this.state.menu.queries} to = "/queries" active = {this.isActive("/queries")} />
                 <SideBarEntry icon = "star_half" name = {this.state.menu.bookmarks} to = "/bookmarks" active = {this.isActive("/bookmarks")} />
                 <SideBarEntry icon = "work" name = {this.state.menu.userprojects} to = "/yourprojects" active = {this.isActive("/yourprojects")} />
-                <SideBarEntry icon = "delete" name = {this.state.menu.trashcan} to = '/trashcan/' active = {this.isActive("/trashcan")} />
-                <SideBarEntry icon = "account_circle" name = {this.state.menu.profile} to = {`/profile/${this.state.myProfile}`} active = {this.isActive("/profile")} />
-                {Backend.isAdmin ?  <SideBarEntry
+                <SideBarEntry icon = "delete" name = {this.state.menu.trashcan} to = '/trashcan' active = {this.isActive("/trashcan")} />
+                <SideBarEntry icon = "account_circle" name = {this.state.menu.profile} to = {`/yourprofile`} active = {this.isActive("/yourprofile")} />
+                {Backend.isAdmin() ?  <SideBarEntry
                   icon = "settings"
                   name = {this.state.menu.adminArea}
                   to = "/admin" active = {this.isActive("/admin")}
