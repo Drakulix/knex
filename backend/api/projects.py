@@ -40,8 +40,8 @@ def add_projects():
                 if 'comments' not in project:
                     project['comments'] = []
                 g.projects.insert(project)
-                add_notification(current_user['email'], project['authors'],\
-                    project['_id'],"create", reason='author')
+                add_notification(current_user['email'], project['authors'],
+                    project['_id'], "create", reason='author')
                 g.rerun_saved_searches(current_user['email'], project['_id'], "create")
             return jsonify([project['_id'] for project in projects])
         except Exception as err:
@@ -63,7 +63,7 @@ def add_projects():
             if 'comments' not in project:
                 project['comments'] = []
             g.projects.insert(project)
-            add_notification(current_user['email'], project['authors'],\
+            add_notification(current_user['email'], project['authors'],
                 project['_id'], "create", reason='author')
 
             g.rerun_saved_searches(current_user['email'], project['_id'], "create")
@@ -214,12 +214,12 @@ def update_project(project_id):
                                                 return_document=ReturnDocument.AFTER)
 
 
-                add_notification(current_user['email'], manifest['authors'],\
+                add_notification(current_user['email'], manifest['authors'],
                     project_id, "update", reason='author')
-                add_notification(current_user['email'],\
+                add_notification(current_user['email'],
                     g.users_with_bookmark(project_id), project_id, "update", reason='bookmark')
-                add_notification(current_user['email'],\
-                    [comment['author'] for comment in res['comments']], project_id,\
+                add_notification(current_user['email'],
+                    [comment['author'] for comment in res['comments']], project_id,
                     "update", reason='comment')
 
                 g.rerun_saved_searches(current_user['email'], project_id, "update")
@@ -240,7 +240,6 @@ def update_project(project_id):
                            "the request body does not appear to be utf-8", 400)
     except Exception as err:
         raise ApiException(str(err), 500)
-
 
 
 @projects.route('/api/projects/<uuid:project_id>/share/<user_mail>', methods=['POST'])
