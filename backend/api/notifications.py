@@ -19,7 +19,7 @@ def add_notification(creator, userlist, project_id, operation, reason='', saved_
                 'date': date,
                 'reason': reason,
                 'active': 'true',
-                'saved_search_id': saved_search_id
+                'saved_search_id': str(saved_search_id)
             })
 
 
