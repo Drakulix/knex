@@ -26,7 +26,7 @@ from api.users import users
 from api.comments import comments
 from api.bookmarks import bookmarks
 from api.avatars import avatars
-from api.notifications import notifications
+from api.notifications import notifications, add_notification, delete_project_notification
 
 
 from api.search import search, prepare_search_results
@@ -207,9 +207,10 @@ def rerun_saved_searches(creator, project_id, operation):
         for search in user.saved_searches:
             search['count'] = g.projects.count(search['query'])
             search.save()
-            search['query']['_id'] = project_id
-            if g.projects.count(search['query']) == 1:
-                notifications.add_notification(creator, user['email'], project_id,\
+            query = search.to_dict()
+            query['_id'] = str(project_id)
+            if g.projects.count(json.dumps(query)) == 1:
+                add_notification(creator, user['email'], project_id,\
                     operation, reason='search', saved_search_id=search['id'])
 
 
@@ -219,7 +220,7 @@ def rerun_saved_searches_func():
 
 
 def on_project_deletion():
-    notifications.delete_project_notification(project_id)
+    delete_project_notification(project_id)
     for user in User.objects:
         user.bookmarks = [x for x in user.bookmarks if g.projects.find_one({'_id': x})]
         user.save()

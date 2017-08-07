@@ -49,11 +49,11 @@ def add_comment(project_id):
             g.projects.find_one_and_replace({'_id': project_id}, manifest,
                                             return_document=ReturnDocument.AFTER)
 
-            notifications.add_notification(current_user['email'], manifest['authors'], project_id,\
-                "comment", reason='author')
-            notifications.add_notification(current_user['email'],\
+            add_notification(current_user['email'], manifest['authors'],\
+                project_id, "comment", reason='author')
+            add_notification(current_user['email'],\
                 g.users_with_bookmark(project_id), project_id, "comment", reason='bookmark')
-            notifications.add_notification(current_user['email'],\
+            add_notification(current_user['email'],\
                 [comment['author'] for comment in manifest['comments']], project_id,\
                  "comment", reason='comment')
 
