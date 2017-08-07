@@ -49,7 +49,7 @@ export default class SignIn extends Component {
 
   render() {
     if (this.state.redirect || Backend.isLoggedIn() ) {
-      return <Redirect to='/discovery'/>
+      return <Redirect to='/dashboard'/>
     }
 
     return (
