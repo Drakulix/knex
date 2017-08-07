@@ -18,13 +18,14 @@ export default class SideBar extends Component {
         profile: 'Your profile',
         adminArea: 'Admin area',
         trashcan: "Your trash",
-        people: "Search users"
+        people: "Search users",
+        dashboard : "Your news"
 
       },
       myProfile: Backend.getMail(),
       data: "",
     }
-  }
+  }dashboard
 
   isActive = (url) => { return url === this.props.location }
 
@@ -33,6 +34,7 @@ export default class SideBar extends Component {
         <div className = "col-3 side-bar">
             <img className = "logo-banner" src = {logo} alt = "logo"/>
             <ul className = "list-group">
+                <SideBarEntry icon = "list" name = {this.state.menu.dashboard} to = "/dashboard" active = {this.isActive("/dashboard")} />
                 <SideBarEntry icon = "search" name = {this.state.menu.discoverProjects} to = "/discovery" active = {this.isActive("/discovery")} />
                 <SideBarEntry icon = "people" name = {this.state.menu.people} to = {'/users/'} active = {this.isActive("/users")} />
                 <SideBarEntry icon = "add_circle" name = {this.state.menu.createProject} to = "/createbylink" active = {this.isActive("/createbylink")} />
@@ -58,7 +60,7 @@ const SideBarEntry = ({to, icon, icon2, name, active, style}) => {
         <Link to = {to}  >
         <li className = {`list-group-item ${active ? "active": ""}` } style = {{color: Styles.palette.alternateTextColor}}>
             {active && (<div className = "menu-indicator" style = {{backgroundColor: Styles.palette.primary1Color }}/>)}
-            <div style = {{display: "inline", paddingTop: 3, float: "left", marginRight: 8}}>
+            <div style = {{display: "inline", paddingTop: 4, float: "left", marginRight: 8}}>
               <i className = "material-icons" style = {{color: Styles.palette.alternateTextColor, fontSize: '20px',marginTop: -15}}>{icon}</i>
             </div>{name}
         </li>
