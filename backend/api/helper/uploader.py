@@ -37,10 +37,9 @@ def save_manifest_to_db(manifest):
                     entry['archived'] = False
                 entry['authors'] = sorted(list(set(entry['authors'])))
                 entry['tags'] = sorted(entry['tags'])
-                g.projects.insert(entry)
-                projects.append(project)
+                projects.append(entry)
 
-            return ids
+            return projects
         else:
             errors = sorted(g.validator.iter_errors(manifest), key=str)
             validation_error = {}
