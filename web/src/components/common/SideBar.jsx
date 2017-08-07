@@ -32,12 +32,14 @@ export default class SideBar extends Component {
         profile: 'Your profile',
         adminArea: 'Admin area',
         trashcan: "Your trash",
-        people: "Search users"
+        people: "Search users",
+        dashboard : "Your news"
+
       },
       myProfile: Backend.getMail(),
       data: "",
     }
-  }
+  }dashboard
 
   isActive = (url) => { return url === this.props.location }
 

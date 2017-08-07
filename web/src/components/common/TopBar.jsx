@@ -40,7 +40,7 @@ export default class TopBar extends Component {
   }
 
   resolveNotification(notificationID){
-    var list = this.state.notifications.filter((c) => c.id !== notificationID)
+    var list = this.state.notifications.filter((c) => c._id !== notificationID)
     this.setState({notifications: list,
                   popover: false})
     Backend.deleteNotification(notificationID)

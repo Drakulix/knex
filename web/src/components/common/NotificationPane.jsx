@@ -16,6 +16,11 @@ export default class NotificationPane extends Component {
     this.props.resolveNotification(notificationID)
   }
 
+
+/*
+<div style = {{marginBottom: -25}}>{notification.title}</div>
+<div style = {{fontSize: "12px"}}> {notification.description}</div>
+*/
   render() {
     return (
       <Popover
@@ -32,8 +37,7 @@ export default class NotificationPane extends Component {
               <Link style = {{color: Styles.palette.textColor}}
                     onClick = {()=>this.resolveNotification(notification.id)}
                     to = {notification.link}>
-                <div style = {{marginBottom: -25}}>{notification.title}</div>
-                <div style = {{fontSize: "12px"}}> {notification.description}</div>
+
               </Link>
            </MenuItem>
          )}
