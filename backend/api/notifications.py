@@ -12,7 +12,7 @@ def add_notification(creator, userlist, operation, project_id='',
                      reason='', saved_search_id=''):
     date = time.strftime("%Y-%m-%d %H:%M:%S")
     for user in userlist:
-        if user not in (creator):
+#        if user not in (creator):
             g.notifications.insert_one({
                 '_id': str(uuid.uuid4()),
                 'creator': creator,
