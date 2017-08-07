@@ -78,7 +78,7 @@ def add_projects():
                                "supported, the request body does not " +
                                "appear to be utf-8.", 400)
         except Exception as err:
-            raise ApiException(str(err), 400)
+            raise ApiException(str(err), 500)
 
 
 @projects.route('/api/projects', methods=['GET'])
