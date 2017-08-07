@@ -23,6 +23,12 @@ from werkzeug.routing import BaseConverter
 
 from api.projects import projects
 from api.users import users
+from api.comments import comments
+from api.bookmarks import bookmarks
+from api.avatars import avatars
+from api.notifications import notifications, add_notification, delete_project_notification
+
+
 from api.search import search, prepare_search_results
 from api.helper.apiexception import ApiException
 from api.helper.images import Identicon
@@ -90,6 +96,7 @@ def init_global_mongoclient():
 def set_global_mongoclient():
     g.knexdb = MONGOCLIENT.knexdb
     g.projects = g.knexdb.projects
+    g.notifications = g.knexdb.notifications
 
 
 @app.before_first_request
@@ -116,21 +123,6 @@ class Role(DB.Document, RoleMixin):
     description = DB.StringField(max_length=255)
 
 
-class Notification(DB.EmbeddedDocument):
-    notification_id = DB.ObjectIdField(default=ObjectId)
-    title = DB.StringField(max_length=255)
-    description = DB.StringField(max_length=255)
-    link = DB.StringField(max_length=255)
-
-    def to_dict(self):
-        dic = {}
-        dic['id'] = str(self.notification_id)
-        dic['title'] = str(self.title)
-        dic['description'] = str(self.description)
-        dic['link'] = str(self.link)
-        return dic
-
-
 class SavedSearch(EmbeddedDocument):
     saved_search_id = DB.ObjectIdField(default=ObjectId)
     metadata = DB.StringField()
@@ -154,7 +146,6 @@ class User(DB.Document, UserMixin):
     bio = DB.StringField(max_length=255)
     bookmarks = DB.ListField(DB.UUIDField(), default=[])
     roles = DB.ListField(DB.ReferenceField(Role), default=[])
-    notifications = DB.ListField(DB.EmbeddedDocumentField(Notification), default=[])
     saved_searches = DB.ListField(DB.EmbeddedDocumentField(SavedSearch), default=[])
     avatar_name = DB.StringField(max_length=255)
     avatar = DB.StringField()  # this is ugly as fuck but we store b64 encoded file data
@@ -191,28 +182,6 @@ def handle_unauthorized_access():
     return make_response("Forbidden", 403)
 
 
-# internal function to append notifications to the given userlist
-def notify_users(useremail_list, n_description, n_title, n_link):
-    n = Notification(description=n_description, title=n_title, link=n_link)
-    for email in useremail_list:
-        user = USER_DATASTORE.get_user(email)
-        if user and user['email'] != current_user['email']:
-            for existing_n in user.notifications:
-                if str(existing_n.link) == str(n_link):
-                    break
-            else:
-                user.notifications.append(n)
-                if len(user.notifications) > 20:
-                    users.notifications.pop(0)
-                user.save()
-    return str(n.notification_id)
-
-
-@app.before_request
-def notification_func():
-    g.notify_users = notify_users
-
-
 def users_with_bookmark(id):
     return [user['email'] for user in User.objects if id in user.bookmarks]
 
@@ -233,17 +202,16 @@ def save_search(user, meta, query, count):
 def save_search_func():
     g.save_search = save_search
 
-
-def rerun_saved_searches():
+def rerun_saved_searches(creator, project_id, operation):
     for user in User.objects:
         for search in user.saved_searches:
-            projects = prepare_search_results(g.projects.find(search['query']), {'comments': 0})
-            if search['count'] != len(projects):
-                search['count'] = len(projects)
-                search.save()
-                notify_users([user['email']], 'Saved search changed',
-                             str(search.title) + ' updated',
-                             '/results/saved/' + str(search.saved_search_id))
+            search['count'] = g.projects.count(search['query'])
+            search.save()
+            query = search.to_dict()
+            query['_id'] = str(project_id)
+            if g.projects.count(json.dumps(query)) == 1:
+                add_notification(creator, user['email'], project_id,\
+                    operation, reason='search', saved_search_id=search['id'])
 
 
 @app.before_request
@@ -252,14 +220,9 @@ def rerun_saved_searches_func():
 
 
 def on_project_deletion():
+    delete_project_notification(project_id)
     for user in User.objects:
         user.bookmarks = [x for x in user.bookmarks if g.projects.find_one({'_id': x})]
-        user.notifications = [x for x in user.notifications if
-                              '/project/' not in str(x.link) or g.projects.find_one(
-                                  {'_id': uuid.UUID(
-                                   str(x.link)[str(x.link).index('/project/') + len('/project/'):]
-                                   )
-                                   })]
         user.save()
 
 
@@ -311,7 +274,7 @@ def handle_insufficient_permission(error):
         This is not the error handler for insufficient permission to update
         a project or user.
     """
-    return make_response("Not found", 404)
+    return make_response("Not permitted", 403)
 
 
 @app.errorhandler(404)
@@ -333,6 +296,12 @@ def index():
 app.register_blueprint(projects)
 app.register_blueprint(users)
 app.register_blueprint(search)
+app.register_blueprint(comments)
+app.register_blueprint(bookmarks)
+app.register_blueprint(avatars)
+app.register_blueprint(notifications)
+
+
 
 if __name__ == "__main__":
     # remove debug for production
