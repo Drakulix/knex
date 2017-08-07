@@ -7,6 +7,7 @@ from flask_security import login_required, current_user
 
 from api.helper.apiexception import ApiException
 from api.helper.permissions import current_user_has_permission_to_change
+from api.notifications import add_notification
 
 from globals import ADMIN_PERMISSION
 
@@ -47,12 +48,15 @@ def add_comment(project_id):
             manifest['_id'] = project_id
             g.projects.find_one_and_replace({'_id': project_id}, manifest,
                                             return_document=ReturnDocument.AFTER)
-            g.notify_users(
-                list(set(
-                    manifest['authors'] +
-                    [comment['author'] for comment in manifest['comments']])),
-                "New comment", current_user['email'] + " commented on " + manifest["title"],
-                '/project/' + str(manifest['_id']))
+
+            notifications.add_notification(current_user['email'], manifest['authors'], project_id,\
+                "comment", reason='author')
+            notifications.add_notification(current_user['email'],\
+                g.users_with_bookmark(project_id), project_id, "comment", reason='bookmark')
+            notifications.add_notification(current_user['email'],\
+                [comment['author'] for comment in manifest['comments']], project_id,\
+                 "comment", reason='comment')
+
             return jsonify(comment['id'])
         else:
             raise ApiException(
