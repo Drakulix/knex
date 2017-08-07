@@ -9,17 +9,18 @@ notifications = Blueprint('api_notifications', __name__)
 
 def add_notification(creator, userlist, project_id, operation, reason='', saved_search_id=''):
     date = time.strftime("%Y-%m-%d %H:%M:%S")
-    for user in userlist and user not in (creator):
-        g.notifications.insert_one({
-            'creator': creator,
-            'user': user,
-            'project_id': project_id,
-            'operation': operation,
-            'date': date,
-            'reason': reason,
-            'active': 'true',
-            'saved_search_id': saved_search_id
-        })
+    for user in userlist:
+        if user not in (creator):
+            g.notifications.insert_one({
+                'creator': creator,
+                'user_id': user,
+                'project_id': project_id,
+                'operation': operation,
+                'date': date,
+                'reason': reason,
+                'active': 'true',
+                'saved_search_id': saved_search_id
+            })
 
 def delete_project_notification(project_id):
     g.notifications.delete_many({'project_id': project_id})
@@ -31,7 +32,8 @@ def get_notifications():
     user = g.user_datastore.get_user(current_user['email'])
     if not user:
         raise ApiException("Couldn't find current_user in datastore", 500)
-    res = g.notification.find({'user': current_user['email']}).sort('date', pymongo.DESCENDING)
+    res = g.notifications.find({'user': current_user['email']})\
+        .sort('date', pymongo.DESCENDING).limit(20)
     return jsonify([notification.to_dict() for notification in res])
 
 
