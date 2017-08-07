@@ -202,6 +202,7 @@ def save_search(user, meta, query, count):
 def save_search_func():
     g.save_search = save_search
 
+
 def rerun_saved_searches(creator, project_id, operation):
     for user in User.objects:
         for search in user.saved_searches:
@@ -210,7 +211,7 @@ def rerun_saved_searches(creator, project_id, operation):
             query = search.to_dict()
             query['_id'] = str(project_id)
             if g.projects.count(json.dumps(query)) == 1:
-                add_notification(creator, user['email'], project_id,\
+                add_notification(creator, user['email'], project_id,
                     operation, reason='search', saved_search_id=search['id'])
 
 
@@ -300,7 +301,6 @@ app.register_blueprint(comments)
 app.register_blueprint(bookmarks)
 app.register_blueprint(avatars)
 app.register_blueprint(notifications)
-
 
 
 if __name__ == "__main__":
