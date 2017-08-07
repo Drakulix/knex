@@ -14,6 +14,7 @@ from flask_security import login_required, current_user
 from api.helper import uploader
 from api.helper.apiexception import ApiException
 from api.helper.permissions import current_user_has_permission_to_change
+from api.notifications import add_notification, delete_project_notification
 from globals import ADMIN_PERMISSION
 
 
@@ -34,26 +35,32 @@ def add_projects():
                     manifestlist.append(json.loads(file.read().decode('utf-8')))
                 elif file.filename.endswith('.json5'):
                     manifestlist.append(json5.loads(file.read().decode('utf-8')))
-            return_ids = uploader.save_manifest_to_db(manifestlist)
-            g.rerun_saved_searches()
-            return jsonify(return_ids)
+            projects = uploader.save_manifest_to_db(manifestlist)
+            for project in projects:
+                g.projects.insert(project)
+                notifications.add_notification(current_user['email'], project['authors'],\
+                    project['_id'],"create", reason='author')
+                g.rerun_saved_searches(current_user['email'], project['_id'], "create")
+            return jsonify([project['_id'] for project in projects])
         except Exception as err:
             raise ApiException(str(err), 400)
 
     else:
         try:
-            return_ids = []
+            projects = []
             if ('application/json' in request.content_type) and\
                     ('application/json5' not in request.content_type):
-                return_ids = uploader.save_manifest_to_db(request.get_json())
+                projects = uploader.save_manifest_to_db(request.get_json())
             elif 'application/json5' in request.content_type:
-                return_ids = uploader.save_manifest_to_db(
+                projects = uploader.save_manifest_to_db(
                     json5.loads(request.data.decode('utf-8')))
             else:
                 raise ApiException("Wrong content header" +
                                    "and no files attached", 400)
+            notifications.add_notification(current_user['email'], projects[0]['authors'],\
+                project[0]['_id'], "create", reason='author')
 
-            g.rerun_saved_searches()
+            g.rerun_saved_searches(current_user['email'], project[0]['_id'], "create")
             return jsonify(return_ids)
 
         except ApiException as apierr:
@@ -135,7 +142,7 @@ def delete_project(project_id):
     """
     if g.projects.delete_one({'_id': project_id}).deleted_count == 0:
         return make_response("Project could not be found", 404)
-    g.rerun_saved_searches()
+    g.rerun_saved_searches(current_user['email'], project_id, "delete")
     g.on_project_deletion()
     return make_response("Success")
 
@@ -199,12 +206,19 @@ def update_project(project_id):
                 res['tags'] = sorted(res['tags'])
                 g.projects.find_one_and_replace({'_id': project_id}, res,
                                                 return_document=ReturnDocument.AFTER)
-                g.notify_users(
-                    list(set(res['authors'] +
-                             g.users_with_bookmark(str(project_id)))),
-                    "Project was updated", res['title'],
-                    '/project/' + str(project_id))
-                g.rerun_saved_searches()
+
+                g.rerun_saved_searches(current_user['email'], return_ids[0], "create")
+
+                notifications.add_notification(current_user['email'], manifest['authors'],\
+                    project_id, "update", reason='author')
+                notifications.add_notification(current_user['email'],\
+                    g.users_with_bookmark(project_id), project_id, "update", reason='bookmark')
+                notifications.add_notification(current_user['email'],\
+                    [comment['author'] for comment in manifest['comments']], project_id,\
+                    "update", reason='comment')
+
+                g.rerun_saved_searches(current_user['email'], return_ids[0], "update")
+
                 return make_response("Success")
             elif not current_user_has_permission_to_change(manifest):
                 raise ApiException("You are not allowed to edit this project", 403)
@@ -238,11 +252,8 @@ def share_via_email(project_id, user_mail):
     res = g.projects.find_one({'_id': project_id})
     if not res:
         raise ApiException("Project not found", 404)
-
-    description = res["title"] + "was shared with you."
-    link = '/project/' + str(project_id)
-    title = "Project shared."
-    return g.notify_users([user_mail], description, title, link)
+    notifications.add_notification(current_user['email'], [user_mail], project_id, 'share')
+    return make_response("Success", 200)
 
 
 @projects.route('/api/projects/<uuid:project_id>/share', methods=['POST'])
@@ -257,8 +268,5 @@ def share_with_users(project_id):
     res = g.projects.find_one({'_id': project_id})
     if not res:
         raise ApiException("Project not found", 404)
-
-    description = res["title"] + "was shared with you"
-    link = '/project/' + str(project_id)
-    title = "Project shared"
-    return g.notify_users(emails_list, description, title, link)
+    notifications.add_notification(current_user['email'], emails_list, project_id, 'share')
+    return make_response("Success", 200)
