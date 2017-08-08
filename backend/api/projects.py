@@ -41,7 +41,7 @@ def add_projects():
                     project['comments'] = []
                 g.projects.insert(project)
                 add_notification(current_user['email'], project['authors'],
-                        project['_id'], "create", reason='author')
+                                 project['_id'], "create", reason='author')
                 add_self_action(current_user['email'], project['_id'], "create")
                 g.rerun_saved_searches(current_user['email'], project['_id'], "create")
             return jsonify([project['_id'] for project in projects])
@@ -65,7 +65,7 @@ def add_projects():
                 project['comments'] = []
             g.projects.insert(project)
             add_notification(current_user['email'], project['authors'],
-                    project['_id'], "create", reason='author')
+                             project['_id'], "create", reason='author')
             add_self_action(current_user['email'], project['_id'], "create")
             g.rerun_saved_searches(current_user['email'], project['_id'], "create")
             return jsonify([project['_id']])
@@ -145,6 +145,17 @@ def get_all_tags():
         return jsonify(sorted(tags, key=str.lower))
     except Exception as err:
         raise ApiException(str(err), 500)
+
+
+@projects.route('/api/projects/titels', methods=['POST'])
+@login_required
+def get_usernames():
+    """ Returns a dictionary of each project in the database as key and
+        its title as value.
+    """
+    projectlist = [g.projects.find({"$_id": {"$in": request.getJson}}, {"_id" : 1, "title": 1})]
+    dic = dict([(project._id, project.title) for project in projectlist])
+    return jsonify(dic)
 
 
 @projects.route('/api/projects/<uuid:project_id>', methods=['GET'])
@@ -256,12 +267,12 @@ def update_project(project_id):
                                                 return_document=ReturnDocument.AFTER)
 
                 add_notification(current_user['email'], manifest['authors'],
-                        project_id, "update", reason='author')
+                                 project_id, "update", reason='author')
+                add_notification(current_user['email'], g.users_with_bookmark(project_id),
+                                 project_id, "update", reason='bookmark')
                 add_notification(current_user['email'],
-                        g.users_with_bookmark(project_id), project_id, "update", reason='bookmark')
-                add_notification(current_user['email'],
-                        [comment['author'] for comment in res['comments']], project_id,
-                        "update", reason='comment')
+                        [comment['author'] for comment in res['comments']],
+                        project_id, "update", reason='comment')
                 add_self_action(current_user['email'], project_id, "update")
                 g.rerun_saved_searches(current_user['email'], project_id, "update")
 
