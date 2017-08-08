@@ -33,7 +33,7 @@ export default class SideBar extends Component {
         adminArea: 'Admin area',
         trashcan: "Your trash",
         people: "Search users",
-        dashboard : "Your news"
+        dashboard : "Your timeline"
 
       },
       myProfile: Backend.getMail(),
