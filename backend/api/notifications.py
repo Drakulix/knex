@@ -59,7 +59,7 @@ def get_notifications():
     user = g.user_datastore.get_user(current_user['email'])
     if not user:
         raise ApiException("Couldn't find current_user in datastore", 404)
-    res = g.notifications.find({'user_id': current_user['email'], 'active' : 'false'})\
+    res = g.notifications.find({'user_id': current_user['email'], 'active': 'false'})\
         .sort('date', pymongo.DESCENDING).limit(20)
     return jsonify(list(res))
 
@@ -70,7 +70,7 @@ def delete_notification(id):
     user = g.user_datastore.get_user(current_user['email'])
     if not user:
         raise ApiException("Couldn't find current_user in datastore", 500)
-    res = g.notification.delete_one({'_id': id})
+    res = g.notifications.delete_one({'_id': id})
     if res.deleted_count == 0:
         return make_response("No notification with the given id known", 404)
     else:
