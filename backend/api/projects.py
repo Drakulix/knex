@@ -78,7 +78,7 @@ def add_projects():
                                "supported, the request body does not " +
                                "appear to be utf-8.", 400)
         except Exception as err:
-            raise ApiException(str(err), 500)
+            raise ApiException(str(err), 400)
 
 
 @projects.route('/api/projects', methods=['GET'])
@@ -153,7 +153,7 @@ def get_usernames():
     """ Returns a dictionary of each project in the database as key and
         its title as value.
     """
-    projectlist = [g.projects.find({"$_id": {"$in": request.getJson}}, {"_id" : 1, "title": 1})]
+    projectlist = [g.projects.find({"$_id": {"$in": request.getJson}}, {"_id": 1, "title": 1})]
     dic = dict([(project._id, project.title) for project in projectlist])
     return jsonify(dic)
 
@@ -271,8 +271,8 @@ def update_project(project_id):
                 add_notification(current_user['email'], g.users_with_bookmark(project_id),
                                  project_id, "update", reason='bookmark')
                 add_notification(current_user['email'],
-                        [comment['author'] for comment in res['comments']],
-                        project_id, "update", reason='comment')
+                                 [comment['author'] for comment in res['comments']],
+                                 project_id, "update", reason='comment')
                 add_self_action(current_user['email'], project_id, "update")
                 g.rerun_saved_searches(current_user['email'], project_id, "update")
 
