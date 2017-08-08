@@ -314,6 +314,10 @@ class Backend {
         return this.delete(`/api/projects/${id}`);
     }
 
+    getProjectTitels(project_ids){
+      return this.postJson('/api/projects/titels', project_ids)
+    }
+
     async addProjectComment(id, message) {
         let response = await fetch(`/api/projects/${encodeURIComponent(id)}/comment`, {
             method: 'POST',
