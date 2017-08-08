@@ -1,5 +1,6 @@
 from flask import jsonify, make_response, g, Blueprint
 from flask_security import login_required, current_user
+from api.notifications import add_notification
 
 
 bookmarks = Blueprint('api_bookmarks', __name__)
@@ -23,7 +24,7 @@ def add_bookmarks(id):
             project['is_bookmark'] = 'true'
             project['is_owner'] = 'true' if current_user['email'] in project['authors']\
                 else 'false'
-
+            add_notification(current_user['email'], project['authors'], project['_id'], "bookmark")
         return jsonify(projects)
 
     except KeyError as err:
@@ -59,4 +60,4 @@ def delete_bookmarks(id):
 def get_bookmarks():
     projects = [g.projects.find_one({'_id': project_id}) for project_id in current_user.bookmarks]
     projects = list(filter(None.__ne__, projects))
-    return jsonify(prepare_search_results(projects))
+    return jsonify(projects)

@@ -14,7 +14,7 @@ from flask_security import login_required, current_user
 from api.helper import uploader
 from api.helper.apiexception import ApiException
 from api.helper.permissions import current_user_has_permission_to_change
-from api.notifications import add_notification
+from api.notifications import add_notification, add_self_action
 from globals import ADMIN_PERMISSION
 
 
@@ -40,8 +40,9 @@ def add_projects():
                 if 'comments' not in project:
                     project['comments'] = []
                 g.projects.insert(project)
-                add_notification(current_user['email'], project['authors'],\
-                    project['_id'],"create", reason='author')
+                add_notification(current_user['email'], project['authors'],
+                    project['_id'], "create", reason='author')
+                add_self_action(current_user['email'], project['_id'], "create")
                 g.rerun_saved_searches(current_user['email'], project['_id'], "create")
             return jsonify([project['_id'] for project in projects])
         except Exception as err:
@@ -63,9 +64,9 @@ def add_projects():
             if 'comments' not in project:
                 project['comments'] = []
             g.projects.insert(project)
-            add_notification(current_user['email'], project['authors'],\
+            add_notification(current_user['email'], project['authors'],
                 project['_id'], "create", reason='author')
-
+            add_self_action(current_user['email'], project['_id'], "create")
             g.rerun_saved_searches(current_user['email'], project['_id'], "create")
             return jsonify([project['_id']])
 
@@ -149,7 +150,7 @@ def delete_project(project_id):
     if g.projects.delete_one({'_id': project_id}).deleted_count == 0:
         return make_response("Project could not be found", 404)
     g.rerun_saved_searches(current_user['email'], project_id, "delete")
-    g.on_project_deletion()
+    g.on_project_deletion(project_id)
     return make_response("Success")
 
 
@@ -213,15 +214,14 @@ def update_project(project_id):
                 g.projects.find_one_and_replace({'_id': project_id}, res,
                                                 return_document=ReturnDocument.AFTER)
 
-
-                add_notification(current_user['email'], manifest['authors'],\
+                add_notification(current_user['email'], manifest['authors'],
                     project_id, "update", reason='author')
-                add_notification(current_user['email'],\
+                add_notification(current_user['email'],
                     g.users_with_bookmark(project_id), project_id, "update", reason='bookmark')
-                add_notification(current_user['email'],\
-                    [comment['author'] for comment in res['comments']], project_id,\
+                add_notification(current_user['email'],
+                    [comment['author'] for comment in res['comments']], project_id,
                     "update", reason='comment')
-
+                add_self_action(current_user['email'], project_id, "update")
                 g.rerun_saved_searches(current_user['email'], project_id, "update")
 
                 return make_response("Success")
@@ -240,7 +240,6 @@ def update_project(project_id):
                            "the request body does not appear to be utf-8", 400)
     except Exception as err:
         raise ApiException(str(err), 500)
-
 
 
 @projects.route('/api/projects/<uuid:project_id>/share/<user_mail>', methods=['POST'])
