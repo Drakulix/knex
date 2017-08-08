@@ -22,6 +22,29 @@ export default class NotificationPane extends Component {
 <div style = {{fontSize: "12px"}}> {notification.description}</div>
 */
   render() {
+    var text = ""
+    switch(this.props.notifications.text){
+      case 'create':
+        text = "A project you are author was uploaded."
+        break
+      case 'archive':
+        text = "A project you are author was archived."
+        break
+      case 'share':
+        text = "A project was shared to you."
+        break
+      case 'comment':
+        text = "A project was commented."
+        break
+      case 'update':
+        text = "A project was updated."
+        break
+      case 'bookmark':
+        text = "One of your projects was bookmarked."
+        break
+      default:
+        break
+    }
     return (
       <Popover
         height = {200}
@@ -33,11 +56,11 @@ export default class NotificationPane extends Component {
         onRequestClose = {this.props.onRequestClose}>
         <Menu>
           {this.props.notifications.map(notification =>
-            <MenuItem key = {notification.id}>
+            <MenuItem key = {notification._id}>
               <Link style = {{color: Styles.palette.textColor}}
-                    onClick = {()=>this.resolveNotification(notification.id)}
-                    to = {notification.link}>
-
+                    onClick = {()=>this.resolveNotification(notification._id)}
+                    to = {`/projects/${notification.project_id}`}>
+              {text}
               </Link>
            </MenuItem>
          )}
