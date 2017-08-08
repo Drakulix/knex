@@ -40,8 +40,8 @@ def add_projects():
                 if 'comments' not in project:
                     project['comments'] = []
                 g.projects.insert(project)
-                add_notification(current_user['email'], project['authors'],
-                                 project['_id'], "create", reason='author')
+                add_notification(current_user['email'], project['authors'], "create",
+                                 project_id = project['_id'], reason='author')
                 add_self_action(current_user['email'], project['_id'], "create")
                 g.rerun_saved_searches(current_user['email'], project['_id'], "create")
             return jsonify([project['_id'] for project in projects])
@@ -64,8 +64,8 @@ def add_projects():
             if 'comments' not in project:
                 project['comments'] = []
             g.projects.insert(project)
-            add_notification(current_user['email'], project['authors'],
-                             project['_id'], "create", reason='author')
+            add_notification(current_user['email'], project['authors'], "create",
+                             project_id = project['_id'], reason='author')
             add_self_action(current_user['email'], project['_id'], "create")
             g.rerun_saved_searches(current_user['email'], project['_id'], "create")
             return jsonify([project['_id']])
@@ -266,13 +266,13 @@ def update_project(project_id):
                 g.projects.find_one_and_replace({'_id': project_id}, res,
                                                 return_document=ReturnDocument.AFTER)
 
-                add_notification(current_user['email'], manifest['authors'],
-                                 project_id, "update", reason='author')
-                add_notification(current_user['email'], g.users_with_bookmark(project_id),
-                                 project_id, "update", reason='bookmark')
+                add_notification(current_user['email'], manifest['authors'], "update",
+                                 project_id = project_id, reason='author')
+                add_notification(current_user['email'], g.users_with_bookmark(project_id), "update",
+                                 project_id = project_id, reason='bookmark')
                 add_notification(current_user['email'],
-                                 [comment['author'] for comment in res['comments']],
-                                 project_id, "update", reason='comment')
+                                 [comment['author'] for comment in res['comments']], "update",
+                                 project_id = project_id, reason='comment')
                 add_self_action(current_user['email'], project_id, "update")
                 g.rerun_saved_searches(current_user['email'], project_id, "update")
 
@@ -308,7 +308,7 @@ def share_via_email(project_id, user_mail):
     res = g.projects.find_one({'_id': project_id})
     if not res:
         raise ApiException("Project not found", 404)
-    add_notification(current_user['email'], [user_mail], project_id, 'share')
+    add_notification(current_user['email'], [user_mail], 'share', project_id = project_id)
     return make_response("Success", 200)
 
 
@@ -324,5 +324,5 @@ def share_with_users(project_id):
     res = g.projects.find_one({'_id': project_id})
     if not res:
         raise ApiException("Project not found", 404)
-    add_notification(current_user['email'], emails_list, project_id, 'share')
+    add_notification(current_user['email'], emails_list, 'share', project_id = project_id)
     return make_response("Success", 200)

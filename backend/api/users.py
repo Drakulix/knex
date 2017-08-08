@@ -19,7 +19,7 @@ from api.helper.apiexception import ApiException
 from api.helper.search import prepare_search_results
 from api.helper.permissions import current_user_has_permission_to_change
 from api.helper.images import Identicon
-
+from api.notifications import add_notification, add_self_action
 
 users = Blueprint('api_users', __name__)
 
@@ -144,6 +144,11 @@ def create_user():
                                      bio=user['bio'], roles=roles,
                                      avatar_name='identicon' + user['email'] + '.png',
                                      avatar=imgtext)
+        if not user:
+            add_self_action(user['email'], 'register')
+        else:
+            add_self_action(user['email'], 'invite', user_id = current_user['email'])
+            add_notification(current_user['email'], [user['email']], 'invite')
 
         usr = g.user_datastore.get_user(user['email'])
         return jsonify(usr.to_dict())
