@@ -34,19 +34,24 @@ export default class Dashboard extends React.Component {
     })
     Backend.getActions()
     .then((data) => {
-      var users = data.map (notification => {return notification.user_id})
-      Backend.getUserNames(users)
+      Backend.getUserNames(data.map (notification => {return notification.user_id}))
       .then ((userNames) => {
         this.setState({
-          userNames : JSON.parse(userNames),
-          notifications: data
+          userNames : JSON.parse(userNames)
         })
+        Backend.getProjectTitels(data.map (notification => {return notification.project_id}))
+        .then ((projectTitles) =>{
+          this.setState({
+            projectTitles : projectTitles,
+            notifications: data
+          })
+        })
+        .then (
+          this.setState({
+            loading : false,
+          })
+        )
       })
-      .then (
-        this.setState({
-          loading : false,
-        })
-      )
     })
 >>>>>>> b589344... Fixed for Tests
 =======
@@ -71,7 +76,8 @@ export default class Dashboard extends React.Component {
                 <div>
                   <News key = {notification._id}
                       value = {notification}
-                      names = {this.state.userNames} />
+                      names = {this.state.userNames}
+                      titles = {this.state.projectTitles}/>
                     <hr></hr>
                 </div>
               )
@@ -174,7 +180,7 @@ class News extends React.Component {
           <span>
             <Link to = {`/project/${this.props.value.project_id}`}
                   style = {{color: Styles.palette.primary1Color}}>
-              {this.props.value.project_id}
+              {this.props.titles[this.props.value.project_id]}
             </Link>
           </span>
           <span> {reason} </span>
