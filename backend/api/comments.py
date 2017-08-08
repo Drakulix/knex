@@ -50,12 +50,12 @@ def add_comment(project_id):
                                             return_document=ReturnDocument.AFTER)
 
             add_notification(current_user['email'], manifest['authors'],
-                    project_id, "comment", reason='author')
+                             project_id, "comment", reason='author')
+            add_notification(current_user['email'], g.users_with_bookmark(project_id),
+                             project_id, "comment", reason='bookmark')
             add_notification(current_user['email'],
-                    g.users_with_bookmark(project_id), project_id, "comment", reason='bookmark')
-            add_notification(current_user['email'],
-                [comment['author'] for comment in manifest['comments']], project_id,
-                 "comment", reason='comment')
+                             [comment['author'] for comment in manifest['comments']],
+                             project_id, "comment", reason='comment')
 
             return jsonify(comment['id'])
         else:
