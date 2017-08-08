@@ -41,7 +41,7 @@ def add_projects():
                     project['comments'] = []
                 g.projects.insert(project)
                 add_notification(current_user['email'], project['authors'],
-                    project['_id'], "create", reason='author')
+                        project['_id'], "create", reason='author')
                 add_self_action(current_user['email'], project['_id'], "create")
                 g.rerun_saved_searches(current_user['email'], project['_id'], "create")
             return jsonify([project['_id'] for project in projects])
@@ -65,7 +65,7 @@ def add_projects():
                 project['comments'] = []
             g.projects.insert(project)
             add_notification(current_user['email'], project['authors'],
-                project['_id'], "create", reason='author')
+                    project['_id'], "create", reason='author')
             add_self_action(current_user['email'], project['_id'], "create")
             g.rerun_saved_searches(current_user['email'], project['_id'], "create")
             return jsonify([project['_id']])
@@ -79,6 +79,47 @@ def add_projects():
                                "appear to be utf-8.", 400)
         except Exception as err:
             raise ApiException(str(err), 500)
+
+
+@projects.route('/api/projects', methods=['GET'])
+@login_required
+def get_projects():
+    """Return list of projects, args->limit, skip, archived
+    Returns:
+        res: A list of projects
+    """
+    limit = request.args.get('limit', type=int)
+    skip = request.args.get('skip', type=int)
+    archived = request.args.get('archived', type=str, default='false')
+    if archived not in ['true', 'false', 'mixed']:
+        return make_response('Invalid parameters', 400)
+
+    if g.projects.count() == 0:
+        return make_response(jsonify([]), 200)
+    query = {}
+    if archived == 'true':
+        query = {'archived': True}
+    elif archived == 'false':
+        query = {'archived': False}
+    if limit and skip:
+        res = g.projects.find(query, {'comments': 0}, limit=limit, skip=skip)
+    elif limit:
+        res = g.projects.find(query, {'comments': 0}, limit=limit)
+    elif skip:
+        res = g.projects.find(query, {'comments': 0}, skip=skip)
+    else:
+        res = g.projects.find(query)
+
+    try:
+        res = [x for x in res[:]]
+        for project in res:
+            project['is_bookmark'] = 'true' if project['_id']\
+                in current_user['bookmarks'] else 'false'
+            project['is_owner'] = 'true' if current_user['email']\
+                in project['authors'] else 'false'
+        return jsonify(res)
+    except KeyError as err:
+        raise ApiException(str(err), 400)
 
 
 @projects.route('/api/projects/authors', methods=['GET'])
@@ -215,12 +256,12 @@ def update_project(project_id):
                                                 return_document=ReturnDocument.AFTER)
 
                 add_notification(current_user['email'], manifest['authors'],
-                    project_id, "update", reason='author')
+                        project_id, "update", reason='author')
                 add_notification(current_user['email'],
-                    g.users_with_bookmark(project_id), project_id, "update", reason='bookmark')
+                        g.users_with_bookmark(project_id), project_id, "update", reason='bookmark')
                 add_notification(current_user['email'],
-                    [comment['author'] for comment in res['comments']], project_id,
-                    "update", reason='comment')
+                        [comment['author'] for comment in res['comments']], project_id,
+                        "update", reason='comment')
                 add_self_action(current_user['email'], project_id, "update")
                 g.rerun_saved_searches(current_user['email'], project_id, "update")
 
