@@ -315,7 +315,7 @@ class Backend {
     }
 
     getProjectTitels(project_ids){
-      return this.postJson('/api/projects/titels', project_ids)
+      return this.postJson('/api/projects/titles', project_ids)
     }
 
     async addProjectComment(id, message) {
@@ -575,6 +575,10 @@ class Backend {
 
     getNotifications() {
         return this.getJson('/api/users/notifications');
+    }
+
+    deactivateNotification(id) {
+        return this.putJson('/api/users/notifications/deactivate', {'_id' : id});
     }
 
     deleteNotification(id) {
