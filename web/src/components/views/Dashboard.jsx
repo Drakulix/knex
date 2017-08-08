@@ -14,43 +14,62 @@ export default class Dashboard extends React.Component {
       notifications: [],
       username : {}
     }
+    this.load = this.load.bind(this)
   }
 
   componentDidMount(){
+    this.load()
+  }
+
+  load(){
     this.setState({
       loading : true,
     })
     Backend.getActions()
     .then((data) => {
       var users = data.map (notification => {return notification.user_id})
+      users = users.concat(data.map (notification => {return notification.creator}))
       Backend.getUserNames(users)
       .then ((userNames) => {
         this.setState({
-          userNames : JSON.parse(userNames),
-          notifications: data
+          userNames : JSON.parse(userNames)
         })
+        Backend.getProjectTitels(data.map (notification => {return notification.project_id}))
+        .then ((projectTitles) =>{
+          alert(JSON.stringify(projectTitles))
+          this.setState({
+            projectTitles : projectTitles,
+            notifications: data
+          })
+        })
+        .then (
+          this.setState({
+            loading : false,
+          })
+        )
       })
-      .then (
-        this.setState({
-          loading : false,
-        })
-      )
     })
   }
 
   render() {
     return (
       <div className = "container">
-        <div className = "headerCreation">Your news</div>
+        <div className = "headerCreation">Your timeline</div>
           <Spinner loading = {this.state.loading} text = {"Loading your news"} />
           <div style = {{width : "100%", display : (!this.state.loading ? "block" : "none")}}>
+            {(this.state.notifications.length === 0) ?
+              <div style={{fontSize: 20, textAlign: "center"}}><hr></hr>Nothing new</div> : ""}
             {
               this.state.notifications.map(notification =>
-                <div>
-                  <News key = {notification._id}
+                <div key = {notification._id}>
+                  <hr></hr>
+                  <News
                       value = {notification}
-                      names = {this.state.userNames} />
-                    <hr></hr>
+                      names = {this.state.userNames}
+                      titles = {this.state.projectTitles}
+                      refreshHandler = {this.load}
+                    />
+
                 </div>
               )
             }
@@ -83,6 +102,11 @@ class News extends React.Component {
       case 'bookmark':
         operation = "bookmarked"
         break
+      case 'invite':
+        operation = "been invited by"
+        break
+      case 'register':
+        operation = "register"
       default:
         break
     }
@@ -104,10 +128,11 @@ class News extends React.Component {
         reason = ""
         break
     }
+
     return (
       <div className = "row" style={{width: "100%"}}>
         <div className ="col-1">
-          <img src = {`/api/users/${this.props.value.user_id}/avatar`}
+          <img src = {`/api/users/${this.props.value.creator}/avatar`}
                style = {{marginTop : -8}}
             width = "60"
             height = "60"
@@ -115,31 +140,41 @@ class News extends React.Component {
             />
         </div>
         <div className ="col-10">
-          {this.props.value.user_id === Backend.getMail() ?
+          {this.props.value.creator === Backend.getMail() ?
             <span><Link to = "/yourprofile"
                         style = {{color: Styles.palette.primary1Color}}>You</Link> have </span>
               :
-            <span><Link to = {`/profile/${this.props.value.user_id}`}
+            <span><Link to = {`/profile/${this.props.value.creator}`}
                         style = {{color: Styles.palette.primary1Color}}>
-              {this.props.names[this.props.value.user_id]}</Link> has </span>
+              {this.props.names[this.props.value.creator]}</Link> has </span>
           }
           <span>{operation}</span>
-          <span> project </span>
-          <span>
-            <Link to = {`/project/${this.props.value.project_id}`}
-                  style = {{color: Styles.palette.primary1Color}}>
-              {this.props.value.project_id}
-            </Link>
-          </span>
-          <span> {reason} </span>
-          {this.props.saved_search_id !== "" ? this.props.saved_search_id : ""}
-          <div style = {{fontStyle: 'italic' , color: Styles.palette.disabledColor}}>
-            {this.props.value.date}
-          </div>
+          {this.props.value.operation === "invite" ?
+            <span> <Link to = {`/profile/${this.props.value.user_id}`}
+                        style = {{color: Styles.palette.primary1Color}}>
+              you </Link></span>
+          : ""}
+          {this.props.value.project_id !== "" ?
+            <span>
+              <span> project </span>
+              <span>
+                <Link to = {`/project/${this.props.value.project_id}`}
+                      style = {{color: Styles.palette.primary1Color}}>
+                  {this.props.value.project_id}
+                </Link>
+              </span>
+              <span> {reason} </span>
+              {this.props.saved_search_id !== "" ? this.props.saved_search_id : ""}
+              <span style = {{fontStyle: 'italic' , color: Styles.palette.disabledColor}}>
+                {this.props.value.date}
+              </span>
+            </span>
+            : ""
+          }
         </div>
         <div className ="col-1" style ={{textAlign : "right"}}>
           <IconButton
-                    onClick = {() => Backend.deleteNotification(this.props.value._id)}
+                    onClick = {() => Backend.deleteNotification(this.props.value._id).then(this.props.refreshHandler())}
                     touch = {true}
                     style = {Styles.largeIcon}
                     tooltipPosition = "bottom-center"

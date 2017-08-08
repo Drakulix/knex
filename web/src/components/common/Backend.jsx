@@ -565,6 +565,10 @@ class Backend {
         return this.getJson('/api/bookmarks');
     }
 
+    getActions() {
+        return this.getJson('/api/users/actions');
+    }
+
     getNotifications() {
         return this.getJson('/api/users/notifications');
     }
