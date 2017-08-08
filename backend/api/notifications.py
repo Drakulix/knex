@@ -64,6 +64,21 @@ def get_notifications():
     return jsonify(list(res))
 
 
+@notifications.route('/api/users/notifications/deactivate', methods=['PUT'])
+@login_required
+def deactivate_notification():
+    request = request.get_json()
+    notification_id = request["id"]
+    user = g.user_datastore.get_user(current_user['email'])
+    if not user:
+        raise ApiException("Couldn't find current_user in datastore", 404)
+    res = g.notifications.update_one({'_id': id}, {'$set': {'active': 'false'}})
+    if res.modified_count == 0:
+        return make_response("No notification with the given id known", 404)
+    else:
+        return make_response("Success", 200)
+
+
 @notifications.route('/api/users/notifications/<id>', methods=['DELETE'])
 @login_required
 def delete_notification(id):

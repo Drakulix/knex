@@ -147,13 +147,13 @@ def get_all_tags():
         raise ApiException(str(err), 500)
 
 
-@projects.route('/api/projects/titels', methods=['POST'])
+@projects.route('/api/projects/titles', methods=['POST'])
 @login_required
-def get_usernames():
+def getProjectTitles():
     """ Returns a dictionary of each project in the database as key and
         its title as value.
     """
-    projectlist = [g.projects.find({"$_id": {"$in": request.getJson}}, {"_id": 1, "title": 1})]
+    projectlist = g.projects.find({"_id": {"$in": request.get_json()}}, {"_id": 1, "title": 1})
     dic = dict([(project._id, project.title) for project in projectlist])
     return jsonify(dic)
 
