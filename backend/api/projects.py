@@ -41,8 +41,8 @@ def add_projects():
                     project['comments'] = []
                 g.projects.insert(project)
                 add_notification(current_user['email'], project['authors'], "create",
-                                 project_id = project['_id'], reason='author')
-                add_self_action(current_user['email'], "create", project_id = project['_id'])
+                                 project_id=project['_id'], reason='author')
+                add_self_action(current_user['email'], "create", project_id=project['_id'])
                 g.rerun_saved_searches(current_user['email'], project['_id'], "create")
             return jsonify([project['_id'] for project in projects])
         except Exception as err:
@@ -60,15 +60,15 @@ def add_projects():
             else:
                 raise ApiException("Wrong content header" +
                                    "and no files attached", 400)
-            project = projects[0]
-            if 'comments' not in project:
-                project['comments'] = []
-            g.projects.insert(project)
-            add_notification(current_user['email'], project['authors'], "create",
-                             project_id = project['_id'], reason='author')
-            add_self_action(current_user['email'], "create", project_id = project['_id'])
-            g.rerun_saved_searches(current_user['email'], project['_id'], "create")
-            return jsonify([project['_id']])
+            for project in projects:
+                if 'comments' not in project:
+                    project['comments'] = []
+                g.projects.insert(project)
+                add_notification(current_user['email'], project['authors'], "create",
+                                 project_id=project['_id'], reason='author')
+                add_self_action(current_user['email'], "create", project_id=project['_id'])
+                g.rerun_saved_searches(current_user['email'], project['_id'], "create")
+            return jsonify([project['_id'] for project in projects])
 
         except ApiException as apierr:
             raise apierr
@@ -153,9 +153,10 @@ def getProjectTitles():
     """ Returns a dictionary of each project in the database as key and
         its title as value.
     """
-    projectlist = g.projects.find({"_id": {"$in": request.get_json()}}, {"_id": 1, "title": 1})
-    dic = dict([(project._id, project.title) for project in projectlist])
-    return jsonify(dic)
+    #[uuid.UUID(project_id) for project_id in request.get_json()]
+    projects = [uuid.UUID(project_id) for project_id in set(request.get_json())]
+    projectlist = g.projects.find({'_id': projects[0]}, {"_id": 1, "title": 1})
+    return jsonify(dict([(str(project['_id']) , project['title']) for project in projectlist]))
 
 
 @projects.route('/api/projects/<uuid:project_id>', methods=['GET'])
@@ -226,13 +227,13 @@ def archive_project(project_id):
             g.projects.find_one_and_replace({'_id': project_id}, res,
                                             return_document=ReturnDocument.AFTER)
             add_notification(current_user['email'], res['authors'], "archive",
-                             project_id = project_id, reason='author')
+                             project_id=project_id, reason='author')
             add_notification(current_user['email'], g.users_with_bookmark(project_id), "archive",
-                             project_id = project_id, reason='bookmark')
+                             project_id=project_id, reason='bookmark')
             add_notification(current_user['email'],
                              [comment['author'] for comment in res['comments']], "archive",
-                             project_id = project_id, reason='comment')
-            add_self_action(current_user['email'], "archive", project_id = project_id)
+                             project_id=project_id, reason='comment')
+            add_self_action(current_user['email'], "archive", project_id=project_id)
             g.rerun_saved_searches(current_user['email'], project_id, "archive")
 
             return make_response("Success")
@@ -246,6 +247,7 @@ def archive_project(project_id):
                            "the request body does not appear to be utf-8", 400)
     except Exception as err:
         raise ApiException(str(err), 500)
+
 
 @projects.route('/api/projects/<uuid:project_id>', methods=['PUT'])
 @login_required
@@ -308,13 +310,13 @@ def update_project(project_id):
                                                 return_document=ReturnDocument.AFTER)
 
                 add_notification(current_user['email'], manifest['authors'], "update",
-                                 project_id = project_id, reason='author')
+                                 project_id=project_id, reason='author')
                 add_notification(current_user['email'], g.users_with_bookmark(project_id), "update",
-                                 project_id = project_id, reason='bookmark')
+                                 project_id=project_id, reason='bookmark')
                 add_notification(current_user['email'],
                                  [comment['author'] for comment in res['comments']], "update",
-                                 project_id = project_id, reason='comment')
-                add_self_action(current_user['email'], "update", project_id = project_id)
+                                 project_id=project_id, reason='comment')
+                add_self_action(current_user['email'], "update", project_id=project_id)
                 g.rerun_saved_searches(current_user['email'], project_id, "update")
 
                 return make_response("Success")

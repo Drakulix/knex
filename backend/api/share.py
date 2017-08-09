@@ -22,7 +22,7 @@ def share_via_email(project_id, user_mail):
     res = g.projects.find_one({'_id': project_id})
     if not res:
         raise ApiException("Project not found", 404)
-    add_notification(current_user['email'], [user_mail], 'share', project_id = project_id)
+    add_notification(current_user['email'], [user_mail], 'share', project_id=project_id)
     return make_response("Success", 200)
 
 
@@ -38,5 +38,5 @@ def share_with_users(project_id):
     res = g.projects.find_one({'_id': project_id})
     if not res:
         raise ApiException("Project not found", 404)
-    add_notification(current_user['email'], emails_list, 'share', project_id = project_id)
+    add_notification(current_user['email'], emails_list, 'share', project_id=project_id)
     return make_response("Success", 200)
