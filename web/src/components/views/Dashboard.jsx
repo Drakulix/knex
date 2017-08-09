@@ -1,6 +1,16 @@
 import React from 'react'
 import TimeLine from '../common/userComponents/TimeLine'
 import Backend from '../common/Backend'
+<<<<<<< HEAD
+=======
+import { Link } from 'react-router-dom'
+import Styles from '../common/Styles.jsx'
+import Spinner from '../common/Spinner'
+import IconButton from 'material-ui/IconButton'
+import Moment from 'moment'
+
+
+>>>>>>> 836282c... Now with Time now!
 
 export default class Dashboard extends React.Component {
 
@@ -32,9 +42,9 @@ export default class Dashboard extends React.Component {
         this.setState({
           userNames : JSON.parse(userNames)
         })
-        Backend.getProjectTitels(data.map (notification => {return notification.project_id}))
+        Backend.getProjectTitels(data.filter(notification => {return notification.project_id !== ""
+        }).map (notification => {return notification.project_id}))
         .then ((projectTitles) =>{
-          alert(JSON.stringify(projectTitles))
           this.setState({
             projectTitles : projectTitles,
             notifications: data
@@ -105,10 +115,11 @@ class News extends React.Component {
         operation = "bookmarked"
         break
       case 'invite':
-        operation = "been invited by"
+        operation = "was invited by"
         break
       case 'register':
         operation = "register"
+        break
       default:
         break
     }
@@ -144,11 +155,11 @@ class News extends React.Component {
         <div className ="col-10">
           {this.props.value.creator === Backend.getMail() ?
             <span><Link to = "/yourprofile"
-                        style = {{color: Styles.palette.primary1Color}}>You</Link> have </span>
+                        style = {{color: Styles.palette.primary1Color}}>You</Link> </span>
               :
             <span><Link to = {`/profile/${this.props.value.creator}`}
                         style = {{color: Styles.palette.primary1Color}}>
-              {this.props.names[this.props.value.creator]}</Link> has </span>
+              {this.props.names[this.props.value.creator]}</Link> </span>
           }
           <span>{operation}</span>
           {this.props.value.operation === "invite" ?
@@ -167,12 +178,12 @@ class News extends React.Component {
               </span>
               <span> {reason} </span>
               {this.props.saved_search_id !== "" ? this.props.saved_search_id : ""}
-              <span style = {{fontStyle: 'italic' , color: Styles.palette.disabledColor}}>
-                {this.props.value.date}
-              </span>
             </span>
             : ""
           }
+          <div style = {{fontStyle: 'italic' , color: Styles.palette.disabledColor}}>
+            {Moment(this.props.value.date).from(new Moment())}
+          </div>
         </div>
         <div className ="col-1" style ={{textAlign : "right"}}>
           <IconButton
