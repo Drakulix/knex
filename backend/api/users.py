@@ -147,7 +147,7 @@ def create_user():
         if not user:
             add_self_action(user['email'], 'register')
         else:
-            add_self_action(user['email'], 'invite', user_id = current_user['email'])
+            add_self_action(user['email'], 'invite', user_id=current_user['email'])
             add_notification(current_user['email'], [user['email']], 'invite')
 
         usr = g.user_datastore.get_user(user['email'])
