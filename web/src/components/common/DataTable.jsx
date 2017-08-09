@@ -80,7 +80,7 @@ export default class BookmarksTable extends Component {
         delete project.is_bookmark
         delete project.is_owner
         project['archived'] = true
-        Backend.updateProject(projectInf._id, project)
+        Backend.archiveProject(projectInf._id, "true")
         .then(() => {this.props.handler(this.state.filters)})
         .then(this.setState({snackbar: true,
           snackbarText: `Project ${projectInf.title} archived`}))
@@ -95,7 +95,7 @@ export default class BookmarksTable extends Component {
     delete project.is_bookmark
     delete project.is_owner
     project['archived'] = false
-    Backend.updateProject(projectInf._id, project)
+    Backend.archiveProject(projectInf._id, "false")
         .then(() => {this.props.handler(this.state.filters)})
         .then(() => {this.setState({snackbar: true,
           snackbarText: `Project ${projectInf.title} unarchived`})})

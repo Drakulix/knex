@@ -26,6 +26,7 @@ from api.users import users
 from api.comments import comments
 from api.bookmarks import bookmarks
 from api.avatars import avatars
+from api.share import share
 from api.notifications import notifications, add_notification, delete_project_notification
 
 
@@ -273,9 +274,10 @@ def handle_invalid_usage(error):
 def handle_insufficient_permission(error):
     """ Handler for insufficient permission to access a method.
         This is not the error handler for insufficient permission to update
-        a project or user.
+        a project or user. It delivers a 404 as users should not see endpoints,
+        where they don't have permissions to.
     """
-    return make_response("Not permitted", 403)
+    return make_response("Not permitted", 404)
 
 
 @app.errorhandler(404)
@@ -301,6 +303,8 @@ app.register_blueprint(comments)
 app.register_blueprint(bookmarks)
 app.register_blueprint(avatars)
 app.register_blueprint(notifications)
+app.register_blueprint(share)
+
 
 
 if __name__ == "__main__":
