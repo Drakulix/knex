@@ -153,10 +153,9 @@ def getProjectTitles():
     """ Returns a dictionary of each project in the database as key and
         its title as value.
     """
-    #[uuid.UUID(project_id) for project_id in request.get_json()]
     projects = [uuid.UUID(project_id) for project_id in set(request.get_json())]
     projectlist = g.projects.find({'_id': projects[0]}, {"_id": 1, "title": 1})
-    return jsonify(dict([(str(project['_id']) , project['title']) for project in projectlist]))
+    return jsonify(dict([(str(project['_id']), project['title']) for project in projectlist]))
 
 
 @projects.route('/api/projects/<uuid:project_id>', methods=['GET'])
@@ -221,7 +220,7 @@ def archive_project(project_id):
         if current_user_has_permission_to_change(res):
             res['archived'] = "true" if state['archived'] == 'true' else "false"
             g.projects.find_one_and_replace({'_id': project_id}, res,
-                                    return_document=ReturnDocument.AFTER)
+                                            return_document=ReturnDocument.AFTER)
             res['date_last_updated'] = time.strftime("%Y-%m-%d")
             res['_id'] = project_id
             g.projects.find_one_and_replace({'_id': project_id}, res,
