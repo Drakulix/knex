@@ -10,7 +10,7 @@ notifications = Blueprint('api_notifications', __name__)
 
 def add_notification(creator, userlist, operation, project_id='',
                      reason='', saved_search_id=''):
-    date = time.strftime("%Y-%m-%d %H:%M:%S")
+    date = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
     for user in userlist:
         if user not in (creator):
             g.notifications.insert_one({
