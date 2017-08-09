@@ -310,6 +310,10 @@ class Backend {
         return this.putJson(`/api/projects/${id}`, payload);
     }
 
+    archiveProject(id, archive) {
+      return this.putJson(`/api/projects/${id}/archive`, {'archived' : archive});
+    }
+
     deleteProject(id) {
         return this.delete(`/api/projects/${id}`);
     }

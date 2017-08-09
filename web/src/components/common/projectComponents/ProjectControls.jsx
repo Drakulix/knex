@@ -38,7 +38,7 @@ export default class ProjectControls extends Component{
     delete project.is_bookmark
     delete project.is_owner
     project['archived'] = false
-    Backend.updateProject(this.props.projectID, project).then(
+    Backend.archiveProject(this.props.projectID, "false").then(
     this.setState({
       dialogOpen: false,
       snackbar: true,
@@ -72,7 +72,7 @@ export default class ProjectControls extends Component{
     delete project.is_bookmark
     delete project.is_owner
     project['archived'] = true
-    Backend.updateProject(this.props.projectID, project).then(
+    Backend.archiveProject(this.props.projectID, "false").then(
     this.setState({
       dialogOpen: false,
       snackbar: true,

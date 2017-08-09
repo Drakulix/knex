@@ -1,0 +1,6 @@
+# !/bin/sh
+sudo docker kill   $(sudo docker ps -q)
+sudo docker rmi  -f $(sudo docker images -q)
+sudo docker-compose rm --all
+sudo docker-compose -f docker-compose-dev.yml build
+sudo docker-compose -f docker-compose-dev.yml up
