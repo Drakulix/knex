@@ -6,6 +6,48 @@ export default class Dashboard extends React.Component {
 
   constructor(props){
     super(props)
+<<<<<<< HEAD
+=======
+    this.state = {
+      notifications: [],
+      username : {}
+    }
+    this.load = this.load.bind(this)
+  }
+
+  componentDidMount(){
+    this.load()
+  }
+
+  load(){
+    this.setState({
+      loading : true,
+    })
+    Backend.getActions()
+    .then((data) => {
+      var users = data.map (notification => {return notification.user_id})
+      users = users.concat(data.map (notification => {return notification.creator}))
+      Backend.getUserNames(users)
+      .then ((userNames) => {
+        this.setState({
+          userNames : JSON.parse(userNames)
+        })
+        Backend.getProjectTitels(data.map (notification => {return notification.project_id}))
+        .then ((projectTitles) =>{
+          alert(JSON.stringify(projectTitles))
+          this.setState({
+            projectTitles : projectTitles,
+            notifications: data
+          })
+        })
+        .then (
+          this.setState({
+            loading : false,
+          })
+        )
+      })
+    })
+>>>>>>> ce0fddf... Found 403 and Uploader bug... Still an ugly bug on titles....
   }
 
   render() {
@@ -21,9 +63,9 @@ export default class Dashboard extends React.Component {
               <div style={{fontSize: 20, textAlign: "center"}}><hr></hr>Nothing new</div> : ""}
             {
               this.state.notifications.map(notification =>
-                <div>
+                <div key = {notification._id}>
                   <hr></hr>
-                  <News key = {notification._id}
+                  <News
                       value = {notification}
                       names = {this.state.userNames}
                       titles = {this.state.projectTitles}
@@ -120,7 +162,7 @@ class News extends React.Component {
               <span>
                 <Link to = {`/project/${this.props.value.project_id}`}
                       style = {{color: Styles.palette.primary1Color}}>
-                  {this.props.titles[this.props.value.project_id]}
+                  {this.props.value.project_id}
                 </Link>
               </span>
               <span> {reason} </span>
