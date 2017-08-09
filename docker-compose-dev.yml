@@ -20,5 +20,15 @@ services:
         restart: "always"
         volumes:
             - ./backend:/backend
+
+    yarn:
+        build:
+            context: ./
+            dockerfile: ./Dockerfile-dev-frontend
+        restart: "always"
+        depends_on:
+            - "flask"
+        volumes:
+            - ./web:/frontend
         ports:
-            - "5000:5000"
+            - "5000:3000"
