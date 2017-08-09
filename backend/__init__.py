@@ -277,7 +277,7 @@ def handle_insufficient_permission(error):
         a project or user. It delivers a 404 as users should not see endpoints,
         where they don't have permissions to.
     """
-    return make_response("Not permitted", 404)
+    return make_response("Not found", 404)
 
 
 @app.errorhandler(404)
