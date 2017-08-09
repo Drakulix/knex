@@ -42,7 +42,7 @@ def add_projects():
                 g.projects.insert(project)
                 add_notification(current_user['email'], project['authors'], "create",
                                  project_id = project['_id'], reason='author')
-                add_self_action(current_user['email'], project['_id'], "create")
+                add_self_action(current_user['email'], "create", project_id = project['_id'])
                 g.rerun_saved_searches(current_user['email'], project['_id'], "create")
             return jsonify([project['_id'] for project in projects])
         except Exception as err:
@@ -66,7 +66,7 @@ def add_projects():
             g.projects.insert(project)
             add_notification(current_user['email'], project['authors'], "create",
                              project_id = project['_id'], reason='author')
-            add_self_action(current_user['email'], project['_id'], "create")
+            add_self_action(current_user['email'], "create", project_id = project['_id'])
             g.rerun_saved_searches(current_user['email'], project['_id'], "create")
             return jsonify([project['_id']])
 
@@ -206,6 +206,47 @@ def delete_project(project_id):
     return make_response("Success")
 
 
+@projects.route('/api/projects/<uuid:project_id>/archive', methods=['PUT'])
+@login_required
+def archive_project(project_id):
+    try:
+        res = g.projects.find_one({'_id': project_id})
+        if not res:
+            raise ApiException("Project not found", 404)
+        state = request.get_json() if request.is_json \
+            else json5.loads(request.data.decode("utf-8"))
+        if not state['archived'] or state['archived'] not in ['true', 'false']:
+            raise ApiException("No valid field for archivation state found", 400)
+        if current_user_has_permission_to_change(res):
+            res['archived'] = "true" if state['archived'] == 'true' else "false"
+            g.projects.find_one_and_replace({'_id': project_id}, res,
+                                    return_document=ReturnDocument.AFTER)
+            res['date_last_updated'] = time.strftime("%Y-%m-%d")
+            res['_id'] = project_id
+            g.projects.find_one_and_replace({'_id': project_id}, res,
+                                            return_document=ReturnDocument.AFTER)
+            add_notification(current_user['email'], res['authors'], "archive",
+                             project_id = project_id, reason='author')
+            add_notification(current_user['email'], g.users_with_bookmark(project_id), "archive",
+                             project_id = project_id, reason='bookmark')
+            add_notification(current_user['email'],
+                             [comment['author'] for comment in res['comments']], "archive",
+                             project_id = project_id, reason='comment')
+            add_self_action(current_user['email'], "archive", project_id = project_id)
+            g.rerun_saved_searches(current_user['email'], project_id, "archive")
+
+            return make_response("Success")
+        elif not current_user_has_permission_to_change(manifest):
+            raise ApiException("You are not allowed to edit this project", 403)
+
+    except ApiException as error:
+        raise error
+    except UnicodeDecodeError:
+        raise ApiException("Only utf-8 compatible charsets are supported, " +
+                           "the request body does not appear to be utf-8", 400)
+    except Exception as err:
+        raise ApiException(str(err), 500)
+
 @projects.route('/api/projects/<uuid:project_id>', methods=['PUT'])
 @login_required
 def update_project(project_id):
@@ -273,7 +314,7 @@ def update_project(project_id):
                 add_notification(current_user['email'],
                                  [comment['author'] for comment in res['comments']], "update",
                                  project_id = project_id, reason='comment')
-                add_self_action(current_user['email'], project_id, "update")
+                add_self_action(current_user['email'], "update", project_id = project_id)
                 g.rerun_saved_searches(current_user['email'], project_id, "update")
 
                 return make_response("Success")
@@ -292,37 +333,3 @@ def update_project(project_id):
                            "the request body does not appear to be utf-8", 400)
     except Exception as err:
         raise ApiException(str(err), 500)
-
-
-@projects.route('/api/projects/<uuid:project_id>/share/<user_mail>', methods=['POST'])
-@login_required
-def share_via_email(project_id, user_mail):
-    """Creates and saves notification object
-
-        Returns:
-            res: Notification object as json
-    """
-    user = g.user_datastore.get_user(user_mail)
-    if not user:
-        return make_response("Unknown User with Email-address: " + user_mail, 404)
-    res = g.projects.find_one({'_id': project_id})
-    if not res:
-        raise ApiException("Project not found", 404)
-    add_notification(current_user['email'], [user_mail], 'share', project_id = project_id)
-    return make_response("Success", 200)
-
-
-@projects.route('/api/projects/<uuid:project_id>/share', methods=['POST'])
-@login_required
-def share_with_users(project_id):
-    """Creates and saves notification object
-
-        Returns:
-            res: Notification object as json
-    """
-    emails_list = request.get_json()
-    res = g.projects.find_one({'_id': project_id})
-    if not res:
-        raise ApiException("Project not found", 404)
-    add_notification(current_user['email'], emails_list, 'share', project_id = project_id)
-    return make_response("Success", 200)

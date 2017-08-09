@@ -57,17 +57,18 @@ export default class Dashboard extends React.Component {
           <Spinner loading = {this.state.loading} text = {"Loading your news"} />
           <div style = {{width : "100%", display : (!this.state.loading ? "block" : "none")}}>
             {(this.state.notifications.length === 0) ?
-              <div style={{fontSize: 20, textAlign: "center"}}>Nothing new</div> : ""}
+              <div style={{fontSize: 20, textAlign: "center"}}><hr></hr>Nothing new</div> : ""}
             {
               this.state.notifications.map(notification =>
                 <div>
+                  <hr></hr>
                   <News key = {notification._id}
                       value = {notification}
                       names = {this.state.userNames}
                       titles = {this.state.projectTitles}
                       refreshHandler = {this.load}
                     />
-                    <hr></hr>
+
                 </div>
               )
             }
