@@ -36,6 +36,7 @@ export default class Dashboard extends React.Component {
         })
         Backend.getProjectTitels(data.map (notification => {return notification.project_id}))
         .then ((projectTitles) =>{
+          alert(JSON.stringify(projectTitles))
           this.setState({
             projectTitles : projectTitles,
             notifications: data
@@ -60,9 +61,9 @@ export default class Dashboard extends React.Component {
               <div style={{fontSize: 20, textAlign: "center"}}><hr></hr>Nothing new</div> : ""}
             {
               this.state.notifications.map(notification =>
-                <div>
+                <div key = {notification._id}>
                   <hr></hr>
-                  <News key = {notification._id}
+                  <News
                       value = {notification}
                       names = {this.state.userNames}
                       titles = {this.state.projectTitles}
@@ -159,7 +160,7 @@ class News extends React.Component {
               <span>
                 <Link to = {`/project/${this.props.value.project_id}`}
                       style = {{color: Styles.palette.primary1Color}}>
-                  {this.props.titles[this.props.value.project_id]}
+                  {this.props.value.project_id}
                 </Link>
               </span>
               <span> {reason} </span>
