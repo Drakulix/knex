@@ -8,8 +8,8 @@ import uuid
 notifications = Blueprint('api_notifications', __name__)
 
 
-def add_notification(creator, userlist, operation, project_id = '',
-                     reason = '', saved_search_id = ''):
+def add_notification(creator, userlist, operation, project_id='',
+                     reason='', saved_search_id=''):
     date = time.strftime("%Y-%m-%d %H:%M:%S")
     for user in userlist:
         if user not in (creator):
@@ -26,7 +26,7 @@ def add_notification(creator, userlist, operation, project_id = '',
             })
 
 
-def add_self_action(creator, operation, project_id = '', user_id = None):
+def add_self_action(creator, operation, project_id='', user_id=None):
     date = time.strftime("%Y-%m-%d %H:%M:%S")
     if not user_id:
         user_id = creator
@@ -63,7 +63,7 @@ def get_actions_of_user():
     if not user:
         raise ApiException("user not found", 404)
     res = g.notifications.find({'creator': mail,
-                               'operation' : {'$in': ['create', 'comment', 'update', 'archive']}})\
+                               'operation': {'$in': ['create', 'comment', 'update', 'archive']}})\
         .sort('date', pymongo.DESCENDING).limit(20)
     return jsonify(list(res))
 

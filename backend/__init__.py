@@ -212,7 +212,7 @@ def rerun_saved_searches(creator, project_id, operation):
             query = search.to_dict()
             query['_id'] = str(project_id)
             if g.projects.count(json.dumps(query)) == 1:
-                add_notification(creator, user['email'], operation, project_id = project_id,
+                add_notification(creator, user['email'], operation, project_id=project_id,
                                  reason='search', saved_search_id=search['id'])
 
 
@@ -304,7 +304,6 @@ app.register_blueprint(bookmarks)
 app.register_blueprint(avatars)
 app.register_blueprint(notifications)
 app.register_blueprint(share)
-
 
 
 if __name__ == "__main__":
