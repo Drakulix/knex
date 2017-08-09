@@ -378,7 +378,7 @@ export default class BookmarksTable extends Component {
               minRows = {3}
               noDataText = {() =>
                 (this.state.loading) ?
-                  <CircularProgress  size = {45} thickness = {5} />: "No projects found"
+                  <CircularProgress  size = {40} thickness = {5} />: "No projects found"
               }
               defaultPageSize = {10}/>
         </div>
