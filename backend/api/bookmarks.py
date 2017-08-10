@@ -59,5 +59,7 @@ def delete_bookmarks(id):
 @login_required
 def get_bookmarks():
     projects = [g.projects.find_one({'_id': project_id}) for project_id in current_user.bookmarks]
+    for project in projects:
+        project['is_bookmark'] = 'true'
     projects = list(filter(None.__ne__, projects))
     return jsonify(projects)

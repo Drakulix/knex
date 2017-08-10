@@ -92,6 +92,9 @@ class News extends React.Component {
       case 'archive':
         operation = "archived"
         break
+      case 'unarchive':
+          operation = "unarchived"
+        break
       case 'share':
         operation = "shared"
         break
