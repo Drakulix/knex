@@ -45,6 +45,7 @@ export default class Pagination extends Component {
   render () {
     return (
       <div  className = "row center-block" style = {{textAlign: "center"}}>
+        <div className = "col"></div>
         <div className = "col-1">
           <FlatButton style = {style} onClick = {() => this.props.jumpTo(0)} icon = {<FirstPage style={style} />}/>
         </div>
@@ -100,6 +101,7 @@ export default class Pagination extends Component {
           <FlatButton style = {style} icon = {<LastPage style = {style}/>}
             onClick = {() => this.props.jumpTo(this.props.pages-1)}/>
         </div>
+        <div className = "col"></div>
       </div>
     )
   }

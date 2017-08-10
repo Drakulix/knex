@@ -179,14 +179,14 @@ export default class ShowUsers extends Component {
                     ))}
                   </div>
                   <div style = {{marginTop: '4em'}} className = "row">
-                    <div className = "col-3"></div>
+                    <div className = "col"></div>
                     <div className = "col-6">
                       <Pagination page = {this.state.page}
                               jumpTo = {(page) => this.setState({page : page})}
                               pages = {this.state.pages.length}
                       />
                     </div>
-                    <div className = "col-3"></div>
+                    <div className = "col"></div>
                   </div>
                 </div>
               }
@@ -220,7 +220,9 @@ class UserCard extends Component {
               <div style = {{fontSize : 16}}>{this.props.projectCounts[this.props.user.email] !== undefined ? this.props.projectCounts[this.props.user.email].length : 0} Projects</div>
             </div>
           </div>
-          <div style = {{width : "100%", textAlign : "left"}}><SkillOutputList value = {this.props.userTags[this.props.user.email]} /></div>
+          <div style = {{width : "100%", textAlign : "left"}}>
+            <SkillOutputList value = {this.props.userTags[this.props.user.email]}/>
+          </div>
         </Link>
       </div>
     )
