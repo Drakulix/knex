@@ -213,27 +213,28 @@ def archive_project(project_id):
         res = g.projects.find_one({'_id': project_id})
         if not res:
             raise ApiException("Project not found", 404)
-        state = request.get_json() if request.is_json \
+        req = request.get_json() if request.is_json \
             else json5.loads(request.data.decode("utf-8"))
-        if not state['archived'] or state['archived'] not in ['true', 'false']:
-            raise ApiException("No valid field for archivation state found", 400)
+        if not req['archived'] or req['archived'] not in ['true', 'false']:
+            raise ApiException("No valid field for archivation request found", 400)
         if current_user_has_permission_to_change(res):
-            res['archived'] = "true" if state['archived'] == 'true' else "false"
+            res['archived'] = 'true' if req['archived'] == 'true' else 'false'
+            operation = 'archive' if req['archived'] == 'true' else 'unarchive'
             g.projects.find_one_and_replace({'_id': project_id}, res,
                                             return_document=ReturnDocument.AFTER)
             res['date_last_updated'] = time.strftime("%Y-%m-%d")
             res['_id'] = project_id
             g.projects.find_one_and_replace({'_id': project_id}, res,
                                             return_document=ReturnDocument.AFTER)
-            add_notification(current_user['email'], res['authors'], "archive",
+            add_notification(current_user['email'], res['authors'], operation,
                              project_id=project_id, reason='author')
-            add_notification(current_user['email'], g.users_with_bookmark(project_id), "archive",
+            add_notification(current_user['email'], g.users_with_bookmark(project_id), operation,
                              project_id=project_id, reason='bookmark')
             add_notification(current_user['email'],
-                             [comment['author'] for comment in res['comments']], "archive",
+                             [comment['author'] for comment in res['comments']], operation,
                              project_id=project_id, reason='comment')
-            add_self_action(current_user['email'], "archive", project_id=project_id)
-            g.rerun_saved_searches(current_user['email'], project_id, "archive")
+            add_self_action(current_user['email'], operation, project_id=project_id)
+            g.rerun_saved_searches(current_user['email'], project_id, operation)
 
             return make_response("Success")
         elif not current_user_has_permission_to_change(manifest):

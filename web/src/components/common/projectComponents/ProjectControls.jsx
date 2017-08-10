@@ -37,7 +37,7 @@ export default class ProjectControls extends Component{
     this.handleBookmark = this.handleBookmark.bind(this)
     this.handleShare = this.handleShare.bind(this)
     this.handleClose = this.handleClose.bind(this)
-    this.handleDelete = this.handleDelete.bind(this)
+    this.handleArchive = this.handleArchive.bind(this)
     this.handleSharedProject = this.handleSharedProject.bind(this)
     this.updateCommentCount = this.updateCommentCount.bind(this)
   }
@@ -47,7 +47,7 @@ export default class ProjectControls extends Component{
     var project = this.props.projectInf;
     delete project.is_bookmark
     delete project.is_owner
-    project['archived'] = false
+    project['archived'] = "false"
     Backend.archiveProject(this.props.projectID, "false").then(
     this.setState({
       dialogOpen: false,
@@ -77,12 +77,12 @@ export default class ProjectControls extends Component{
     })
   }
 
-  handleDelete(){
+  handleArchive(){
     var project = this.props.projectInf;
     delete project.is_bookmark
     delete project.is_owner
-    project['archived'] = true
-    Backend.archiveProject(this.props.projectID, "false").then(
+    project['archived'] = "true"
+    Backend.archiveProject(this.props.projectID, "true").then(
     this.setState({
       dialogOpen: false,
       snackbar: true,
@@ -131,13 +131,13 @@ export default class ProjectControls extends Component{
                           handleClose = {this.handleClose}
                           title = {`Do you want to archive project${this.props.projectInf.title}`}
                           confirmationLabel = {"Archive project"}
-                          confirmAction = {this.handleDelete}
+                          confirmAction = {this.handleArchive}
         />
         <Snackbar open = {this.state.snackbar}
                   message = {this.state.snackbarText}
                   autoHideDuration = {10000}
         />
-        {!this.props.projectInf.archived ?
+      {this.props.projectInf.archived === "false"?
           <div style = {{textAlign: "center"}} >
             <IconButton
                         onClick = {this.handleComment}
