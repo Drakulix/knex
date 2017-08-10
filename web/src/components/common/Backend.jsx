@@ -319,7 +319,8 @@ class Backend {
     }
 
     getProjectTitels(project_ids){
-      return this.postJson('/api/projects/titles', project_ids)
+      return this.postJson('/api/projects/titles', project_ids).then(function(data)
+        {return JSON.parse(data)})
     }
 
     async addProjectComment(id, message) {

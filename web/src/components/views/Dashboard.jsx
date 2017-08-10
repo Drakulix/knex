@@ -163,7 +163,7 @@ class News extends React.Component {
               <span>
                 <Link to = {`/project/${this.props.value.project_id}`}
                       style = {{color: Styles.palette.primary1Color}}>
-                  {this.props.value.project_id}
+                      {this.props.titles[this.props.value.project_id]}
                 </Link>
               </span>
               <span> {reason} </span>
