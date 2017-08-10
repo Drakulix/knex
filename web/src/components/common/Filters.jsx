@@ -138,7 +138,8 @@ export default class Filters extends Component{
                   />
               </div>
               <IconButton iconStyle = {{color: Styles.palette.disabledColor}} style = {{ marginLeft: -30, visibility: (this.state.authors.length !== 0) ? "visible": "hidden"}} onClick = {() => this.handleChange({target: {name :"authors", value :[]}})}>
-                <Cancel />              </IconButton>
+                <Cancel />
+              </IconButton>
             </div>
             <div className = "row">
               <div className = "col-1 filter-label" style = {{textAlign: "left" , marginLeft: 2}}>From</div>
@@ -154,7 +155,8 @@ export default class Filters extends Component{
                   />
               </div>
               <IconButton iconStyle = {{color: Styles.palette.disabledColor}} style = {{ marginLeft: -30, visibility: (this.state.picker_date_from != null) ? "visible": "hidden"}} onClick = {()=> this.handleDateDelete('from')}>
-                <Cancel />              </IconButton>
+                <Cancel />
+              </IconButton>
               <div className = "col-1 filter-label" style = {{textAlign: "left", marginLeft: -20}}>To</div>
               <div className = "col-2" style = {{marginTop: 2}}>
                 <DatePicker hintText = "Pick a date..."
@@ -167,17 +169,17 @@ export default class Filters extends Component{
                   onChange = {this.handleChangeDateTill}
                   />
               </div>
-              <IconButton iconStyle = {{color: Styles.palette.disabledColor}} style = {{ marginLeft: -60, visibility: (this.state.picker_date_to != null) ? "visible": "hidden"}} onClick = {() => this.handleDateDelete('until')}>
-                <i className = "material-icons" style = {{marginLeft: -30}}>cancel</i>
+              <IconButton iconStyle = {{color: Styles.palette.disabledColor}} style = {{ marginLeft: -70, visibility: (this.state.picker_date_to != null) ? "visible": "hidden"}} onClick = {() => this.handleDateDelete('until')}>
+                <Cancel />
               </IconButton>
-              <div className = "col-1 filter-label" style = {{textAlign: "left", marginLeft: -12}} >Status</div>
+              <div className = "col-1 filter-label" style = {{textAlign: "left"}} >Status</div>
               <div className = "col-2" style = {{marginTop: -3}}>
                 <StatusInput onChange = {this.handleStatusChange}
                             value = {this.state.status}
                 />
               </div>
-              <IconButton iconStyle = {{color: Styles.palette.disabledColor}} style = {{ marginLeft: -20, visibility: (this.state.status !== "") ? "visible": "hidden"}} onClick = {() => this.handleStatusChange(null,null,"")}>
-                <i className = "material-icons" style = {{marginLeft: -30}}>cancel</i>
+              <IconButton iconStyle = {{color: Styles.palette.disabledColor}} style = {{ marginLeft: -30, visibility: (this.state.status !== "") ? "visible": "hidden"}} onClick = {() => this.handleStatusChange(null,null,"")}>
+                <Cancel />
               </IconButton>
               <div className = "col-1"></div>
             </div>

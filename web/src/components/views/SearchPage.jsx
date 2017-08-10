@@ -6,6 +6,7 @@ import Dialog from 'material-ui/Dialog'
 import Backend from '../common/Backend'
 import Snackbar from 'material-ui/Snackbar'
 import Styles from '../common/Styles.jsx'
+import Save from 'material-ui/svg-icons/content/save'
 
 
 export default class SearchPage extends Component {
@@ -151,7 +152,7 @@ export default class SearchPage extends Component {
             <div className = "col-2">
               <RaisedButton style = {{width : "100%"}}
                 label = "Save search"
-                icon = {<i className = "material-icons" style = {{color : Styles.palette.alternateTextColor, marginTop : -3}}>save</i>}
+                icon = {<Save style = {{color : Styles.palette.alternateTextColor, marginTop : -3}}/>}
                 onClick = {this.handleOpen}
                 primary = {true}/>
             </div>

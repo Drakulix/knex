@@ -9,36 +9,34 @@ import ChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
 import More from 'material-ui/svg-icons/navigation/more-horiz';
 import Styles from './Styles.jsx'
 
+const style = {
+  width: 40,
+  height: 40,
+  minWidth : 40,
+  fontSize : 20,
+  verticalAlign: "middle",
+  color: Styles.palette.textColor,
+}
 
+const activeLabel = {
+  fontSize : 20,
+  color: Styles.palette.textColor,
+  marginLeft: -4,
+  verticalAlign: 'bottom-center'
+}
 
-  const style = {
-    width: 40,
-    height: 40,
-    minWidth : 40,
-    fontSize : 20,
-    verticalAlign: "middle",
-    color: '#000000',
-  }
-
-  const activeLabel = {
-    fontSize : 20,
-    color: '#000000',
-    marginLeft: -4,
-    verticalAlign: 'bottom-center'
-  }
-
-  const activeStyle = {
-    width: 38,
-    height: 38,
-    minWidth : 38,
-    verticalAlign: "middle",
-    fontSize : 20,
-    color: '#000000',
-    borderColor : Styles.palette.primary1Color,
-    borderRadius : '50%',
-    borderStyle : 'solid',
-    borderWidth: 2,
-  }
+const activeStyle = {
+  width: 38,
+  height: 38,
+  minWidth : 38,
+  verticalAlign: "middle",
+  fontSize : 20,
+  color: Styles.palette.textColor,
+  borderColor : Styles.palette.primary1Color,
+  borderRadius : '50%',
+  borderStyle : 'solid',
+  borderWidth: 2,
+}
 
 export default class Pagination extends Component {
 

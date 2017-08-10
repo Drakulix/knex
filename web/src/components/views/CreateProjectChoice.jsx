@@ -8,6 +8,11 @@ import TextField from 'material-ui/TextField'
 import MultiFileUploader from '../common/MultiFileUploader'
 import Styles from '../common/Styles.jsx'
 
+import Keyboard from 'material-ui/svg-icons/hardware/keyboard'
+import FileUpload from 'material-ui/svg-icons/file/file-upload'
+import CloudUpload from 'material-ui/svg-icons/file/cloud-upload'
+import MultiUpload from 'material-ui/svg-icons/av/playlist-add'
+
 
 const JSON5 = require('json5')
 
@@ -171,7 +176,7 @@ export default class CreateProjectChoice extends Component {
           <div className ="col-4"></div>
           <div className ="col-2">
             <RaisedButton
-              icon = {<i className = "material-icons" style = {{fontSize : 60,color : Styles.palette.alternateTextColor, marginTop : -3}}>cloud_download</i>}
+              icon = {<CloudUpload style = {{height : 60, width : 60, color : Styles.palette.alternateTextColor, marginTop : -3}}/>}
               primary = {true}
               style = {{ width : 120, height : 120}}
               onClick = {() => this.setState({urlDialog : true})}/>
@@ -179,7 +184,7 @@ export default class CreateProjectChoice extends Component {
           </div>
           <div className ="col-2">
             <RaisedButton
-              icon = {<i className = "material-icons" style = {{fontSize : 60,color : Styles.palette.alternateTextColor, marginTop : -3}}>file_upload</i>}
+              icon = {<FileUpload style = {{height : 60, width : 60, color : Styles.palette.alternateTextColor, marginTop : -3}}/>}
               containerElement = "label"
               primary = {true}
               style = {{ width : 120, height : 120}}>
@@ -192,7 +197,7 @@ export default class CreateProjectChoice extends Component {
           <div className ="col-4"></div>
             <div className = "col-2">
               <RaisedButton
-                icon = {<i className = "material-icons" style = {{marginLeft : 18,fontSize : 60, color : Styles.palette.alternateTextColor, marginTop : -3}}>playlist_add</i>}
+                icon = {<MultiUpload style = {{marginLeft : 18, height : 60, width : 60, color : Styles.palette.alternateTextColor, marginTop : -3}}/>}
                 primary = {true}
                 onClick = {() => this.setState({multiFileUploader : true})}
                 style = {{ width : 120, height : 120}}/>
@@ -200,7 +205,7 @@ export default class CreateProjectChoice extends Component {
           </div>
           <div className = "col-2">
             <RaisedButton
-                icon = {<i className = "material-icons" style = {{fontSize : 60,color : Styles.palette.alternateTextColor, marginTop : -3}}>keyboard</i>}
+                icon = {<Keyboard style = {{height : 60, width : 60, color : Styles.palette.alternateTextColor, marginTop : -3}}/>}
                 primary = {true}
                 href = "/createNew"
                 style = {{ width : 120, height : 120}}/>

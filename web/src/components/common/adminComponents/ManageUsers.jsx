@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import ReactTable from 'react-table'
 import { Link } from 'react-router-dom'
-import IconButton from 'material-ui/IconButton'
 import Styles from '../../common/Styles'
 import Backend from '../../common/Backend'
 import CircularProgress from 'material-ui/CircularProgress'
@@ -9,7 +8,22 @@ import {Card, CardHeader, CardText} from 'material-ui/Card'
 import TextField from 'material-ui/TextField'
 import ConfirmationPane from '../../common/ConfirmationPane'
 import Snackbar from 'material-ui/Snackbar'
+import Delete from 'material-ui/svg-icons/action/delete'
+import Yes from 'material-ui/svg-icons/action/done'
+import No from 'material-ui/svg-icons/content/clear'
+import Edit from 'material-ui/svg-icons/editor/mode-edit'
+import history from '../../common/history'
 
+
+const style = {
+  button: {
+    width: 24,
+    height: 24,
+    verticalAlign: "middle",
+    color: Styles.palette.textColor,
+    cursor: 'pointer'
+  }
+}
 
 export default class ManageUsers extends Component {
   constructor(props) {
@@ -178,16 +192,10 @@ export default class ManageUsers extends Component {
       filterable: false,
       width: 60,
       style: {textAlign: "center"},
-      Cell: props =>{
-        return(
+      Cell: props =>
           <div onClick = {() => this.handleSetActive(props.value)}>
-            <i  className = "material-icons"
-                style = {{fontSize: '24px',
-                          paddin: 3,
-                          color: Styles.palette.textColor}}>
-            {props.value.active === "false" ?  "clear": "done"}
-          </i></div>)
-      }
+            {props.value.active === "true" ? <Yes style= {style.button}/> : <No style = {style.button}/>}
+          </div>
     })
 
     columns.push({
@@ -197,16 +205,10 @@ export default class ManageUsers extends Component {
       filterable: false,
       style: {textAlign: "center"},
       accessor: d => d,
-      Cell: props =>{
-        return(
+      Cell: props =>
           <div onClick = {() => this.handleSetAdmin(props.value)}>
-            <i  className = "material-icons"
-                style = {{fontSize: '24px',
-                          padding: 3,
-                          color: Styles.palette.textColor}}>
-            {(props.value.roles.indexOf("admin") !== -1) ?  "done": "clear"}
-          </i></div>)
-      }
+            {(props.value.roles.indexOf("admin") !== -1) ? <Yes style = {style.button}/> : <No style = {style.button}/>}
+          </div>
     })
 
     columns.push({
@@ -216,17 +218,11 @@ export default class ManageUsers extends Component {
       sortable: false,
       width: 60,
       style: {textAlign: "center"},
-      Cell: props => <IconButton
-                          touch = {true}
-                          href = {`/profile/${props.value.email}`}
-                          style = {Styles.largeIcon}
-                          iconStyle = {{fontSiz: '24px',colo: Styles.palette.textColor}}
-                          value = {props.value._id}
-                          >
-                            <i className = "material-icons">mode_edit</i>
-                          </IconButton>
+      Cell: props =>
+          <div onClick = {()=>history.push(`/profile/${props.value.email}`)}>
+            <Edit style= {style.button}/>
+          </div>
     })
-
     columns.push({
       Header: 'Delete',
       accessor: d => d,
@@ -234,15 +230,10 @@ export default class ManageUsers extends Component {
       sortable: false,
       width: 60,
       style: {textAlign: "center"},
-      Cell: props => <IconButton
-            onClick = {()=>this.intentionToDeleteUser(props.value.email)}
-            touch = {true}
-            style = {Styles.largeIcon}
-            iconStyle = {{fontSiz: '24px',colo: Styles.palette.textColor}}
-            value = {props.value._id}
-            >
-              <i className = "material-icons">delete</i>
-            </IconButton>
+      Cell: props =>
+        <div onClick = {()=>this.intentionToDeleteUser(props.value.email)}>
+          <Delete style= {style.button}/>
+        </div>
       })
 
     return (

@@ -5,6 +5,9 @@ import IconButton from 'material-ui/IconButton'
 import Snackbar from 'material-ui/Snackbar'
 import NotificationPane from '../common/NotificationPane'
 import Backend from '../common/Backend'
+import Logout from 'material-ui/svg-icons/action/exit-to-app'
+import Notification from 'material-ui/svg-icons/social/notifications'
+import Styles from './Styles'
 
 export default class TopBar extends Component {
   constructor(props) {
@@ -76,8 +79,8 @@ export default class TopBar extends Component {
           <div className = "col-10">
           </div>
           <div className = "col-1" style = {{marginTop: 2}}>
-            <IconButton tooltip = "Notifications" style = {{color: 'white', marginLeft: 80}} onClick = {this.handleNotificationClick}>
-              <i className = "material-icons">notifications</i>
+            <IconButton tooltip = "Notifications" iconStyle = {{color: Styles.palette.alternateTextColor, marginLeft: 80}} onClick = {this.handleNotificationClick}>
+              <Notification/>
               { this.state.notifications.length !== 0 ?
                 <Badge  badgeContent = {this.state.notifications.length} primary = {true}
                   badgeStyle = {{top: -30, height: 20, width: 20}} />
@@ -91,8 +94,8 @@ export default class TopBar extends Component {
                               resolveNotification = {this.resolveNotification}/>
           </div>
           <div className = "col-1" style = {{marginTop: 2}}>
-            <IconButton tooltip = "Log out" style = {{color: 'white'}} onClick = {this.handleLogout}>
-              <i className = "material-icons">exit_to_app</i>
+            <IconButton tooltip = "Log out" iconStyle = {{color: Styles.palette.alternateTextColor}} onClick = {this.handleLogout}>
+              <Logout/>
             </IconButton>
           </div>
         </div>

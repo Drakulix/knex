@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import Dialog from 'material-ui/Dialog'
-import {List, ListItem} from 'material-ui/List';
+import {List, ListItem} from 'material-ui/List'
 import RaisedButton from 'material-ui/RaisedButton'
 import Snackbar from 'material-ui/Snackbar'
 import Styles from '../common/Styles.jsx'
 import Spinner from '../common/Spinner'
 import Backend from '../common/Backend'
 import history from '../common/history'
+import Cancel from 'material-ui/svg-icons/navigation/cancel'
 
 
 const JSON5 = require('json5')

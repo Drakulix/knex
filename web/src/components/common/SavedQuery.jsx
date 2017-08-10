@@ -6,7 +6,8 @@ import Backend from '../common/Backend'
 import AuthorOutputList from '../common/chips/AuthorOutputList'
 import TagOutputList from '../common/chips/TagOutputList'
 import Styles from './Styles.jsx'
-
+import Delete from 'material-ui/svg-icons/action/delete'
+import Search from 'material-ui/svg-icons/action/search'
 
 export default class SavedQuery extends Component {
 
@@ -42,7 +43,7 @@ export default class SavedQuery extends Component {
                   label = {"Run query"}
                   primary = {true}
                   fullWidth = {true}
-                  icon = {<i className = "material-icons" style = {{color: Styles.palette.alternateTextColor, marginTop: 0}}>search</i>}
+                  icon = {<Search style = {{color: Styles.palette.alternateTextColor}}/>}
                  >
                 </RaisedButton>
               </Link>
@@ -53,7 +54,7 @@ export default class SavedQuery extends Component {
                  primary = {true}
                  fullWidth = {true}
                  label = "Delete Query"
-                 icon = {<i className = "material-icons" style = {{color: Styles.palette.alternateTextColor, marginTop: 0}}>delete</i>}
+                 icon = {<Delete style = {{color: Styles.palette.alternateTextColor}}/>}
                  >
               </RaisedButton>
             </div>
