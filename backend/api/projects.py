@@ -154,7 +154,7 @@ def getProjectTitles():
         its title as value.
     """
     projects = [uuid.UUID(project_id) for project_id in set(request.get_json())]
-    projectlist = g.projects.find({'_id': projects[0]}, {"_id": 1, "title": 1})
+    projectlist = g.projects.find({'_id': {'$in': projects}}, {"_id": 1, "title": 1})
     return jsonify(dict([(str(project['_id']), project['title']) for project in projectlist]))
 
 
