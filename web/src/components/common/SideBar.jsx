@@ -13,7 +13,7 @@ export default class SideBar extends Component {
         discoverProjects: 'Discover projects',
         createProject: 'Create a new project',
         queries: "Your saved queries",
-        bookmarks: 'Your Bookmarks',
+        bookmarks: 'Your bookmarks',
         userprojects: 'Your projects',
         profile: 'Your profile',
         adminArea: 'Admin area',

@@ -7,7 +7,10 @@ import TextField from 'material-ui/TextField'
 import TagInputList from '../common/chips/TagInputList'
 import SkillOutputList from '../common/chips/SkillOutputList'
 import Styles from '../common/Styles.jsx'
+import Pagination from '../common/Pagination'
 
+
+const userPerPage = 6
 
 export default class ShowUsers extends Component {
 
@@ -22,7 +25,9 @@ export default class ShowUsers extends Component {
       name : "",
       email : "",
       tags : [],
-      userTags : {}
+      userTags : {},
+      page : 0,
+      pages :[[]]
     }
     this.handleChange = this.handleChange.bind(this)
   }
@@ -89,9 +94,20 @@ export default class ShowUsers extends Component {
       }
       if(!discard)
           filteredList.push(dataObject)
+    }
+    var page = []
+    var pages = []
+    for(let user in filteredList){
+      if(user % userPerPage === 0){
+        page = []
+        pages.push(page)
       }
+      page.push(filteredList[user])
+    }
     this.setState({
-      filteredList : filteredList
+      filteredList: filteredList,
+      pages: pages,
+      page: page * userPerPage >=  filteredList.length ? 0 : this.state.page
     })
   }
 
@@ -141,33 +157,71 @@ export default class ShowUsers extends Component {
               </CardText>
             </Card>
             <div style = {{marginTop : 20}} >
-                {this.state.filteredList.map((user) => (
-                    <div key = {user.email} style = {{width : "31%", float : "left", marginRight : 20, marginBottom : 20}}>
-                      <Link to = {`/profile/${user.email}`}
-                            style = {{color : Styles.palette.textColor}}>
-                        <div className = "row">
-                          <div className = "col-4">
-                            <img src = {`/api/users/${user.email}/avatar`}
-                              width = "140"
-                              height = "140"
-                              alt = {user.email}
-                              />
+              {this.state.pages.length === 0 ?
+                <div style = {{marginTop: 60, textAlign: 'center', fontSize: 24, color: Styles.palette.disabledColor }}>No users found</div>
+                  :
+                <div>
+                  <div>
+                    {this.state.pages[this.state.page].map((user, index) => (
+                      index % 3 === 0 ?
+                      <div className = "row" key = {index}>
+                        {this.state.pages[this.state.page].map((user, index2) => (
+                          index2 >= index && index2 < index + 3 ?
+                          <div className = "col-4"
+                            key = {`user#${index2}`}>
+                            <UserCard user = {user}
+                            projectCounts = {this.state.projectCounts}
+                            userTags = {this.state.userTags}/>
                           </div>
-                          <div className = "col-1"></div>
-                          <div className = "col-6" style = {{marginTop : 20}}>
-                            <div style = {{fontWeight : "bold", fontSize : 20}}>{`${user.first_name} ${user.last_name}`}</div>
-                            <div style = {{fontSize : 14}}>{user.email}</div>
-                            <div style = {{fontSize : 16}}>{this.state.projectCounts[user.email] !== undefined ? this.state.projectCounts[user.email].length : 0} Projects</div>
-                          </div>
-                        </div>
-                        <div style = {{width : "100%", textAlign : "left"}}><SkillOutputList value = {this.state.userTags[user.email]} /></div>
-
-                      </Link>
+                          : ""
+                        ))}
+                      </div> : ""
+                    ))}
+                  </div>
+                  <div style = {{marginTop: '4em'}} className = "row">
+                    <div className = "col-3"></div>
+                    <div className = "col-6">
+                      <Pagination page = {this.state.page}
+                              jumpTo = {(page) => this.setState({page : page})}
+                              pages = {this.state.pages.length}
+                      />
                     </div>
-                  ))}
-              </div>
+                    <div className = "col-3"></div>
+                  </div>
+                </div>
+              }
+            </div>
           </div>
         </div>
+      </div>
+    )
+  }
+}
+
+class UserCard extends Component {
+
+  render () {
+    return (
+      <div key = {this.props.user.email} style = {{marginRight : 20, marginBottom : 20}}>
+        <Link to = {`/profile/${this.props.user.email}`}
+              style = {{color : Styles.palette.textColor}}>
+          <div className = "row">
+            <div className = "col-4">
+              <img src = {`/api/users/${this.props.user.email}/avatar`}
+                  width = "140"
+                  height = "140"
+                  alt = {this.props.user.email}
+              />
+            </div>
+            <div className = "col-1"></div>
+            <div className = "col-6" style = {{marginTop : 20}}>
+              <div style = {{fontWeight : "bold", fontSize : 20}}>{`${this.props.user.first_name} ${this.props.user.last_name}`}</div>
+              <div style = {{fontSize : 14}}>{this.props.user.email}</div>
+              <div style = {{fontSize : 16}}>{this.props.projectCounts[this.props.user.email] !== undefined ? this.props.projectCounts[this.props.user.email].length : 0} Projects</div>
+            </div>
+          </div>
+          <div style = {{width : "100%", textAlign : "left"}}><SkillOutputList value = {this.props.userTags[this.props.user.email]} /></div>
+        </Link>
       </div>
     )
   }
