@@ -15,7 +15,8 @@
     "react-router-dom": "^4.1.1",
     "react-table": "^6.4.0",
     "react-tap-event-plugin": "^2.0.1",
-    "reactstrap": "^4.6.2"
+    "reactstrap": "^4.6.2",
+    "roboto-fontface": "^0.8.0"
   },
   "devDependencies": {
     "react-scripts": "1.0.7"

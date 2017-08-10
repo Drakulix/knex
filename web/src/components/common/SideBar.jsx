@@ -17,6 +17,7 @@ import Add from 'material-ui/svg-icons/content/add-circle'
 
 const menuItemStyle = {color: Styles.palette.alternateTextColor, width: 20, height:20, marginTop: -15}
 
+
 export default class SideBar extends Component {
   constructor(props) {
     super(props)
@@ -31,7 +32,6 @@ export default class SideBar extends Component {
         adminArea: 'Admin area',
         trashcan: "Your trash",
         people: "Search users"
-
       },
       myProfile: Backend.getMail(),
       data: "",
@@ -42,42 +42,39 @@ export default class SideBar extends Component {
 
   render() {
     return (
-        <div className = "col-3 side-bar">
-            <img className = "logo-banner" src = {logo} alt = "logo"/>
-            <ul className = "list-group">
-                <SideBarEntry icon = {<Search style = {menuItemStyle}/>} name = {this.state.menu.discoverProjects} to = "/discovery" active = {this.isActive("/discovery")} />
-                <SideBarEntry icon = {<People style = {menuItemStyle}/>} name = {this.state.menu.people} to = {'/users/'} active = {this.isActive("/users")} />
-                <SideBarEntry icon = {<Add style = {menuItemStyle}/>} name = {this.state.menu.createProject} to = "/createbylink" active = {this.isActive("/createbylink")} />
-                <SideBarEntry icon = {<Archive style = {menuItemStyle}/>} name = {this.state.menu.queries} to = "/queries" active = {this.isActive("/queries")} />
-                <SideBarEntry icon = {<Bookmarks style = {menuItemStyle}/>} name = {this.state.menu.bookmarks} to = "/bookmarks" active = {this.isActive("/bookmarks")} />
-                <SideBarEntry icon = {<Projects style = {menuItemStyle}/>} name = {this.state.menu.userprojects} to = "/yourprojects" active = {this.isActive("/yourprojects")} />
-                <SideBarEntry icon = {<Delete style = {menuItemStyle}/>} name = {this.state.menu.trashcan} to = '/trashcan' active = {this.isActive("/trashcan")} />
-                <SideBarEntry icon = {<Profile style = {menuItemStyle}/>} name = {this.state.menu.profile} to = {`/yourprofile`} active = {this.isActive("/yourprofile")} />
-                {Backend.isAdmin() ?  <SideBarEntry
-                  icon = {<Admin style = {menuItemStyle}/>}
-                  name = {this.state.menu.adminArea}
-                  to = "/admin" active = {this.isActive("/admin")}
-                />
-              : ""}
-            </ul>
-        </div>
+      <div className = "col-3 side-bar">
+        <img className = "logo-banner" src = {logo} alt = "logo"/>
+        <ul className = "list-group">
+          <SideBarEntry icon = {<Search style = {menuItemStyle}/>} name = {this.state.menu.discoverProjects} to = "/discovery" active = {this.isActive("/discovery")} />
+          <SideBarEntry icon = {<People style = {menuItemStyle}/>} name = {this.state.menu.people} to = {'/users/'} active = {this.isActive("/users")} />
+          <SideBarEntry icon = {<Add style = {menuItemStyle}/>} name = {this.state.menu.createProject} to = "/createbylink" active = {this.isActive("/createbylink")} />
+          <SideBarEntry icon = {<Archive style = {menuItemStyle}/>} name = {this.state.menu.queries} to = "/queries" active = {this.isActive("/queries")} />
+          <SideBarEntry icon = {<Bookmarks style = {menuItemStyle}/>} name = {this.state.menu.bookmarks} to = "/bookmarks" active = {this.isActive("/bookmarks")} />
+          <SideBarEntry icon = {<Projects style = {menuItemStyle}/>} name = {this.state.menu.userprojects} to = "/yourprojects" active = {this.isActive("/yourprojects")} />
+          <SideBarEntry icon = {<Delete style = {menuItemStyle}/>} name = {this.state.menu.trashcan} to = '/trashcan' active = {this.isActive("/trashcan")} />
+          <SideBarEntry icon = {<Profile style = {menuItemStyle}/>} name = {this.state.menu.profile} to = {`/yourprofile`} active = {this.isActive("/yourprofile")} />
+          {Backend.isAdmin() ?  <SideBarEntry
+            icon = {<Admin style = {menuItemStyle}/>}
+            name = {this.state.menu.adminArea}
+            to = "/admin" active = {this.isActive("/admin")}
+            />
+          : ""}
+        </ul>
+      </div>
     )
   }
 }
 
 
-
-
 const SideBarEntry = ({to, icon, icon2, name, active, style}) => {
-    return (
-        <Link to = {to}  >
-        <li className = {`list-group-item ${active ? "active": ""}` } style = {{color: Styles.palette.alternateTextColor}}>
-            {active && (<div className = "menu-indicator" style = {{backgroundColor: Styles.palette.primary1Color }}/>)}
-            <div style = {{display: "inline", paddingTop: 3, float: "left", marginRight: 8}}>
-
-{icon}
-            </div>{name}
-        </li>
-        </Link>
-    )
+  return (
+    <Link to = {to}  >
+      <li className = {`list-group-item ${active ? "active": ""}` } style = {{color: Styles.palette.alternateTextColor}}>
+          {active && (<div className = "menu-indicator" style = {{backgroundColor: Styles.palette.primary1Color }}/>)}
+          <div style = {{display: "inline", paddingTop: 3, float: "left", marginRight: 8}}>
+            {icon}
+          </div>{name}
+      </li>
+    </Link>
+  )
 }

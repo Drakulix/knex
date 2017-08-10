@@ -158,7 +158,7 @@ export default class MultiFileUploader extends Component {
           {this.state.files.map(item =>
             <ListItem
                 key = {item.name}
-                rightIcon = {<i className = "material-icons" style = {{color: 'gray'}}>cancel</i>}
+                rightIcon = {<Cancel style = {{color : Styles.palette.disabledColor}}/>}
                 primaryText = {item.project.title}
                 secondaryText = {item.name}
                 onClick = {() => {this.remove(item.name)}}
