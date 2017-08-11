@@ -11,6 +11,8 @@ import AuthorInputList from '../common/chips/AuthorInputList'
 import TagInputList from '../common/chips/TagInputList'
 import {StatusInput} from '../common/Status'
 import Spinner from '../common/Spinner'
+import HeadLine from '../common/HeadLine'
+
 
 export default class CreateProject extends Component {
 
@@ -150,9 +152,7 @@ export default class CreateProject extends Component {
             message = {(this.state.projectID === undefined) ? "New project added" : "Project updated"}
             autoHideDuration = {10000}
           />
-          <div className = "headerCreation" style = {{width : "100%"}}>
-            {(this.state.projectID !== undefined) ? "Edit project" : "Create a new project"}
-          </div>
+          <HeadLine title = {(this.state.projectID !== undefined) ? "Edit project" : "Create a new project"} />
           <form>
             <div className = "profile-info">Title</div>
             <div className = "row">

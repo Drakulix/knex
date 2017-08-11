@@ -11,6 +11,11 @@ import TagOutputList from '../common/chips/TagOutputList'
 import ConfirmationPane from '../common/ConfirmationPane'
 import Status from '../common/Status'
 import CircularProgress from 'material-ui/CircularProgress'
+import Archive from 'material-ui/svg-icons/content/archive'
+import Unarchive from 'material-ui/svg-icons/content/unarchive'
+import StarBorder from 'material-ui/svg-icons/toggle/star-border'
+import Star from 'material-ui/svg-icons/toggle/star'
+import Delete from 'material-ui/svg-icons/action/delete'
 
 
 export default class BookmarksTable extends Component {
@@ -277,7 +282,7 @@ export default class BookmarksTable extends Component {
                       touch = {true}
                       style = {Styles.largeIcon}
                       iconStyle = {{fontSize: '24px',color: Styles.palette.textColor}}>
-            <i className = "material-icons">{props.value.is_bookmark === "true" ? "star": "star_border"}</i>
+            {props.value.is_bookmark === "true" ? <Star/>: <StarBorder/>}
           </IconButton>
       })
     }
@@ -301,7 +306,7 @@ export default class BookmarksTable extends Component {
           style = {Styles.largeIcon}
           iconStyle = {{fontSize: '24px',color: Styles.palette.textColor}}
           value = {props.value._id}>
-            <i className = "material-icons">unarchive</i>
+            <Unarchive/>
           </IconButton>
      : ""}
       })
@@ -326,7 +331,7 @@ export default class BookmarksTable extends Component {
           style = {Styles.largeIcon}
           iconStyle = {{fontSize: '24px',color: Styles.palette.textColor}}
           value = {props.value._id}>
-            <i className = "material-icons">archive</i>
+            <Archive/>
           </IconButton>
      : "" }
       })
@@ -345,7 +350,7 @@ export default class BookmarksTable extends Component {
           style = {Styles.largeIcon}
           iconStyle = {{fontSize: '24px', color: Styles.palette.textColor}}
           value = {props.value._id}>
-            <i className = "material-icons">delete</i>
+            <Delete/>
           </IconButton>
       })
     }

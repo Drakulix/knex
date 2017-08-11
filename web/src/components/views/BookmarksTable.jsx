@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import DataTable from '../common/DataTable'
 import Backend from '../common/Backend'
+import HeadLine from '../common/HeadLine'
+
+
 
 export default class BookmarksTable extends Component {
 
@@ -26,7 +29,7 @@ export default class BookmarksTable extends Component {
   render(){
     return (
       <div className = "container">
-        <div className = "headerCreation">Your bookmarks</div>
+        <HeadLine title = {"Your bookmarks"} />
         <DataTable  columns = {['title', 'status', 'tags', 'authors', 'description', '_id', 'bookmarked']}
                     handler = {this.handler}
                     data = {this.state.projects}

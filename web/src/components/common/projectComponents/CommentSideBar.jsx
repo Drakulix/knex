@@ -1,17 +1,17 @@
 import React from 'react'
 import Drawer from 'material-ui/Drawer'
-import Dialog from 'material-ui/Dialog';
+import Dialog from 'material-ui/Dialog'
 import RaisedButton from 'material-ui/RaisedButton'
 import {List, ListItem} from 'material-ui/List'
 import Divider from 'material-ui/Divider'
 import Backend from '../Backend'
-import {grey400} from 'material-ui/styles/colors';
-import IconButton from 'material-ui/IconButton';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import Styles from '../Styles.jsx'
+import IconButton from 'material-ui/IconButton'
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import TextField from 'material-ui/TextField'
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import FlatButton from 'material-ui/FlatButton';
+import IconMenu from 'material-ui/IconMenu'
+import MenuItem from 'material-ui/MenuItem'
+import FlatButton from 'material-ui/FlatButton'
 
 
 class CommentItem extends React.Component {
@@ -78,7 +78,7 @@ class CommentItem extends React.Component {
         tooltip = "more"
         tooltipPosition = "bottom-left"
       >
-        <MoreVertIcon color = {grey400} />
+        <MoreVertIcon color = {Styles.palette.disabledColor} />
       </IconButton>
     );
 

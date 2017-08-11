@@ -8,6 +8,16 @@ import CommentSideBar from './CommentSideBar'
 import ConfirmationPane from '../ConfirmationPane'
 import Badge from 'material-ui/Badge'
 
+import Edit from 'material-ui/svg-icons/editor/mode-edit'
+import Comment from 'material-ui/svg-icons/communication/comment'
+import Share from 'material-ui/svg-icons/social/share'
+import Archive from 'material-ui/svg-icons/content/archive'
+import Unarchive from 'material-ui/svg-icons/content/unarchive'
+import StarBorder from 'material-ui/svg-icons/toggle/star-border'
+import Star from 'material-ui/svg-icons/toggle/star'
+
+
+
 export default class ProjectControls extends Component{
 
   constructor(props) {
@@ -18,7 +28,7 @@ export default class ProjectControls extends Component{
       commentBar: false,
       dialogOpen: false,
       snackbar: false,
-      snackbarText: "",
+      snackbarText: '',
       comments_count: 0,
       is_bookmark: false
     }
@@ -135,9 +145,9 @@ export default class ProjectControls extends Component{
                         style = {Styles.largeIcon}
                         tooltipPosition = "bottom-center"
                         tooltip = "Comment project"
-                        iconStyle = {{fontSize: '24px', color: Styles.palette.textColor}}
+                        iconStyle = {{fontSize: 24, color: Styles.palette.textColor}}
                         >
-                        <i className = "material-icons">comment</i>
+                        <Comment/>
                         <Badge   badgeContent = {this.state.comments_count} primary = {true}
                           badgeStyle = {{top: -30, height: 20, width: 20, display: (this.state.comments_count === 0) ? "none": "block"}} />
             </IconButton>
@@ -147,11 +157,9 @@ export default class ProjectControls extends Component{
                         style = {Styles.largeIcon}
                         tooltipPosition = "bottom-center"
                         tooltip = "Bookmark project"
-                        iconStyle = {{fontSize: '24px', color: Styles.palette.textColor}}
+                        iconStyle = {{fontSize: 24, color: Styles.palette.textColor}}
                         >
-                        <i className = "material-icons">
-                          {this.props.projectInf.is_bookmark === "true" ? "star": "star_border"}
-                        </i>
+                        {this.props.projectInf.is_bookmark === "true" ? <Star/>: <StarBorder/>}
             </IconButton>
             <IconButton
                         onClick = {this.handleShare}
@@ -159,9 +167,9 @@ export default class ProjectControls extends Component{
                         style = {Styles.largeIcon}
                         tooltipPosition = "bottom-center"
                         tooltip = "Share project"
-                        iconStyle = {{fontSize: '24px', color: Styles.palette.textColor}}
+                        iconStyle = {{fontSize: 24, color: Styles.palette.textColor}}
                         >
-                        <i className = "material-icons">share</i>
+                        <Share/>
             </IconButton>
             <IconButton
                         touch = {true}
@@ -170,9 +178,9 @@ export default class ProjectControls extends Component{
                         tooltipPosition = "bottom-center"
                         tooltip = "Edit project"
                         href = {`/update/${this.props.projectID}`}
-                        iconStyle = {{fontSize: '24px', color: Styles.palette.textColor}}
+                        iconStyle = {{fontSize: 24, color: Styles.palette.textColor}}
                         >
-                        <i className = "material-icons">mode_edit</i>
+                        <Edit/>
             </IconButton>
             <IconButton
                       onClick = {() => this.setState({dialogOpen: true})}
@@ -181,9 +189,9 @@ export default class ProjectControls extends Component{
                       disabled = {! (this.props.isOwner || Backend.isAdmin())}
                       tooltipPosition = "bottom-center"
                       tooltip = "Archive project"
-                      iconStyle = {{fontSize: '24px', color: Styles.palette.textColor}}
+                      iconStyle = {{fontSize: 24, color: Styles.palette.textColor}}
                       >
-                      <i className = "material-icons">archive</i>
+                      <Archive/>
             </IconButton>
           </div>
            :
@@ -195,9 +203,9 @@ export default class ProjectControls extends Component{
                       disabled = {! (this.props.isOwner || Backend.isAdmin())}
                       tooltipPosition = "bottom-center"
                       tooltip = "Unarchive project"
-                      iconStyle = {{fontSize: '24px', color: Styles.palette.textColor}}
+                      iconStyle = {{fontSize: 24, color: Styles.palette.textColor}}
                       >
-                      <i className = "material-icons">unarchive</i>
+                      <Unarchive/>
             </IconButton>
           </div>
         }

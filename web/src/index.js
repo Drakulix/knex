@@ -38,8 +38,13 @@ import SideBar from './components/common/SideBar'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import styles from './components/common/Styles.jsx'
 
+
+
 var injectTapEventPlugin = require("react-tap-event-plugin")
 injectTapEventPlugin()
+require('roboto-fontface/css/roboto/roboto-fontface.css');
+require('bootstrap/dist/css/bootstrap.css');
+
 
 
 const PageRoute = ({ component: Component, path, sitePath, ...rest }) => (
@@ -47,11 +52,15 @@ const PageRoute = ({ component: Component, path, sitePath, ...rest }) => (
     return (
       <div className="inner-content">
         <TopBar />
-        <div className="row">
           <SideBar location={sitePath} />
-          <div className="col-9 content">
+
+        <div className="row">
+            <div className ="hidden-lg-up col"/>
+            <div className="col-10 content">
             <Component {...props} />
           </div>
+          <div className ="hidden-lg-up col"/>
+
         </div>
       </div>
     );
