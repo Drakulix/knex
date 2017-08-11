@@ -75,29 +75,23 @@ export default class TopBar extends Component {
     }
     return (
       <div className = "container-fluid topbar">
-        <div className = "row">
-          <div className = "col-10">
-          </div>
-          <div className = "col-1" style = {{marginTop: 2}}>
-            <IconButton tooltip = "Notifications" iconStyle = {{color: Styles.palette.alternateTextColor, marginLeft: 80}} onClick = {this.handleNotificationClick}>
-              <Notification/>
-              { this.state.notifications.length !== 0 ?
-                <Badge  badgeContent = {this.state.notifications.length} primary = {true}
+        <div style = {{marginTop: 2, textAlign: "right"}}>
+          <IconButton tooltip = "Notifications" iconStyle = {{color: Styles.palette.alternateTextColor}} onClick = {this.handleNotificationClick}>
+            <Notification/>
+            { this.state.notifications.length !== 0 ?
+              <Badge  badgeContent = {this.state.notifications.length} primary = {true}
                   badgeStyle = {{top: -30, height: 20, width: 20}} />
-               : ""
-              }
-            </IconButton>
-            <NotificationPane value = {this.state.popover}
-                              anchorEl = {this.state.anchorEl}
-                              onRequestClose = {this.handleRequestClose}
-                              notifications = {this.state.notifications}
-                              resolveNotification = {this.resolveNotification}/>
-          </div>
-          <div className = "col-1" style = {{marginTop: 2}}>
-            <IconButton tooltip = "Log out" iconStyle = {{color: Styles.palette.alternateTextColor}} onClick = {this.handleLogout}>
-              <Logout/>
-            </IconButton>
-          </div>
+             : ""
+            }
+          </IconButton>
+          <NotificationPane value = {this.state.popover}
+                            anchorEl = {this.state.anchorEl}
+                            onRequestClose = {this.handleRequestClose}
+                            notifications = {this.state.notifications}
+                            resolveNotification = {this.resolveNotification}/>
+          <IconButton tooltip = "Log out" iconStyle = {{color: Styles.palette.alternateTextColor}} onClick = {this.handleLogout}>
+            <Logout/>
+          </IconButton>
         </div>
         <Snackbar
           open = {this.state.snackbar}

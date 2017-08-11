@@ -205,23 +205,25 @@ class UserCard extends Component {
       <div key = {this.props.user.email} style = {{marginRight : 20, marginBottom : 20}}>
         <Link to = {`/profile/${this.props.user.email}`}
               style = {{color : Styles.palette.textColor}}>
+              <div style = {{fontWeight : "bold", fontSize : 20}}>{`${this.props.user.first_name} ${this.props.user.last_name}`}</div>
+
           <div className = "row">
             <div className = "col-4">
+
               <img src = {`/api/users/${this.props.user.email}/avatar`}
-                  width = "140"
-                  height = "140"
+                  style ={{width: 80, height: 80, marginTop:0}}
+                  className = "rounded-circle profile-icon"
                   alt = {this.props.user.email}
               />
+            <div style = {{fontSize : 16, textAlign: "center", width: "100%"}}>{this.props.projectCounts[this.props.user.email] !== undefined ? this.props.projectCounts[this.props.user.email].length : 0} Projects</div>
+
             </div>
-            <div className = "col-1"></div>
-            <div className = "col-6" style = {{marginTop : 20}}>
-              <div style = {{fontWeight : "bold", fontSize : 20}}>{`${this.props.user.first_name} ${this.props.user.last_name}`}</div>
-              <div style = {{fontSize : 14}}>{this.props.user.email}</div>
-              <div style = {{fontSize : 16}}>{this.props.projectCounts[this.props.user.email] !== undefined ? this.props.projectCounts[this.props.user.email].length : 0} Projects</div>
-            </div>
+            <div className = "col-8" style = {{marginTop : 0}}>
+                  <SkillOutputList value = {this.props.userTags[this.props.user.email]}/>
+
           </div>
-          <div style = {{width : "100%", textAlign : "left"}}>
-            <SkillOutputList value = {this.props.userTags[this.props.user.email]}/>
+          </div>
+          <div style = {{width : "100%"}}>
           </div>
         </Link>
       </div>

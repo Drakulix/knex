@@ -42,7 +42,7 @@ export default class SideBar extends Component {
 
   render() {
     return (
-      <div className = "col-3 side-bar">
+      <div className = "col-2 side-bar">
         <img className = "logo-banner" src = {logo} alt = "logo"/>
         <ul className = "list-group">
           <SideBarEntry icon = {<Search style = {menuItemStyle}/>} name = {this.state.menu.discoverProjects} to = "/discovery" active = {this.isActive("/discovery")} />

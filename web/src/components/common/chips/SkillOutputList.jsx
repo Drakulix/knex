@@ -6,7 +6,7 @@ export default class SkillOutputList extends Component{
 
   render(){
     return (
-      <div>
+      <div style = {{textAlign: "center"}}>
         { this.props.value !== undefined ?
           this.props.value.map(item =>
             <Chip style= {{margin: '4px 4px 4px 4px', background: Styles.palette.primary1Color, float: 'left' }} key = {item}>
