@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import 'react-table/react-table.css'
 import DataTable from '../common/DataTable'
 import Backend from '../common/Backend'
+import HeadLine from '../common/HeadLine'
 
 export default class UserProjects extends Component {
 
@@ -32,7 +33,7 @@ export default class UserProjects extends Component {
   render(){
     return (
       <div className = "container">
-        <div className = "headerCreation">Your projects</div>
+        <HeadLine title = {"Your projects"}/>
         <DataTable  columns = {['title', 'status', 'tags', 'authors', 'description', '_id', 'archive' ]}
                       handler = {this.handler}
                       data = {this.state.projects}

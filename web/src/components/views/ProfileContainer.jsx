@@ -10,6 +10,7 @@ import ProfileEditor from '../common/userComponents/ProfileEditor'
 import RegisterUser from '../common/adminComponents/RegisterUser'
 import RaisedButton from 'material-ui/RaisedButton'
 import {Redirect} from 'react-router-dom'
+import HeadLine from '../common/HeadLine'
 
 
 
@@ -129,7 +130,7 @@ export default class ProfileContainer extends Component {
     else {
       return (
         <div className = "container">
-          <div className = "headerCreation">Profile details</div>
+          <HeadLine title = {"Profile details"}/>
           {!this.state.profileInf.active === "false" ? <i style = {{fontSize : '20px'}}>Inactive user</i> : ""}
           <Tabs
             inkBarStyle = {{marginTop : -5, height : 5}}

@@ -52,11 +52,15 @@ const PageRoute = ({ component: Component, path, sitePath, ...rest }) => (
     return (
       <div className="inner-content">
         <TopBar />
-        <div className="row">
           <SideBar location={sitePath} />
-          <div className="col-11 content">
+
+        <div className="row">
+            <div className ="hidden-lg-up col"/>
+            <div className="col-10 content">
             <Component {...props} />
           </div>
+          <div className ="hidden-lg-up col"/>
+
         </div>
       </div>
     );

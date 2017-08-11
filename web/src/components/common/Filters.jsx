@@ -91,6 +91,7 @@ export default class Filters extends Component{
         <CardText expandable = {true}>
           <div style = {{ textAlign: "left", verticalAlign: "center", display: "block"}} >
             <div className = "row">
+              <div className ="hidden-lg-up col"/>
               <div className = "col-1 filter-label hidden-md-down" style = {{textAlign: "left"}}>Title</div>
               <div className = "col-5" style = {{marginLeft: -40}}>
                 <TextField
@@ -117,8 +118,10 @@ export default class Filters extends Component{
               <IconButton iconStyle = {{color: Styles.palette.disabledColor}} style = {{marginLeft: -30, visibility: (this.state.description !== "") ? "visible": "hidden"}} onClick = {() => this.handleChange({target: {name :"description", value :""}})}>
                 <Cancel />
               </IconButton>
+              <div className ="hidden-lg-up col"/>
             </div>
             <div className = "row">
+              <div className ="hidden-lg-up col"/>
               <div className = "col-1 filter-label hidden-md-down">Tags</div>
               <div  className = "col-5" style = {{marginLeft: -40}}>
                 <TagInputList  onChange = {this.handleChange}
@@ -130,7 +133,7 @@ export default class Filters extends Component{
               <IconButton iconStyle = {{color: Styles.palette.disabledColor}} style = {{ marginLeft: -30, visibility: (this.state.tags.length !== 0) ? "visible": "hidden"}} onClick = {() => this.handleChange({target: {name :"tags", value :[]}})}>
                 <Cancel />              </IconButton>
               <div className = "col-1 filter-label hidden-md-down"> Authors</div>
-              <div  className = "col-5">
+              <div className = "col-5">
                 <AuthorInputList  onChange = {this.handleChange}
                                   filtered = {true}
                                   name = "authors"
@@ -140,8 +143,10 @@ export default class Filters extends Component{
               <IconButton iconStyle = {{color: Styles.palette.disabledColor}} style = {{ marginLeft: -30, visibility: (this.state.authors.length !== 0) ? "visible": "hidden"}} onClick = {() => this.handleChange({target: {name :"authors", value :[]}})}>
                 <Cancel />
               </IconButton>
+              <div className ="hidden-lg-up col"/>
             </div>
             <div className = "row">
+              <div className ="hidden-lg-up col"/>
               <div className = "col-1 filter-label hidden-md-down" style = {{textAlign: "left" , marginLeft: 2}}>From</div>
               <div className = "col-2" style = {{marginTop: 2}}>
                 <DatePicker hintText = "Pick a date from..."
@@ -181,7 +186,8 @@ export default class Filters extends Component{
               <IconButton iconStyle = {{color: Styles.palette.disabledColor}} style = {{ marginLeft: -30, visibility: (this.state.status !== "") ? "visible": "hidden"}} onClick = {() => this.handleStatusChange(null,null,"")}>
                 <Cancel />
               </IconButton>
-              <div className = "col-1"></div>
+              <div className = "col-3"></div>
+              <div className ="hidden-lg-up col"/>
             </div>
           </div>
       </CardText>

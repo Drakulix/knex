@@ -7,6 +7,7 @@ import Backend from '../common/Backend'
 import Snackbar from 'material-ui/Snackbar'
 import Styles from '../common/Styles.jsx'
 import Save from 'material-ui/svg-icons/content/save'
+import HeadLine from '../common/HeadLine'
 
 
 export default class SearchPage extends Component {
@@ -137,9 +138,7 @@ export default class SearchPage extends Component {
               onChange = {this.handleLabelChange}
               ></TextField>
             </Dialog>
-          <div className = "headerCreation" style = {{width : "100%"}}>
-            Looking for a project?
-          </div>
+          <HeadLine title = {"  Looking for a project?"}/>
           <div className = "row" style = {{textAlign : "center"}}>
             <div className = "col-10">
               <TextField

@@ -259,6 +259,7 @@ export default class ManageUsers extends Component {
             />
             <CardText expandable = {true}>
               <div className = "row">
+                <div className ="hidden-lg-up col"/>
                 <div className = "col-1 filter-label hidden-md-down">Name</div>
                 <div className = "col-5">
                   <TextField
@@ -278,6 +279,7 @@ export default class ManageUsers extends Component {
                       type = "text" placeholder = "Enter email adress..."
                   />
                 </div>
+                <div className ="hidden-lg-up col"/>
               </div>
             </CardText>
           </Card>

@@ -8,6 +8,7 @@ import TagInputList from '../common/chips/TagInputList'
 import SkillOutputList from '../common/chips/SkillOutputList'
 import Styles from '../common/Styles.jsx'
 import Pagination from '../common/Pagination'
+import HeadLine from '../common/HeadLine'
 
 
 const userPerPage = 6
@@ -114,10 +115,10 @@ export default class ShowUsers extends Component {
   render(){
     return (
       <div className = "container">
-        <Spinner loading = {this.state.loading} text = {"Loading users"} />
-        <div style = {{width : "100%", display : (!this.state.loading ? "block" : "none")}}>
+        {this.state.loading ?  <Spinner loading = {true} text = {"oading users"}/> :
+          <div style = {{width : "100%"}}>
           <div>
-            <div className = "headerCreation">Looking for a user?</div>
+            <HeadLine title = {"Looking for a user?"}/>
             <Card  onExpandChange = {() => this.setState({expanded : !this.state.expanded})}>
               <CardHeader
                   title = "Apply filters to your search"
@@ -156,7 +157,7 @@ export default class ShowUsers extends Component {
                 </div>
               </CardText>
             </Card>
-            <div style = {{marginTop : 20}}>
+            <div style = {{marginTop : 20, paddingLeft:15, paddingRight: 15}}>
               {this.state.pages.length === 0 ?
                 <div style = {{marginTop: 60, textAlign: 'center', fontSize: 24, color: Styles.palette.disabledColor }}>No users found</div>
                   :
@@ -195,6 +196,7 @@ export default class ShowUsers extends Component {
             </div>
           </div>
         </div>
+        }
       </div>
     )
   }
@@ -208,7 +210,7 @@ class UserCard extends Component {
         <Link to = {`/profile/${this.props.user.email}`}
               style = {{color : Styles.palette.textColor}}>
           <div style = {{fontWeight : "bold", fontSize : 20}}>{`${this.props.user.first_name} ${this.props.user.last_name}`}</div>
-          <div className = "row">
+          <div className = "row" style = {{paddingLeft: 15, paddingRight: 15}}>
             <div className = "col-4 hidden-md-down">
               <img src = {`/api/users/${this.props.user.email}/avatar`}
                   style ={{width: 80, height: 80, marginTop:0}}

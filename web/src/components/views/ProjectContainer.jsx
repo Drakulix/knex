@@ -6,6 +6,7 @@ import UrlOutputList from '../common/chips/UrlOutputList'
 import Status from '../common/Status'
 import Spinner from '../common/Spinner'
 import ProjectControls from '../common/projectComponents/ProjectControls'
+import HeadLine from '../common/HeadLine'
 
 
 export default class ProjectContainer extends Component {
@@ -77,11 +78,13 @@ export default class ProjectContainer extends Component {
 
       return(
         <div className = "container">
-          <div className = "row headerCreation" style = {{width : "100%"}}>
+          <HeadLine title = {"Project"}/>
+          <div className = "row" style = {{width : "100%"}}>
             <div className = "col-12">
-              <div>Project</div>
-              <div style = {{fontSize : '20px'}}> {this.state.projectInf.title}</div>
-              {this.state.projectInf.archived ? <i style = {{fontSize : '20px'}}>Archived project</i> : ""}
+              <div style = {{textAlign: "center"}}>
+                <div style = {{fontSize : '20px'}}> {this.state.projectInf.title}</div>
+                {this.state.projectInf.archived ? <i style = {{fontSize : '20px'}}>Archived project</i> : ""}
+              </div>
               <div style = {{marginTop : 20}}>
                 <ProjectControls  projectInf = {this.state.projectInf}
                                   isOwner = {this.state.isOwner}

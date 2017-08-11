@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import 'react-table/react-table.css'
 import DataTable from '../common/DataTable'
 import Backend from '../common/Backend'
+import HeadLine from '../common/HeadLine'
 
 export default class UserTrashcan extends Component {
 
@@ -31,7 +32,7 @@ export default class UserTrashcan extends Component {
   render(){
       return (
         <div className = "container">
-          <div className = "headerCreation">Your archived projects</div>
+          <HeadLine title = {"Your archived projects"}/>
           <DataTable  columns = {['title', 'status', 'tags', 'authors', 'description', '_id', 'unarchive' ]}
                       handler = {this.handler}
                       data = {this.state.projects}

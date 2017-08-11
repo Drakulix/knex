@@ -5,6 +5,7 @@ import Snackbar from 'material-ui/Snackbar'
 import Spinner from '../common/Spinner'
 import RaisedButton from 'material-ui/RaisedButton'
 import Filters from '../common/Filters'
+import HeadLine from '../common/HeadLine'
 
 
 export default class SavedQueries extends Component {
@@ -130,7 +131,7 @@ export default class SavedQueries extends Component {
             open = {this.state.snackbar}
             message = {this.state.snackbarText}
             autoHideDuration = {10000}/>
-          <div className = "headerCreation" style = {{width : "100%"}}>Your Saved Queries</div>
+          <HeadLine title = {"Your Saved Queries"}/>
           <Filters  value = {this.state.filters}
                     title = {"Filter your queries by search fields"}
                     onChange = {this.handleFilterChange}/>
