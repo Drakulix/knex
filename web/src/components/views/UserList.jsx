@@ -179,18 +179,10 @@ export default class ShowUsers extends Component {
                       </div> : ""
                     ))}
                   </div>
-                  <div style = {{marginBottom: "2em", position: 'fixed', marginLeft: "13em"}} className = "fixed-bottom">
-                    <div className = "row">
-                    <div className = "col"></div>
-                    <div className = "col-6">
-                      <Pagination page = {this.state.page}
-                              jumpTo = {(page) => this.setState({page : page})}
-                              pages = {this.state.pages.length}
-                      />
-                    </div>
-                    <div className = "col"></div>
-                    </div>
-                  </div>
+                  <Pagination page = {this.state.page}
+                          jumpTo = {(page) => this.setState({page : page})}
+                          pages = {this.state.pages.length}
+                  />
                 </div>
               }
             </div>
@@ -208,7 +200,7 @@ class UserCard extends Component {
     return (
       <div key = {this.props.user.email} style = {{marginRight : 20, marginBottom : 20}}>
         <Link to = {`/profile/${this.props.user.email}`}
-              style = {{color : Styles.palette.textColor}}>
+              style = {{color : Styles.palette.textColor, textDecoration: 'none'}}>
           <div style = {{fontWeight : "bold", fontSize : 20}}>{`${this.props.user.first_name} ${this.props.user.last_name}`}</div>
           <div className = "row" style = {{paddingLeft: 15, paddingRight: 15}}>
             <div className = "col-4 hidden-md-down">
