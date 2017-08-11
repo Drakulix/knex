@@ -156,7 +156,7 @@ export default class ShowUsers extends Component {
                 </div>
               </CardText>
             </Card>
-            <div style = {{marginTop : 20}} >
+            <div style = {{marginTop : 20}}>
               {this.state.pages.length === 0 ?
                 <div style = {{marginTop: 60, textAlign: 'center', fontSize: 24, color: Styles.palette.disabledColor }}>No users found</div>
                   :
@@ -178,7 +178,8 @@ export default class ShowUsers extends Component {
                       </div> : ""
                     ))}
                   </div>
-                  <div style = {{marginTop: '4em'}} className = "row">
+                  <div style = {{marginBottom: "3em", position: 'fixed', marginLeft: "13em"}} className = "fixed-bottom">
+                    <div className = "row">
                     <div className = "col"></div>
                     <div className = "col-6">
                       <Pagination page = {this.state.page}
@@ -187,6 +188,7 @@ export default class ShowUsers extends Component {
                       />
                     </div>
                     <div className = "col"></div>
+                    </div>
                   </div>
                 </div>
               }
