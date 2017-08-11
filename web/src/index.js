@@ -54,7 +54,7 @@ const PageRoute = ({ component: Component, path, sitePath, ...rest }) => (
         <TopBar />
         <div className="row">
           <SideBar location={sitePath} />
-          <div className="col-10 content">
+          <div className="col-11 content">
             <Component {...props} />
           </div>
         </div>

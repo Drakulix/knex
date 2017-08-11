@@ -8,6 +8,7 @@ import Spinner from '../common/Spinner'
 import Backend from '../common/Backend'
 import history from '../common/history'
 import Cancel from 'material-ui/svg-icons/navigation/cancel'
+import FileUpload from 'material-ui/svg-icons/file/file-upload'
 
 
 const JSON5 = require('json5')
@@ -143,8 +144,8 @@ export default class MultiFileUploader extends Component {
           </div>
           <div className="col-6" style = {{marginLeft: 0}}>
             <RaisedButton
-                      label = "add a file"
-                      icon = {<i className = "material-icons" style = {{color: Styles.palette.alternateTextColor, marginTop: -3}}>file_upload</i>}
+                      label = {<span >Add a file</span>}
+                      icon = {<FileUpload style = {{color: Styles.palette.alternateTextColor, marginTop: -3}}/>}
                       containerElement = "label"
                       primary = {true}
                       fullWidth = {true}
@@ -153,18 +154,19 @@ export default class MultiFileUploader extends Component {
             </RaisedButton>
           </div>
         </div>
-        <Spinner loading = {this.state.loading} text = {"Uploading project"}/>
-        <List style = {{display: (this.state.loading) ? "none": "block", maxHeight: 500, overflowY: "auto"}}>
-          {this.state.files.map(item =>
-            <ListItem
-                key = {item.name}
-                rightIcon = {<Cancel style = {{color : Styles.palette.disabledColor}}/>}
-                primaryText = {item.project.title}
-                secondaryText = {item.name}
-                onClick = {() => {this.remove(item.name)}}
-              />
-          )}
-        </List>
+        {this.state.loading ?  <Spinner loading = {true} text = {"Uploading project"}/> :
+          <List style = {{maxHeight: 500, overflowY: "auto"}}>
+            {this.state.files.map(item =>
+              <ListItem
+                  key = {item.name}
+                  rightIcon = {<Cancel style = {{color : Styles.palette.disabledColor}}/>}
+                  primaryText = {item.project.title}
+                  secondaryText = {item.name}
+                  onClick = {() => {this.remove(item.name)}}
+                />
+            )}
+          </List>
+        }
       </Dialog>
       </div>
     )

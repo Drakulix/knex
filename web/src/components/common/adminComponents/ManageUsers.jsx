@@ -259,7 +259,7 @@ export default class ManageUsers extends Component {
             />
             <CardText expandable = {true}>
               <div className = "row">
-                <div className = "col-1 filter-label">Name</div>
+                <div className = "col-1 filter-label hidden-md-down">Name</div>
                 <div className = "col-5">
                   <TextField
                       value = {this.state.name}
@@ -269,7 +269,7 @@ export default class ManageUsers extends Component {
                       type = "text" placeholder = "Enter username..."
                   />
                 </div>
-                <div className = "col-1 filter-label">Email</div>
+                <div className = "col-1 filter-label hidden-md-down">Email</div>
                 <div className = "col-5">
                   <TextField style = {{width: '100%'}}
                       value = {this.state.email}

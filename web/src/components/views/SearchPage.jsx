@@ -151,7 +151,7 @@ export default class SearchPage extends Component {
             </div>
             <div className = "col-2">
               <RaisedButton style = {{width : "100%"}}
-                label = "Save search"
+                label = {<span className = "hidden-md-down">Save search</span>}
                 icon = {<Save style = {{color : Styles.palette.alternateTextColor, marginTop : -3}}/>}
                 onClick = {this.handleOpen}
                 primary = {true}/>

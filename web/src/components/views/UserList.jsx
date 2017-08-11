@@ -85,7 +85,7 @@ export default class ShowUsers extends Component {
       var userEmail = dataObject.email.toLowerCase()
       discard = discard || userEmail.indexOf(name === "email" ? value.toLowerCase() :  emailValue) === -1
       discard = discard || userName.indexOf(name === "name" ? value.toLowerCase() :  nameValue) === -1
-      var temp = `#${this.state.userTags[userEmail].join('#')}#`
+      var temp = this.state.userTags[userEmail] !== undefined ? `#${this.state.userTags[userEmail].join('#')}#` : ''
       for(let item in tagsToCompare){
         if (temp.indexOf(`#${tagsToCompare[item]}#`) === -1){
           discard = true
@@ -126,7 +126,7 @@ export default class ShowUsers extends Component {
               />
               <CardText expandable = {true}>
                 <div className = "row">
-                  <div className = "col-1 filter-label">Name</div>
+                  <div className = "col-1 filter-label hidden-md-down">Name</div>
                   <div className = "col-3">
                     <TextField
                         fullWidth = {true}
@@ -136,7 +136,7 @@ export default class ShowUsers extends Component {
                         type = "text" placeholder = "Enter username..."
                     />
                   </div>
-                  <div className = "col-1 filter-label">Email</div>
+                  <div className = "col-1 filter-label hidden-md-down">Email</div>
                   <div className = "col-3">
                     <TextField
                         fullWidth = {true}
@@ -146,7 +146,7 @@ export default class ShowUsers extends Component {
                         type = "text" placeholder = "Enter email adress..."
                     />
                   </div>
-                  <div className = "col-1 filter-label">Expertise</div>
+                  <div className = "col-1 filter-label hidden-md-down">Expertise</div>
                   <div className = "col-3">
                     <TagInputList  onChange = {this.handleChange}
                                       filtered = {true}
@@ -178,7 +178,7 @@ export default class ShowUsers extends Component {
                       </div> : ""
                     ))}
                   </div>
-                  <div style = {{marginBottom: "3em", position: 'fixed', marginLeft: "13em"}} className = "fixed-bottom">
+                  <div style = {{marginBottom: "2em", position: 'fixed', marginLeft: "13em"}} className = "fixed-bottom">
                     <div className = "row">
                     <div className = "col"></div>
                     <div className = "col-6">
@@ -207,22 +207,19 @@ class UserCard extends Component {
       <div key = {this.props.user.email} style = {{marginRight : 20, marginBottom : 20}}>
         <Link to = {`/profile/${this.props.user.email}`}
               style = {{color : Styles.palette.textColor}}>
-              <div style = {{fontWeight : "bold", fontSize : 20}}>{`${this.props.user.first_name} ${this.props.user.last_name}`}</div>
-
+          <div style = {{fontWeight : "bold", fontSize : 20}}>{`${this.props.user.first_name} ${this.props.user.last_name}`}</div>
           <div className = "row">
-            <div className = "col-4">
-
+            <div className = "col-4 hidden-md-down">
               <img src = {`/api/users/${this.props.user.email}/avatar`}
                   style ={{width: 80, height: 80, marginTop:0}}
                   className = "rounded-circle profile-icon"
                   alt = {this.props.user.email}
               />
             <div style = {{fontSize : 16, textAlign: "center", width: "100%"}}>{this.props.projectCounts[this.props.user.email] !== undefined ? this.props.projectCounts[this.props.user.email].length : 0} Projects</div>
-
             </div>
             <div className = "col-8" style = {{marginTop : 0}}>
-                  <SkillOutputList value = {this.props.userTags[this.props.user.email]}/>
-
+              <div className ="hidden-lg-up" style = {{fontSize : 16, textAlign: "left", width: "100%"}}>{this.props.projectCounts[this.props.user.email] !== undefined ? this.props.projectCounts[this.props.user.email].length : 0} Projects</div>
+              <SkillOutputList value = {this.props.userTags[this.props.user.email]}/>
           </div>
           </div>
           <div style = {{width : "100%"}}>
