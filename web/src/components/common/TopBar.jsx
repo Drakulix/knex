@@ -9,6 +9,7 @@ import Logout from 'material-ui/svg-icons/action/exit-to-app'
 import Notification from 'material-ui/svg-icons/social/notifications'
 import Styles from './Styles'
 
+
 export default class TopBar extends Component {
   constructor(props) {
     super(props)
@@ -74,8 +75,8 @@ export default class TopBar extends Component {
       return <Redirect to='/'/>
     }
     return (
-      <div className = "container-fluid topbar">
-        <div style = {{marginTop: 2, textAlign: "right"}}>
+      <div className = "topbar row">
+        <div className = "col-12" style = {{marginTop: 2, textAlign: "right"}}>
           <IconButton tooltip = "Notifications" iconStyle = {{color: Styles.palette.alternateTextColor}} onClick = {this.handleNotificationClick}>
             <Notification/>
             { this.state.notifications.length !== 0 ?

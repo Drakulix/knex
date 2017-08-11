@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import logo from '../../style/img/white_logo_title.svg'
 import Backend from '../common/Backend'
 import Styles from './Styles.jsx'
+import logo from '../../style/img/white_logo_title.svg'
+
 
 import Delete from 'material-ui/svg-icons/action/delete'
 import Search from 'material-ui/svg-icons/action/search'
@@ -24,7 +25,7 @@ export default class SideBar extends Component {
     this.state = {
       menu: {
         discoverProjects: 'Discover projects',
-        createProject: 'Create a new project',
+        createProject: 'Create a project',
         queries: "Your saved queries",
         bookmarks: 'Your bookmarks',
         userprojects: 'Your projects',
@@ -42,8 +43,10 @@ export default class SideBar extends Component {
 
   render() {
     return (
-      <div className = "col-2 side-bar">
-        <img className = "logo-banner" src = {logo} alt = "logo"/>
+      <div className = "side-bar">
+        <div className = "hidden-md-down">
+            <img className = "logo-banner" src = {logo} alt = "logo"/>
+        </div>
         <ul className = "list-group">
           <SideBarEntry icon = {<Search style = {menuItemStyle}/>} name = {this.state.menu.discoverProjects} to = "/discovery" active = {this.isActive("/discovery")} />
           <SideBarEntry icon = {<People style = {menuItemStyle}/>} name = {this.state.menu.people} to = {'/users/'} active = {this.isActive("/users")} />
@@ -70,10 +73,11 @@ const SideBarEntry = ({to, icon, icon2, name, active, style}) => {
   return (
     <Link to = {to}  >
       <li className = {`list-group-item ${active ? "active": ""}` } style = {{color: Styles.palette.alternateTextColor}}>
-          {active && (<div className = "menu-indicator" style = {{backgroundColor: Styles.palette.primary1Color }}/>)}
+        <div style = {{ backgroundColor: active ? Styles.palette.primary1Color : "inherit", marginRight: 5, width: 5, height: '100%'}}></div>
           <div style = {{display: "inline", paddingTop: 3, float: "left", marginRight: 8}}>
             {icon}
-          </div>{name}
+          </div>
+          <div className = "hidden-md-down">{name}</div>
       </li>
     </Link>
   )

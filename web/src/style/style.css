@@ -1,6 +1,5 @@
 body {
   overflow-x: hidden;
-  overflow-y: scroll;
   min-height: 100%;
   height: 100%;
   font-family: 'Roboto', sans-serif !important;
@@ -32,8 +31,7 @@ a:hover {
 }
 
 .logo-banner {
-  margin-top: 2em;
-  margin-left: 12px;
+  margin-left: 20px;
   width: 80%;
 }
 
@@ -56,6 +54,7 @@ a:hover {
 .topbar {
   position: fixed;
   width: 100%;
+  background-color: #333333;
 }
 
 /* Start Sidebar Styling */
@@ -67,7 +66,7 @@ a:hover {
   box-shadow: 2px 0 4px 0 rgba(0, 0, 0, 0.5);
   padding-right: 0px !important;
   position: fixed;
-  width: 15em;
+  width: 13em;
 }
 
 .content{
@@ -90,6 +89,8 @@ a:hover {
   color: white;
   font-family: 'Roboto', sans-serif;
   font-weight: 300;
+  padding : 0px 10px 0px 15px !important;
+
 }
 
 .list-group-item-text {
