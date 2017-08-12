@@ -3,6 +3,7 @@ import TimeLine from '../common/userComponents/TimeLine'
 import Backend from '../common/Backend'
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 import { Link } from 'react-router-dom'
 import Styles from '../common/Styles.jsx'
@@ -14,11 +15,14 @@ import Moment from 'moment'
 >>>>>>> 836282c... Now with Time now!
 =======
 >>>>>>> 4845e77... Major overhault of userProject
+=======
+>>>>>>> 4845e7738f77efd38721e065b08f3ff004697c3e
 
 export default class Dashboard extends React.Component {
 
   constructor(props){
     super(props)
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -64,12 +68,15 @@ export default class Dashboard extends React.Component {
 >>>>>>> ce0fddf... Found 403 and Uploader bug... Still an ugly bug on titles....
 =======
 >>>>>>> 4845e77... Major overhault of userProject
+=======
+>>>>>>> 4845e7738f77efd38721e065b08f3ff004697c3e
   }
 
   render() {
     return (
       <div className = "container">
         <div className = "headerCreation">Your timeline</div>
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
           <TimeLine email = {Backend.getMail()}/>
@@ -211,6 +218,9 @@ class News extends React.Component {
 =======
           <TimeLine email = {Backend.getMail()}/>
 >>>>>>> 4845e77... Major overhault of userProject
+=======
+          <TimeLine email = {Backend.getMail()}/>
+>>>>>>> 4845e7738f77efd38721e065b08f3ff004697c3e
       </div>
     )
   }
