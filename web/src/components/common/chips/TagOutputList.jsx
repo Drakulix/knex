@@ -14,7 +14,7 @@ export default class TagOutputList extends Component{
             <Chip style = {{margin: '4px 4px 4px 4px', background: Styles.palette.primary1Color,
                             float: 'left' }} key = {item}>
               <Link to = {`/discovery/${JSON.stringify({tags: [item]})}`}
-                    style = {{color: Styles.palette.alternateTextColor, fontWeight: 'bold'}}>
+                    style = {{color: Styles.palette.alternateTextColor, fontWeight: 'bold', whiteSpace: 'normal', lineHeight: 1.5}}>
                 {item}
               </Link>
               <br/>

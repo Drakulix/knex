@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import TagOutputList from '../../common/chips/TagOutputList'
+import SkillOutputList from '../../common/chips/SkillOutputList'
 
 
 export default class ProfileView extends Component {
@@ -14,7 +14,7 @@ export default class ProfileView extends Component {
         </div>
         <div style = {{marginBottom: 20}}>Projects contributed: {this.props.projectsContributed} </div>
         <div style = {{marginBottom: 20}}>
-          <TagOutputList value = {this.props.topTenTags} />
+          <SkillOutputList value = {this.props.topTenTags} />
         </div>
         <div className = "bio-info" style = {{width: "100%"}}>
           <table style = {{tableLayout: "fixed", width: "80%", wordWrap: "break-word"}}><tbody><tr><td>

@@ -115,7 +115,7 @@ export default class ShowUsers extends Component {
   render(){
     return (
       <div className = "container">
-        {this.state.loading ?  <Spinner loading = {true} text = {"oading users"}/> :
+        {this.state.loading ?  <Spinner text = {"loading users"}/> :
           <div style = {{width : "100%"}}>
           <div>
             <HeadLine title = {"Looking for a user?"}/>

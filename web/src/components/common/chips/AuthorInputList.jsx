@@ -101,7 +101,7 @@ export default class AuthorInputList extends Component {
             backgroundColor = {'#ffffff'}
             onTouchTap = {handleClick}
             onRequestDelete = {handleRequestDelete}>
-            <span style = {{color: Styles.palette.textColor, fontWeight: 'bold'}}> {text} </span>
+            <span style = {{color: Styles.palette.textColor, fontWeight: 'bold', whiteSpace: 'normal', lineHeight: 1.5}}> {text} </span>
           </Chip>
         )}/>
       )

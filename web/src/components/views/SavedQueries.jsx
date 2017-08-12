@@ -125,8 +125,10 @@ export default class SavedQueries extends Component {
   render() {
     return(
       <div className="container">
-        <Spinner loading = {this.state.loading} text = {"Loading queries"}/>
-        <div  style = {{display : (!this.state.loading ? "block" : "none")}}>
+        {(this.state.loading) ?
+           <Spinner loading = {this.state.loading} text = {"Loading queries"}/>
+        :
+          <div  style = {{display : (!this.state.loading ? "block" : "none")}}>
           <Snackbar
             open = {this.state.snackbar}
             message = {this.state.snackbarText}
@@ -157,6 +159,7 @@ export default class SavedQueries extends Component {
             )}
           </div>
         </div>
+        }
       </div>
     )
   }

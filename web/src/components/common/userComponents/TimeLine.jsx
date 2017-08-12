@@ -1,6 +1,5 @@
 import React from 'react'
 import Backend from '../Backend'
-import { Link } from 'react-router-dom'
 import Styles from '../Styles.jsx'
 import Spinner from '../Spinner'
 import IconButton from 'material-ui/IconButton'
