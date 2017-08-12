@@ -1,30 +1,21 @@
 import React from 'react'
-import TimeLine from '../common/userComponents/TimeLine'
-import Backend from '../common/Backend'
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
+import Backend from '../Backend'
 import { Link } from 'react-router-dom'
-import Styles from '../common/Styles.jsx'
-import Spinner from '../common/Spinner'
+import Styles from '../Styles.jsx'
+import Spinner from '../Spinner'
 import IconButton from 'material-ui/IconButton'
 import Moment from 'moment'
+import history from '../history'
 
 
->>>>>>> 836282c... Now with Time now!
-=======
->>>>>>> 4845e77... Major overhault of userProject
-
-export default class Dashboard extends React.Component {
+export default class TimeLine extends React.Component {
 
   constructor(props){
     super(props)
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
     this.state = {
       notifications: [],
-      username : {}
+      username: {},
+      loading: true
     }
     this.load = this.load.bind(this)
   }
@@ -61,38 +52,32 @@ export default class Dashboard extends React.Component {
         )
       })
     })
->>>>>>> ce0fddf... Found 403 and Uploader bug... Still an ugly bug on titles....
-=======
->>>>>>> 4845e77... Major overhault of userProject
   }
 
   render() {
     return (
-      <div className = "container">
-        <div className = "headerCreation">Your timeline</div>
-<<<<<<< HEAD
-<<<<<<< HEAD
-          <TimeLine email = {Backend.getMail()}/>
-=======
-          <Spinner loading = {this.state.loading} text = {"Loading your news"} />
-          <div style = {{width : "100%", display : (!this.state.loading ? "block" : "none")}}>
-            {(this.state.notifications.length === 0) ?
-              <div style={{fontSize: 20, textAlign: "center"}}><hr></hr>Nothing new</div> : ""}
-            {
-              this.state.notifications.map(notification =>
-                <div key = {notification._id}>
-                  <hr></hr>
-                  <News
-                      value = {notification}
-                      names = {this.state.userNames}
-                      titles = {this.state.projectTitles}
-                      refreshHandler = {this.load}
-                    />
-
+      <div>
+        {(this.state.loading) ? <Spinner text = {"Loading your news"} />
+        :
+        <div style = {{width : "100%"}}>
+          {(this.state.notifications.length === 0) ?
+            <div style={{fontSize: 20, textAlign: "center"}}><hr></hr>Nothing new</div> : ""}
+          {
+            this.state.notifications.map(notification =>
+              <div key = {notification._id}>
+                <hr></hr>
+                <News
+                    value = {notification}
+                    names = {this.state.userNames}
+                    titles = {this.state.projectTitles}
+                    refreshHandler = {this.load}
+                    email = {this.props.email}
+                  />
                 </div>
-              )
-            }
-          </div>
+            )
+          }
+        </div>
+      }
       </div>
     )
   }
@@ -164,27 +149,31 @@ class News extends React.Component {
         </div>
         <div className ="col-10">
           {this.props.value.creator === Backend.getMail() ?
-            <span><Link to = "/yourprofile"
-                        style = {{color: Styles.palette.primary1Color}}>You</Link> </span>
+            <span onClick ={() => {history.push('/yourprofile')}}
+                  style = {{color: Styles.palette.primary1Color, cursor: 'pointer'}}>
+              You
+            </span>
               :
-            <span><Link to = {`/profile/${this.props.value.creator}`}
-                        style = {{color: Styles.palette.primary1Color}}>
-              {this.props.names[this.props.value.creator]}</Link> </span>
+            <span onClick ={() => {history.push(`/profile/${this.props.value.creator}`)}}
+                    style = {{color: Styles.palette.primary1Color, cursor: 'pointer'}}>
+                {this.props.names[this.props.value.creator]}
+            </span>
           }
-          <span>{operation}</span>
+          <span> {operation} </span>
           {this.props.value.operation === "invite" ?
-            <span> <Link to = {`/profile/${this.props.value.user_id}`}
-                        style = {{color: Styles.palette.primary1Color}}>
-              you </Link></span>
+            <span onClick ={() => {history.push(`/profile/${this.props.value.user_id}`)}}
+                    style = {{color: Styles.palette.primary1Color, cursor: 'pointer'}}>
+                you
+            </span>
           : ""}
           {this.props.value.project_id !== "" ?
             <span>
               <span> project </span>
               <span>
-                <Link to = {`/project/${this.props.value.project_id}`}
-                      style = {{color: Styles.palette.primary1Color}}>
-                      {this.props.titles[this.props.value.project_id]}
-                </Link>
+                <span onClick ={() => {history.push(`/project/${this.props.value.project_id}`)}}
+                        style = {{color: Styles.palette.primary1Color, cursor: 'pointer'}}>
+                    {this.props.titles[this.props.value.project_id]}
+                </span>
               </span>
               <span> {reason} </span>
               {this.props.saved_search_id !== "" ? this.props.saved_search_id : ""}
@@ -195,22 +184,20 @@ class News extends React.Component {
             {Moment(this.props.value.date).from(new Moment())}
           </div>
         </div>
-        <div className ="col-1" style ={{textAlign : "right"}}>
-          <IconButton
-                    onClick = {() => Backend.deleteNotification(this.props.value._id).then(this.props.refreshHandler())}
-                    touch = {true}
-                    style = {Styles.largeIcon}
-                    tooltipPosition = "bottom-center"
-                    tooltip = "Delete notification"
-                    iconStyle = {{fontSize: '24px', color: Styles.palette.textColor}}
-                    >
-                    <i className = "material-icons">cancel</i>
-          </IconButton>
-        </div>
->>>>>>> 130bbef... Bug Fixing and Notifiaciton for archiving
-=======
-          <TimeLine email = {Backend.getMail()}/>
->>>>>>> 4845e77... Major overhault of userProject
+        {this.props.email === Backend.getMail() ?
+          <div className ="col-1" style ={{textAlign : "right"}}>
+            <IconButton
+                      onClick = {() => Backend.deleteNotification(this.props.value._id).then(this.props.refreshHandler())}
+                      touch = {true}
+                      style = {Styles.largeIcon}
+                      tooltipPosition = "bottom-center"
+                      tooltip = "Delete notification"
+                      iconStyle = {{fontSize: '24px', color: Styles.palette.textColor}}
+                      >
+                      <i className = "material-icons">cancel</i>
+            </IconButton>
+          </div>
+        : ""}
       </div>
     )
   }

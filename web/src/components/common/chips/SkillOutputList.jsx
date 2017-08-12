@@ -10,7 +10,7 @@ export default class SkillOutputList extends Component{
         { this.props.value !== undefined ?
           this.props.value.map(item =>
             <Chip style= {{margin: '4px 4px 4px 4px', background: Styles.palette.primary1Color, float: 'left' }} key = {item}>
-              <div style= {{color: Styles.palette.alternateTextColor, fontWeight: 'bold'}}>
+              <div style= {{color: Styles.palette.alternateTextColor, fontWeight: 'bold', whiteSpace: 'normal'}}>
                 {item}
               </div>
             </Chip>

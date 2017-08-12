@@ -227,8 +227,9 @@ a:hover {
 /* Profile Details */
 
 .profile-header {
-  margin-top: 30px;
-  margin-bottom: 10px;
+  margin-bottom: 30px;
+  margin-top: 20px;
+
 }
 
 .profile-info {
@@ -239,16 +240,17 @@ a:hover {
   font-weight: bold;
 }
 
+.bio-info {
+  margin-top: 20px;
+}
+
 .profile-icon {
-  width: 200px;
-  height: 200px;
+  width: 180px;
+  height: 180px;
   border-style: solid;
   border-width: 1px;
   border-color: grey;
   display: block;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 30px;
 }
 
 .change-password {

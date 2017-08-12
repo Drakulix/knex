@@ -8,6 +8,8 @@ import ProfileView from '../common/userComponents/ProfileView'
 import ProfileProjects from '../common/userComponents/ProfileProjects'
 import ProfileEditor from '../common/userComponents/ProfileEditor'
 import RegisterUser from '../common/adminComponents/RegisterUser'
+import TimeLine from '../common/userComponents/TimeLine'
+
 import RaisedButton from 'material-ui/RaisedButton'
 import {Redirect} from 'react-router-dom'
 import HeadLine from '../common/HeadLine'
@@ -90,7 +92,7 @@ export default class ProfileContainer extends Component {
   render() {
     if(!this.state.site_loaded){
       return (
-        <Spinner loading = {true} text = {"Loading profile"}/>
+        <Spinner text = {"Loading profile"}/>
       )
     }
     if(this.state.email === Backend.getMail() && this.props.match.url !== "/yourprofile"){
@@ -132,30 +134,43 @@ export default class ProfileContainer extends Component {
         <div className = "container">
           <HeadLine title = {"Profile details"}/>
           {!this.state.profileInf.active === "false" ? <i style = {{fontSize : '20px'}}>Inactive user</i> : ""}
-          <Tabs
+          <div className = "row">
+            <div className = "col-3">
+            <ProfileView profileInf = {this.state.profileInf}
+                        topTenTags = {this.state.topTenTags}
+                        projectsContributed = {this.state.projectCount}/>
+            </div>
+            <div className = "col-9">
+              <div style = {{marginBottom: 15, fontWeight: 'bold', fontSize: 26}}>
+                {this.state.profileInf.first_name} {this.state.profileInf.last_name}
+              </div>
+              <div style = {{marginBottom: 20}}>
+                {this.state.profileInf.email}
+              </div>
+              <Tabs
             inkBarStyle = {{marginTop : -5, height : 5}}
             value = {this.state.value}
             onChange = {this.handleChange}
-            contentContainerStyle = {{marginTop : 30, paddingLeft : 15, paddingRight : 15}}
-          >
+            contentContainerStyle = {{marginTop : 30, paddingLeft : 15, paddingRight : 15}}>
             <Tab
-              label = "Profile Info" value = "a">
-              <ProfileView profileInf = {this.state.profileInf}
-                          topTenTags = {this.state.topTenTags}
-                          projectsContributed = {this.state.projectCount}/>
+              label = "Timeline" value = "a">
+              <TimeLine email = {this.state.email}/>
+            </Tab>
+            <Tab label = "Projects" value = "b">
+              <ProfileProjects
+                email = {this.state.email} />
             </Tab>
             {(Backend.isAdmin() || this.state.isMe)?
-              <Tab label = "Edit Profile" value = "b">
+              <Tab label = "Edit Profile" value = "c">
                 <ProfileEditor email = {this.state.email}
                   profileInf = {this.state.profileInf}
                   profileChangeHandler = {this.handleProfileChange}/>
               </Tab> : ""
             }
-            <Tab label = "Projects" value = "c">
-              <ProfileProjects
-                email = {this.state.email} />
-            </Tab>
+
           </Tabs>
+            </div>
+          </div>
           <Snackbar
             open = {this.state.snackbar}
             message = {this.state.snackbarText}
