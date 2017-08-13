@@ -232,7 +232,7 @@ export default class BookmarksTable extends Component {
         accessor: 'status',
         id: 'status',
         style: {align: "center", width: 100},
-              width: 100,
+              width: 105,
         Cell: props => <Status value = {props.value} />
       })
     }
@@ -240,7 +240,7 @@ export default class BookmarksTable extends Component {
       columns.push({
         Header: 'Tags',
         accessor: "tags",
-        width: 230,
+        width: 163,
         style: {textAlign: "center", width: 220},
         Cell: props => <TagOutputList value = {props.value} />
       })
@@ -300,7 +300,7 @@ export default class BookmarksTable extends Component {
           (a.archived  ? 1: -1)},
         width: 100,
         style: {textAlign: "center"},
-        Cell: props => { return props.value.archived  ?
+        Cell: props => { return props.value.archived === "true"?
           <IconButton
           onClick = {()=>this.handleUnArchive(props.value)}
           touch = {true}
@@ -325,7 +325,7 @@ export default class BookmarksTable extends Component {
           (a.archived  ? 1: -1)},
         width: 80,
         style: {textAlign: "center"},
-        Cell: props => { return !props.value.archived  ?
+        Cell: props => { return props.value.archived === "false" ?
           <IconButton
           onClick = {()=>this.handleArchive(props.value)}
           touch = {true}
@@ -378,7 +378,6 @@ export default class BookmarksTable extends Component {
                     id: 'title',
                     desc: false
                     }]}
-              defaultExpanded = {{1: true}}
               filterable = {false}
               showPageSizeOptions = {false}
               minRows = {3}

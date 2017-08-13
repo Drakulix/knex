@@ -124,7 +124,8 @@ export default class ProfileContainer extends Component {
               </div>
              : "" }
             <ProfileProjects
-              email = {this.state.email} />
+              email = {this.state.email}
+              profileExists = {false} />
 
         </div>
       )
@@ -158,7 +159,8 @@ export default class ProfileContainer extends Component {
             </Tab>
             <Tab label = "Projects" value = "b">
               <ProfileProjects
-                email = {this.state.email} />
+                email = {this.state.email}
+                profileExists = {true} />
             </Tab>
             {(Backend.isAdmin() || this.state.isMe)?
               <Tab label = "Edit Profile" value = "c">

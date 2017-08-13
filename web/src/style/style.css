@@ -1,17 +1,12 @@
 body {
   overflow-x: hidden;
-
+  overflow-y: scroll;
   min-height: 100%;
   height: 100%;
   font-family: 'Roboto', sans-serif !important;
 
 }
 
-
-::-webkit-scrollbar {
-    width: 0px;  /* remove scrollbar space */
-    background: transparent;  /* optional: just make scrollbar invisible */
-}
 
 html {
   height: 100%;

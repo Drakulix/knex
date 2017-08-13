@@ -4,9 +4,21 @@ import MenuItem from 'material-ui/MenuItem'
 import Chip from 'material-ui/Chip'
 
 const statusString = [
-  {text: <Chip style = {{background: '#ff5000', marginTop: 4}}><span style= {{color: '#ffffff', fontWeight: 'bold', fontSize: 12, whiteSpace: 'normal', lineHeight: 1.5}}>Done</span></Chip>, value: "DONE"},
-  {text: <Chip style = {{background: '#ffb400', marginTop: 4}}><span style= {{color: '#ffffff', fontWeight: 'bold', fontSize: 12, whiteSpace: 'normal', lineHeight: 1.5}}>In review</span></Chip>, value: "IN_REVIEW"},
-  {text: <Chip style = {{background: '#ffcc50', marginTop: 4}}><span style= {{color: '#ffffff', fontWeight: 'bold', fontSize: 12, whiteSpace: 'normal', lineHeight: 1.5}}>In progress</span></Chip>, value: "IN_PROGRESS"}
+  {text: <Chip style= {{marginTop: 4, background: '#ff5000', float: 'left'}}>
+          <div style= {{color: '#ffffff', fontWeight: 'bold', whiteSpace: 'normal', lineHeight: 1.5}}>
+            Done
+          </div>
+        </Chip>, value: "DONE"},
+  {text: <Chip style= {{marginTop: 4, background: '#ffb400', float: 'left'}}>
+          <div style= {{color: '#ffffff', fontWeight: 'bold', whiteSpace: 'normal', lineHeight: 1.5}}>
+            In review
+          </div>
+        </Chip>, value: "IN_REVIEW"},
+  {text: <Chip style= {{marginTop: 4, background: '#ffcc50', float: 'left'}}>
+          <div style= {{color: '#ffffff', fontWeight: 'bold', whiteSpace: 'normal', lineHeight: 1.5}}>
+            In progress
+          </div>
+        </Chip>, value: "IN_PROGRESS"}
 ]
 
 export default class Status extends Component {
