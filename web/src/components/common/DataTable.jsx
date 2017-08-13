@@ -121,7 +121,7 @@ export default class BookmarksTable extends Component {
         Backend.getUserNames(authors)
         .then ((userNames) => {
           this.setState({
-            userNames: JSON.parse(userNames),
+            userNames: userNames,
             filteredData: (this.props.isBookmarkTable
                             ? this.filter(props.data, this.state.filters): props.data),
           })
@@ -222,7 +222,8 @@ export default class BookmarksTable extends Component {
         accessor: 'date_creation',
         pivot: true,
         width: 95,
-        style: {textAlign: "center", marginTop: 9},
+        style: {textAlign: "center", marginTop: 9,   fontFamily: 'Roboto, sans-serif !important'
+},
       })
     }
     if(this.props.columns.indexOf("status") !== -1){

@@ -8,7 +8,7 @@ import CommentSideBar from './CommentSideBar'
 import ConfirmationPane from '../ConfirmationPane'
 import Badge from 'material-ui/Badge'
 
-import Edit from 'material-ui/svg-icons/editor/mode-edit'
+import Edit from 'material-ui/svg-icons/image/edit'
 import Comment from 'material-ui/svg-icons/communication/comment'
 import Share from 'material-ui/svg-icons/social/share'
 import Archive from 'material-ui/svg-icons/content/archive'
@@ -52,6 +52,8 @@ export default class ProjectControls extends Component{
     this.setState({
       dialogOpen: false,
       snackbar: true,
+      sharePane: false,
+      commentBar: false,
       snackbarText: `Project ${this.props.projectInf.title} unarchived`
     }))
   }
@@ -86,6 +88,8 @@ export default class ProjectControls extends Component{
     this.setState({
       dialogOpen: false,
       snackbar: true,
+      sharePane: false,
+      commentBar: false,
       snackbarText: `Project ${this.props.projectInf.title} archived`
     }))
   }
@@ -172,18 +176,21 @@ export default class ProjectControls extends Component{
                         <Share/>
             </IconButton>
             <IconButton
-                        touch = {true}
-                        style = {Styles.largeIcon}
+                        style = {Styles.largeIcon, {paddingTop: 5}}
                         disabled = {! (this.props.isOwner || Backend.isAdmin())}
                         tooltipPosition = "bottom-center"
                         tooltip = "Edit project"
                         href = {`/update/${this.props.projectID}`}
-                        iconStyle = {{fontSize: 24, color: Styles.palette.textColor}}
+                        iconStyle = {{height: 24, color: Styles.palette.textColor}}
                         >
                         <Edit/>
             </IconButton>
             <IconButton
-                      onClick = {() => this.setState({dialogOpen: true})}
+                      onClick = {() => this.setState({
+                        dialogOpen: true,
+                        snackbar: false,
+                        sharePane: false,
+                        commentBar: false})}
                       touch = {true}
                       style = {Styles.largeIcon}
                       disabled = {! (this.props.isOwner || Backend.isAdmin())}

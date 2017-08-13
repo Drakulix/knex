@@ -5,6 +5,8 @@ import Spinner from '../Spinner'
 import IconButton from 'material-ui/IconButton'
 import Moment from 'moment'
 import history from '../history'
+import Cancel from 'material-ui/svg-icons/navigation/cancel'
+
 
 
 export default class TimeLine extends React.Component {
@@ -34,7 +36,7 @@ export default class TimeLine extends React.Component {
       Backend.getUserNames(users)
       .then ((userNames) => {
         this.setState({
-          userNames : JSON.parse(userNames)
+          userNames : userNames
         })
         Backend.getProjectTitels(data.filter(notification => {return notification.project_id !== ""
         }).map (notification => {return notification.project_id}))
@@ -193,7 +195,7 @@ class News extends React.Component {
                       tooltip = "Delete notification"
                       iconStyle = {{fontSize: '24px', color: Styles.palette.textColor}}
                       >
-                      <i className = "material-icons">cancel</i>
+                      <Cancel />
             </IconButton>
           </div>
         : ""}

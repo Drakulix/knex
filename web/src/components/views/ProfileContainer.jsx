@@ -141,7 +141,7 @@ export default class ProfileContainer extends Component {
                         projectsContributed = {this.state.projectCount}/>
             </div>
             <div className = "col-9">
-              <div style = {{marginBottom: 15, fontWeight: 'bold', fontSize: 26}}>
+              <div style = {{fontWeight: 'bold', fontSize: 26}}>
                 {this.state.profileInf.first_name} {this.state.profileInf.last_name}
               </div>
               <div style = {{marginBottom: 20}}>

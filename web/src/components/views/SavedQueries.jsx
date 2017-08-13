@@ -58,7 +58,7 @@ export default class SavedQueries extends Component {
       Backend.getUserNames(authors)
       .then ((userNames) => {
         this.setState({
-          userNames : JSON.parse(userNames)
+          userNames : userNames
         })
       })
     })

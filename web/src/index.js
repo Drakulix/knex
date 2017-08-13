@@ -44,7 +44,7 @@ import styles from './components/common/Styles.jsx'
 var injectTapEventPlugin = require("react-tap-event-plugin")
 injectTapEventPlugin()
 require('roboto-fontface/css/roboto/roboto-fontface.css');
-require('bootstrap/dist/css/bootstrap.css');
+require('bootstrap/dist/css/bootstrap.min.css');
 
 
 

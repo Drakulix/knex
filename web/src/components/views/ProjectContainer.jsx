@@ -51,7 +51,7 @@ export default class ProjectContainer extends Component {
       Backend.getUserNames(data.authors)
       .then ((userNames) => {
         this.setState({
-          userNames : JSON.parse(userNames)
+          userNames : userNames
         })
       })
     }).catch(ex => {

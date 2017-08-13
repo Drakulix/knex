@@ -2,12 +2,19 @@ import React, { Component } from 'react'
 import {Redirect} from 'react-router-dom'
 import Badge from 'material-ui/Badge'
 import IconButton from 'material-ui/IconButton'
+import RaisedButton from 'material-ui/RaisedButton'
+
+
+import MultiUpload from 'material-ui/svg-icons/av/playlist-add'
+
 import Snackbar from 'material-ui/Snackbar'
 import NotificationPane from '../common/NotificationPane'
 import Backend from '../common/Backend'
 import Logout from 'material-ui/svg-icons/action/exit-to-app'
+import Profile from 'material-ui/svg-icons/action/account-circle'
 import Notification from 'material-ui/svg-icons/social/notifications'
 import Styles from './Styles'
+import history from './history'
 
 
 export default class TopBar extends Component {
@@ -20,6 +27,7 @@ export default class TopBar extends Component {
       notifications: [],
       snackbar: false,
       popover: false,
+      userName: "",
     }
     this.handleLogout = this.handleLogout.bind(this)
     this.handleNotificationClick = this.handleNotificationClick.bind(this)
@@ -29,6 +37,8 @@ export default class TopBar extends Component {
 
   componentWillMount(){
     this.loadNotifications()
+    Backend.getUserNames([Backend.getMail()])
+    .then((data) => {this.setState({userName : data[Backend.getMail()] })})
   }
 
   loadNotifications() {
@@ -77,12 +87,26 @@ export default class TopBar extends Component {
     return (
       <div className = "topbar row">
         <div className = "col-12" style = {{marginTop: 2, textAlign: "right"}}>
+          <IconButton tooltip = "Your profile"
+            iconStyle = {{color: Styles.palette.alternateTextColor}}
+            onClick = {() => {history.push('/yourprofile')}}
+            >
+            <Profile/>
+          </IconButton>
+          <div onClick = {() => {history.push('/yourprofile')}}
+               style = {{color: Styles.palette.alternateTextColor,
+                                verticalAlign: "middle",
+                                display: "inline-block",
+                                cursor: "pointer",
+                                height: "100%", paddingTop: 4}}>
+            {this.state.userName}
+          </div>
           <IconButton tooltip = "Notifications" iconStyle = {{color: Styles.palette.alternateTextColor}} onClick = {this.handleNotificationClick}>
             <Notification/>
-            { this.state.notifications.length !== 0 ?
+            {this.state.notifications.length !== 0 ?
               <Badge  badgeContent = {this.state.notifications.length} primary = {true}
                   badgeStyle = {{top: -30, height: 20, width: 20}} />
-             : ""
+                : ""
             }
           </IconButton>
           <NotificationPane value = {this.state.popover}

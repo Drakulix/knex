@@ -8,7 +8,7 @@ import logo from '../../style/img/white_logo_title.svg'
 import Delete from 'material-ui/svg-icons/action/delete'
 import Search from 'material-ui/svg-icons/action/search'
 import Admin from 'material-ui/svg-icons/action/settings'
-import Profile from 'material-ui/svg-icons/action/account-circle'
+import TimeLine from 'material-ui/svg-icons/action/list'
 import Projects from 'material-ui/svg-icons/action/work'
 import Bookmarks from 'material-ui/svg-icons/toggle/star-half'
 import People from 'material-ui/svg-icons/social/people'
@@ -16,7 +16,10 @@ import Archive from 'material-ui/svg-icons/content/archive'
 import Add from 'material-ui/svg-icons/content/add-circle'
 
 
-const menuItemStyle = {color: Styles.palette.alternateTextColor, width: 20, height:20, marginTop: -15}
+const menuIconStyle = {
+  color: Styles.palette.alternateTextColor,
+  width: 20,
+  height:20}
 
 
 export default class SideBar extends Component {
@@ -29,7 +32,6 @@ export default class SideBar extends Component {
         queries: "Your saved queries",
         bookmarks: 'Your bookmarks',
         userprojects: 'Your projects',
-        profile: 'Your profile',
         adminArea: 'Admin area',
         trashcan: "Your trash",
         people: "Search users",
@@ -50,16 +52,16 @@ export default class SideBar extends Component {
             <img className = "logo-banner" src = {logo} alt = "logo"/>
         </div>
         <ul className = "list-group">
-          <SideBarEntry icon = {<Search style = {menuItemStyle}/>} name = {this.state.menu.discoverProjects} to = "/discovery" active = {this.isActive("/discovery")} />
-          <SideBarEntry icon = {<People style = {menuItemStyle}/>} name = {this.state.menu.people} to = {'/users/'} active = {this.isActive("/users")} />
-          <SideBarEntry icon = {<Add style = {menuItemStyle}/>} name = {this.state.menu.createProject} to = "/createbylink" active = {this.isActive("/createbylink")} />
-          <SideBarEntry icon = {<Archive style = {menuItemStyle}/>} name = {this.state.menu.queries} to = "/queries" active = {this.isActive("/queries")} />
-          <SideBarEntry icon = {<Bookmarks style = {menuItemStyle}/>} name = {this.state.menu.bookmarks} to = "/bookmarks" active = {this.isActive("/bookmarks")} />
-          <SideBarEntry icon = {<Projects style = {menuItemStyle}/>} name = {this.state.menu.userprojects} to = "/yourprojects" active = {this.isActive("/yourprojects")} />
-          <SideBarEntry icon = {<Delete style = {menuItemStyle}/>} name = {this.state.menu.trashcan} to = '/trashcan' active = {this.isActive("/trashcan")} />
-          <SideBarEntry icon = {<Profile style = {menuItemStyle}/>} name = {this.state.menu.profile} to = {`/yourprofile`} active = {this.isActive("/yourprofile")} />
+          <SideBarEntry icon = {<TimeLine style = {menuIconStyle}/>} name = {this.state.menu.dashboard} to = "/dashboard" active = {this.isActive("/dashboard")} />
+          <SideBarEntry icon = {<Search style = {menuIconStyle}/>} name = {this.state.menu.discoverProjects} to = "/discovery" active = {this.isActive("/discovery")} />
+          <SideBarEntry icon = {<People style = {menuIconStyle}/>} name = {this.state.menu.people} to = {'/users/'} active = {this.isActive("/users")} />
+          <SideBarEntry icon = {<Add style = {menuIconStyle}/>} name = {this.state.menu.createProject} to = "/createbylink" active = {this.isActive("/createbylink")} />
+          <SideBarEntry icon = {<Archive style = {menuIconStyle}/>} name = {this.state.menu.queries} to = "/queries" active = {this.isActive("/queries")} />
+          <SideBarEntry icon = {<Bookmarks style = {menuIconStyle}/>} name = {this.state.menu.bookmarks} to = "/bookmarks" active = {this.isActive("/bookmarks")} />
+          <SideBarEntry icon = {<Projects style = {menuIconStyle}/>} name = {this.state.menu.userprojects} to = "/yourprojects" active = {this.isActive("/yourprojects")} />
+          <SideBarEntry icon = {<Delete style = {menuIconStyle}/>} name = {this.state.menu.trashcan} to = '/trashcan' active = {this.isActive("/trashcan")} />
           {Backend.isAdmin() ?  <SideBarEntry
-            icon = {<Admin style = {menuItemStyle}/>}
+            icon = {<Admin style = {menuIconStyle}/>}
             name = {this.state.menu.adminArea}
             to = "/admin" active = {this.isActive("/admin")}
             />

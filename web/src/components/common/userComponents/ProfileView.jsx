@@ -13,13 +13,11 @@ export default class ProfileView extends Component {
                className = "rounded-circle profile-icon" />
         </div>
         <div style = {{marginBottom: 20}}>Projects contributed: {this.props.projectsContributed} </div>
-        <div style = {{marginBottom: 20}}>
-          <SkillOutputList value = {this.props.topTenTags} />
-        </div>
-        <div className = "bio-info" style = {{width: "100%"}}>
-          <table style = {{tableLayout: "fixed", width: "80%", wordWrap: "break-word"}}><tbody><tr><td>
+        <div className = "bio-info" style = {{width: "100%", marginBottom: 20, wordWrap: "break-word"}}>
           {this.props.profileInf.bio}
-          </td></tr></tbody></table>
+        </div>
+        <div>
+          <SkillOutputList value = {this.props.topTenTags} />
         </div>
       </div>
     )

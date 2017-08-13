@@ -546,7 +546,8 @@ class Backend {
     }
 
     getUserNames(userList){
-      return this.postJson('/api/users/names',userList)
+      return this.postJson('/api/users/names',userList).then(function(data){return JSON.parse(data)});
+
     }
 
     getTagsOfUser(mail) {
