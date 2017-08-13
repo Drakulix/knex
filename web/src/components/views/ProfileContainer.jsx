@@ -12,7 +12,8 @@ import TimeLine from '../common/userComponents/TimeLine'
 
 import RaisedButton from 'material-ui/RaisedButton'
 import {Redirect} from 'react-router-dom'
-import HeadLine from '../common/HeadLine'
+import Edit from 'material-ui/svg-icons/image/edit'
+import Styles from '../common/Styles.jsx'
 
 
 
@@ -30,7 +31,9 @@ export default class ProfileContainer extends Component {
       snackbar : false,
       snackbarText : "",
       projectCount : 0,
-      showRegistration : false
+      showRegistration : false,
+      showEdit: false,
+
     }
     this.handleProfileChange = this.handleProfileChange.bind(this)
   }
@@ -84,7 +87,8 @@ export default class ProfileContainer extends Component {
     this.setState({
       value : success ? 'a' : 'b',
       snackbar : true,
-      snackbarText : snackbarText
+      snackbarText : snackbarText,
+      showEdit : false
     })
     this.loadProfileInf(this.state.email)
   }
@@ -101,14 +105,9 @@ export default class ProfileContainer extends Component {
     if( !this.state.profile_exists){
       return (
         <div className = "container">
-          <div className = "row" style = {{marginTop : "100px", marginBottom : 100}}>
-            <div className = "col-5 "></div>
-            <div className = "col-2 " style = {{fontSize : "30px", height : 41, textAlign : "center"}}>
-              Profile not found
-            </div>
-            <div className = "col-1"></div>
+          <div className = "row" style = {{marginTop: 100, marginBottom: 100}}>
             <div className = "col-4">
-              {Backend.isAdmin?
+              {Backend.isAdmin ?
                 <RaisedButton
                   fullWidth = {true}
                   label = {(this.state.showRegistration) ? "Hide registration" : "Do you want to register the user" }
@@ -116,63 +115,87 @@ export default class ProfileContainer extends Component {
                   onClick = {() => this.setState ({showRegistration : !this.state.showRegistration})}/>
                : ""}
             </div>
+            <div className = "col-1"></div>
+            <div className = "col-2 " style = {{fontSize: 30, height: 41, textAlign: 'center'}}>
+              Profile not found
+            </div>
+            <div className = "col-5 "></div>
           </div>
-            {Backend.isAdmin ?
-              <div style = {{textAlign : "center", marginBottom : 40, display : (this.state.showRegistration) ? "block" : "none" }}>
-                <RegisterUser email = {this.props.match.params.email}
-                              handleUserUpdate = {() => {history.push(`/profile/${this.props.match.params.email}`)}}/>
-              </div>
-             : "" }
-            <ProfileProjects
-              email = {this.state.email}
-              profileExists = {false} />
-
+          {Backend.isAdmin ?
+            <div style = {{textAlign : "center", marginBottom : 40, display : (this.state.showRegistration) ? "block" : "none" }}>
+              <RegisterUser email = {this.props.match.params.email}
+                            handleUserUpdate = {() => {history.push(`/profile/${this.props.match.params.email}`)}}/>
+            </div>
+           : "" }
+          <ProfileProjects
+            email = {this.state.email}
+            profileExists = {false} />
         </div>
       )
     }
     else {
       return (
         <div className = "container">
-          <HeadLine title = {"Profile details"}/>
-          {!this.state.profileInf.active === "false" ? <i style = {{fontSize : '20px'}}>Inactive user</i> : ""}
-          <div className = "row">
-            <div className = "col-3">
-            <ProfileView profileInf = {this.state.profileInf}
-                        topTenTags = {this.state.topTenTags}
-                        projectsContributed = {this.state.projectCount}/>
+          {!this.state.showEdit ?
+            <div>
+              <div className = "row" style = {{marginTop: 100}}>
+              <div className = "col-3">
+                {(Backend.isAdmin() || this.state.isMe)  ?
+                  <RaisedButton
+                    label =  {<span>Edit Profile</span>}
+                    primary = {true}
+                    style = {{width: 160}}
+                    onClick = {() => this.setState ({showEdit : !this.state.showRegistration})}/>
+                 : ""}
+              </div>
+              <div className = "col-1"/>
+              <div className = "col-4" style = {{fontSize: 30, height: 41, textAlign: 'center'}}>
+                Profile details
+              </div>
+              {!this.state.profileInf.active === "false" ?
+                <div className = "row">
+                  <div className = "col-4"/>
+                  <div className = "col-4"><i style = {{fontSize : '20'}}> Inactive user</i></div>
+                  <div className = "col-4"/>
+                </div>
+                : ""}
             </div>
-            <div className = "col-9">
-              <div style = {{fontWeight: 'bold', fontSize: 26}}>
-                {this.state.profileInf.first_name} {this.state.profileInf.last_name}
+            <div className = "row" style = {{marginTop: 20}}>
+              <div className = "col-3">
+                <ProfileView profileInf = {this.state.profileInf}
+                          topTenTags = {this.state.topTenTags}
+                          projectsContributed = {this.state.projectCount}/>
               </div>
-              <div style = {{marginBottom: 20}}>
-                {this.state.profileInf.email}
+              <div className = "col-9">
+                <div style = {{fontWeight: 'bold', fontSize: 26}}>
+                  {this.state.profileInf.first_name} {this.state.profileInf.last_name}
+                </div>
+                <div style = {{marginBottom: 20}}>
+                  {this.state.profileInf.email}
+                </div>
+                <Tabs
+                  inkBarStyle = {{marginTop : -5, height : 5}}
+                  value = {this.state.value}
+                  onChange = {this.handleChange}
+                  contentContainerStyle = {{marginTop : 30, paddingLeft : 15, paddingRight : 15}}>
+                  <Tab
+                    label = "Timeline" value = "a">
+                    <TimeLine email = {this.state.email}/>
+                  </Tab>
+                  <Tab label = "Projects" value = "b">
+                    <ProfileProjects
+                      email = {this.state.email}
+                      profileExists = {true} />
+                  </Tab>
+                </Tabs>
               </div>
-              <Tabs
-            inkBarStyle = {{marginTop : -5, height : 5}}
-            value = {this.state.value}
-            onChange = {this.handleChange}
-            contentContainerStyle = {{marginTop : 30, paddingLeft : 15, paddingRight : 15}}>
-            <Tab
-              label = "Timeline" value = "a">
-              <TimeLine email = {this.state.email}/>
-            </Tab>
-            <Tab label = "Projects" value = "b">
-              <ProfileProjects
-                email = {this.state.email}
-                profileExists = {true} />
-            </Tab>
-            {(Backend.isAdmin() || this.state.isMe)?
-              <Tab label = "Edit Profile" value = "c">
-                <ProfileEditor email = {this.state.email}
-                  profileInf = {this.state.profileInf}
-                  profileChangeHandler = {this.handleProfileChange}/>
-              </Tab> : ""
-            }
-
-          </Tabs>
             </div>
           </div>
+          :   <ProfileEditor
+                email = {this.state.email}
+                profileInf = {this.state.profileInf}
+                profileChangeHandler = {this.handleProfileChange}/>
+          }
           <Snackbar
             open = {this.state.snackbar}
             message = {this.state.snackbarText}

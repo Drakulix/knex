@@ -2,11 +2,6 @@ import React, { Component } from 'react'
 import {Redirect} from 'react-router-dom'
 import Badge from 'material-ui/Badge'
 import IconButton from 'material-ui/IconButton'
-import RaisedButton from 'material-ui/RaisedButton'
-
-
-import MultiUpload from 'material-ui/svg-icons/av/playlist-add'
-
 import Snackbar from 'material-ui/Snackbar'
 import NotificationPane from '../common/NotificationPane'
 import Backend from '../common/Backend'

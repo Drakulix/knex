@@ -33,7 +33,6 @@ export default class AuthorInputList extends Component {
     Backend.getAuthors().then((authors) => {
         Backend.getUserNames(authors)
         .then ((userNames) => {
-          userNames = userNames
           var suggestions = []
           for (let author in authors){
             var email = authors[author]

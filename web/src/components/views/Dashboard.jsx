@@ -6,10 +6,6 @@ import HeadLine from '../common/HeadLine'
 
 export default class Dashboard extends React.Component {
 
-  constructor(props){
-    super(props)
-  }
-
   render() {
     return (
       <div className = "container">

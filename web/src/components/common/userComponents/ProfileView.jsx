@@ -7,7 +7,7 @@ export default class ProfileView extends Component {
   render(){
     return (
       <div>
-        <div style = {{marginBottom: 20}}>
+        <div style = {{marginBottom: 20}} className = "row">
           <img src = {`/api/users/${this.props.profileInf.email}/avatar?${Date.now()}`}
                alt = {this.props.profileInf.email}
                className = "rounded-circle profile-icon" />
