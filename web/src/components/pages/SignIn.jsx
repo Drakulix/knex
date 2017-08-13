@@ -9,6 +9,8 @@ import TextField from 'material-ui/TextField'
 import logo from '../../style/img/black_logo_title_below.svg'
 import Backend from '../common/Backend'
 
+
+
 export default class SignIn extends Component {
 
   constructor(props) {
@@ -49,7 +51,7 @@ export default class SignIn extends Component {
 
   render() {
     if (this.state.redirect || Backend.isLoggedIn() ) {
-      return <Redirect to='/discovery'/>
+      return <Redirect to='/dashboard'/>
     }
 
     return (
@@ -57,29 +59,34 @@ export default class SignIn extends Component {
         <Snackbar open = {this.state.snackbar}
                   message = {this.state.snackbarText}
                   autoHideDuration = {10000}/>
-        {/*Information*/}
         <img className = "service-name" src = {logo} alt = "Logo"/>
         <h2 className = "team-name">brings light to the cloud</h2>
         <div className = "rectangle-sign">
           <h3 className = "sign-type-desc">Login</h3>
           <form onSubmit = {this.handleSubmit}>
-            {/*Input Email*/}
-            <div className = "input-group input-login">
-              <TextField
-                type = "text"
-                value = {this.state.email}
-                onChange = {this.handleChangeEmail}
-                hintText = "Email"
-              />
+            <div className = "row">
+              <div className = "col"></div>
+              <div className = "input-group input-login col-4">
+                <TextField
+                  type = "text"
+                  value = {this.state.email}
+                  onChange = {this.handleChangeEmail}
+                  hintText = "Email"
+                />
+              </div>
+              <div className = "col"></div>
             </div>
-            {/*Input password*/}
-            <div className = "input-group input-login">
-              <TextField
-                type = "password"
-                value = {this.state.password}
-                onChange = {this.handleChangePassword}
-                hintText = "Password"
-              />
+            <div className = "row">
+              <div className = "col"></div>
+              <div className = "input-group input-login col-4">
+                <TextField
+                  type = "password"
+                  value = {this.state.password}
+                  onChange = {this.handleChangePassword}
+                  hintText = "Password"
+                />
+            </div>
+              <div className = "col"></div>
             </div>
             <div>
               <RaisedButton

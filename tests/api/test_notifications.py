@@ -12,4 +12,4 @@ class TestPOST(object):
         sessionB.post(flask_api_url + '/api/projects/' + project_id + '/comment',
                       data="new comment", headers={'Content-type': "text/plain"})
         notifications = session.get(flask_api_url + '/api/users/notifications').json()
-        assert notifications[-1]['link'] == '/project/' + project_id
+        assert notifications[-1]['project_id'] == project_id

@@ -56,7 +56,7 @@ export default class UrlInputList extends Component {
             backgroundColor = {Styles.palette.primary1Color}
             onTouchTap = {handleClick}
             onRequestDelete = {handleRequestDelete}>
-            <span style = {{color: Styles.palette.alternateTextColor, fontWeight: 'bold'}}> {value} </span>
+            <span style = {{color: Styles.palette.alternateTextColor, fontWeight: 'bold', whiteSpace: 'normal', lineHeight: 1.5}}> {value} </span>
           </Chip>
         )}/>
       )

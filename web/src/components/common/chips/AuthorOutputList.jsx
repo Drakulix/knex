@@ -13,7 +13,7 @@ export default class AuthorOutputList extends Component{
           this.props.value.map(email =>
             <Chip style= {{margin: '4px 4px 4px 4px', background: '#ffffff', float: 'left' }} key = {email}>
               <Link   to = {`/profile/${email}`}
-                      style= {{color: Styles.palette.textColor, fontWeight: 'bold'}}>
+                      style= {{color: Styles.palette.textColor, fontWeight: 'bold', whiteSpace: 'normal', lineHeight: 1.5}}>
                       {this.props.userNames !== undefined && this.props.userNames[email] !== undefined
                         ?  this.props.userNames[email]: email}
               </Link>

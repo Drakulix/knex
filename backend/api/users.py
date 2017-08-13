@@ -4,8 +4,8 @@
 
 import os
 import sys
-import json
 import base64
+import json
 import mimetypes
 
 from flask import request, jsonify, make_response, g, Blueprint
@@ -13,27 +13,16 @@ from flask_security import login_required, login_user, logout_user, current_user
 from flask_security.utils import verify_password, hash_password
 from mongoengine import NotUniqueError
 from mongoengine.fields import ObjectId
-from werkzeug.utils import secure_filename
 
 from api.projects import get_all_authors
 from api.helper.apiexception import ApiException
 from api.helper.search import prepare_search_results
+from api.helper.permissions import current_user_has_permission_to_change
 from api.helper.images import Identicon
+from api.notifications import add_notification, add_self_action
 
 
 users = Blueprint('api_users', __name__)
-
-
-def is_permitted(user, entry):
-    """ Internal function returning whether the user has permission to edit the (other) user.
-
-        Returns:
-            res: true if user has admin role or tries to edit himself.
-    """
-
-    if user.has_role('admin'):
-        return True
-    return user['email'] == entry['email']
 
 
 @users.route('/api/users/login', methods=['POST'])
@@ -156,6 +145,11 @@ def create_user():
                                      bio=user['bio'], roles=roles,
                                      avatar_name='identicon' + user['email'] + '.png',
                                      avatar=imgtext)
+        if not user:
+            add_self_action(user['email'], 'register')
+        else:
+            add_self_action(user['email'], 'invite', user_id=current_user['email'])
+            add_notification(current_user['email'], [user['email']], 'invite')
 
         usr = g.user_datastore.get_user(user['email'])
         return jsonify(usr.to_dict())
@@ -176,7 +170,7 @@ def update_user():
         Returns: 400 if user unknown, 403 if no permissions, 200 on success.
     """
     user = request.get_json()
-    if is_permitted(current_user, user):
+    if current_user_has_permission_to_change(user):
         res = g.user_datastore.get_user(user['email'])
         if not res:
             return make_response("Unknown User with Email-address: " + user['email'], 400)
@@ -255,7 +249,7 @@ def delete_user(mail):
     user = g.user_datastore.get_user(mail)
     if not user:
         raise ApiException("user not found", 404)
-    if is_permitted(current_user, user):
+    if current_user_has_permission_to_change(user):
         if not user.has_role('admin'):
             g.user_datastore.delete_user(user)
             return make_response("deleted non admin", 200)
@@ -285,57 +279,6 @@ def get_user(mail):
 
     res = user.to_dict()
     return jsonify(res)
-
-
-@users.route('/api/users/<email:mail>/avatar', methods=['GET'])
-@login_required
-def get_user_avatar(mail):
-    user = g.user_datastore.get_user(mail)
-    if not user:
-        raise ApiException("Unknown User with Email-address: " + str(mail), 404)
-    filedata = base64.b64decode(user.avatar)
-    response = make_response(filedata)
-    response.headers['Content-Type'] = mimetypes.guess_type(user.avatar_name)
-    response.headers['Content-Disposition'] = 'attachment; filename=' + user.avatar_name
-    return response
-
-
-@users.route('/api/users/<email:mail>/avatar', methods=['POST'])
-@login_required
-def set_user_avatar(mail):
-    user = g.user_datastore.get_user(mail)
-    if not user:
-        raise ApiException("Unknown User with Email-address: " + str(mail), 404)
-    if not is_permitted(current_user, user):
-        raise ApiException("Current User has no permission for the requested user.", 403)
-    if 'file' not in request.files:
-        raise ApiException("request.files contains no image", 400)
-    file = request.files['file']
-    if 'image/' not in file.mimetype:
-        raise ApiException("File mimetype must be 'image/<filetype>'", 400)
-    user.avatar_name = secure_filename(file.filename)
-    user.avatar = base64.b64encode(file.read()).decode()
-    user.save()
-    return make_response("Avatar successfully replaced.", 200)
-
-
-@users.route('/api/users/<email:mail>/avatar', methods=['DELETE'])
-@login_required
-def reset_user_avatar(mail):
-    user = g.user_datastore.get_user(mail)
-    if not user:
-        raise ApiException("Unknown User with Email-address: " + str(mail), 404)
-    if not is_permitted(current_user, user):
-        raise ApiException("Current User has no permission for the requested user.", 403)
-    image = Identicon(mail)
-    result = image.generate()
-    with open(os.path.join(sys.path[0], 'identicon' + mail + '.png'), 'rb') as tf:
-        imgtext = base64.b64encode(tf.read())
-    os.remove(sys.path[0] + '/identicon' + mail + '.png')
-    user.avatar = imgtext.decode()
-    user.avatar_name = 'identicon' + mail + '.png'
-    user.save()
-    return make_response("Success", 200)
 
 
 @users.route('/api/users/<email:mail>/projects', methods=['GET'])
@@ -373,84 +316,3 @@ def get_user_tags(mail):
         return jsonify(sorted([x['_id'] for x in toptags], key=str.lower))
     except Exception as err:
         raise ApiException(str(err), 500)
-
-
-@users.route('/api/users/bookmarks/<uuid:id>', methods=['POST'])
-@login_required
-def add_bookmarks(id):
-    user = g.user_datastore.get_user(current_user['email'])
-    if not user:
-        raise ApiException("Couldn't find current_user in datastore", 500)
-    if id in user.bookmarks:
-        return make_response("Project is already bookmarked.", 400)
-    user.bookmarks.append(id)
-    user.save()
-    projects = [g.projects.find_one({'_id': project_id})
-                for project_id in user.bookmarks]
-
-    try:
-        for project in projects:
-            project['is_bookmark'] = 'true'
-            project['is_owner'] = 'true' if current_user['email'] in project['authors']\
-                else 'false'
-
-        return jsonify(projects)
-
-    except KeyError as err:
-        raise ApiException(str(err), 500)
-
-
-@users.route('/api/users/bookmarks/<uuid:id>', methods=['DELETE'])
-@login_required
-def delete_bookmarks(id):
-    user = g.user_datastore.get_user(current_user['email'])
-    if not user:
-        raise ApiException("Couldn't find current_user in datastore", 500)
-    if id in user.bookmarks:
-        user.bookmarks.remove(id)
-        user.save()
-        projects = [g.projects.find_one({'_id': project_id}) for project_id in user['bookmarks']]
-
-        try:
-            for project in projects:
-                project['is_bookmark'] = 'true'
-                project['is_owner'] = 'true' if current_user['email'] in project['authors']\
-                    else 'false'
-
-            return make_response("Success", 200)
-
-        except KeyError as err:
-            raise ApiException(str(err), 500)
-    return make_response("Project is not bookmarked: " + str(id), 400)
-
-
-@users.route('/api/users/bookmarks', methods=['GET'])
-@login_required
-def get_bookmarks():
-    projects = [g.projects.find_one({'_id': project_id}) for project_id in current_user.bookmarks]
-    projects = list(filter(None.__ne__, projects))
-    return jsonify(prepare_search_results(projects))
-
-
-@users.route('/api/users/notifications', methods=['GET'])
-@login_required
-def get_notifications():
-    user = g.user_datastore.get_user(current_user['email'])
-    if not user:
-        raise ApiException("Couldn't find current_user in datastore", 500)
-    return jsonify([notification.to_dict() for notification in user.notifications])
-
-
-@users.route('/api/users/notifications/<id>', methods=['DELETE'])
-@login_required
-def delete_notification(id):
-    user = g.user_datastore.get_user(current_user['email'])
-    if not user:
-        raise ApiException("Couldn't find current_user in datastore", 500)
-
-    for notification in user.notifications:
-        if notification.notification_id == ObjectId(id):
-            user.notifications.remove(notification)
-            user.save()
-            return make_response("Success", 200)
-    return make_response("No notification with the given id known", 404)

@@ -37,7 +37,7 @@ def prepare_mongo_query(query):
     if status:
         request_json['status'] = status
     if archived in ['true', 'false']:
-        request_json['archived'] = (archived == 'true')
+        request_json['archived'] = archived
     if date_from:
         request_json['date_creation'] = {'$gte': date_from}
     if date_to:

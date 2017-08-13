@@ -310,8 +310,17 @@ class Backend {
         return this.putJson(`/api/projects/${id}`, payload);
     }
 
+    archiveProject(id, archive) {
+      return this.putJson(`/api/projects/${id}/archive`, {'archived' : archive});
+    }
+
     deleteProject(id) {
         return this.delete(`/api/projects/${id}`);
+    }
+
+    getProjectTitels(project_ids){
+      return this.postJson('/api/projects/titles', project_ids).then(function(data)
+        {return JSON.parse(data)})
     }
 
     async addProjectComment(id, message) {
@@ -537,7 +546,8 @@ class Backend {
     }
 
     getUserNames(userList){
-      return this.postJson('/api/users/names',userList)
+      return this.postJson('/api/users/names',userList).then(function(data){return JSON.parse(data)});
+
     }
 
     getTagsOfUser(mail) {
@@ -545,28 +555,36 @@ class Backend {
     }
 
     addBookmark(id) {
-        return this.postJson(`/api/users/bookmarks/${encodeURIComponent(id)}`);
+        return this.postJson(`/api/bookmarks/${encodeURIComponent(id)}`);
     }
 
     deleteBookmark(id) {
-        return this.delete(`/api/users/bookmarks/${encodeURIComponent(id)}`);
+        return this.delete(`/api/bookmarks/${encodeURIComponent(id)}`);
     }
 
     handleBookmark(id, shouldBookmark){
       if(shouldBookmark === 'true') {
-        return this.delete(`/api/users/bookmarks/${encodeURIComponent(id)}`);
+        return this.delete(`/api/bookmarks/${encodeURIComponent(id)}`);
       }
       else{
-        return this.postJson(`/api/users/bookmarks/${encodeURIComponent(id)}`);
+        return this.postJson(`/api/bookmarks/${encodeURIComponent(id)}`);
       }
     }
 
     getBookmarks() {
-        return this.getJson('/api/users/bookmarks');
+        return this.getJson('/api/bookmarks');
+    }
+
+    getActions() {
+        return this.getJson('/api/users/actions');
     }
 
     getNotifications() {
         return this.getJson('/api/users/notifications');
+    }
+
+    deactivateNotification(id) {
+        return this.putJson('/api/users/notifications/deactivate', {'_id' : id});
     }
 
     deleteNotification(id) {

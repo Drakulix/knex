@@ -32,6 +32,7 @@ import UserProjects from './components/views/UserProjects'
 import SavedQueries from './components/views/SavedQueries'
 import UserTrashcan from './components/views/UserTrashcan'
 import UserList from './components/views/UserList'
+import Dashboard from './components/views/Dashboard'
 
 import TopBar from './components/common/TopBar'
 import SideBar from './components/common/SideBar'
@@ -43,7 +44,7 @@ import styles from './components/common/Styles.jsx'
 var injectTapEventPlugin = require("react-tap-event-plugin")
 injectTapEventPlugin()
 require('roboto-fontface/css/roboto/roboto-fontface.css');
-require('bootstrap/dist/css/bootstrap.css');
+require('bootstrap/dist/css/bootstrap.min.css');
 
 
 
@@ -72,6 +73,7 @@ init(() => {
     <MuiThemeProvider  muiTheme={getMuiTheme(styles)}>
       <Router history={history}>
         <Switch>
+          <PageRoute sitePath="/dashboard" path="/dashboard" component={Dashboard} />
           <PageRoute sitePath="/discovery" path="/discovery/:query" component={SearchPage} />
           <PageRoute sitePath="/discovery" path="/discovery/" component={SearchPage} />
           <PageRoute sitePath="/admin" path="/admin" component={AdminOverview} />

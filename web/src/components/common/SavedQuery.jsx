@@ -42,7 +42,7 @@ export default class SavedQuery extends Component {
               <Link to = {`/discovery/${JSON.stringify(this.state.query)}`}>
                 <RaisedButton
                   onClick = {this.runQuery}
-                  label = {<span className = "hidden-md-down">Run query</span>}
+                  label = {<span className = "hidden-lg-down">Run query</span>}
                   primary = {true}
                   fullWidth = {true}
                   icon = {<Search style = {{color: Styles.palette.alternateTextColor}}/>}
@@ -55,7 +55,7 @@ export default class SavedQuery extends Component {
                  onClick = {this.deleteQuery}
                  primary = {true}
                  fullWidth = {true}
-                 label =  {<span className = "hidden-md-down">Delete query</span>}
+                 label =  {<span className = "hidden-lg-down">Delete query</span>}
                  icon = {<Delete style = {{color: Styles.palette.alternateTextColor}}/>}
                  >
               </RaisedButton>

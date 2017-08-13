@@ -61,11 +61,11 @@ export default class TagInputList extends Component {
         chipRenderer = {({ value, text, isFocused, isDisabled, handleClick, handleRequestDelete }, key) => (
           <Chip
             key = {key}
-            style= {{margin: '8px 8px 0 0',float: 'left'}}
+            style= {{margin: '4px 4px 0 0',float: 'left'}}
             backgroundColor = {Styles.palette.primary1Color}
             onTouchTap = {handleClick}
             onRequestDelete = {handleRequestDelete}>
-            <span style = {{color: Styles.palette.alternateTextColor, fontWeight: 'bold'}}> {value} </span>
+            <span style = {{color: Styles.palette.alternateTextColor, fontWeight: 'bold', whiteSpace: 'normal', lineHeight: 1.5}}> {value} </span>
           </Chip>
         )}/>
       )

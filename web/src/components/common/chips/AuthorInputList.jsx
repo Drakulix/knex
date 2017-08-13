@@ -33,7 +33,6 @@ export default class AuthorInputList extends Component {
     Backend.getAuthors().then((authors) => {
         Backend.getUserNames(authors)
         .then ((userNames) => {
-          userNames = JSON.parse(userNames)
           var suggestions = []
           for (let author in authors){
             var email = authors[author]
@@ -101,7 +100,7 @@ export default class AuthorInputList extends Component {
             backgroundColor = {'#ffffff'}
             onTouchTap = {handleClick}
             onRequestDelete = {handleRequestDelete}>
-            <span style = {{color: Styles.palette.textColor, fontWeight: 'bold'}}> {text} </span>
+            <span style = {{color: Styles.palette.textColor, fontWeight: 'bold', whiteSpace: 'normal', lineHeight: 1.5}}> {text} </span>
           </Chip>
         )}/>
       )

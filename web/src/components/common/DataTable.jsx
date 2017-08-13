@@ -80,7 +80,7 @@ export default class BookmarksTable extends Component {
         delete project.is_bookmark
         delete project.is_owner
         project['archived'] = true
-        Backend.updateProject(projectInf._id, project)
+        Backend.archiveProject(projectInf._id, "true")
         .then(() => {this.props.handler(this.state.filters)})
         .then(this.setState({snackbar: true,
           snackbarText: `Project ${projectInf.title} archived`}))
@@ -95,7 +95,7 @@ export default class BookmarksTable extends Component {
     delete project.is_bookmark
     delete project.is_owner
     project['archived'] = false
-    Backend.updateProject(projectInf._id, project)
+    Backend.archiveProject(projectInf._id, "false")
         .then(() => {this.props.handler(this.state.filters)})
         .then(() => {this.setState({snackbar: true,
           snackbarText: `Project ${projectInf.title} unarchived`})})
@@ -121,7 +121,7 @@ export default class BookmarksTable extends Component {
         Backend.getUserNames(authors)
         .then ((userNames) => {
           this.setState({
-            userNames: JSON.parse(userNames),
+            userNames: userNames,
             filteredData: (this.props.isBookmarkTable
                             ? this.filter(props.data, this.state.filters): props.data),
           })
@@ -222,7 +222,8 @@ export default class BookmarksTable extends Component {
         accessor: 'date_creation',
         pivot: true,
         width: 95,
-        style: {textAlign: "center", marginTop: 9},
+        style: {textAlign: "center", marginTop: 9,   fontFamily: 'Roboto, sans-serif !important'
+},
       })
     }
     if(this.props.columns.indexOf("status") !== -1){
@@ -231,7 +232,7 @@ export default class BookmarksTable extends Component {
         accessor: 'status',
         id: 'status',
         style: {align: "center", width: 100},
-              width: 100,
+              width: 105,
         Cell: props => <Status value = {props.value} />
       })
     }
@@ -239,7 +240,7 @@ export default class BookmarksTable extends Component {
       columns.push({
         Header: 'Tags',
         accessor: "tags",
-        width: 230,
+        width: 163,
         style: {textAlign: "center", width: 220},
         Cell: props => <TagOutputList value = {props.value} />
       })
@@ -299,7 +300,7 @@ export default class BookmarksTable extends Component {
           (a.archived  ? 1: -1)},
         width: 100,
         style: {textAlign: "center"},
-        Cell: props => { return props.value.archived  ?
+        Cell: props => { return props.value.archived === "true"?
           <IconButton
           onClick = {()=>this.handleUnArchive(props.value)}
           touch = {true}
@@ -324,7 +325,7 @@ export default class BookmarksTable extends Component {
           (a.archived  ? 1: -1)},
         width: 80,
         style: {textAlign: "center"},
-        Cell: props => { return !props.value.archived  ?
+        Cell: props => { return props.value.archived === "false" ?
           <IconButton
           onClick = {()=>this.handleArchive(props.value)}
           touch = {true}
@@ -377,13 +378,12 @@ export default class BookmarksTable extends Component {
                     id: 'title',
                     desc: false
                     }]}
-              defaultExpanded = {{1: true}}
               filterable = {false}
               showPageSizeOptions = {false}
               minRows = {3}
               noDataText = {() =>
                 (this.state.loading) ?
-                  <CircularProgress  size = {45} thickness = {5} />: "No projects found"
+                  <CircularProgress  size = {40} thickness = {5} />: "No projects found"
               }
               defaultPageSize = {10}/>
         </div>

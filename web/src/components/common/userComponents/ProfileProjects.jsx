@@ -31,11 +31,11 @@ export default class ProfileProjects extends Component {
     return (
       <div>
         <DataTable
-            columns= {['title', 'status', 'tags', 'authors', 'description', '_id', 'bookmarked',
-                  (!this.props.email === Backend.getMail() || Backend.isAdmin()) ?'archive': '',
-                ]
-                }
+            columns= {['title', 'status', 'tags', 'authors',  '_id', 'bookmarked',
+              (!this.props.profileExists) ? 'description' : '',
+                  (!this.props.email === Backend.getMail() || Backend.isAdmin()) ?'archive': '']}
             handler = {this.handler}
+
             data = {this.state.projects}
             loading = {this.state.loading}
         />

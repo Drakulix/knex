@@ -6,7 +6,7 @@ export default class Spinner extends Component {
 
   render(){
     return (
-      <div className = "spinner" style = {{display: (this.props.loading ? "block": "none")}}>
+      <div className = "spinner">
         <div className = "headerCreation" style = {{width: "100%"}}>
           {this.props.text}
         </div>
