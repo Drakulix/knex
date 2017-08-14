@@ -233,8 +233,7 @@ export default class BookmarksTable extends Component {
         show: window.innerWidth > 768,
         pivot: true,
         width: 95,
-        style: {textAlign: "center", marginTop: 9,   fontFamily: 'Roboto, sans-serif !important'
-},
+        style: {textAlign: "center", marginTop: 9, fontFamily : '-Roboto,sans-serif'},
       })
     }
     if(this.props.columns.indexOf("status") !== -1){
@@ -242,8 +241,8 @@ export default class BookmarksTable extends Component {
         Header: 'Status',
         accessor: 'status',
         id: 'status',
-        style: {align: "center", width: 100},
-              width: 105,
+        style: {marginTop: 6},
+        width: 105,
         Cell: props => <Status value = {props.value} />
       })
     }
@@ -268,7 +267,7 @@ export default class BookmarksTable extends Component {
       columns.push({
         Header: 'Description',
         id: 'description',
-        style: {width: "100%"},
+        style: {width: "100%", fontFamily :'-Roboto,sans-serif'},
         show: window.innerWidth > 768,
         accessor: 'description',
         Cell: props =>{
