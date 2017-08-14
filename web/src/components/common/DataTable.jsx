@@ -141,6 +141,16 @@ export default class BookmarksTable extends Component {
     }
   }
 
+  resize = () => this.forceUpdate()
+
+  componentDidMount() {
+    window.addEventListener('resize', this.resize)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.resize)
+  }
+
   handleFilterChange(key, value){
     var state = this.state.filters
     if(value === undefined || value === ""  || value.length === 0){
@@ -220,6 +230,7 @@ export default class BookmarksTable extends Component {
       columns.push({
         Header: 'Date',
         accessor: 'date_creation',
+        show: window.innerWidth > 768,
         pivot: true,
         width: 95,
         style: {textAlign: "center", marginTop: 9,   fontFamily: 'Roboto, sans-serif !important'
@@ -258,10 +269,11 @@ export default class BookmarksTable extends Component {
         Header: 'Description',
         id: 'description',
         style: {width: "100%"},
+        show: window.innerWidth > 768,
         accessor: 'description',
         Cell: props =>{
-          var text = (props.value !== undefined) ? props.value.substring(0,200).trim(): "";
-          text = text + ((props.value.length > 200) ? "...": "")
+          var text = (props.value !== undefined) ? props.value.substring(0,150).trim(): "";
+          text = text + ((props.value.length > 150) ? "...": "")
           return(
             <div style = {{whiteSpace: "normal", marginTop: 8, color: Styles.palette.textColor}}>
             {text}
