@@ -408,7 +408,7 @@ class TestPUT(object):
                                    project_id_not_archived[0])
         manifest_json = get_response.json()
         print(get_response.text)
-        manifest_json['archived'] = True
+        manifest_json['archived'] = "true"
         del manifest_json['is_bookmark']
         del manifest_json['is_owner']
         get_put_response = session.put(flask_api_url + "/api/projects/" +
@@ -430,7 +430,7 @@ class TestPUT(object):
                                    project_id_archived[0] + "?archived=true")
         manifest_json = get_response.json()
         print(get_response.text)
-        manifest_json['archived'] = False
+        manifest_json['archived'] = "false"
         del manifest_json['is_bookmark']
         del manifest_json['is_owner']
         get_put_response = session.put(flask_api_url + "/api/projects/" + project_id_archived[0],
@@ -483,7 +483,7 @@ class TestPUT(object):
         assert UUID(project_id, version=4)
         get_response = session.get(flask_api_url + "/api/projects/" + project_id)
         manifest = get_response.json()
-        manifest['archived'] = True
+        manifest['archived'] = "true"
         del manifest['is_bookmark']
         del manifest['is_owner']
         put_response = session.put(flask_api_url + "/api/projects/" + project_id, json=manifest)
