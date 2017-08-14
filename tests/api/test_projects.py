@@ -292,6 +292,8 @@ class TestGET(object):
                 del project['is_bookmark']
             if 'is_owner' in project:
                 del project['is_owner']
+            if 'archived' in project:
+                del project['archived']
             print(manifest_validator.is_valid(project))
             assert manifest_validator.is_valid(project)
             print("project_id: ", project["_id"])
