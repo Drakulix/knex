@@ -65,36 +65,43 @@ export default class SignIn extends Component {
           <h3 className = "sign-type-desc">Login</h3>
           <form onSubmit = {this.handleSubmit}>
             <div className = "row">
-              <div className = "col"></div>
-              <div className = "input-group input-login col-4">
+              <div className = "col"/>
+              <div className = "input-group input-login col-3">
                 <TextField
                   type = "text"
                   value = {this.state.email}
                   onChange = {this.handleChangeEmail}
                   hintText = "Email"
+                  fullWidth = {true}
                 />
               </div>
-              <div className = "col"></div>
+              <div className = "col"/>
             </div>
             <div className = "row">
-              <div className = "col"></div>
-              <div className = "input-group input-login col-4">
+              <div className = "col"/>
+              <div className = "input-group input-login col-3">
                 <TextField
                   type = "password"
                   value = {this.state.password}
                   onChange = {this.handleChangePassword}
                   hintText = "Password"
+                  fullWidth = {true}
                 />
+              </div>
+              <div className = "col"/>
             </div>
-              <div className = "col"></div>
-            </div>
-            <div>
-              <RaisedButton
-                type = "Submit"
-                label = "Login"
-                primary = {true}
-                style = {{width: 250, marginTop: 40}}
-              />
+            <div className = "row">
+              <div className = "col"/>
+              <div className = "col-3">
+                <RaisedButton
+                  type = "Submit"
+                  label = "Login"
+                  fullWidth = {true}
+                  primary = {true}
+                  style = {{width: 250, marginTop: 40}}
+                />
+              </div>
+              <div className = "col"/>
           </div>
           </form>
           <div>

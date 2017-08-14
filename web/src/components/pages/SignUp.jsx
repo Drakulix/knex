@@ -88,49 +88,68 @@ export default class SignUp extends Component {
           <h3 className = "sign-type-desc">Sign Up
           </h3>
           <form onSubmit = {this.handleRegister}>
-            <div>
-              <TextField
-                type = "text"
-                value = {this.state.first_name}
-                onChange = {this.handleInputChange}
-                hintText = "Enter the first name..."
-                errorText = {(this.state.first_name === "") ? "Field is required" : ""}
-                name= "first_name"
-                />
+            <div className = "row">
+              <div className = "col"/>
+              <div className = "col-3">
+                <TextField
+                  type = "text"
+                  fullWidth = {true}
+                  value = {this.state.first_name}
+                  onChange = {this.handleInputChange}
+                  hintText = "Enter your first name..."
+                  errorText = {(this.state.first_name === "") ? "Field is required" : ""}
+                  name= "first_name"
+                  />
+              </div>
+              <div className = "col"/>
             </div>
-            <div >
-              <TextField
-                type = "text"
-                value = {this.state.last_name}
-                name = "last_name"
-                onChange = {this.handleInputChange}
-                hintText = "Enter the last name..."
-                errorText = {(this.state.last_name === "") ? "Field is required" : ""}
-
+            <div className = "row">
+              <div className = "col"/>
+              <div className = "col-3">
+                <TextField
+                  type = "text"
+                  value = {this.state.last_name}
+                  name = "last_name"
+                  onChange = {this.handleInputChange}
+                  hintText = "Enter your last name..."
+                  fullWidth = {true}
+                  errorText = {(this.state.last_name === "") ? "Field is required" : ""}
                 />
+              </div>
+              <div className = "col"/>
             </div>
-            <div>
-              <TextField
-                type = "email"
-                value = {this.state.email}
-                onChange = {this.handleInputChange}
-                hintText = "Email"
-                name = "email"
-                errorText = {(!this.isValidEmailAddress()) ? "Needs to be a valid email" : ""}
-
+            <div className = "row">
+              <div className = "col"/>
+              <div className = "col-3">
+                <TextField
+                  type = "email"
+                  value = {this.state.email}
+                  onChange = {this.handleInputChange}
+                  hintText = "Email"
+                  name = "email"
+                  fullWidth = {true}
+                  errorText = {(!this.isValidEmailAddress()) ? "Needs to be a valid email" : ""}
                 />
+              </div>
+              <div className = "col"/>
             </div>
-            <div >
-              <TextField
-                type = "password"
-                value = {this.state.password}
-                onChange = {this.handleInputChange}
-                hintText = "Password"
-                name = "password"
-                errorText = {(this.state.password === "") ? "Field is required" : ""}
-                />
+            <div className = "row">
+              <div className = "col"/>
+              <div className = "col-3">
+                <TextField
+                  type = "password"
+                  value = {this.state.password}
+                  onChange = {this.handleInputChange}
+                  hintText = "Password"
+                  name = "password"
+                  errorText = {(this.state.password === "") ? "Field is required" : ""}
+                  />
+              </div>
+              <div className = "col"/>
             </div>
-            <div>
+            <div className = "row">
+            <div className = "col"/>
+            <div className = "col-3">
               <TextField
                 type = "password"
                 value = {this.state.password_confirm}
@@ -140,14 +159,22 @@ export default class SignUp extends Component {
                 errorText = {( this.state.password !== this.state.password_confirm ) ? "Passwords do not match" : "" }
                 />
             </div>
-            <RaisedButton
-              type = "Submit"
-              label = "Register"
-              disabled = {this.isInValidInput()}
-              primary = {true}
-              style = {{width : 250}}
-              required
-              />
+            <div className = "col"/>
+          </div>
+            <div className = "row">
+              <div className = "col"/>
+              <div className = "col-3">
+                <RaisedButton
+                  type = "Submit"
+                  label = "Register"
+                  disabled = {this.isInValidInput()}
+                  primary = {true}
+                  style = {{width : 250}}
+                  required
+                  />
+              </div>
+              <div className = "col"/>
+            </div>
           </form>
         </div>
         <div style = {{marginTop : 30}}>
