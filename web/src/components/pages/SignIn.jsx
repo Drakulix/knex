@@ -59,14 +59,14 @@ export default class SignIn extends Component {
         <Snackbar open = {this.state.snackbar}
                   message = {this.state.snackbarText}
                   autoHideDuration = {10000}/>
-        <img className = "service-name" src = {logo} alt = "Logo"/>
-        <h2 className = "team-name">brings light to the cloud</h2>
+        <img className = "service-name hidden-md-down" src = {logo} alt = "Logo"/>
+        <h2 className = "team-name hidden-md-down">brings light to the cloud</h2>
         <div className = "rectangle-sign">
           <h3 className = "sign-type-desc">Login</h3>
           <form onSubmit = {this.handleSubmit}>
             <div className = "row">
               <div className = "col"/>
-              <div className = "input-group input-login col-3">
+              <div className = "input-group input-login col-7 col-lg-3 col-md-4 col-sm-5">
                 <TextField
                   type = "text"
                   value = {this.state.email}
@@ -79,7 +79,7 @@ export default class SignIn extends Component {
             </div>
             <div className = "row">
               <div className = "col"/>
-              <div className = "input-group input-login col-3">
+              <div className = "input-group input-login col-7 col-lg-3 col-md-4 col-sm-5">
                 <TextField
                   type = "password"
                   value = {this.state.password}
@@ -90,31 +90,32 @@ export default class SignIn extends Component {
               </div>
               <div className = "col"/>
             </div>
-            <div className = "row">
+            <div className = "row" style = {{marginTop: 40}}>
               <div className = "col"/>
-              <div className = "col-3">
+              <div className = "col-7 col-lg-3 col-md-4 col-sm-5">
                 <RaisedButton
                   type = "Submit"
                   label = "Login"
                   fullWidth = {true}
                   primary = {true}
-                  style = {{width: 250, marginTop: 40}}
                 />
               </div>
               <div className = "col"/>
           </div>
           </form>
-          <div>
-            <br/>
-            <Link to = "/register">
-            <RaisedButton
-              type = "Submit"
-              label = "Register"
-              primary = {true}
-              style = {{width: 250}}
-              required
-            />
-            </Link>
+          <div className = "row" style = {{marginTop: 20}}>
+            <div className = "col"/>
+            <div className = "col-7 col-lg-3 col-md-4 col-sm-5">
+              <RaisedButton
+                type = "Submit"
+                label = "Register"
+                href = "/register"
+                primary = {true}
+                fullWidth = {true}
+                required
+              />
+            </div>
+            <div className = "col"/>
           </div>
         </div>
       </div>

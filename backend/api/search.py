@@ -59,7 +59,7 @@ def search_es():
         res (json): JSON containing Projects and metadata
 
     """
-    request_json  = request.get_json()
+    request_json = request.get_json()
     query = prepare_mongo_query(request_json)
 
     projects = g.projects.find(query, {'comments': 0})

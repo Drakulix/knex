@@ -273,8 +273,7 @@ def update_project(project_id):
         elif request.is_json or "application/json5" in request.content_type:
             manifest = request.get_json() if request.is_json \
                 else json5.loads(request.data.decode("utf-8"))
-            archived = res.pop('archived', None)
-            res.pop('_id')
+            res['_id'] = str(project_id)
             if 'title' in manifest:
                 res['title'] = manifest['title']
             if 'authors' in manifest:
@@ -299,12 +298,9 @@ def update_project(project_id):
                 res['related_projects'] = manifest['related_projects']
             if 'date_creation' in manifest:
                 res['date_creation'] = manifest['date_creation']
-            is_valid = g.validator.is_valid(res)
-            res['_id'] = project_id
             if 'archived' in manifest:
                 res['archived'] = manifest['archived']
-            else:
-                res['archived'] = archived
+            is_valid = g.validator.is_valid(res)
 
             if is_valid and current_user_has_permission_to_change(res):
                 res['date_last_updated'] = time.strftime("%Y-%m-%d")

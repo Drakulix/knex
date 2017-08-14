@@ -82,15 +82,15 @@ export default class SignUp extends Component {
         <Snackbar open = {this.state.snackbar}
                   message = {this.state.snackbarText}
                   autoHideDuration = {10000}/>
-        <img className = "service-name" src = {logo} alt = "Logo"/>
-        <h2 className = "team-name">brings light to the cloud</h2>
+        <img className = "service-name hidden-md-down" src = {logo} alt = "Logo"/>
+        <h2 className = "team-name hidden-md-down">brings light to the cloud</h2>
         <div className = "rectangle-sign">
           <h3 className = "sign-type-desc">Sign Up
           </h3>
           <form onSubmit = {this.handleRegister}>
             <div className = "row">
               <div className = "col"/>
-              <div className = "col-3">
+              <div className = "col-7 col-lg-3 col-md-4 col-sm-5">
                 <TextField
                   type = "text"
                   fullWidth = {true}
@@ -105,7 +105,7 @@ export default class SignUp extends Component {
             </div>
             <div className = "row">
               <div className = "col"/>
-              <div className = "col-3">
+              <div className = "col-7 col-lg-3 col-md-4 col-sm-5">
                 <TextField
                   type = "text"
                   value = {this.state.last_name}
@@ -120,7 +120,7 @@ export default class SignUp extends Component {
             </div>
             <div className = "row">
               <div className = "col"/>
-              <div className = "col-3">
+              <div className = "col-7 col-lg-3 col-md-4 col-sm-5">
                 <TextField
                   type = "email"
                   value = {this.state.email}
@@ -135,13 +135,14 @@ export default class SignUp extends Component {
             </div>
             <div className = "row">
               <div className = "col"/>
-              <div className = "col-3">
+              <div className = "col-7 col-lg-3 col-md-4 col-sm-5">
                 <TextField
                   type = "password"
                   value = {this.state.password}
                   onChange = {this.handleInputChange}
                   hintText = "Password"
                   name = "password"
+                  fullWidth = {true}
                   errorText = {(this.state.password === "") ? "Field is required" : ""}
                   />
               </div>
@@ -149,35 +150,36 @@ export default class SignUp extends Component {
             </div>
             <div className = "row">
             <div className = "col"/>
-            <div className = "col-3">
+            <div className = "col-7 col-lg-3 col-md-4 col-sm-5">
               <TextField
                 type = "password"
                 value = {this.state.password_confirm}
                 onChange = {this.handleInputChange}
                 hintText = "Confirm password"
                 name = "password_confirm"
+                fullWidth = {true}
                 errorText = {( this.state.password !== this.state.password_confirm ) ? "Passwords do not match" : "" }
                 />
             </div>
             <div className = "col"/>
           </div>
-            <div className = "row">
-              <div className = "col"/>
-              <div className = "col-3">
-                <RaisedButton
-                  type = "Submit"
-                  label = "Register"
-                  disabled = {this.isInValidInput()}
-                  primary = {true}
-                  style = {{width : 250}}
-                  required
-                  />
-              </div>
-              <div className = "col"/>
+          <div className = "row" style = {{marginTop: 40}}>
+            <div className = "col"/>
+            <div className = "col-7 col-lg-3 col-md-4 col-sm-5">
+              <RaisedButton
+                type = "Submit"
+                label = "Register"
+                disabled = {this.isInValidInput()}
+                primary = {true}
+                fullWidth = {true}
+                required
+                />
             </div>
+            <div className = "col"/>
+          </div>
           </form>
         </div>
-        <div style = {{marginTop : 30}}>
+        <div style = {{marginTop : 30, marginBottom: 20}}>
           <Link to = "/" className = "register-info">
               You already have an account?<br/>Login here.
           </Link>
