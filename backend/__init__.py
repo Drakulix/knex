@@ -30,7 +30,7 @@ from api.share import share
 from api.notifications import notifications, add_notification, delete_project_notification
 
 
-from api.search import search, prepare_search_results
+from api.search import search, prepare_search_results, prepare_mongo_query
 from api.helper.apiexception import ApiException
 from api.helper.images import Identicon
 
@@ -127,13 +127,12 @@ class Role(DB.Document, RoleMixin):
 class SavedSearch(EmbeddedDocument):
     saved_search_id = DB.ObjectIdField(default=ObjectId)
     metadata = DB.StringField()
-    query = DB.StringField()
     count = DB.LongField()
 
     def to_dict(self):
         dic = {}
         dic['id'] = str(self.saved_search_id)
-        dic['query'] = json.loads(str(self.metadata))
+        dic['metadata'] = json.loads(str(self.metadata))
         dic['count'] = self.count
         return dic
 
@@ -192,8 +191,8 @@ def users_with_bookmark_func():
     g.users_with_bookmark = users_with_bookmark
 
 
-def save_search(user, meta, query, count):
-    search = SavedSearch(metadata=json.dumps(meta), query=json.dumps(query), count=count)
+def save_search(user, meta, count):
+    search = SavedSearch(metadata=json.dumps(meta), count=count)
     user.saved_searches.append(search)
     user.save()
     return str(search.saved_search_id)
@@ -207,13 +206,13 @@ def save_search_func():
 def rerun_saved_searches(creator, project_id, operation):
     for user in User.objects:
         for search in user.saved_searches:
-            search['count'] = g.projects.count(search['query'])
-            search.save()
             query = search.to_dict()
-            query['_id'] = str(project_id)
-            if g.projects.count(json.dumps(query)) == 1:
+            preparedQuery = prepare_mongo_query(query['metadata'])
+            search['count'] = g.projects.count(preparedQuery)
+            search.save()
+            if g.projects.count(preparedQuery) == 1:
                 add_notification(creator, user['email'], operation, project_id=project_id,
-                                 reason='search', saved_search_id=search['id'])
+                                 reason='search', saved_search_id=query['id'])
 
 
 @app.before_request
@@ -304,6 +303,7 @@ app.register_blueprint(bookmarks)
 app.register_blueprint(avatars)
 app.register_blueprint(notifications)
 app.register_blueprint(share)
+
 
 if __name__ == "__main__":
     # remove debug for production

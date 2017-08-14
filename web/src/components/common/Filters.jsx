@@ -147,7 +147,7 @@ export default class Filters extends Component{
             </div>
             <div className = "row">
               <div className ="hidden-lg-up col"/>
-              <div className = "col-1 filter-label hidden-md-down" style = {{textAlign: "left" , marginLeft: 2}}>From</div>
+              <div className = "col-1 filter-label hidden-md-down" style = {{textAlign: "left"}}>From</div>
               <div className = "col-2" style = {{marginTop: 2}}>
                 <DatePicker hintText = "Pick a date from..."
                   mode = "landscape"

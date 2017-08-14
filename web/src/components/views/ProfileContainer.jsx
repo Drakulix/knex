@@ -12,8 +12,6 @@ import TimeLine from '../common/userComponents/TimeLine'
 
 import RaisedButton from 'material-ui/RaisedButton'
 import {Redirect} from 'react-router-dom'
-import Edit from 'material-ui/svg-icons/image/edit'
-import Styles from '../common/Styles.jsx'
 
 
 

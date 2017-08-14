@@ -15,7 +15,7 @@ export default class SavedQuery extends Component {
 
     constructor(props) {
       super(props)
-      var query = this.props.savedSearch.query
+      var query = this.props.savedSearch.metadata
 
       this.state = {
         query: query,
@@ -63,7 +63,7 @@ export default class SavedQuery extends Component {
           </div>
           <Card  expanded = {this.state.expanded} onExpandChange = {() => this.setState({expanded: !this.state.expanded})}>
             <CardHeader
-              title = "Detailed view"
+              title = "Detailed information"
               actAsExpander = {true}
               showExpandableButton = {true}
             />

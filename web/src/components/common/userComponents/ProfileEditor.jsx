@@ -166,17 +166,12 @@ export default class ProfileEditor extends Component {
                     hintText = "Something about you"
                     onChange = {this.handleInputChange}
                     multiLine = {true}
-                    fullWidth = {true}
                     value = {this.state.bio}
                     rowsMax = {8}
                     errorText = {(this.state.bio.length > 255) ? "Text to long": ""}
                     fullWidth = {true} />
             </div>
           </div>
-
-
-
-
           <hr></hr>
           <div className = "row">
             <div className = "col-3 profile-info">Email</div>

@@ -39,6 +39,7 @@ def add_projects():
             for project in projects:
                 if 'comments' not in project:
                     project['comments'] = []
+                project['archived'] = 'false'
                 g.projects.insert(project)
                 add_notification(current_user['email'], project['authors'], "create",
                                  project_id=project['_id'], reason='author')
@@ -63,6 +64,7 @@ def add_projects():
             for project in projects:
                 if 'comments' not in project:
                     project['comments'] = []
+                project['archived'] = 'false'
                 g.projects.insert(project)
                 add_notification(current_user['email'], project['authors'], "create",
                                  project_id=project['_id'], reason='author')
@@ -98,9 +100,9 @@ def get_projects():
         return make_response(jsonify([]), 200)
     query = {}
     if archived == 'true':
-        query = {'archived': True}
+        query = {'archived': 'true'}
     elif archived == 'false':
-        query = {'archived': False}
+        query = {'archived': 'false'}
     if limit and skip:
         res = g.projects.find(query, {'comments': 0}, limit=limit, skip=skip)
     elif limit:
@@ -170,9 +172,9 @@ def get_project_by_id(project_id):
     """
     archived = request.args.get('archived', type=str, default="mixed")
     if archived == 'true':
-        res = g.projects.find_one({'_id': project_id, 'archived': True}, {'comments': 0})
+        res = g.projects.find_one({'_id': project_id, 'archived': 'true'}, {'comments': 0})
     elif archived == 'false':
-        res = g.projects.find_one({'_id': project_id, 'archived': False}, {'comments': 0})
+        res = g.projects.find_one({'_id': project_id, 'archived': 'false'}, {'comments': 0})
     elif archived == 'mixed':
         res = g.projects.find_one({'_id': project_id}, {'comments': 0})
     else:
@@ -271,7 +273,8 @@ def update_project(project_id):
         elif request.is_json or "application/json5" in request.content_type:
             manifest = request.get_json() if request.is_json \
                 else json5.loads(request.data.decode("utf-8"))
-
+            archived = res.pop('archived', None)
+            res.pop('_id')
             if 'title' in manifest:
                 res['title'] = manifest['title']
             if 'authors' in manifest:
@@ -284,8 +287,6 @@ def update_project(project_id):
                 res['status'] = manifest['status']
             if 'url' in manifest:
                 res['url'] = manifest['url']
-            if 'archived' in manifest:
-                res['archived'] = manifest['archived']
             if 'analysis' in manifest:
                 res['analysis'] = manifest['analysis']
             if 'hypothesis' in manifest:
@@ -298,9 +299,13 @@ def update_project(project_id):
                 res['related_projects'] = manifest['related_projects']
             if 'date_creation' in manifest:
                 res['date_creation'] = manifest['date_creation']
-
-            res['_id'] = str(project_id)
             is_valid = g.validator.is_valid(res)
+            res['_id'] = project_id
+            if 'archived' in manifest:
+                res['archived'] = manifest['archived']
+            else:
+                res['archived'] = archived
+
             if is_valid and current_user_has_permission_to_change(res):
                 res['date_last_updated'] = time.strftime("%Y-%m-%d")
                 res['_id'] = project_id

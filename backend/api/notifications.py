@@ -42,7 +42,7 @@ def add_self_action(creator, operation, project_id='', user_id=None):
 
 
 def delete_project_notification(project_id):
-    g.notifications.delete_many({'project_id': project_id})
+    g.notifications.delete_many({'project_id': str(project_id)})
 
 
 @notifications.route('/api/users/actions', methods=['GET'])
