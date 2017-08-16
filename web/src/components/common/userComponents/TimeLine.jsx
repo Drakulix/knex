@@ -120,7 +120,7 @@ class News extends React.Component {
       case 'invite':
         operation = "was invited by"
         break
-      case 'invitation'
+      case 'invitation':
         operation = "invited"
         break
       case 'register':

@@ -88,95 +88,71 @@ export default class SignUp extends Component {
           <h3 className = "sign-type-desc">Sign Up
           </h3>
           <form onSubmit = {this.handleRegister}>
-            <div className = "row">
-              <div className = "col"/>
-              <div className = "col-7 col-lg-3 col-md-4 col-sm-5">
-                <TextField
+            <div style = {{textAlign: 'center'}}>
+              <TextField
                   type = "text"
-                  fullWidth = {true}
+                  style = {{width: 250}}
                   value = {this.state.first_name}
                   onChange = {this.handleInputChange}
                   hintText = "Enter your first name..."
                   errorText = {(this.state.first_name === "") ? "Field is required" : ""}
                   name= "first_name"
-                  />
-              </div>
-              <div className = "col"/>
+              />
             </div>
-            <div className = "row">
-              <div className = "col"/>
-              <div className = "col-7 col-lg-3 col-md-4 col-sm-5">
+            <div style = {{textAlign: 'center'}}>
                 <TextField
                   type = "text"
                   value = {this.state.last_name}
                   name = "last_name"
                   onChange = {this.handleInputChange}
                   hintText = "Enter your last name..."
-                  fullWidth = {true}
+                  style = {{width: 250}}
                   errorText = {(this.state.last_name === "") ? "Field is required" : ""}
-                />
-              </div>
-              <div className = "col"/>
+              />
             </div>
-            <div className = "row">
-              <div className = "col"/>
-              <div className = "col-7 col-lg-3 col-md-4 col-sm-5">
+            <div style = {{textAlign: 'center'}}>
                 <TextField
                   type = "email"
                   value = {this.state.email}
                   onChange = {this.handleInputChange}
                   hintText = "Email"
                   name = "email"
-                  fullWidth = {true}
+                  style = {{width: 250}}
                   errorText = {(!this.isValidEmailAddress()) ? "Needs to be a valid email" : ""}
                 />
-              </div>
-              <div className = "col"/>
             </div>
-            <div className = "row">
-              <div className = "col"/>
-              <div className = "col-7 col-lg-3 col-md-4 col-sm-5">
-                <TextField
+            <div style = {{textAlign: 'center'}}>
+              <TextField
                   type = "password"
                   value = {this.state.password}
                   onChange = {this.handleInputChange}
                   hintText = "Password"
                   name = "password"
-                  fullWidth = {true}
+                  style = {{width: 250}}
                   errorText = {(this.state.password === "") ? "Field is required" : ""}
-                  />
-              </div>
-              <div className = "col"/>
+              />
             </div>
-            <div className = "row">
-            <div className = "col"/>
-            <div className = "col-7 col-lg-3 col-md-4 col-sm-5">
+            <div style = {{textAlign: 'center'}}>
               <TextField
                 type = "password"
                 value = {this.state.password_confirm}
                 onChange = {this.handleInputChange}
                 hintText = "Confirm password"
                 name = "password_confirm"
-                fullWidth = {true}
+                style = {{width: 250}}
                 errorText = {( this.state.password !== this.state.password_confirm ) ? "Passwords do not match" : "" }
                 />
             </div>
-            <div className = "col"/>
-          </div>
-          <div className = "row" style = {{marginTop: 40}}>
-            <div className = "col"/>
-            <div className = "col-7 col-lg-3 col-md-4 col-sm-5">
+            <div style = {{marginTop: 40, textAlign: 'center'}}>
               <RaisedButton
-                type = "Submit"
-                label = "Register"
-                disabled = {this.isInValidInput()}
-                primary = {true}
-                fullWidth = {true}
-                required
-                />
+                  type = "Submit"
+                  label = "Register"
+                  disabled = {this.isInValidInput()}
+                  primary = {true}
+                  style = {{width: 250}}
+                  required
+                  />
             </div>
-            <div className = "col"/>
-          </div>
           </form>
         </div>
         <div style = {{marginTop : 30, marginBottom: 20}}>

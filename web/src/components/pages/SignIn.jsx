@@ -64,58 +64,41 @@ export default class SignIn extends Component {
         <div className = "rectangle-sign">
           <h3 className = "sign-type-desc">Login</h3>
           <form onSubmit = {this.handleSubmit}>
-            <div className = "row">
-              <div className = "col"/>
-              <div className = "input-group input-login col-7 col-lg-3 col-md-4 col-sm-5">
+            <div style = {{textAlign: 'center'}}>
                 <TextField
                   type = "text"
                   value = {this.state.email}
                   onChange = {this.handleChangeEmail}
                   hintText = "Email"
-                  fullWidth = {true}
-                />
-              </div>
-              <div className = "col"/>
+                  style = {{width: 250}}
+            />
             </div>
-            <div className = "row">
-              <div className = "col"/>
-              <div className = "input-group input-login col-7 col-lg-3 col-md-4 col-sm-5">
-                <TextField
+            <div style = {{textAlign: 'center'}}>
+              <TextField
                   type = "password"
                   value = {this.state.password}
                   onChange = {this.handleChangePassword}
                   hintText = "Password"
-                  fullWidth = {true}
-                />
-              </div>
-              <div className = "col"/>
+                  style = {{width: 250}}
+              />
             </div>
-            <div className = "row" style = {{marginTop: 40}}>
-              <div className = "col"/>
-              <div className = "col-7 col-lg-3 col-md-4 col-sm-5">
-                <RaisedButton
+            <div style = {{marginTop: 40, textAlign: 'center'}}>
+              <RaisedButton
                   type = "Submit"
                   label = "Login"
-                  fullWidth = {true}
+                  style = {{width: 250}}
                   primary = {true}
-                />
-              </div>
-              <div className = "col"/>
-          </div>
+              />
+            </div>
           </form>
-          <div className = "row" style = {{marginTop: 20}}>
-            <div className = "col"/>
-            <div className = "col-7 col-lg-3 col-md-4 col-sm-5">
-              <RaisedButton
+          <div style = {{marginTop: 20, textAlign: 'center'}}>
+            <RaisedButton
                 type = "Submit"
                 label = "Register"
                 href = "/register"
                 primary = {true}
-                fullWidth = {true}
-                required
-              />
-            </div>
-            <div className = "col"/>
+                style = {{width: 250}}
+            />
           </div>
         </div>
       </div>
