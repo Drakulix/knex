@@ -20,18 +20,19 @@ def add_notification(creator, userlist, operation, project_id='',
             if user_object:
                 dict = user_object.to_dict()
                 notifications_settings = dict['notifications_settings']
-                if notifications_settings[operation] == 'true':
-                    g.notifications.insert_one({
-                            '_id': str(uuid.uuid4()),
-                            'creator': creator,
-                            'user_id': user,
-                            'project_id': project_id,
-                            'operation': operation,
-                            'date': date,
-                            'reason': reason,
-                            'active': 'true',
-                            'saved_search_id': saved_search_id
-                    })
+                if not notifications_settings[operation]\
+                    or notifications_settings[operation] == 'true':
+                        g.notifications.insert_one({
+                                '_id': str(uuid.uuid4()),
+                                'creator': creator,
+                                'user_id': user,
+                                'project_id': project_id,
+                                'operation': operation,
+                                'date': date,
+                                'reason': reason,
+                                'active': 'true',
+                                'saved_search_id': saved_search_id
+                        })
 
 
 def add_self_action(creator, operation, project_id='', user_id=None):
