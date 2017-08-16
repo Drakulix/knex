@@ -583,6 +583,10 @@ class Backend {
         return this.getJson('/api/users/notifications');
     }
 
+    getNotificationsOfUser(email) {
+        return this.getJson(`/api/users/notifications/${email}`);
+    }
+
     deactivateNotification(id) {
         return this.putJson('/api/users/notifications/deactivate', {'_id' : id});
     }

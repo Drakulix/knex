@@ -29,7 +29,14 @@ export default class TimeLine extends React.Component {
     this.setState({
       loading : true,
     })
-    Backend.getActions()
+    var notificationPromise = null
+    if (this.props.email === Backend.getMail()){
+      notificationPromise = Backend.getActions()
+    }
+    else {
+      notificationPromise = Backend.getNotificationsOfUser(this.props.email)
+    }
+    notificationPromise
     .then((data) => {
       var users = data.map (notification => {return notification.user_id})
       users = users.concat(data.map (notification => {return notification.creator}))
@@ -113,6 +120,9 @@ class News extends React.Component {
       case 'invite':
         operation = "was invited by"
         break
+      case 'invitation'
+        operation = "invited"
+        break
       case 'register':
         operation = "register"
         break
@@ -161,7 +171,7 @@ class News extends React.Component {
             </span>
           }
           <span> {operation} </span>
-          {this.props.value.operation === "invite" ?
+          {this.props.value.operation === "invite" || this.props.value.operation === "invitation"?
             <span onClick ={() => {history.push(`/profile/${this.props.value.user_id}`)}}
                     style = {{color: Styles.palette.primary1Color, cursor: 'pointer'}}>
                 you

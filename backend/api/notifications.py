@@ -64,7 +64,7 @@ def get_actions():
 
 @notifications.route('/api/users/notifications/<email:mail>', methods=['GET'])
 @login_required
-def get_actions_of_user():
+def get_actions_of_user(mail):
     user = g.user_datastore.get_user(mail)
     if not user:
         raise ApiException("user not found", 404)
