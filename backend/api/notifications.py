@@ -1,5 +1,6 @@
 from flask import request, jsonify, make_response, g, Blueprint
 from flask_security import login_required, current_user
+from api.helper.apiexception import ApiException
 import time
 import pymongo
 import uuid
@@ -17,12 +18,12 @@ def add_notification(creator, userlist, operation, project_id='',
                 '_id': str(uuid.uuid4()),
                 'creator': creator,
                 'user_id': user,
-                'project_id': str(project_id),
+                'project_id': project_id,
                 'operation': operation,
                 'date': date,
                 'reason': reason,
                 'active': 'true',
-                'saved_search_id': str(saved_search_id)
+                'saved_search_id': saved_search_id
             })
 
 
@@ -34,7 +35,7 @@ def add_self_action(creator, operation, project_id='', user_id=None):
         '_id': str(uuid.uuid4()),
         'creator': creator,
         'user_id': user_id,
-        'project_id': str(project_id),
+        'project_id': project_id,
         'operation': operation,
         'date': date,
         'active': 'false'
@@ -43,6 +44,11 @@ def add_self_action(creator, operation, project_id='', user_id=None):
 
 def delete_project_notification(project_id):
     g.notifications.delete_many({'project_id': project_id})
+
+
+def delete_user_notification(user_id):
+    g.notifications.delete_many({'creator': user_id})
+    g.notifications.delete_many({'user_id': user_id})
 
 
 @notifications.route('/api/users/actions', methods=['GET'])
@@ -58,7 +64,7 @@ def get_actions():
 
 @notifications.route('/api/users/notifications/<email:mail>', methods=['GET'])
 @login_required
-def get_actions_of_user():
+def get_actions_of_user(mail):
     user = g.user_datastore.get_user(mail)
     if not user:
         raise ApiException("user not found", 404)
@@ -82,12 +88,12 @@ def get_notifications():
 @notifications.route('/api/users/notifications/deactivate', methods=['PUT'])
 @login_required
 def deactivate_notification():
-    request = request.get_json()
-    notification_id = request["id"]
+    notification = request.get_json()
+    notification_id = notification["_id"]
     user = g.user_datastore.get_user(current_user['email'])
     if not user:
         raise ApiException("Couldn't find current_user in datastore", 404)
-    res = g.notifications.update_one({'_id': id}, {'$set': {'active': 'false'}})
+    res = g.notifications.update_one({'_id': notification_id}, {'$set': {'active': 'false'}})
     if res.modified_count == 0:
         return make_response("No notification with the given id known", 404)
     else:

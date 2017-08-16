@@ -56,7 +56,7 @@ def add_comment(project_id):
             add_notification(current_user['email'],
                              [comment['author'] for comment in manifest['comments']], "comment",
                              project_id=project_id, reason='comment')
-
+            add_self_action(current_user['email'], "comment", project_id=project_id)
             return jsonify(comment['id'])
         else:
             raise ApiException(

@@ -59,55 +59,46 @@ export default class SignIn extends Component {
         <Snackbar open = {this.state.snackbar}
                   message = {this.state.snackbarText}
                   autoHideDuration = {10000}/>
-        <img className = "service-name" src = {logo} alt = "Logo"/>
-        <h2 className = "team-name">brings light to the cloud</h2>
+        <img className = "service-name hidden-md-down" src = {logo} alt = "Logo"/>
+        <h2 className = "team-name hidden-md-down">brings light to the cloud</h2>
         <div className = "rectangle-sign">
           <h3 className = "sign-type-desc">Login</h3>
           <form onSubmit = {this.handleSubmit}>
-            <div className = "row">
-              <div className = "col"></div>
-              <div className = "input-group input-login col-4">
+            <div style = {{textAlign: 'center'}}>
                 <TextField
                   type = "text"
                   value = {this.state.email}
                   onChange = {this.handleChangeEmail}
                   hintText = "Email"
-                />
-              </div>
-              <div className = "col"></div>
+                  style = {{width: 250}}
+            />
             </div>
-            <div className = "row">
-              <div className = "col"></div>
-              <div className = "input-group input-login col-4">
-                <TextField
+            <div style = {{textAlign: 'center'}}>
+              <TextField
                   type = "password"
                   value = {this.state.password}
                   onChange = {this.handleChangePassword}
                   hintText = "Password"
-                />
-            </div>
-              <div className = "col"></div>
-            </div>
-            <div>
-              <RaisedButton
-                type = "Submit"
-                label = "Login"
-                primary = {true}
-                style = {{width: 250, marginTop: 40}}
+                  style = {{width: 250}}
               />
-          </div>
+            </div>
+            <div style = {{marginTop: 40, textAlign: 'center'}}>
+              <RaisedButton
+                  type = "Submit"
+                  label = "Login"
+                  style = {{width: 250}}
+                  primary = {true}
+              />
+            </div>
           </form>
-          <div>
-            <br/>
-            <Link to = "/register">
+          <div style = {{marginTop: 20, textAlign: 'center'}}>
             <RaisedButton
-              type = "Submit"
-              label = "Register"
-              primary = {true}
-              style = {{width: 250}}
-              required
+                type = "Submit"
+                label = "Register"
+                href = "/register"
+                primary = {true}
+                style = {{width: 250}}
             />
-            </Link>
           </div>
         </div>
       </div>

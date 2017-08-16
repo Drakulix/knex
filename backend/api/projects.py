@@ -93,14 +93,11 @@ def get_projects():
     archived = request.args.get('archived', type=str, default='false')
     if archived not in ['true', 'false', 'mixed']:
         return make_response('Invalid parameters', 400)
-
-    if g.projects.count() == 0:
-        return make_response(jsonify([]), 200)
     query = {}
     if archived == 'true':
-        query = {'archived': True}
+        query = {'archived': 'true'}
     elif archived == 'false':
-        query = {'archived': False}
+        query = {'archived': 'false'}
     if limit and skip:
         res = g.projects.find(query, {'comments': 0}, limit=limit, skip=skip)
     elif limit:
@@ -170,9 +167,9 @@ def get_project_by_id(project_id):
     """
     archived = request.args.get('archived', type=str, default="mixed")
     if archived == 'true':
-        res = g.projects.find_one({'_id': project_id, 'archived': True}, {'comments': 0})
+        res = g.projects.find_one({'_id': project_id, 'archived': 'true'}, {'comments': 0})
     elif archived == 'false':
-        res = g.projects.find_one({'_id': project_id, 'archived': False}, {'comments': 0})
+        res = g.projects.find_one({'_id': project_id, 'archived': 'false'}, {'comments': 0})
     elif archived == 'mixed':
         res = g.projects.find_one({'_id': project_id}, {'comments': 0})
     else:
@@ -271,7 +268,7 @@ def update_project(project_id):
         elif request.is_json or "application/json5" in request.content_type:
             manifest = request.get_json() if request.is_json \
                 else json5.loads(request.data.decode("utf-8"))
-
+            res['_id'] = str(project_id)
             if 'title' in manifest:
                 res['title'] = manifest['title']
             if 'authors' in manifest:
@@ -284,8 +281,6 @@ def update_project(project_id):
                 res['status'] = manifest['status']
             if 'url' in manifest:
                 res['url'] = manifest['url']
-            if 'archived' in manifest:
-                res['archived'] = manifest['archived']
             if 'analysis' in manifest:
                 res['analysis'] = manifest['analysis']
             if 'hypothesis' in manifest:
@@ -298,8 +293,8 @@ def update_project(project_id):
                 res['related_projects'] = manifest['related_projects']
             if 'date_creation' in manifest:
                 res['date_creation'] = manifest['date_creation']
-
-            res['_id'] = str(project_id)
+            if 'archived' in manifest:
+                res['archived'] = manifest['archived']
             is_valid = g.validator.is_valid(res)
             if is_valid and current_user_has_permission_to_change(res):
                 res['date_last_updated'] = time.strftime("%Y-%m-%d")

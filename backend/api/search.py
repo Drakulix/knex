@@ -59,16 +59,16 @@ def search_es():
         res (json): JSON containing Projects and metadata
 
     """
-    query = request.get_json()
-    request_json = prepare_mongo_query(query)
+    request_json = request.get_json()
+    query = prepare_mongo_query(request_json)
 
-    projects = g.projects.find(request_json, {'comments': 0})
+    projects = g.projects.find(query, {'comments': 0})
 
     projects = prepare_search_results(projects)
 
     if 'label' in query:
         try:
-            return g.save_search(current_user, query, request_json, len(projects))
+            return g.save_search(current_user, request_json, len(projects))
         except json.JSONDecodeError:
             return make_response('Invalid json', 400)
 

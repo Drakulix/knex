@@ -39,7 +39,7 @@ export class StatusInput extends Component {
       <DropDownMenu
         value = {this.props.value}
         onChange = {this.props.onChange}
-        labelStyle = {{width: '100%', paddingLeft: 0}}
+        labelStyle = {{width: '100%', paddingLeft: 0, paddingTop: 14}}
         underlineStyle = {{width: '100%', marginLeft: 0}}
         autoWidth = {false}
         style = {{width: '100%'}}

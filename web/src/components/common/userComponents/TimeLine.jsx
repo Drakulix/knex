@@ -29,7 +29,14 @@ export default class TimeLine extends React.Component {
     this.setState({
       loading : true,
     })
-    Backend.getActions()
+    var notificationPromise = null
+    if (this.props.email === Backend.getMail()){
+      notificationPromise = Backend.getActions()
+    }
+    else {
+      notificationPromise = Backend.getNotificationsOfUser(this.props.email)
+    }
+    notificationPromise
     .then((data) => {
       var users = data.map (notification => {return notification.user_id})
       users = users.concat(data.map (notification => {return notification.creator}))
@@ -84,41 +91,23 @@ export default class TimeLine extends React.Component {
   }
 }
 
+
+const operationText = {
+   'create':     "uploaded",
+   'archive':    "archived",
+   'unarchive':  "unarchived",
+   'share':      "shared",
+   'comment':    "commented",
+   'update':     "updated",
+   'bookmark':   "bookmarked",
+   'invite':     "was invited by",
+   'invitation': "invited",
+   'register':   "register",
+}
+
 class News extends React.Component {
 
   render () {
-    var operation = ""
-    switch(this.props.value.operation){
-      case 'create':
-        operation = "uploaded"
-        break
-      case 'archive':
-        operation = "archived"
-        break
-      case 'unarchive':
-          operation = "unarchived"
-        break
-      case 'share':
-        operation = "shared"
-        break
-      case 'comment':
-        operation = "commented"
-        break
-      case 'update':
-        operation = "updated"
-        break
-      case 'bookmark':
-        operation = "bookmarked"
-        break
-      case 'invite':
-        operation = "was invited by"
-        break
-      case 'register':
-        operation = "register"
-        break
-      default:
-        break
-    }
     var reason = ""
     switch(this.props.value.reason){
       case 'author':
@@ -160,8 +149,8 @@ class News extends React.Component {
                 {this.props.names[this.props.value.creator]}
             </span>
           }
-          <span> {operation} </span>
-          {this.props.value.operation === "invite" ?
+          <span> {operationText[this.props.value.operation]} </span>
+          {this.props.value.operation === "invite" || this.props.value.operation === "invitation"?
             <span onClick ={() => {history.push(`/profile/${this.props.value.user_id}`)}}
                     style = {{color: Styles.palette.primary1Color, cursor: 'pointer'}}>
                 you
@@ -193,7 +182,7 @@ class News extends React.Component {
                       style = {Styles.largeIcon}
                       tooltipPosition = "bottom-center"
                       tooltip = "Delete notification"
-                      iconStyle = {{fontSize: '24px', color: Styles.palette.textColor}}
+                      iconStyle = {{fontSize: '24px', color: Styles.palette.disabledColor}}
                       >
                       <Cancel />
             </IconButton>

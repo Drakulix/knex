@@ -29,12 +29,11 @@ def save_manifest_to_db(manifest):
         is_valid = g.validator.is_valid(manifestlist)
         if is_valid:
             projects = []
-
             for entry in manifestlist:
                 entry['date_last_updated'] = time.strftime("%Y-%m-%d")
                 entry['_id'] = uuid.uuid4()
                 if 'archived' not in manifest:
-                    entry['archived'] = False
+                    entry['archived'] = "false"
                 entry['authors'] = sorted(list(set(entry['authors'])))
                 entry['tags'] = sorted(entry['tags'])
                 projects.append(entry)

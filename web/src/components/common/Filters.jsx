@@ -147,7 +147,7 @@ export default class Filters extends Component{
             </div>
             <div className = "row">
               <div className ="hidden-lg-up col"/>
-              <div className = "col-1 filter-label hidden-md-down" style = {{textAlign: "left" , marginLeft: 2}}>From</div>
+              <div className = "col-1 filter-label hidden-md-down" style = {{textAlign: "left"}}>From</div>
               <div className = "col-2" style = {{marginTop: 2}}>
                 <DatePicker hintText = "Pick a date from..."
                   mode = "landscape"
@@ -181,6 +181,7 @@ export default class Filters extends Component{
               <div className = "col-2" style = {{marginTop: -3}}>
                 <StatusInput onChange = {this.handleStatusChange}
                             value = {this.state.status}
+                            
                 />
               </div>
               <IconButton iconStyle = {{color: Styles.palette.disabledColor}} style = {{ marginLeft: -30, visibility: (this.state.status !== "") ? "visible": "hidden"}} onClick = {() => this.handleStatusChange(null,null,"")}>
@@ -190,7 +191,7 @@ export default class Filters extends Component{
               <div className ="hidden-lg-up col"/>
             </div>
           </div>
-      </CardText>
+          </CardText>
         </Card>
       </div>
     )

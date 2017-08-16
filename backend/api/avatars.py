@@ -9,6 +9,8 @@ import mimetypes
 
 from api.helper.images import Identicon
 from api.helper.permissions import current_user_has_permission_to_change
+from api.helper.apiexception import ApiException
+
 
 avatars = Blueprint('api_avatars', __name__)
 
