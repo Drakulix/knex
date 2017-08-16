@@ -26,8 +26,15 @@ export default class ProjectContainer extends Component {
     this.updateBookmarkState = this.updateBookmarkState.bind(this)
   }
 
+  componentWillReceiveProps(nextProps){
+    if(nextProps.match.params.uuid !== this.state.projectID){
+      this.setState({projectID: nextProps.match.params.uuid})
+      this.loadSiteInf(nextProps.match.params.uuid)
+    }
+  }
+
   componentDidMount(){
-    this.loadSiteInf()
+    this.loadSiteInf(this.state.projectID)
   }
 
   updateBookmarkState(value) {
@@ -36,8 +43,8 @@ export default class ProjectContainer extends Component {
     this.setState({projectInf : projectInf})
   }
 
-  loadSiteInf() {
-    Backend.getProject(this.state.projectID).then(data => {
+  loadSiteInf(uuid) {
+    Backend.getProject(uuid).then(data => {
       var email = this.state.myEmail
       var isOwner = false
       for (let author in data.authors)

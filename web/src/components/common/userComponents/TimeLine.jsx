@@ -91,44 +91,23 @@ export default class TimeLine extends React.Component {
   }
 }
 
+
+const operationText = {
+   'create':     "uploaded",
+   'archive':    "archived",
+   'unarchive':  "unarchived",
+   'share':      "shared",
+   'comment':    "commented",
+   'update':     "updated",
+   'bookmark':   "bookmarked",
+   'invite':     "was invited by",
+   'invitation': "invited",
+   'register':   "register",
+}
+
 class News extends React.Component {
 
   render () {
-    var operation = ""
-    switch(this.props.value.operation){
-      case 'create':
-        operation = "uploaded"
-        break
-      case 'archive':
-        operation = "archived"
-        break
-      case 'unarchive':
-          operation = "unarchived"
-        break
-      case 'share':
-        operation = "shared"
-        break
-      case 'comment':
-        operation = "commented"
-        break
-      case 'update':
-        operation = "updated"
-        break
-      case 'bookmark':
-        operation = "bookmarked"
-        break
-      case 'invite':
-        operation = "was invited by"
-        break
-      case 'invitation':
-        operation = "invited"
-        break
-      case 'register':
-        operation = "register"
-        break
-      default:
-        break
-    }
     var reason = ""
     switch(this.props.value.reason){
       case 'author':
@@ -170,7 +149,7 @@ class News extends React.Component {
                 {this.props.names[this.props.value.creator]}
             </span>
           }
-          <span> {operation} </span>
+          <span> {operationText[this.props.value.operation]} </span>
           {this.props.value.operation === "invite" || this.props.value.operation === "invitation"?
             <span onClick ={() => {history.push(`/profile/${this.props.value.user_id}`)}}
                     style = {{color: Styles.palette.primary1Color, cursor: 'pointer'}}>

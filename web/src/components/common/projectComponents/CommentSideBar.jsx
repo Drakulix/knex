@@ -152,7 +152,7 @@ export default class CommentSideBar extends React.Component {
   }
 
   handleUpdateList(event){
-    this.loadComments()
+    this.loadComments(this.props.uuid)
     this.props.handleUpdateComments()
   }
 
@@ -167,21 +167,24 @@ export default class CommentSideBar extends React.Component {
     this.setState({
       comment: ""
     })
-    this.loadComments()
+    this.loadComments(this.props.uuid)
   }
 
   handleToggle = () => this.setState({showCommentBar: !this.state.showCommentBar})
 
   componentWillReceiveProps(props){
     this.setState({showCommentBar: props.open})
+    if (this.props.uuid !== props.uuid){
+      this.loadComments(props.uuid)
+    }
   }
 
   componentWillMount(){
-    this.loadComments()
+    this.loadComments(this.props.uuid)
   }
 
-  loadComments(){
-    return Backend.getProjectComments(this.props.uuid).then((data) => {
+  loadComments(uuid){
+    return Backend.getProjectComments(uuid).then((data) => {
       var filteredData = this.transformArray(data)
       this.props.loadComments(data.length)
       this.setState({
