@@ -70,7 +70,7 @@ export default class ProfileEditor extends Component {
       var data = new FormData()
       data.append('file', event.target.files[0])
       Backend.updateAvatar(this.state.email, data)
-        .then(this.props.profileChangeHandler("Avatar changed",true))
+        .then(this.props.profileChangeHandler("Avatar changed", true))
     }
     else {
       this.props.profileChangeHandler("Invalid format for picture",false)
@@ -179,67 +179,9 @@ export default class ProfileEditor extends Component {
                 <div style = {{marginTop: 10}}>{ this.props.profileInf.email }</div>
               </div>
             </div>
-            {(Backend.isAdmin()) ? "" :
-              <div className = "row">
-                <div className = "col-3 profile-info">Old password</div>
-                <div className = "col-3">
-                  <TextField
-                    value = {this.state.pw_old}
-                    type = "password"
-                    name = "pw_old"
-                    fullWidth = {true}
-                    hintText = "Your old password"
-                    onChange = {this.handleInputChange}
-                    style = {{marginBottom: (this.state.pw_old.length === 0) ? 0: 17} }
-                    errorText = {this.state.pw_old.length === 0 ? "Password can not be empty": ""}
-                  />
-                </div>
-              </div>
-            }
-            <div className = "row">
-              <div className = "col-3 profile-info">New password</div>
-              <div className = "col-3">
-                <TextField
-                  value = {this.state.pw_new}
-                  type = "password"
-                  name = "pw_new"
-                  fullWidth = {true}
-                  hintText = "Your new password"
-                  onChange = {this.handleInputChange}
-                  style = {{marginBottom: (this.state.pw_new.length === 0) ? 0: 17} }
-                  errorText = {this.state.pw_new.length === 0 ? "Password can not be empty": ""}
-                />
-              </div>
-            </div>
-            <div className = "row">
-              <div className = "col-3 profile-info">Confirm password</div>
-              <div className = "col-3">
-                <TextField
-                  value = {this.state.pw_new_confirm}
-                  type = "password"
-                  name = "pw_new_confirm"
-                  fullWidth = {true}
-                  hintText = "Confirm password"
-                  onChange = {this.handleInputChange}
-                  style = {{marginBottom: (this.state.pw_new !== this.state.pw_new_confirm) ? 0: 17} }
-                  errorText = {this.state.pw_new !== this.state.pw_new_confirm ? "Passwords do not match": ""} />
-                </div>
-              </div>
-            <div className = "row">
-            <div className = "col-3"/>
-            <div className = "col-3">
-              <RaisedButton
-                label = "Change Password"
-                primary = {true}
-                fullWidth = {true}
-                onClick = {this.handlePwChangeSubmit}
-                disabled= {(this.state.pw_new !== this.state.pw_new_confirm || this.state.pw_new === "" || !(Backend.isAdmin() || this.state.pw_old !== "")) ? true: false}
-              />
-            </div>
           </div>
         </div>
       </div>
-    </div>
     )
   }
 }

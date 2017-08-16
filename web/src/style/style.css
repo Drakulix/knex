@@ -7,7 +7,6 @@ body {
 
 }
 
-
 html {
   height: 100%;
 }
@@ -231,7 +230,7 @@ a:hover {
   margin-top: 10px;
   margin-bottom: 10px;
   font-weight: 300;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
 }
 

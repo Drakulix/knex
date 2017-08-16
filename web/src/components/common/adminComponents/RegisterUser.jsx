@@ -95,6 +95,7 @@ export default class RegisterUser extends Component {
               <TextField
                 name = "first_name"
                 onChange = {this.handleInputChange}
+                fullWidth ={true}
                 value = {this.state.first_name}
                 hintText = "Enter the first name"
                 style = {{marginBottom: (this.state.first_name.length === 0) ? 0: 17} }
@@ -107,6 +108,7 @@ export default class RegisterUser extends Component {
               <TextField
                 type = "password"
                 value = {this.state.password}
+                fullWidth ={true}
                 onChange = {this.handleInputChange}
                 hintText = "Password"
                 name = "password"
@@ -123,6 +125,7 @@ export default class RegisterUser extends Component {
                 onChange = {this.handleInputChange}
                 value = {this.state.last_name}
                 hintText = "Enter your last name"
+                fullWidth ={true}
                 style = {{marginBottom: (this.state.last_name.length === 0) ? 0: 17} }
                 errorText = {(this.state.last_name.length === 0) ? "Field is required": ""}
               />
@@ -133,6 +136,7 @@ export default class RegisterUser extends Component {
               <TextField
                 type = "password"
                 value = {this.state.password_confirm}
+                fullWidth ={true}
                 onChange = {this.handleInputChange}
                 hintText = "Confirm password"
                 name = "password_confirm"
@@ -147,6 +151,7 @@ export default class RegisterUser extends Component {
                 <TextField
                   type = "email"
                   value = {this.state.email}
+                  fullWidth ={true}
                   onChange = {this.handleInputChange}
                   hintText = "Email"
                   name = "email"

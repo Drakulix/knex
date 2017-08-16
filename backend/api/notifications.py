@@ -1,6 +1,8 @@
 from flask import request, jsonify, make_response, g, Blueprint
 from flask_security import login_required, current_user
 from api.helper.apiexception import ApiException
+from api.helper.permissions import current_user_has_permission_to_change
+
 import time
 import pymongo
 import uuid
@@ -14,17 +16,22 @@ def add_notification(creator, userlist, operation, project_id='',
     date = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
     for user in userlist:
         if user not in (creator):
-            g.notifications.insert_one({
-                '_id': str(uuid.uuid4()),
-                'creator': creator,
-                'user_id': user,
-                'project_id': project_id,
-                'operation': operation,
-                'date': date,
-                'reason': reason,
-                'active': 'true',
-                'saved_search_id': saved_search_id
-            })
+            user_object = g.user_datastore.get_user(user)
+            if user_object:
+                dict = user_object.to_dict()
+                notifications_settings = dict['notifications_settings']
+                if notifications_settings[operation] == 'true':
+                    g.notifications.insert_one({
+                            '_id': str(uuid.uuid4()),
+                            'creator': creator,
+                            'user_id': user,
+                            'project_id': project_id,
+                            'operation': operation,
+                            'date': date,
+                            'reason': reason,
+                            'active': 'true',
+                            'saved_search_id': saved_search_id
+                    })
 
 
 def add_self_action(creator, operation, project_id='', user_id=None):
@@ -111,3 +118,25 @@ def delete_notification(id):
         return make_response("No notification with the given id known", 404)
     else:
         return make_response("Success", 200)
+
+
+@notifications.route('/api/users/notifications/settings', methods=['GET'])
+@login_required
+def get_notification_settings():
+    user = g.user_datastore.get_user(current_user['email'])
+    if not user:
+        raise ApiException("Couldn't find current_user in datastore", 500)
+    user_dict = user.to_dict()
+    return jsonify(user_dict['notifications_settings'])
+
+
+@notifications.route('/api/users/notifications/settings', methods=['PUT'])
+@login_required
+def put_notification_settings():
+    settings = request.get_json()
+    user = g.user_datastore.get_user(current_user['email'])
+    if not user:
+        raise ApiException("Couldn't find current_user in datastore", 404)
+    user['notifications_settings'] = settings
+    user.save()
+    return make_response("Notification settings updated", 200)

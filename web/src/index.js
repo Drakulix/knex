@@ -33,6 +33,8 @@ import SavedQueries from './components/views/SavedQueries'
 import UserTrashcan from './components/views/UserTrashcan'
 import UserList from './components/views/UserList'
 import Dashboard from './components/views/Dashboard'
+import Settings from './components/views/Settings'
+
 
 import TopBar from './components/common/TopBar'
 import SideBar from './components/common/SideBar'
@@ -88,6 +90,7 @@ init(() => {
           <PageRoute sitePath="/yourprofile"  path="/yourprofile" component={ProfileContainer} />
           <PageRoute sitePath="/yourprojects" path="/yourprojects" component={UserProjects} />
           <PageRoute sitePath="/queries" path="/queries" component={SavedQueries} />
+          <PageRoute sitePath="/settings" path="/settings" component={Settings} />
           <PageRoute sitePath="/trashcan" path="/trashcan" component={UserTrashcan} />
           <PageRoute sitePath="/users" path="/users" component={UserList} />
           <Route path="/register" component={SignUp} />
