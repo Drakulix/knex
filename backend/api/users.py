@@ -19,7 +19,7 @@ from api.helper.apiexception import ApiException
 from api.helper.search import prepare_search_results
 from api.helper.permissions import current_user_has_permission_to_change
 from api.helper.images import Identicon
-from api.notifications import add_notification, add_self_action
+from api.notifications import add_notification, add_self_action, delete_user_notification
 
 
 users = Blueprint('api_users', __name__)
@@ -252,10 +252,12 @@ def delete_user(mail):
     if current_user_has_permission_to_change(user):
         if not user.has_role('admin'):
             g.user_datastore.delete_user(user)
+            delete_user_notification(user['email'])
             return make_response("deleted non admin", 200)
         else:
             for usr in g.user_datastore.user_model.objects:
                 if usr.has_role('admin') and usr.active and usr['email'] != user['email']:
+                    delete_user_notification(user['email'])
                     g.user_datastore.delete_user(user)
                     return make_response("deleted", 200)
             raise ApiException("You are the last surviving admin, "

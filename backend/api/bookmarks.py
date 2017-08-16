@@ -1,6 +1,7 @@
 from flask import jsonify, make_response, g, Blueprint
 from flask_security import login_required, current_user
 from api.notifications import add_notification
+from api.helper.apiexception import ApiException
 
 
 bookmarks = Blueprint('api_bookmarks', __name__)

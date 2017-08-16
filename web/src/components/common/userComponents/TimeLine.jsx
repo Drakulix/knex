@@ -193,7 +193,7 @@ class News extends React.Component {
                       style = {Styles.largeIcon}
                       tooltipPosition = "bottom-center"
                       tooltip = "Delete notification"
-                      iconStyle = {{fontSize: '24px', color: Styles.palette.textColor}}
+                      iconStyle = {{fontSize: '24px', color: Styles.palette.disabledColor}}
                       >
                       <Cancel />
             </IconButton>

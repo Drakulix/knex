@@ -39,7 +39,6 @@ def add_projects():
             for project in projects:
                 if 'comments' not in project:
                     project['comments'] = []
-                project['archived'] = 'false'
                 g.projects.insert(project)
                 add_notification(current_user['email'], project['authors'], "create",
                                  project_id=project['_id'], reason='author')
@@ -64,7 +63,6 @@ def add_projects():
             for project in projects:
                 if 'comments' not in project:
                     project['comments'] = []
-                project['archived'] = 'false'
                 g.projects.insert(project)
                 add_notification(current_user['email'], project['authors'], "create",
                                  project_id=project['_id'], reason='author')
@@ -95,9 +93,6 @@ def get_projects():
     archived = request.args.get('archived', type=str, default='false')
     if archived not in ['true', 'false', 'mixed']:
         return make_response('Invalid parameters', 400)
-
-    if g.projects.count() == 0:
-        return make_response(jsonify([]), 200)
     query = {}
     if archived == 'true':
         query = {'archived': 'true'}
@@ -301,7 +296,6 @@ def update_project(project_id):
             if 'archived' in manifest:
                 res['archived'] = manifest['archived']
             is_valid = g.validator.is_valid(res)
-
             if is_valid and current_user_has_permission_to_change(res):
                 res['date_last_updated'] = time.strftime("%Y-%m-%d")
                 res['_id'] = project_id

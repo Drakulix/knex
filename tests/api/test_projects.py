@@ -292,8 +292,6 @@ class TestGET(object):
                 del project['is_bookmark']
             if 'is_owner' in project:
                 del project['is_owner']
-            if 'archived' in project:
-                del project['archived']
             print(manifest_validator.is_valid(project))
             assert manifest_validator.is_valid(project)
             print("project_id: ", project["_id"])
@@ -440,7 +438,7 @@ class TestPUT(object):
         after_put_json = get_again_response.json()
         assert get_put_response.status_code == 200
         assert get_response.status_code == 200
-        assert not after_put_json["archived"]
+        assert after_put_json["archived"] == "false"
 
     def test_invalid_id(self, session, flask_api_url):
         """ Test for 405 when one tries to put a project with ID in invalid format.
