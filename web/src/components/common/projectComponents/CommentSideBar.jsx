@@ -193,6 +193,9 @@ export default class CommentSideBar extends React.Component {
         comments: filteredData
       })
       var users = data.map(item => item.author)
+      users = users.filter(function(item,pos){
+        return users.indexOf(item) == pos
+      })
       Backend.getUserNames(users).then((userNames) => {this.setState({userNames: userNames})})
     })
   }
