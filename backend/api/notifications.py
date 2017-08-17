@@ -20,7 +20,7 @@ def add_notification(creator, userlist, operation, project_id='',
             if user_object:
                 dict = user_object.to_dict()
                 notifications_settings = dict['notifications_settings']
-                if operation not in notifications_settings\
+                if operation not in notifications_settings
                     or notifications_settings[operation] == 'true':
                         g.notifications.insert_one({
                                 '_id': str(uuid.uuid4()),

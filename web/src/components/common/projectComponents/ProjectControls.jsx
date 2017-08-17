@@ -129,7 +129,6 @@ export default class ProjectControls extends Component{
         />
         <CommentSideBar loadComments = {this.updateCommentCount}
                         open = {this.state.commentBar}
-                        userNames = {this.props.userNames}
                         uuid = {this.props.projectID}/>
         <ConfirmationPane open = {this.state.dialogOpen}
                           handleClose = {this.handleClose}
