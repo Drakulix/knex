@@ -144,6 +144,7 @@ class User(DB.Document, UserMixin):
     password = DB.StringField(max_length=255)
     active = DB.BooleanField(default=True)
     bio = DB.StringField(max_length=255)
+    notifications_settings = DB.DictField()
     bookmarks = DB.ListField(DB.UUIDField(), default=[])
     roles = DB.ListField(DB.ReferenceField(Role), default=[])
     saved_searches = DB.ListField(DB.EmbeddedDocumentField(SavedSearch), default=[])
@@ -159,6 +160,7 @@ class User(DB.Document, UserMixin):
         # dic['password'] = str(self.password)
         dic['active'] = str(self.active).lower()
         dic['bio'] = str(self.bio)
+        dic['notifications_settings'] = dict(self.notifications_settings)
         dic['bookmarks'] = [str(bookmark) for bookmark in self.bookmarks]
         dic['roles'] = [str(role.name) for role in self.roles]
         return dic

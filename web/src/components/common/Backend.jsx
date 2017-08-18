@@ -594,6 +594,21 @@ class Backend {
     deleteNotification(id) {
         return this.delete(`/api/users/notifications/${encodeURIComponent(id)}`);
     }
+
+    loadNotifiactionSettings(){
+      return this.getJson(`/api/users/notifications/settings`);
+    }
+
+    setNotificationSettings(settings){
+      var request = {}
+      var keys = Object.keys(settings)
+      for(let key in keys){
+        var setting = keys[key]
+        request[setting] = settings[setting] ? "true" : "false"
+      }
+      return this.putJson('/api/users/notifications/settings', request)
+    }
+
 }
 
 var backend = undefined;

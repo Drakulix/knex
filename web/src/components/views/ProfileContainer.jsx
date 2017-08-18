@@ -83,7 +83,6 @@ export default class ProfileContainer extends Component {
 
   handleProfileChange(snackbarText, success){
     this.setState({
-      value : success ? 'a' : 'b',
       snackbar : true,
       snackbarText : snackbarText,
       showEdit : false

@@ -8,6 +8,7 @@ import Backend from '../common/Backend'
 import Logout from 'material-ui/svg-icons/action/exit-to-app'
 import Profile from 'material-ui/svg-icons/action/account-circle'
 import Notification from 'material-ui/svg-icons/social/notifications'
+import Settings from 'material-ui/svg-icons/action/settings'
 import Styles from './Styles'
 import history from './history'
 
@@ -103,6 +104,12 @@ export default class TopBar extends Component {
                   badgeStyle = {{top: -30, height: 20, width: 20}} />
                 : ""
             }
+          </IconButton>
+          <IconButton tooltip = "Your settings"
+            iconStyle = {{color: Styles.palette.alternateTextColor}}
+            onClick = {() => {history.push('/settings')}}
+            >
+            <Settings/>
           </IconButton>
           <NotificationPane value = {this.state.popover}
                             anchorEl = {this.state.anchorEl}

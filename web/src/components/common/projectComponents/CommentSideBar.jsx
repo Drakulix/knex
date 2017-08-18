@@ -109,7 +109,8 @@ class CommentItem extends React.Component {
         <ListItem primaryText = {this.props.comment.message}
               secondaryText = {<div>
                 <span style = {{float: "left"}}>
-                  {this.props.userNames!== undefined ? this.props.userNames[this.props.comment.author]
+                  {this.props.userNames[this.props.comment.author] !== undefined ?
+                    this.props.userNames[this.props.comment.author]
                                                    : this.props.comment.author}
                 </span>
                 <span style = {{float: "right"}}>{this.props.comment.datetime}</span>
@@ -128,7 +129,8 @@ export default class CommentSideBar extends React.Component {
     this.state = {
       showCommentBar: false,
       comment: "",
-      comments: []
+      comments: [],
+      userNames: {},
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -190,6 +192,11 @@ export default class CommentSideBar extends React.Component {
       this.setState({
         comments: filteredData
       })
+      var users = data.map(item => item.author)
+      users = users.filter(function(item,pos){
+        return users.indexOf(item) == pos
+      })
+      Backend.getUserNames(users).then((userNames) => {this.setState({userNames: userNames})})
     })
   }
 
@@ -218,7 +225,10 @@ export default class CommentSideBar extends React.Component {
         {this.state.comments.map(item =>
           <div key = {item.id}>
             <Divider/>
-            <CommentItem comment = {item} userNames = {this.props.userNames} p_id = {this.props.uuid} handleUpdateList = {this.handleUpdateList}/>
+            <CommentItem comment = {item}
+               p_id = {this.props.uuid}
+               userNames = {this.state.userNames}
+               handleUpdateList = {this.handleUpdateList}/>
           </div>)
         }
       </List>
