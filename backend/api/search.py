@@ -120,6 +120,13 @@ def query_saved_search(id):
                 return (str(reqerr), 400)
     return make_response("No search with the given id known", 404)
 
+@search.route('/api/projects/ngramlist', methods=['GET'])
+@login_required
+def get_autocomplete_ngrams():
+    res = ["thats", "a", "test"]
+    return jsonify(res)
+
+
 
 @search.route('/api/users/saved_searches', methods=['GET'])
 @login_required

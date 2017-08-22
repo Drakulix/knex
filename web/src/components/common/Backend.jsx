@@ -323,6 +323,10 @@ class Backend {
         {return JSON.parse(data)})
     }
 
+    getProjectNgrams(project_ids){
+      return this.getJson('/api/projects/ngramlist')
+    }
+
     async addProjectComment(id, message) {
         let response = await fetch(`/api/projects/${encodeURIComponent(id)}/comment`, {
             method: 'POST',

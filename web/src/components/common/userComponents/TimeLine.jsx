@@ -41,7 +41,7 @@ export default class TimeLine extends React.Component {
       var users = data.map (notification => {return notification.user_id})
       users = users.concat(data.map (notification => {return notification.creator}))
       users = users.filter(function(item,pos){
-        return users.indexOf(item) == pos
+        return users.indexOf(item) === pos
       })
       Backend.getUserNames(users)
       .then ((userNames) => {

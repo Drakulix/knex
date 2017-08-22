@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import TextField from 'material-ui/TextField'
+import AutoComplete from 'material-ui/AutoComplete'
 import RaisedButton from 'material-ui/RaisedButton'
 import DataTable from '../common/DataTable'
 import Dialog from 'material-ui/Dialog'
@@ -24,7 +25,8 @@ export default class SearchPage extends Component {
         snackbar : false,
         snackbarText : "",
         loading : false,
-        projects : []
+        projects : [],
+        suggestions : []
     }
 
     delete query.label
@@ -41,6 +43,8 @@ export default class SearchPage extends Component {
 
   componentDidMount(){
     this.handler(this.state.query)
+    Backend.getProjectNgrams()
+    .then((data) => {this.setState({suggestions : data})})
   }
 
   handler(query){
@@ -141,10 +145,13 @@ export default class SearchPage extends Component {
           <HeadLine title = {"  Looking for a project?"}/>
           <div className = "row" style = {{textAlign : "center"}}>
             <div className = "col-10">
-              <TextField
+              <AutoComplete
                 name = "searchString"
                 fullWidth = {true}
                 value = {this.state.searchString}
+                dataSource = {this.state.suggestions}
+                filter = {AutoComplete.fuzzyFilter}
+                maxSearchResults = {10}
                 placeholder = "Enter your query here..."
                 onChange = {this.handleChange} />
             </div>
