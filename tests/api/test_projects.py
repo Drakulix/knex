@@ -301,22 +301,21 @@ class TestGET(object):
 
     def test_get_archived_fail(self, session, flask_api_url, enter_archived_using_post):
         project_id = enter_archived_using_post.json()
-        get_response = session.get(flask_api_url + "/api/projects/" + project_id.pop(0) +
-                                   "?archived=false")
+        get_response = session.get(flask_api_url + "/api/projects", params={"archived": 'false'}, )
         print(get_response.text)
+        response_json = get_response.json()
+        assert get_response.status_code == 200
+        assert len(response_json) == 0
 
-        assert get_response.status_code == 404
 
     def test_get_archived_success(self, session, flask_api_url, enter_archived_using_post):
         project_id_archived = enter_archived_using_post.json()
         print(project_id_archived)
-        get_response = session.get(flask_api_url + "/api/projects/" +
-                                   project_id_archived[0] + "?archived=true")
+        get_response = session.get(flask_api_url + "/api/projects", params={"archived": 'true'}, )
         print(get_response.text)
         response_json = get_response.json()
         assert get_response.status_code == 200
-        assert response_json["archived"]
-        assert response_json["_id"] == project_id_archived[0]
+        assert len(response_json) == 1
 
     def test_get_archived_mixed_admin(self, session, flask_api_url,
                                       enter_archived_using_post, enter_data_using_post):

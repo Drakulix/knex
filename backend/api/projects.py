@@ -2,13 +2,10 @@
 Defines API points and starts the application
 """
 
-import time
-import uuid
 import json
 import json5
 
 from flask import request, jsonify, make_response, g, Blueprint
-from pymongo.collection import ReturnDocument
 from flask_security import login_required, current_user
 
 from api.helper import uploader
@@ -16,6 +13,9 @@ from api.helper.apiexception import ApiException
 from api.helper.permissions import current_user_has_permission_to_change
 from api.notifications import add_notification, add_self_action
 from globals import ADMIN_PERMISSION
+
+from storage.projects import delete_stored_project, add_project_list, update_stored_project,\
+                                archive_stored_project
 
 
 projects = Blueprint('api_projects', __name__)
@@ -35,40 +35,21 @@ def add_projects():
                     manifestlist.append(json.loads(file.read().decode('utf-8')))
                 elif file.filename.endswith('.json5'):
                     manifestlist.append(json5.loads(file.read().decode('utf-8')))
-            projects = uploader.save_manifest_to_db(manifestlist)
-            for project in projects:
-                if 'comments' not in project:
-                    project['comments'] = []
-                g.projects.insert(project)
-                add_notification(current_user['email'], project['authors'], "create",
-                                 project_id=project['_id'], reason='author')
-                add_self_action(current_user['email'], "create", project_id=project['_id'])
-                g.rerun_saved_searches(current_user['email'], project['_id'], "create")
-            return jsonify([project['_id'] for project in projects])
+            return jsonify(add_project_list(manifestlist))
         except Exception as err:
             raise ApiException(str(err), 400)
-
     else:
         try:
-            projects = []
+            manifestlist = []
             if ('application/json' in request.content_type) and\
                     ('application/json5' not in request.content_type):
-                projects = uploader.save_manifest_to_db(request.get_json())
+                manifestlist = request.get_json()
             elif 'application/json5' in request.content_type:
-                projects = uploader.save_manifest_to_db(
-                    json5.loads(request.data.decode('utf-8')))
+                manifestlist = json5.loads(request.data.decode('utf-8'))
             else:
                 raise ApiException("Wrong content header" +
                                    "and no files attached", 400)
-            for project in projects:
-                if 'comments' not in project:
-                    project['comments'] = []
-                g.projects.insert(project)
-                add_notification(current_user['email'], project['authors'], "create",
-                                 project_id=project['_id'], reason='author')
-                add_self_action(current_user['email'], "create", project_id=project['_id'])
-                g.rerun_saved_searches(current_user['email'], project['_id'], "create")
-            return jsonify([project['_id'] for project in projects])
+            return jsonify(add_project_list(manifestlist))
 
         except ApiException as apierr:
             raise apierr
@@ -165,15 +146,8 @@ def get_project_by_id(project_id):
     Returns:
         res (json): Project corresponding to the ID
     """
-    archived = request.args.get('archived', type=str, default="mixed")
-    if archived == 'true':
-        res = g.projects.find_one({'_id': project_id, 'archived': 'true'}, {'comments': 0})
-    elif archived == 'false':
-        res = g.projects.find_one({'_id': project_id, 'archived': 'false'}, {'comments': 0})
-    elif archived == 'mixed':
-        res = g.projects.find_one({'_id': project_id}, {'comments': 0})
-    else:
-        return make_response('Invalid parameters', 400)
+
+    res = g.projects.find_one({'_id': project_id}, {'comments': 0})
     if res is None:
         return make_response("Project not found", 404)
     try:
@@ -196,12 +170,10 @@ def delete_project(project_id):
     Returns:
         response: Success response or 404 if project is not found
     """
-    if g.projects.delete_one({'_id': project_id}).deleted_count == 0:
+    if delete_stored_project(project_id):
+        return make_response("Success")
+    else:
         return make_response("Project could not be found", 404)
-    g.rerun_saved_searches(current_user['email'], project_id, "delete")
-    g.on_project_deletion(project_id)
-    return make_response("Success")
-
 
 @projects.route('/api/projects/<uuid:project_id>/archive', methods=['PUT'])
 @login_required
@@ -215,24 +187,7 @@ def archive_project(project_id):
         if not req['archived'] or req['archived'] not in ['true', 'false']:
             raise ApiException("No valid field for archivation request found", 400)
         if current_user_has_permission_to_change(res):
-            res['archived'] = 'true' if req['archived'] == 'true' else 'false'
-            operation = 'archive' if req['archived'] == 'true' else 'unarchive'
-            g.projects.find_one_and_replace({'_id': project_id}, res,
-                                            return_document=ReturnDocument.AFTER)
-            res['date_last_updated'] = time.strftime("%Y-%m-%d")
-            res['_id'] = project_id
-            g.projects.find_one_and_replace({'_id': project_id}, res,
-                                            return_document=ReturnDocument.AFTER)
-            add_notification(current_user['email'], res['authors'], operation,
-                             project_id=project_id, reason='author')
-            add_notification(current_user['email'], g.users_with_bookmark(project_id), operation,
-                             project_id=project_id, reason='bookmark')
-            add_notification(current_user['email'],
-                             [comment['author'] for comment in res['comments']], operation,
-                             project_id=project_id, reason='comment')
-            add_self_action(current_user['email'], operation, project_id=project_id)
-            g.rerun_saved_searches(current_user['email'], project_id, operation)
-
+            archive_project(project_id, res, req)
             return make_response("Success")
         elif not current_user_has_permission_to_change(manifest):
             raise ApiException("You are not allowed to edit this project", 403)
@@ -265,68 +220,19 @@ def update_project(project_id):
         res = g.projects.find_one({'_id': project_id})
         if not res:
             raise ApiException("Project not found", 404)
+        elif not current_user_has_permission_to_change(res):
+            raise ApiException("You are not allowed to edit this project", 403)
         elif request.is_json or "application/json5" in request.content_type:
             manifest = request.get_json() if request.is_json \
                 else json5.loads(request.data.decode("utf-8"))
-            res['_id'] = str(project_id)
-            if 'title' in manifest:
-                res['title'] = manifest['title']
-            if 'authors' in manifest:
-                res['authors'] = manifest['authors']
-            if 'tags' in manifest:
-                res['tags'] = manifest['tags']
-            if 'description' in manifest:
-                res['description'] = manifest['description']
-            if 'status' in manifest:
-                res['status'] = manifest['status']
-            if 'url' in manifest:
-                res['url'] = manifest['url']
-            if 'analysis' in manifest:
-                res['analysis'] = manifest['analysis']
-            if 'hypothesis' in manifest:
-                res['hypothesis'] = manifest['hypothesis']
-            if 'team' in manifest:
-                res['team'] = manifest['team']
-            if 'futute_work' in manifest:
-                res['future_work'] = manifest['future_work']
-            if 'related_projects' in manifest:
-                res['related_projects'] = manifest['related_projects']
-            if 'date_creation' in manifest:
-                res['date_creation'] = manifest['date_creation']
-            if 'archived' in manifest:
-                res['archived'] = manifest['archived']
-            is_valid = g.validator.is_valid(res)
-            if is_valid and current_user_has_permission_to_change(res):
-                res['date_last_updated'] = time.strftime("%Y-%m-%d")
-                res['_id'] = project_id
-                res['authors'] = sorted(list(set(res['authors'])))
-                res['tags'] = sorted(res['tags'])
-                g.projects.find_one_and_replace({'_id': project_id}, res,
-                                                return_document=ReturnDocument.AFTER)
-
-                add_notification(current_user['email'], manifest['authors'], "update",
-                                 project_id=project_id, reason='author')
-                add_notification(current_user['email'], g.users_with_bookmark(project_id), "update",
-                                 project_id=project_id, reason='bookmark')
-                add_notification(current_user['email'],
-                                 [comment['author'] for comment in res['comments']], "update",
-                                 project_id=project_id, reason='comment')
-                add_self_action(current_user['email'], "update", project_id=project_id)
-                g.rerun_saved_searches(current_user['email'], project_id, "update")
-
+            if update_stored_project(project_id, res, manifest):
                 return make_response("Success")
-            elif not current_user_has_permission_to_change(manifest):
-                raise ApiException("You are not allowed to edit this project", 403)
             else:
                 raise ApiException(
                     "Validation Error: \n" + str(is_valid), 400,
                     [error for error in sorted(g.validator.iter_errors(manifest))])
-        else:
-            raise ApiException("Manifest had wrong format", 400)
     except ApiException as error:
         raise error
     except UnicodeDecodeError:
         raise ApiException("Only utf-8 compatible charsets are supported, " +
                            "the request body does not appear to be utf-8", 400)
-    except Exception as err:
-        raise ApiException(str(err), 500)
