@@ -10,12 +10,12 @@ from flask_security import login_required, current_user
 
 from api.helper import uploader
 from api.helper.apiexception import ApiException
-from api.helper.permissions import current_user_has_permission_to_change
+from api.helper.permissions import current_user_has_permission_to_change_project
 from api.notifications import add_notification, add_self_action
 from globals import ADMIN_PERMISSION
 
 from storage.projects import delete_stored_project, add_project_list, update_stored_project,\
-                                archive_stored_project
+                                archive_stored_project, project_exists
 
 
 projects = Blueprint('api_projects', __name__)
@@ -50,7 +50,6 @@ def add_projects():
                 raise ApiException("Wrong content header" +
                                    "and no files attached", 400)
             return jsonify(add_project_list(manifestlist))
-
         except ApiException as apierr:
             raise apierr
 
@@ -127,7 +126,7 @@ def get_all_tags():
 
 @projects.route('/api/projects/titles', methods=['POST'])
 @login_required
-def getProjectTitles():
+def get_project_titles():
     """ Returns a dictionary of each project in the database as key and
         its title as value.
     """
@@ -148,7 +147,7 @@ def get_project_by_id(project_id):
     """
 
     res = g.projects.find_one({'_id': project_id}, {'comments': 0})
-    if res is None:
+    if not project_exists(project_id):
         return make_response("Project not found", 404)
     try:
         res['is_bookmark'] = 'true' if project_id in current_user['bookmarks'] else 'false'
@@ -170,27 +169,28 @@ def delete_project(project_id):
     Returns:
         response: Success response or 404 if project is not found
     """
-    if delete_stored_project(project_id):
-        return make_response("Success")
-    else:
+    if not project_exists(project_id):
         return make_response("Project could not be found", 404)
+    delete_stored_project(project_id)
+    return make_response("Success")
+
 
 @projects.route('/api/projects/<uuid:project_id>/archive', methods=['PUT'])
 @login_required
 def archive_project(project_id):
     try:
-        res = g.projects.find_one({'_id': project_id})
-        if not res:
+        if not project_exists(project_id):
             raise ApiException("Project not found", 404)
+        elif not current_user_has_permission_to_change_project(project_id):
+            raise ApiException("You are not allowed to edit this project", 403)
         req = request.get_json() if request.is_json \
             else json5.loads(request.data.decode("utf-8"))
         if not req['archived'] or req['archived'] not in ['true', 'false']:
             raise ApiException("No valid field for archivation request found", 400)
-        if current_user_has_permission_to_change(res):
-            archive_project(project_id, res, req)
-            return make_response("Success")
-        elif not current_user_has_permission_to_change(manifest):
-            raise ApiException("You are not allowed to edit this project", 403)
+
+        archive_project(project_id, req)
+        return make_response("Success")
+
 
     except ApiException as error:
         raise error
@@ -214,18 +214,16 @@ def update_project(project_id):
                   or 400 in case of validation error
                   or 403 if current user not permitted
                   or 404 if project is not found
-                  or 409 if project_id differs from manifestID
     """
     try:
-        res = g.projects.find_one({'_id': project_id})
-        if not res:
+        if not project_exists(project_id):
             raise ApiException("Project not found", 404)
-        elif not current_user_has_permission_to_change(res):
+        elif not current_user_has_permission_to_change_project(project_id):
             raise ApiException("You are not allowed to edit this project", 403)
         elif request.is_json or "application/json5" in request.content_type:
             manifest = request.get_json() if request.is_json \
                 else json5.loads(request.data.decode("utf-8"))
-            if update_stored_project(project_id, res, manifest):
+            if update_stored_project(project_id, manifest):
                 return make_response("Success")
             else:
                 raise ApiException(
@@ -236,3 +234,5 @@ def update_project(project_id):
     except UnicodeDecodeError:
         raise ApiException("Only utf-8 compatible charsets are supported, " +
                            "the request body does not appear to be utf-8", 400)
+    except Exception as err:
+        raise ApiException(str(err), 500)

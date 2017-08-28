@@ -1,7 +1,6 @@
 import os
 import sys
 import json
-import time
 import uuid
 import base64
 
@@ -21,6 +20,11 @@ from mongoengine.fields import (UUIDField, ListField, StringField, BooleanField,
                                 ObjectIdField)
 from werkzeug.routing import BaseConverter
 
+from whoosh.fields import Schema, ID, KEYWORD, TEXT, NGRAMWORDS
+from whoosh.index import create_in
+from whoosh.analysis import FancyAnalyzer
+
+
 from api.projects import projects
 from api.users import users
 from api.comments import comments
@@ -28,8 +32,6 @@ from api.bookmarks import bookmarks
 from api.avatars import avatars
 from api.share import share
 from api.notifications import notifications, add_notification, delete_project_notification
-
-
 from api.search import search, prepare_search_results, prepare_mongo_query
 from api.helper.apiexception import ApiException
 from api.helper.images import Identicon
@@ -117,6 +119,26 @@ def set_global_manifest_validator():
 @app.before_request
 def set_global_mongo_engine():
     g.user_datastore = USER_DATASTORE
+
+@app.before_request
+def init_global_mongoclient():
+    global WHOOSH
+    if not os.path.exists("index"):
+        os.mkdir("index")
+    index = create_in("index", schema)
+    g.whoosh_index = index
+
+schema = Schema(
+    ngrams=NGRAMWORDS(minsize=2,
+                     maxsize=10,
+                     stored=True,
+                     field_boost=1.0,
+                     tokenizer=FancyAnalyzer(),
+                     at='start',
+                     queryor=False,
+                     sortable=False),
+    content=TEXT(stored=True),
+    id=ID(stored=True, unique=True))
 
 
 class Role(DB.Document, RoleMixin):

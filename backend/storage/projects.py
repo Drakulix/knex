@@ -8,17 +8,19 @@ from api.notifications import add_notification, add_self_action
 from api.helper import uploader
 
 
+def project_exists(project_id):
+    return g.projects.find_one({'_id': project_id}) is not None
+
+
 def delete_stored_project(project_id):
-    if g.projects.find_one({'_id': project_id}) is None:
-        return False
-    else:
-        g.projects.delete_one({'_id': project_id})
-        g.rerun_saved_searches(current_user['email'], project_id, "delete")
-        g.on_project_deletion(project_id)
-        return True
+    g.projects.delete_one({'_id': project_id})
+    g.whoosh_index.delete_by_term('id', str(project_id))
+    g.rerun_saved_searches(current_user['email'], project_id, "delete")
+    g.on_project_deletion(project_id)
 
 
-def update_stored_project(project_id, res, manifest):
+def update_stored_project(project_id, manifest):
+    res = g.projects.find_one({'_id': project_id})
     res['_id'] = str(project_id)
     if 'title' in manifest:
         res['title'] = manifest['title']
@@ -53,7 +55,9 @@ def update_stored_project(project_id, res, manifest):
         res['tags'] = sorted(res['tags'])
         g.projects.find_one_and_replace({'_id': project_id}, res,
                                         return_document=ReturnDocument.AFTER)
-
+        writer = g.whoosh_index.writer()
+#        writer.add
+        writer.commit()
         add_notification(current_user['email'], manifest['authors'], "update",
                          project_id=project_id, reason='author')
         add_notification(current_user['email'], g.users_with_bookmark(project_id), "update",
@@ -68,7 +72,8 @@ def update_stored_project(project_id, res, manifest):
         return False
 
 
-def archive_stored_project(project_id, res, req):
+def archive_stored_project(project_id, req):
+    res = g.projects.find_one({'_id': project_id})
     res['archived'] = 'true' if req['archived'] == 'true' else 'false'
     operation = 'archive' if req['archived'] == 'true' else 'unarchive'
     g.projects.find_one_and_replace({'_id': project_id}, res,
@@ -94,6 +99,9 @@ def add_project_list(manifestlist):
         if 'comments' not in project:
             project['comments'] = []
         g.projects.insert(project)
+        writer = g.whoosh_index.writer()
+#        writer.add
+        writer.commit()
         add_notification(current_user['email'], project['authors'], "create",
                          project_id=project['_id'], reason='author')
         add_self_action(current_user['email'], "create", project_id=project['_id'])
