@@ -12,6 +12,8 @@ from uuid import UUID
 from api.helper.apiexception import ApiException
 from api.helper.search import prepare_search_results
 
+from whoosh.query import Term
+
 
 search = Blueprint('api_projects_search', __name__)
 
@@ -61,6 +63,14 @@ def search_es():
     """
     request_json = request.get_json()
     query = prepare_mongo_query(request_json)
+
+    if query.get('description'):
+        description = query.get('description')
+    else:
+        description = ""
+
+    with g.whoosh_index.searcher() as searcher:
+        ids = [uuid.UUID(result['id']) for result in  searcher.search(Term("content", description))]
 
     projects = g.projects.find(query, {'comments': 0})
 
@@ -120,12 +130,10 @@ def query_saved_search(id):
                 return (str(reqerr), 400)
     return make_response("No search with the given id known", 404)
 
-@search.route('/api/projects/ngramlist', methods=['GET'])
+@search.route('/api/projects/ngramlist/<ngrams>', methods=['GET'])
 @login_required
-def get_autocomplete_ngrams():
-    res = ["thats", "a", "test"]
-    return jsonify(res)
-
+def get_autocomplete_ngrams(ngrams):
+    return jsonify([ngrams])
 
 
 @search.route('/api/users/saved_searches', methods=['GET'])

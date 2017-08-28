@@ -138,6 +138,9 @@ schema = Schema(
                      queryor=False,
                      sortable=False),
     content=TEXT(stored=True),
+    spelling=TEXT(stored=True,
+                analyzer=FancyAnalyzer(),
+                spelling = True),
     id=ID(stored=True, unique=True))
 
 

@@ -4,6 +4,8 @@ Defines API points and starts the application
 
 import json
 import json5
+from uuid import UUID
+
 
 from flask import request, jsonify, make_response, g, Blueprint
 from flask_security import login_required, current_user
@@ -14,8 +16,7 @@ from api.helper.permissions import current_user_has_permission_to_change_project
 from api.notifications import add_notification, add_self_action
 from globals import ADMIN_PERMISSION
 
-from storage.projects import delete_stored_project, add_project_list, update_stored_project,\
-                                archive_stored_project, project_exists
+from storage.projects import delete_stored_project, add_project_list, update_stored_project, archive_stored_project, project_exists
 
 
 projects = Blueprint('api_projects', __name__)

@@ -43,8 +43,7 @@ export default class SearchPage extends Component {
 
   componentDidMount(){
     this.handler(this.state.query)
-    Backend.getProjectNgrams()
-    .then((data) => {this.setState({suggestions : data})})
+
   }
 
   handler(query){
@@ -53,14 +52,18 @@ export default class SearchPage extends Component {
               .then ((data) => {this.setState({projects : data, loading : false}); return data;})
   }
 
-  handleChange(event) {
-    const value = event.target.value
+  handleChange(searchText) {
+    const value = searchText
     var query = JSON.parse(JSON.stringify(this.state.query))
     query['searchString'] = value
+
     this.setState({
       query : query,
       searchString : value
     })
+
+    Backend.getProjectNgrams(value)
+    .then((data) => {this.setState({suggestions : data})})
     this.handler(query)
   }
 
@@ -148,12 +151,12 @@ export default class SearchPage extends Component {
               <AutoComplete
                 name = "searchString"
                 fullWidth = {true}
-                value = {this.state.searchString}
+                searchText = {this.state.searchString}
                 dataSource = {this.state.suggestions}
                 filter = {AutoComplete.fuzzyFilter}
                 maxSearchResults = {10}
                 placeholder = "Enter your query here..."
-                onChange = {this.handleChange} />
+                onUpdateInput = {this.handleChange} />
             </div>
             <div className = "col-2">
               <RaisedButton style = {{width : "100%"}}

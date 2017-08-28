@@ -323,8 +323,8 @@ class Backend {
         {return JSON.parse(data)})
     }
 
-    getProjectNgrams(project_ids){
-      return this.getJson('/api/projects/ngramlist')
+    getProjectNgrams(ngrams){
+      return this.getJson(`/api/projects/ngramlist/${ngrams}`)
     }
 
     async addProjectComment(id, message) {
