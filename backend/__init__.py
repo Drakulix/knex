@@ -31,6 +31,7 @@ from api.comments import comments
 from api.bookmarks import bookmarks
 from api.avatars import avatars
 from api.share import share
+from api.projectsData import projects_data
 from api.notifications import notifications, add_notification, delete_project_notification
 from api.search import search, prepare_search_results, prepare_mongo_query
 from api.helper.apiexception import ApiException
@@ -330,6 +331,8 @@ app.register_blueprint(bookmarks)
 app.register_blueprint(avatars)
 app.register_blueprint(notifications)
 app.register_blueprint(share)
+app.register_blueprint(projects_data)
+
 
 
 if __name__ == "__main__":

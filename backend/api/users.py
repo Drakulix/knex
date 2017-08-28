@@ -14,7 +14,7 @@ from flask_security.utils import verify_password, hash_password
 from mongoengine import NotUniqueError
 from mongoengine.fields import ObjectId
 
-from api.projects import get_all_authors
+from api.projectsData import get_all_authors
 from api.helper.apiexception import ApiException
 from api.helper.search import prepare_search_results
 from api.helper.permissions import current_user_has_permission_to_change
