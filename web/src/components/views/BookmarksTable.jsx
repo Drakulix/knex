@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import DataTable from '../common/DataTable'
 import Backend from '../common/Backend'
+import HeadLine from '../common/HeadLine'
+
+
 
 export default class BookmarksTable extends Component {
 
@@ -14,19 +17,19 @@ export default class BookmarksTable extends Component {
   }
 
   componentDidMount(){
-    this.handler({})
+    this.handler()
   }
 
   handler (query){
-    this.setState({loading: true})
+    this.setState({loading : true})
     return Backend.getBookmarks()
-              .then ((data) => {this.setState({projects : data, loading:false}); return data;})
+              .then ((data) => {this.setState({projects : data, loading : false}); return data;})
   }
 
   render(){
     return (
       <div className = "container">
-        <div className = "headerCreation">Your bookmarks</div>
+        <HeadLine title = {"Your bookmarks"} />
         <DataTable  columns = {['title', 'status', 'tags', 'authors', 'description', '_id', 'bookmarked']}
                     handler = {this.handler}
                     data = {this.state.projects}

@@ -7,6 +7,13 @@ import Snackbar from 'material-ui/Snackbar'
 import TextField from 'material-ui/TextField'
 import MultiFileUploader from '../common/MultiFileUploader'
 import Styles from '../common/Styles.jsx'
+import HeadLine from '../common/HeadLine'
+
+
+import Keyboard from 'material-ui/svg-icons/hardware/keyboard'
+import FileUpload from 'material-ui/svg-icons/file/file-upload'
+import CloudUpload from 'material-ui/svg-icons/file/cloud-upload'
+import MultiUpload from 'material-ui/svg-icons/av/playlist-add'
 
 
 const JSON5 = require('json5')
@@ -32,7 +39,7 @@ export default class CreateProjectChoice extends Component {
     var file = event.target.files[0]
     let reader = new FileReader();
     switch (file.name.substring(file.name.lastIndexOf(".") + 1)){
-      case "json":
+      case "json" :
         reader.onload = () => {
         try {
               var json = JSON.parse(reader.result);
@@ -51,7 +58,7 @@ export default class CreateProjectChoice extends Component {
          }
         reader.readAsText(file);
         break
-      case "json5":
+      case "json5" :
         reader.onload = () => {
         try {
               var json5 = JSON5.parse(reader.result);
@@ -70,7 +77,7 @@ export default class CreateProjectChoice extends Component {
          }
          reader.readAsText(file);
         break
-      default:
+      default :
         this.setState({
           snackbar : true,
           snackbarText : "File is not a JSON file"
@@ -84,10 +91,10 @@ export default class CreateProjectChoice extends Component {
   submitForm(e){
       e.preventDefault()
       var request = new Request(this.state.sourceURL,{
-        method:'GET',
-        mode: 'cors',
-        header:{
-        'Access-Control-Allow-Origin':'*'
+        method : 'GET',
+        mode : 'cors',
+        header : {
+        'Access-Control-Allow-Origin' : '*'
         },
       })
       var that = this
@@ -143,7 +150,7 @@ export default class CreateProjectChoice extends Component {
         />,
     ]
     return (
-      <div className = "container"style = {{textAlign : 'center'}} >
+      <div className = "container" style = {{textAlign : 'center'}} >
         <Snackbar
           open = {this.state.snackbar}
           message = {this.state.snackbarText}
@@ -166,45 +173,45 @@ export default class CreateProjectChoice extends Component {
           handleClose = {() => this.setState({multiFileUploader : false})}
           confirmAction = {() => this.setState({multiFileUploader : false})}
         />
-        <div className = "headerCreation">Create a new project</div>
+        <HeadLine title = {"Create a new project"}/>
         <div className = "row">
           <div className ="col-4"></div>
           <div className ="col-2">
             <RaisedButton
-              icon = {<i className = "material-icons" style = {{fontSize:60,color: Styles.palette.alternateTextColor, marginTop:-3}}>cloud_download</i>}
+              icon = {<CloudUpload style = {{height : '50%', width : '50%', color : Styles.palette.alternateTextColor, marginTop : -3}}/>}
               primary = {true}
-              style = {{ width:120, height:120}}
+              style = {{ width : 120, height : 120}}
               onClick = {() => this.setState({urlDialog : true})}/>
-            <div className = "text" >Import online Json</div>
+            <div className = "text hidden-md-down">Import online Json</div>
           </div>
           <div className ="col-2">
             <RaisedButton
-              icon = {<i className = "material-icons" style = {{fontSize:60,color: Styles.palette.alternateTextColor, marginTop:-3}}>file_upload</i>}
+              icon = {<FileUpload style = {{height : '50%', width : '50%', color : Styles.palette.alternateTextColor, marginTop : -3}}/>}
               containerElement = "label"
               primary = {true}
-              style = {{ width:120, height:120}}>
+              style = {{ width : 120, height : 120}}>
               <input type = "file" style = {Styles.uploadInput} onChange = {this.handleFile} />
             </RaisedButton>
-            <div className = "text" >Upload local json</div>
+            <div className = "text hidden-md-down">Upload local Json</div>
           </div>
         </div>
         <div className = "row" style = {{marginTop : 60}}>
           <div className ="col-4"></div>
-            <div className = "col-2">
+          <div className = "col-2">
               <RaisedButton
-                icon = {<i className = "material-icons" style = {{marginLeft:18,fontSize:60, color: Styles.palette.alternateTextColor, marginTop:-3}}>playlist_add</i>}
+                icon = {<MultiUpload style = {{marginLeft : '15%', height : '50%', width :'50%', color : Styles.palette.alternateTextColor, marginTop : -3}}/>}
                 primary = {true}
                 onClick = {() => this.setState({multiFileUploader : true})}
-                style = {{ width:120, height:120}}/>
-              <div className = "text" >Upload multiple files</div>
+                style = {{ width : 120, height : 120, marginRight: 10}}/>
+              <div className = "text hidden-md-down">Upload multiple files</div>
           </div>
           <div className = "col-2">
             <RaisedButton
-                icon = {<i className = "material-icons" style = {{fontSize:60,color: Styles.palette.alternateTextColor, marginTop:-3}}>keyboard</i>}
+                icon = {<Keyboard style = {{height : '50%', width : '50%', color : Styles.palette.alternateTextColor, marginTop : -3}}/>}
                 primary = {true}
                 href = "/createNew"
-                style = {{ width:120, height:120}}/>
-            <div className = "text" >Use online formular</div>
+                style = {{ width : 120, height : 120}}/>
+            <div className = "text hidden-md-down">Use online formular</div>
           </div>
         </div>
       </div>

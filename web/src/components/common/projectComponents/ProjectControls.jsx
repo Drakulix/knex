@@ -8,26 +8,36 @@ import CommentSideBar from './CommentSideBar'
 import ConfirmationPane from '../ConfirmationPane'
 import Badge from 'material-ui/Badge'
 
+import Edit from 'material-ui/svg-icons/image/edit'
+import Comment from 'material-ui/svg-icons/communication/comment'
+import Share from 'material-ui/svg-icons/social/share'
+import Archive from 'material-ui/svg-icons/content/archive'
+import Unarchive from 'material-ui/svg-icons/content/unarchive'
+import StarBorder from 'material-ui/svg-icons/toggle/star-border'
+import Star from 'material-ui/svg-icons/toggle/star'
+
+
+
 export default class ProjectControls extends Component{
 
   constructor(props) {
     super(props)
 
     this.state = {
-      sharePane : false,
-      commentBar : false,
-      dialogOpen : false,
-      snackbar : false,
-      snackbarText : "",
+      sharePane: false,
+      commentBar: false,
+      dialogOpen: false,
+      snackbar: false,
+      snackbarText: '',
       comments_count: 0,
-      is_bookmark : false
+      is_bookmark: false
     }
 
     this.handleComment = this.handleComment.bind(this)
     this.handleBookmark = this.handleBookmark.bind(this)
     this.handleShare = this.handleShare.bind(this)
     this.handleClose = this.handleClose.bind(this)
-    this.handleDelete = this.handleDelete.bind(this)
+    this.handleArchive = this.handleArchive.bind(this)
     this.handleSharedProject = this.handleSharedProject.bind(this)
     this.updateCommentCount = this.updateCommentCount.bind(this)
   }
@@ -37,60 +47,64 @@ export default class ProjectControls extends Component{
     var project = this.props.projectInf;
     delete project.is_bookmark
     delete project.is_owner
-    project['archived'] = false
-    Backend.updateProject(this.props.projectID, project).then(
+    project['archived'] = "false"
+    Backend.archiveProject(this.props.projectID, "false").then(
     this.setState({
-      dialogOpen : false,
-      snackbar : true,
-      snackbarText : `Project ${this.props.projectInf.title} unarchived`
+      dialogOpen: false,
+      snackbar: true,
+      sharePane: false,
+      commentBar: false,
+      snackbarText: `Project ${this.props.projectInf.title} unarchived`
     }))
   }
 
   updateCommentCount(count){
-    this.setState({comments_count : count})
+    this.setState({comments_count: count})
   }
 
   handleClose(){
     this.setState({
-      dialogOpen : false,
-      snackbar : false,
-      sharePane : false,
-      commentBar : false
+      dialogOpen: false,
+      snackbar: false,
+      sharePane: false,
+      commentBar: false
     })
   }
 
   handleSharedProject(){
     this.handleClose()
     this.setState({
-      snackbar : true,
-      snackbarText : `Project ${this.props.projectInf.title} shared`
+      snackbar: true,
+      snackbarText: `Project ${this.props.projectInf.title} shared`
     })
   }
 
-  handleDelete(){
+  handleArchive(){
     var project = this.props.projectInf;
     delete project.is_bookmark
     delete project.is_owner
-    project['archived'] = true
-    Backend.updateProject(this.props.projectID, project).then(
+    project['archived'] = "true"
+    Backend.archiveProject(this.props.projectID, "true").then(
     this.setState({
-      dialogOpen : false,
-      snackbar : true,
-      snackbarText : `Project ${this.props.projectInf.title} archived`
+      dialogOpen: false,
+      snackbar: true,
+      sharePane: false,
+      commentBar: false,
+      snackbarText: `Project ${this.props.projectInf.title} archived`
     }))
   }
 
   handleComment(event){
     this.handleClose()
     this.setState({
-      commentBar : true,
+      commentBar: true,
     })
   }
 
   handleShare(event){
     this.handleClose()
     this.setState({
-      sharePane : true,
+      sharePane: true,
     })
   }
 
@@ -99,9 +113,9 @@ export default class ProjectControls extends Component{
     this.handleClose()
     Backend.handleBookmark(this.props.projectID, this.props.projectInf.is_bookmark )
     .then(res => {
-      this.props.updateBookmarkState(this.props.projectInf.is_bookmark === "true" ? "false" : "true" )
-      this.setState({snackbar :true,
-        snackbarText : `Project bookmark${this.props.projectInf.is_bookmark === "true" ? "ed" : " removed"}`})
+      this.props.updateBookmarkState(this.props.projectInf.is_bookmark === "true" ? "false": "true" )
+      this.setState({snackbar: true,
+        snackbarText: `Project bookmark${this.props.projectInf.is_bookmark === "true" ? "ed": " removed"}`})
     })
   }
 
@@ -115,31 +129,30 @@ export default class ProjectControls extends Component{
         />
         <CommentSideBar loadComments = {this.updateCommentCount}
                         open = {this.state.commentBar}
-                        userNames = {this.props.userNames}
                         uuid = {this.props.projectID}/>
         <ConfirmationPane open = {this.state.dialogOpen}
                           handleClose = {this.handleClose}
                           title = {`Do you want to archive project${this.props.projectInf.title}`}
                           confirmationLabel = {"Archive project"}
-                          confirmAction = {this.handleDelete}
+                          confirmAction = {this.handleArchive}
         />
         <Snackbar open = {this.state.snackbar}
                   message = {this.state.snackbarText}
                   autoHideDuration = {10000}
         />
-        {!this.props.projectInf.archived ?
-          <div style = {{textAlign : "center"}} >
+      {this.props.projectInf.archived === "false"?
+          <div style = {{textAlign: "center"}} >
             <IconButton
                         onClick = {this.handleComment}
                         touch = {true}
                         style = {Styles.largeIcon}
                         tooltipPosition = "bottom-center"
                         tooltip = "Comment project"
-                        iconStyle = {{fontSize : '24px', color:Styles.palette.textColor}}
+                        iconStyle = {{fontSize: 24, color: Styles.palette.textColor}}
                         >
-                        <i className = "material-icons">comment</i>
-                        <Badge  badgeContent = {this.state.comments_count} primary = {true}
-                          badgeStyle = {{top : -30, height : 20, width : 20}} />
+                        <Comment/>
+                        <Badge   badgeContent = {this.state.comments_count} primary = {true}
+                          badgeStyle = {{top: -30, height: 20, width: 20, display: (this.state.comments_count === 0) ? "none": "block"}} />
             </IconButton>
             <IconButton
                         onClick = {this.handleBookmark}
@@ -147,11 +160,9 @@ export default class ProjectControls extends Component{
                         style = {Styles.largeIcon}
                         tooltipPosition = "bottom-center"
                         tooltip = "Bookmark project"
-                        iconStyle = {{fontSize : '24px', color:Styles.palette.textColor}}
+                        iconStyle = {{fontSize: 24, color: Styles.palette.textColor}}
                         >
-                        <i className = "material-icons">
-                          {this.props.projectInf.is_bookmark === "true" ? "star" : "star_border"}
-                        </i>
+                        {this.props.projectInf.is_bookmark === "true" ? <Star/>: <StarBorder/>}
             </IconButton>
             <IconButton
                         onClick = {this.handleShare}
@@ -159,35 +170,38 @@ export default class ProjectControls extends Component{
                         style = {Styles.largeIcon}
                         tooltipPosition = "bottom-center"
                         tooltip = "Share project"
-                        iconStyle = {{fontSize : '24px', color:Styles.palette.textColor}}
+                        iconStyle = {{fontSize: 24, color: Styles.palette.textColor}}
                         >
-                        <i className = "material-icons">share</i>
+                        <Share/>
             </IconButton>
             <IconButton
-                        touch = {true}
-                        style = {Styles.largeIcon}
+                        style = {Styles.largeIcon, {paddingTop: 5}}
                         disabled = {! (this.props.isOwner || Backend.isAdmin())}
                         tooltipPosition = "bottom-center"
                         tooltip = "Edit project"
                         href = {`/update/${this.props.projectID}`}
-                        iconStyle = {{fontSize : '24px', color:Styles.palette.textColor}}
+                        iconStyle = {{height: 24, color: Styles.palette.textColor}}
                         >
-                        <i className = "material-icons">mode_edit</i>
+                        <Edit/>
             </IconButton>
             <IconButton
-                      onClick = {() => this.setState({dialogOpen : true})}
+                      onClick = {() => this.setState({
+                        dialogOpen: true,
+                        snackbar: false,
+                        sharePane: false,
+                        commentBar: false})}
                       touch = {true}
                       style = {Styles.largeIcon}
                       disabled = {! (this.props.isOwner || Backend.isAdmin())}
                       tooltipPosition = "bottom-center"
                       tooltip = "Archive project"
-                      iconStyle = {{fontSize : '24px', color:Styles.palette.textColor}}
+                      iconStyle = {{fontSize: 24, color: Styles.palette.textColor}}
                       >
-                      <i className = "material-icons">archive</i>
+                      <Archive/>
             </IconButton>
           </div>
-            :
-          <div style = {{textAlign : "center"}} >
+           :
+          <div style = {{textAlign: "center"}} >
             <IconButton
                       onClick = {() => this.handleUnArchive()}
                       touch = {true}
@@ -195,9 +209,9 @@ export default class ProjectControls extends Component{
                       disabled = {! (this.props.isOwner || Backend.isAdmin())}
                       tooltipPosition = "bottom-center"
                       tooltip = "Unarchive project"
-                      iconStyle = {{fontSize : '24px', color:Styles.palette.textColor}}
+                      iconStyle = {{fontSize: 24, color: Styles.palette.textColor}}
                       >
-                      <i className = "material-icons">unarchive</i>
+                      <Unarchive/>
             </IconButton>
           </div>
         }

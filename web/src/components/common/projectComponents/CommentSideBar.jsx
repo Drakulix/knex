@@ -1,23 +1,23 @@
 import React from 'react'
 import Drawer from 'material-ui/Drawer'
-import Dialog from 'material-ui/Dialog';
+import Dialog from 'material-ui/Dialog'
 import RaisedButton from 'material-ui/RaisedButton'
 import {List, ListItem} from 'material-ui/List'
 import Divider from 'material-ui/Divider'
 import Backend from '../Backend'
-import {grey400} from 'material-ui/styles/colors';
-import IconButton from 'material-ui/IconButton';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import Styles from '../Styles.jsx'
+import IconButton from 'material-ui/IconButton'
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import TextField from 'material-ui/TextField'
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import FlatButton from 'material-ui/FlatButton';
+import IconMenu from 'material-ui/IconMenu'
+import MenuItem from 'material-ui/MenuItem'
+import FlatButton from 'material-ui/FlatButton'
 
 
 class CommentItem extends React.Component {
   constructor(){
     super();
-    this.state = {open : false}
+    this.state = {open: false}
 
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmitEdit = this.handleSubmitEdit.bind(this)
@@ -38,7 +38,7 @@ class CommentItem extends React.Component {
 
   handleEdit(event){
     this.setState({
-      message : this.props.comment.message
+      message: this.props.comment.message
     })
     this.handleOpen()
   }
@@ -78,7 +78,7 @@ class CommentItem extends React.Component {
         tooltip = "more"
         tooltipPosition = "bottom-left"
       >
-        <MoreVertIcon color = {grey400} />
+        <MoreVertIcon color = {Styles.palette.disabledColor} />
       </IconButton>
     );
 
@@ -101,18 +101,19 @@ class CommentItem extends React.Component {
           name = "Change Comment."
           onChange = {this.handleChange}
           hintText = "Change Comment."
-          style = {{width : '100%', marginTop : 6}}
+          style = {{width: '100%', marginTop: 6}}
           multiLine = {true}
           />
 
         </Dialog>
-    <ListItem primaryText = {this.props.comment.message}
+        <ListItem primaryText = {this.props.comment.message}
               secondaryText = {<div>
-                <span style = {{float : "left"}}>
-                  {this.props.userNames!== undefined ? this.props.userNames[this.props.comment.author]
-                                                    : this.props.comment.author}
+                <span style = {{float: "left"}}>
+                  {this.props.userNames[this.props.comment.author] !== undefined ?
+                    this.props.userNames[this.props.comment.author]
+                                                   : this.props.comment.author}
                 </span>
-                <span style = {{float : "right"}}>{this.props.comment.datetime}</span>
+                <span style = {{float: "right"}}>{this.props.comment.datetime}</span>
               </div>}
               rightIconButton = {rightIconMenu}
     />
@@ -126,9 +127,10 @@ export default class CommentSideBar extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      showCommentBar : false,
-      comment : "",
-      comments : []
+      showCommentBar: false,
+      comment: "",
+      comments: [],
+      userNames: {},
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -147,12 +149,12 @@ export default class CommentSideBar extends React.Component {
   handleChange(event){
     const value = event.target.value
     this.setState({
-      comment : value
+      comment: value
     })
   }
 
   handleUpdateList(event){
-    this.loadComments()
+    this.loadComments(this.props.uuid)
     this.props.handleUpdateComments()
   }
 
@@ -165,28 +167,36 @@ export default class CommentSideBar extends React.Component {
         }
       })
     this.setState({
-      comment : ""
+      comment: ""
     })
-    this.loadComments()
+    this.loadComments(this.props.uuid)
   }
 
-  handleToggle = () => this.setState({showCommentBar : !this.state.showCommentBar})
+  handleToggle = () => this.setState({showCommentBar: !this.state.showCommentBar})
 
   componentWillReceiveProps(props){
-    this.setState({showCommentBar : props.open})
+    this.setState({showCommentBar: props.open})
+    if (this.props.uuid !== props.uuid){
+      this.loadComments(props.uuid)
+    }
   }
 
   componentWillMount(){
-    this.loadComments()
+    this.loadComments(this.props.uuid)
   }
 
-  loadComments(){
-    return Backend.getProjectComments(this.props.uuid).then((data) => {
+  loadComments(uuid){
+    return Backend.getProjectComments(uuid).then((data) => {
       var filteredData = this.transformArray(data)
       this.props.loadComments(data.length)
       this.setState({
-        comments : filteredData
+        comments: filteredData
       })
+      var users = data.map(item => item.author)
+      users = users.filter(function(item,pos){
+        return users.indexOf(item) == pos
+      })
+      Backend.getUserNames(users).then((userNames) => {this.setState({userNames: userNames})})
     })
   }
 
@@ -197,14 +207,14 @@ export default class CommentSideBar extends React.Component {
         width = {600}
         open = {this.state.showCommentBar}
         onRequestChange = {(showCommentBar) => this.setState({showCommentBar})}>
-        <div style = {{padding : 20}}>
+        <div style = {{padding: 20}}>
           <TextField  value = {this.state.comment}
                     onChange = {this.handleChange}
                     hintText = "Add a comment"
-                    style = {{width : '100%'}}
+                    style = {{width: '100%'}}
                     multiLine = {true}
           />
-          <div style = {{textAlign : "center", marginBottom : 25}}>
+          <div style = {{textAlign: "center", marginBottom: 25}}>
             <RaisedButton label = "Comment"
                         disabled = {this.state.comment === ""}
                         onClick = {this.handleSubmit}
@@ -215,7 +225,10 @@ export default class CommentSideBar extends React.Component {
         {this.state.comments.map(item =>
           <div key = {item.id}>
             <Divider/>
-            <CommentItem comment = {item} userNames = {this.props.userNames} p_id = {this.props.uuid} handleUpdateList = {this.handleUpdateList}/>
+            <CommentItem comment = {item}
+               p_id = {this.props.uuid}
+               userNames = {this.state.userNames}
+               handleUpdateList = {this.handleUpdateList}/>
           </div>)
         }
       </List>

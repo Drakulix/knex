@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
 import {
-  Link,
   Redirect,
 } from 'react-router-dom'
 import RaisedButton from 'material-ui/RaisedButton'
+import Snackbar from 'material-ui/Snackbar'
 import TextField from 'material-ui/TextField'
 import logo from '../../style/img/black_logo_title_below.svg'
 import Backend from '../common/Backend'
+
+
 
 export default class SignIn extends Component {
 
@@ -18,6 +20,8 @@ export default class SignIn extends Component {
       error: '',
       email: Backend.getMail(),
       password: '',
+      snackbar: false,
+      snackbarText: 'Login failed'
     }
 
     this.handleChangeEmail = this.handleChangeEmail.bind(this)
@@ -26,11 +30,11 @@ export default class SignIn extends Component {
   }
 
   handleChangeEmail(event) {
-    this.setState({email: event.target.value})
+    this.setState({email: event.target.value, snackbar: false})
   }
 
   handleChangePassword(event) {
-    this.setState({password: event.target.value})
+    this.setState({password: event.target.value, snackbar: false})
   }
 
   handleSubmit(event){
@@ -39,67 +43,64 @@ export default class SignIn extends Component {
       if(success){
         this.setState({ redirect: true })
       }else{
-        this.setState({ redirect: false, error: 'Login failed' })
-        alert("Login failed")
+        this.setState({ redirect: false, snackbar: true })
       }
     })
   }
 
   render() {
     if (this.state.redirect || Backend.isLoggedIn() ) {
-      return <Redirect to='/discovery'/>
+      return <Redirect to='/dashboard'/>
     }
 
     return (
-      <section className = "sign-container">
-
-        {/*Information*/}
-        <img className = "service-name" src = {logo} alt = "Logo"/>
-        <h2 className = "team-name">brings light to the cloud</h2>
+      <div className = "sign-container">
+        <Snackbar open = {this.state.snackbar}
+                  message = {this.state.snackbarText}
+                  autoHideDuration = {10000}/>
+        <img className = "service-name hidden-md-down" src = {logo} alt = "Logo"/>
+        <h2 className = "team-name hidden-md-down">brings light to the cloud</h2>
         <div className = "rectangle-sign">
           <h3 className = "sign-type-desc">Login</h3>
           <form onSubmit = {this.handleSubmit}>
-            {/*Input Email*/}
-            <div className = "input-group input-login">
-              <TextField
-                type = "text"
-                value = {this.state.email}
-                onChange = {this.handleChangeEmail}
-                hintText = "Email"
-              />
-            </div>
-            {/*Input password*/}
-            <div className = "input-group input-login">
-              <TextField
-                type = "password"
-                value = {this.state.password}
-                onChange = {this.handleChangePassword}
-                hintText = "Password"
-              />
-            </div>
-            <div>
-              <RaisedButton
-                type = "Submit"
-                label = "Login"
-                primary = {true}
-                buttonStyle = {{width: 250, marginTop:40}}
-              />
-          </div>
-          </form>
-          <div>
-            <br/>
-            <Link to = "/register">
-            <RaisedButton
-              type = "Submit"
-              label = "Register"
-              primary = {true}
-              buttonStyle = {{width: 250}}
-              required
+            <div style = {{textAlign: 'center'}}>
+                <TextField
+                  type = "text"
+                  value = {this.state.email}
+                  onChange = {this.handleChangeEmail}
+                  hintText = "Email"
+                  style = {{width: 250}}
             />
-            </Link>
+            </div>
+            <div style = {{textAlign: 'center'}}>
+              <TextField
+                  type = "password"
+                  value = {this.state.password}
+                  onChange = {this.handleChangePassword}
+                  hintText = "Password"
+                  style = {{width: 250}}
+              />
+            </div>
+            <div style = {{marginTop: 40, textAlign: 'center'}}>
+              <RaisedButton
+                  type = "Submit"
+                  label = "Login"
+                  style = {{width: 250}}
+                  primary = {true}
+              />
+            </div>
+          </form>
+          <div style = {{marginTop: 20, textAlign: 'center'}}>
+            <RaisedButton
+                type = "Submit"
+                label = "Register"
+                href = "/register"
+                primary = {true}
+                style = {{width: 250}}
+            />
           </div>
         </div>
-      </section>
+      </div>
     )
   }
 }

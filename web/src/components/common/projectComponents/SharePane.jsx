@@ -8,7 +8,7 @@ export default class SharePane extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      authors : [],
+      authors: [],
     }
     this.handleAuthorChange = this.handleAuthorChange.bind(this)
   }
@@ -17,13 +17,13 @@ export default class SharePane extends React.Component {
     for (var i in this.state.authors) {
       Backend.shareProjectToUser(this.props.uuid, this.state.authors[i])
     }
-    this.setState({open : false})
+    this.setState({open: false})
     this.props.handleSharedProject()
   }
 
   handleAuthorChange(event) {
     const value = event.target.value
-    this.setState({authors : value})
+    this.setState({authors: value})
   }
 
   render() {
@@ -37,7 +37,7 @@ export default class SharePane extends React.Component {
         label = "Share"
         primary = {true}
         onTouchTap = {this.shareProject}
-        style = {{marginLeft : 20}}
+        style = {{marginLeft: 20}}
         disabled = {this.state.authors.length === 0}
         />,
     ]
@@ -54,8 +54,9 @@ export default class SharePane extends React.Component {
           name = "authors"
           filtered = {true}
           value = {this.state.authors}
+          style = {{marginBottom: (this.state.authors.length === 0) ? 0: 17} }
           errorText = {(this.state.authors.length === 0) ?
-                      "Please provide at least one author" : ""}
+                      "Please provide at least one author": ""}
           />
       </Dialog>
     )

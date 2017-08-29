@@ -6,6 +6,7 @@ import UrlOutputList from '../common/chips/UrlOutputList'
 import Status from '../common/Status'
 import Spinner from '../common/Spinner'
 import ProjectControls from '../common/projectComponents/ProjectControls'
+import HeadLine from '../common/HeadLine'
 
 
 export default class ProjectContainer extends Component {
@@ -19,14 +20,21 @@ export default class ProjectContainer extends Component {
       is_bookmark : false,
       canEdit : false,
       myEmail : Backend.getMail(),
-      comments_count: 0
+      comments_count : 0
     }
 
     this.updateBookmarkState = this.updateBookmarkState.bind(this)
   }
 
+  componentWillReceiveProps(nextProps){
+    if(nextProps.match.params.uuid !== this.state.projectID){
+      this.setState({projectID: nextProps.match.params.uuid})
+      this.loadSiteInf(nextProps.match.params.uuid)
+    }
+  }
+
   componentDidMount(){
-    this.loadSiteInf()
+    this.loadSiteInf(this.state.projectID)
   }
 
   updateBookmarkState(value) {
@@ -35,8 +43,8 @@ export default class ProjectContainer extends Component {
     this.setState({projectInf : projectInf})
   }
 
-  loadSiteInf() {
-    Backend.getProject(this.state.projectID).then(data => {
+  loadSiteInf(uuid) {
+    Backend.getProject(uuid).then(data => {
       var email = this.state.myEmail
       var isOwner = false
       for (let author in data.authors)
@@ -50,7 +58,7 @@ export default class ProjectContainer extends Component {
       Backend.getUserNames(data.authors)
       .then ((userNames) => {
         this.setState({
-          userNames : JSON.parse(userNames)
+          userNames : userNames
         })
       })
     }).catch(ex => {
@@ -77,11 +85,13 @@ export default class ProjectContainer extends Component {
 
       return(
         <div className = "container">
-          <div className = "row headerCreation" style = {{width : "100%"}}>
+          <HeadLine title = {"Project"}/>
+          <div className = "row" style = {{width : "100%"}}>
             <div className = "col-12">
-              <div>Project</div>
-              <div style = {{fontSize : '20px'}}> {this.state.projectInf.title}</div>
-              {this.state.projectInf.archived ? <i style = {{fontSize : '20px'}}>Archived project</i> : ""}
+              <div style = {{textAlign: "center"}}>
+                <div style = {{fontSize : '20px'}}> {this.state.projectInf.title}</div>
+                {this.state.projectInf.archived ? <i style = {{fontSize : '20px'}}>Archived project</i> : ""}
+              </div>
               <div style = {{marginTop : 20}}>
                 <ProjectControls  projectInf = {this.state.projectInf}
                                   isOwner = {this.state.isOwner}
@@ -100,11 +110,11 @@ export default class ProjectContainer extends Component {
                 </div>
                 <div className = "col-4">
                   <div className = "profile-info">Creation date</div>
-                  <div style = {{marginTop:16}}>{this.state.projectInf.date_creation}</div>
+                  <div style = {{marginTop : 16}}>{this.state.projectInf.date_creation}</div>
                 </div>
                 <div className = "col-4">
                   <div className = "profile-info">Last update </div>
-                  <div style = {{marginTop:16}}> {this.state.projectInf.date_last_updated}</div>
+                  <div style = {{marginTop : 16}}> {this.state.projectInf.date_last_updated}</div>
                 </div>
               </div>
               <div style = {{marginTop : 30}}>

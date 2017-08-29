@@ -3,6 +3,7 @@ import {Tabs, Tab} from 'material-ui/Tabs'
 import ManageUsers from '../common/adminComponents/ManageUsers'
 import RegisterUser from '../common/adminComponents/RegisterUser'
 import ManageProjects from '../common/adminComponents/ManageProjects'
+import HeadLine from '../common/HeadLine'
 
 export default class AdminOverview extends Component {
 
@@ -22,12 +23,12 @@ export default class AdminOverview extends Component {
   render() {
     return (
       <div className = "container">
-        <div className = "headerCreation">Admin area</div>
+        <HeadLine title = {"Admin area"} />
         <Tabs
           inkBarStyle = {{marginTop : -5, height : 5}}
           value = {this.state.value}
           onChange = {this.handleChange}
-          contentContainerStyle = {{marginTop: 30}}
+          contentContainerStyle = {{marginTop : 30}}
         >
           <Tab label = "Archived Projects" value = "1">
             <ManageProjects/>

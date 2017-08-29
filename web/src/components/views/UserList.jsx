@@ -7,7 +7,11 @@ import TextField from 'material-ui/TextField'
 import TagInputList from '../common/chips/TagInputList'
 import SkillOutputList from '../common/chips/SkillOutputList'
 import Styles from '../common/Styles.jsx'
+import Pagination from '../common/Pagination'
+import HeadLine from '../common/HeadLine'
 
+
+const userPerPage = 6
 
 export default class ShowUsers extends Component {
 
@@ -22,13 +26,15 @@ export default class ShowUsers extends Component {
       name : "",
       email : "",
       tags : [],
-      userTags : {}
+      userTags : {},
+      page : 0,
+      pages :[[]]
     }
     this.handleChange = this.handleChange.bind(this)
   }
 
 
-  componentWillMount(){
+  componentDidMount(){
     this.loadUsers()
   }
 
@@ -71,35 +77,48 @@ export default class ShowUsers extends Component {
 
   filter(name, value){
     var filteredList = []
+    var tagsToCompare = (name === "tags") ? value : this.state.tags
+    var emailValue = this.state.email.toLowerCase()
+    var nameValue = this.state.name.toLowerCase()
     for(let dataObject of this.state.userList) {
       var discard = false
       var userName = (`${dataObject.first_name} ${dataObject.last_name}`).toLowerCase()
-      var email = dataObject.email.toLowerCase()
-      discard = discard || email.indexOf(name === "email" ? value.toLowerCase() :  this.state.email.toLowerCase()) === -1
-      discard = discard || userName.indexOf(name === "name" ? value.toLowerCase() :  this.state.name.toLowerCase()) === -1
-      value = (name === "tags") ? value : this.state.tags
-      var temp = this.state.userTags[email].join().toLowerCase()
-      for(let item in value){
-        if (temp.indexOf(value[item]) === -1){
+      var userEmail = dataObject.email.toLowerCase()
+      discard = discard || userEmail.indexOf(name === "email" ? value.toLowerCase() :  emailValue) === -1
+      discard = discard || userName.indexOf(name === "name" ? value.toLowerCase() :  nameValue) === -1
+      var temp = this.state.userTags[userEmail] !== undefined ? `#${this.state.userTags[userEmail].join('#')}#` : ''
+      for(let item in tagsToCompare){
+        if (temp.indexOf(`#${tagsToCompare[item]}#`) === -1){
           discard = true
           break
         }
       }
       if(!discard)
           filteredList.push(dataObject)
+    }
+    var page = []
+    var pages = []
+    for(let user in filteredList){
+      if(user % userPerPage === 0){
+        page = []
+        pages.push(page)
       }
+      page.push(filteredList[user])
+    }
     this.setState({
-      filteredList : filteredList
+      filteredList: filteredList,
+      pages: pages,
+      page: page * userPerPage >=  filteredList.length ? 0 : this.state.page
     })
   }
 
   render(){
     return (
       <div className = "container">
-        <Spinner loading = {this.state.loading} text = {"Loading users"} />
-        <div style = {{width:"100%", display : (!this.state.loading ? "block" : "none")}}>
+        {this.state.loading ?  <Spinner text = {"loading users"}/> :
+          <div style = {{width : "100%"}}>
           <div>
-            <div className = "headerCreation">Looking for a user?</div>
+            <HeadLine title = {"Looking for a user?"}/>
             <Card  onExpandChange = {() => this.setState({expanded : !this.state.expanded})}>
               <CardHeader
                   title = "Apply filters to your search"
@@ -108,7 +127,7 @@ export default class ShowUsers extends Component {
               />
               <CardText expandable = {true}>
                 <div className = "row">
-                  <div className = "col-1 filter-label">Name</div>
+                  <div className = "col-1 filter-label hidden-md-down">Name</div>
                   <div className = "col-3">
                     <TextField
                         fullWidth = {true}
@@ -118,7 +137,7 @@ export default class ShowUsers extends Component {
                         type = "text" placeholder = "Enter username..."
                     />
                   </div>
-                  <div className = "col-1 filter-label">Email</div>
+                  <div className = "col-1 filter-label hidden-md-down">Email</div>
                   <div className = "col-3">
                     <TextField
                         fullWidth = {true}
@@ -128,7 +147,7 @@ export default class ShowUsers extends Component {
                         type = "text" placeholder = "Enter email adress..."
                     />
                   </div>
-                  <div className = "col-1 filter-label">Expertise</div>
+                  <div className = "col-1 filter-label hidden-md-down">Expertise</div>
                   <div className = "col-3">
                     <TagInputList  onChange = {this.handleChange}
                                       filtered = {true}
@@ -138,33 +157,68 @@ export default class ShowUsers extends Component {
                 </div>
               </CardText>
             </Card>
-            <div style = {{marginTop:20}} >
-                {this.state.filteredList.map((user) => (
-                    <div key = {user.email} style = {{width : "31%", float:"left", marginRight: 20, marginBottom : 20}}>
-                      <Link to = {`/profile/${user.email}`}
-                            style = {{color : Styles.palette.textColor}}>
-                        <div className = "row">
-                          <div className = "col-4">
-                            <img src = {`/api/users/${user.email}/avatar`}
-                              width = "140"
-                              height = "140"
-                              alt = {user.email}
-                              />
+            <div style = {{marginTop : 20, paddingLeft:15, paddingRight: 15}}>
+              {this.state.pages.length === 0 ?
+                <div style = {{marginTop: 60, textAlign: 'center', fontSize: 24, color: Styles.palette.disabledColor }}>No users found</div>
+                  :
+                <div>
+                  <div>
+                    {this.state.pages[this.state.page].map((user, index) => (
+                      index % 3 === 0 ?
+                      <div className = "row" key = {index}>
+                        {this.state.pages[this.state.page].map((user, index2) => (
+                          index2 >= index && index2 < index + 3 ?
+                          <div className = "col-4"
+                            key = {`user#${index2}`}>
+                            <UserCard user = {user}
+                            projectCounts = {this.state.projectCounts}
+                            userTags = {this.state.userTags}/>
                           </div>
-                          <div className = "col-1"></div>
-                          <div className = "col-6" style = {{marginTop:20}}>
-                            <div style = {{fontWeight : "bold", fontSize : 20}}>{`${user.first_name} ${user.last_name}`}</div>
-                            <div style = {{fontSize : 14}}>{user.email}</div>
-                            <div style = {{fontSize : 16}}>{this.state.projectCounts[user.email] !== undefined ? this.state.projectCounts[user.email].length :0} Projects</div>
-                            <div style = {{width : 200}}><SkillOutputList value = {this.state.userTags[user.email]} /></div>
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
-                  ))}
-              </div>
+                          : ""
+                        ))}
+                      </div> : ""
+                    ))}
+                  </div>
+                  <Pagination page = {this.state.page}
+                          jumpTo = {(page) => this.setState({page : page})}
+                          pages = {this.state.pages.length}
+                  />
+                </div>
+              }
+            </div>
           </div>
         </div>
+        }
+      </div>
+    )
+  }
+}
+
+class UserCard extends Component {
+
+  render () {
+    return (
+      <div key = {this.props.user.email} style = {{marginRight : 20, marginBottom : 20}}>
+        <Link to = {`/profile/${this.props.user.email}`}
+              style = {{color : Styles.palette.textColor, textDecoration: 'none'}}>
+          <div style = {{fontWeight : "bold", fontSize : 20}}>{`${this.props.user.first_name} ${this.props.user.last_name}`}</div>
+          <div className = "row" style = {{paddingLeft: 15, paddingRight: 15}}>
+            <div className = "col-4 hidden-md-down">
+              <img src = {`/api/users/${this.props.user.email}/avatar`}
+                  style ={{width: 80, height: 80, marginTop:0}}
+                  className = "rounded-circle profile-icon"
+                  alt = {this.props.user.email}
+              />
+            <div style = {{fontSize : 16, textAlign: "center", width: "100%"}}>{this.props.projectCounts[this.props.user.email] !== undefined ? this.props.projectCounts[this.props.user.email].length : 0} Projects</div>
+            </div>
+            <div className = "col-8" style = {{marginTop : 0}}>
+              <div className ="hidden-lg-up" style = {{fontSize : 16, textAlign: "left", width: "100%"}}>{this.props.projectCounts[this.props.user.email] !== undefined ? this.props.projectCounts[this.props.user.email].length : 0} Projects</div>
+              <SkillOutputList value = {this.props.userTags[this.props.user.email]}/>
+          </div>
+          </div>
+          <div style = {{width : "100%"}}>
+          </div>
+        </Link>
       </div>
     )
   }

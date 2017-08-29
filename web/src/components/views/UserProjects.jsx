@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import 'react-table/react-table.css'
 import DataTable from '../common/DataTable'
 import Backend from '../common/Backend'
+import HeadLine from '../common/HeadLine'
 
 export default class UserProjects extends Component {
 
@@ -24,15 +25,15 @@ export default class UserProjects extends Component {
     query.archived = "false"
     query.authors = query.authors !== undefined ? query.authors : []
     query.authors.push(Backend.getMail())
-    this.setState({loading: true})
+    this.setState({loading : true})
     return Backend.search(query)
-              .then ((data) => {this.setState({projects : data, loading:false}); return data;})
+              .then ((data) => {this.setState({projects : data, loading : false}); return data;})
   }
 
   render(){
     return (
       <div className = "container">
-        <div className = "headerCreation">Your projects</div>
+        <HeadLine title = {"Your projects"}/>
         <DataTable  columns = {['title', 'status', 'tags', 'authors', 'description', '_id', 'archive' ]}
                       handler = {this.handler}
                       data = {this.state.projects}

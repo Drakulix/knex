@@ -32,6 +32,9 @@ import UserProjects from './components/views/UserProjects'
 import SavedQueries from './components/views/SavedQueries'
 import UserTrashcan from './components/views/UserTrashcan'
 import UserList from './components/views/UserList'
+import Dashboard from './components/views/Dashboard'
+import Settings from './components/views/Settings'
+
 
 import TopBar from './components/common/TopBar'
 import SideBar from './components/common/SideBar'
@@ -39,8 +42,12 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import styles from './components/common/Styles.jsx'
 
 
+
 var injectTapEventPlugin = require("react-tap-event-plugin")
 injectTapEventPlugin()
+require('roboto-fontface/css/roboto/roboto-fontface.css');
+require('bootstrap/dist/css/bootstrap.min.css');
+
 
 
 const PageRoute = ({ component: Component, path, sitePath, ...rest }) => (
@@ -48,11 +55,15 @@ const PageRoute = ({ component: Component, path, sitePath, ...rest }) => (
     return (
       <div className="inner-content">
         <TopBar />
-        <div className="row">
           <SideBar location={sitePath} />
-          <div className="col-9 content">
+
+        <div className="row">
+            <div className ="hidden-lg-up col"/>
+            <div className="col-10 content">
             <Component {...props} />
           </div>
+          <div className ="hidden-lg-up col"/>
+
         </div>
       </div>
     );
@@ -64,6 +75,7 @@ init(() => {
     <MuiThemeProvider  muiTheme={getMuiTheme(styles)}>
       <Router history={history}>
         <Switch>
+          <PageRoute sitePath="/dashboard" path="/dashboard" component={Dashboard} />
           <PageRoute sitePath="/discovery" path="/discovery/:query" component={SearchPage} />
           <PageRoute sitePath="/discovery" path="/discovery/" component={SearchPage} />
           <PageRoute sitePath="/admin" path="/admin" component={AdminOverview} />
@@ -75,8 +87,10 @@ init(() => {
           <PageRoute sitePath="/project" path="/project/:uuid" component={ProjectContainer} />
           <PageRoute sitePath="/bookmarks" path="/bookmarks" component={BookmarksTable} />
           <PageRoute sitePath="/profile" path="/profile/:email" component={ProfileContainer} />
+          <PageRoute sitePath="/yourprofile"  path="/yourprofile" component={ProfileContainer} />
           <PageRoute sitePath="/yourprojects" path="/yourprojects" component={UserProjects} />
           <PageRoute sitePath="/queries" path="/queries" component={SavedQueries} />
+          <PageRoute sitePath="/settings" path="/settings" component={Settings} />
           <PageRoute sitePath="/trashcan" path="/trashcan" component={UserTrashcan} />
           <PageRoute sitePath="/users" path="/users" component={UserList} />
           <Route path="/register" component={SignUp} />

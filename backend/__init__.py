@@ -6,7 +6,6 @@ import uuid
 import base64
 
 import yaml
-from elasticsearch import Elasticsearch
 from flask import Flask, g, jsonify, request
 from flask.helpers import make_response
 from flask_cors import CORS
@@ -24,8 +23,17 @@ from werkzeug.routing import BaseConverter
 
 from api.projects import projects
 from api.users import users
-from api.search import search, prepare_es_results
+from api.comments import comments
+from api.bookmarks import bookmarks
+from api.avatars import avatars
+from api.share import share
+from api.notifications import notifications, add_notification, delete_project_notification
+
+
+from api.search import search, prepare_search_results, prepare_mongo_query
 from api.helper.apiexception import ApiException
+from api.helper.images import Identicon
+
 
 config_file_path = os.path.dirname(os.path.abspath(__file__))
 config = {}
@@ -42,10 +50,6 @@ default_config = {
         "security_password_hash": 'pbkdf2_sha512',
         "security_password_salt": 'THISISMYOWNSALT'
     },
-    "elasticsearch": {
-        "hostname": "elasticsearch",
-        "port": 9200
-    },
     "administration_user": {
         "username": "admin",
         "password": "admin",
@@ -61,8 +65,6 @@ if os.path.isfile(os.path.join(config_file_path, "config.yml")):
             default_config["flask"].update(config["flask"])
         if "mongo_db" in config:
             default_config["mongo_db"].update(config["mongo_db"])
-        if "elasticsearch" in config:
-            default_config["elasticsearch"].update(config["elasticsearch"])
         if "administration_user" in config:
             default_config["administration_user"].update(config["administration_user"])
 
@@ -85,19 +87,6 @@ DB = MongoEngine(app)
 
 
 @app.before_first_request
-def init_global_elasticsearch():
-    global ES
-    ES = Elasticsearch([{'host': config["elasticsearch"]["hostname"],
-                         'port': config["elasticsearch"]["port"]}])
-    ES.indices.create(index='knexdb', ignore=400)
-
-
-@app.before_request
-def set_global_elasticsearch():
-    g.es = ES
-
-
-@app.before_first_request
 def init_global_mongoclient():
     global MONGOCLIENT
     mongo_address = config["mongo_db"]["hostname"] + ":" + str(config["mongo_db"]["port"])
@@ -108,6 +97,7 @@ def init_global_mongoclient():
 def set_global_mongoclient():
     g.knexdb = MONGOCLIENT.knexdb
     g.projects = g.knexdb.projects
+    g.notifications = g.knexdb.notifications
 
 
 @app.before_first_request
@@ -134,31 +124,15 @@ class Role(DB.Document, RoleMixin):
     description = DB.StringField(max_length=255)
 
 
-class Notification(DB.EmbeddedDocument):
-    notification_id = DB.ObjectIdField(default=ObjectId)
-    title = DB.StringField(max_length=255)
-    description = DB.StringField(max_length=255)
-    link = DB.StringField(max_length=255)
-
-    def to_dict(self):
-        dic = {}
-        dic['id'] = str(self.notification_id)
-        dic['title'] = str(self.title)
-        dic['description'] = str(self.description)
-        dic['link'] = str(self.link)
-        return dic
-
-
 class SavedSearch(EmbeddedDocument):
     saved_search_id = DB.ObjectIdField(default=ObjectId)
     metadata = DB.StringField()
-    query = DB.StringField()
     count = DB.LongField()
 
     def to_dict(self):
         dic = {}
         dic['id'] = str(self.saved_search_id)
-        dic['query'] = json.loads(str(self.metadata))
+        dic['metadata'] = json.loads(str(self.metadata))
         dic['count'] = self.count
         return dic
 
@@ -170,9 +144,9 @@ class User(DB.Document, UserMixin):
     password = DB.StringField(max_length=255)
     active = DB.BooleanField(default=True)
     bio = DB.StringField(max_length=255)
+    notifications_settings = DB.DictField()
     bookmarks = DB.ListField(DB.UUIDField(), default=[])
     roles = DB.ListField(DB.ReferenceField(Role), default=[])
-    notifications = DB.ListField(DB.EmbeddedDocumentField(Notification), default=[])
     saved_searches = DB.ListField(DB.EmbeddedDocumentField(SavedSearch), default=[])
     avatar_name = DB.StringField(max_length=255)
     avatar = DB.StringField()  # this is ugly as fuck but we store b64 encoded file data
@@ -186,6 +160,7 @@ class User(DB.Document, UserMixin):
         # dic['password'] = str(self.password)
         dic['active'] = str(self.active).lower()
         dic['bio'] = str(self.bio)
+        dic['notifications_settings'] = dict(self.notifications_settings)
         dic['bookmarks'] = [str(bookmark) for bookmark in self.bookmarks]
         dic['roles'] = [str(role.name) for role in self.roles]
         return dic
@@ -209,28 +184,6 @@ def handle_unauthorized_access():
     return make_response("Forbidden", 403)
 
 
-# internal function to append notifications to the given userlist
-def notify_users(useremail_list, n_description, n_title, n_link):
-    n = Notification(description=n_description, title=n_title, link=n_link)
-    for email in useremail_list:
-        user = USER_DATASTORE.get_user(email)
-        if user and user['email'] != current_user['email']:
-            for existing_n in user.notifications:
-                if str(existing_n.link) == str(n_link):
-                    break
-            else:
-                user.notifications.append(n)
-                if len(user.notifications) > 20:
-                    users.notifications.pop(0)
-                user.save()
-    return str(n.notification_id)
-
-
-@app.before_request
-def notification_func():
-    g.notify_users = notify_users
-
-
 def users_with_bookmark(id):
     return [user['email'] for user in User.objects if id in user.bookmarks]
 
@@ -240,8 +193,8 @@ def users_with_bookmark_func():
     g.users_with_bookmark = users_with_bookmark
 
 
-def save_search(user, meta, query, count):
-    search = SavedSearch(metadata=json.dumps(meta), query=json.dumps(query), count=count)
+def save_search(user, meta, count):
+    search = SavedSearch(metadata=json.dumps(meta), count=count)
     user.saved_searches.append(search)
     user.save()
     return str(search.saved_search_id)
@@ -252,19 +205,16 @@ def save_search_func():
     g.save_search = save_search
 
 
-def rerun_saved_searches():
-    # This really is ugly but MongoConnector has to catch up for a valid count
-    time.sleep(1)
+def rerun_saved_searches(creator, project_id, operation):
     for user in User.objects:
         for search in user.saved_searches:
-            projects = prepare_es_results(
-                ES.search(index="knexdb", body=json.loads(search['query'])))
-            if search['count'] != len(projects):
-                search['count'] = len(projects)
-                search.save()
-                notify_users([user['email']], 'Saved search changed',
-                             str(search.title) + ' updated',
-                             '/results/saved/' + str(search.saved_search_id))
+            query = search.to_dict()
+            preparedQuery = prepare_mongo_query(query['metadata'])
+            search['count'] = g.projects.count(preparedQuery)
+            search.save()
+            if g.projects.count(preparedQuery) == 1:
+                add_notification(creator, user['email'], operation, project_id=project_id,
+                                 reason='search', saved_search_id=query['id'])
 
 
 @app.before_request
@@ -272,15 +222,10 @@ def rerun_saved_searches_func():
     g.rerun_saved_searches = rerun_saved_searches
 
 
-def on_project_deletion():
+def on_project_deletion(project_id):
+    delete_project_notification(project_id)
     for user in User.objects:
-        user.bookmarks = [x for x in user.bookmarks if g.projects.find_one({'_id': x})]
-        user.notifications = [x for x in user.notifications if
-                              '/project/' not in str(x.link) or g.projects.find_one(
-                                  {'_id': uuid.UUID(
-                                   str(x.link)[str(x.link).index('/project/') + len('/project/'):]
-                                   )
-                                   })]
+        user.bookmarks = [x for x in user.bookmarks if g.projects.find_one({'_id': project_id})]
         user.save()
 
 
@@ -294,14 +239,18 @@ def initialize_users():
     user_role = USER_DATASTORE.find_or_create_role('user')
     admin_role = USER_DATASTORE.find_or_create_role('admin')
     adminpw = hash_password(config["administration_user"]["password"])
+    admin_mail = config["administration_user"]["email"]
     try:
-        with open(os.path.join(sys.path[0], "default_avatar.png"), 'rb') as tf:
-            imgtext = base64.b64encode(tf.read()).decode()
+        image = Identicon(admin_mail)
+        result = image.generate()
+        with open(os.path.join(sys.path[0], 'identicon' + admin_mail + '.png'), 'rb') as tf:
+            imgtext = base64.b64encode(tf.read())
+            os.remove(sys.path[0] + '/identicon' + admin_mail + '.png')
         USER_DATASTORE.create_user(
-            email=config["administration_user"]["email"], password=adminpw,
+            email=admin_mail, password=adminpw,
             first_name="default", last_name=config["administration_user"]["username"],
             bio="Lead developer proxy of knex.", roles=[user_role, admin_role],
-            avatar_name="default_avatar.png", avatar=imgtext)
+            avatar_name='identicon' + admin_mail + '.png', avatar=imgtext)
 
     except NotUniqueError:
         pass
@@ -326,7 +275,8 @@ def handle_invalid_usage(error):
 def handle_insufficient_permission(error):
     """ Handler for insufficient permission to access a method.
         This is not the error handler for insufficient permission to update
-        a project or user.
+        a project or user. It delivers a 404 as users should not see endpoints,
+        where they don't have permissions to.
     """
     return make_response("Not found", 404)
 
@@ -350,6 +300,12 @@ def index():
 app.register_blueprint(projects)
 app.register_blueprint(users)
 app.register_blueprint(search)
+app.register_blueprint(comments)
+app.register_blueprint(bookmarks)
+app.register_blueprint(avatars)
+app.register_blueprint(notifications)
+app.register_blueprint(share)
+
 
 if __name__ == "__main__":
     # remove debug for production

@@ -7,8 +7,8 @@ export default class ManageProjects extends Component {
   constructor(props){
     super(props)
     this.state = {
-      projects : [],
-      loading : true
+      projects: [],
+      loading: true
     }
     this.handler = this.handler.bind(this)
   }
@@ -22,7 +22,7 @@ export default class ManageProjects extends Component {
     query.archived = "true"
     this.setState({loading: true})
     return Backend.search(query)
-              .then ((data) => {this.setState({projects : data, loading:false}); return data;})
+              .then ((data) => {this.setState({projects: data, loading: false}); return data;})
   }
 
   render(){
@@ -33,7 +33,7 @@ export default class ManageProjects extends Component {
                     data = {this.state.projects}
                     loading = {this.state.loading}
         />
-      </div>      
+      </div>
     )
   }
 }

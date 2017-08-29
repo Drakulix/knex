@@ -15,7 +15,7 @@ def save_manifest_to_db(manifest):
         manifest: The manifest to be saved, may contain multiple json objects
 
     Returns:
-        id: The ID of the manifest
+        projects: The project in the manifests
 
     Raises:
         ApiException: Error while trying to save the documents.
@@ -28,24 +28,17 @@ def save_manifest_to_db(manifest):
 
         is_valid = g.validator.is_valid(manifestlist)
         if is_valid:
-            ids = []
-
+            projects = []
             for entry in manifestlist:
                 entry['date_last_updated'] = time.strftime("%Y-%m-%d")
                 entry['_id'] = uuid.uuid4()
                 if 'archived' not in manifest:
-                    entry['archived'] = False
+                    entry['archived'] = "false"
                 entry['authors'] = sorted(list(set(entry['authors'])))
                 entry['tags'] = sorted(entry['tags'])
-                g.projects.insert(entry)
+                projects.append(entry)
 
-                ids.append(entry['_id'])
-                g.notify_users(
-                    list(set(entry['authors'])),
-                    "Project was updated", entry['title'],
-                    '/project/' + str(entry['_id']))
-                g.rerun_saved_searches()
-            return ids
+            return projects
         else:
             errors = sorted(g.validator.iter_errors(manifest), key=str)
             validation_error = {}

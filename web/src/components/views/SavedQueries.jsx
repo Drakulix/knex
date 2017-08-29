@@ -5,6 +5,7 @@ import Snackbar from 'material-ui/Snackbar'
 import Spinner from '../common/Spinner'
 import RaisedButton from 'material-ui/RaisedButton'
 import Filters from '../common/Filters'
+import HeadLine from '../common/HeadLine'
 
 
 export default class SavedQueries extends Component {
@@ -57,7 +58,7 @@ export default class SavedQueries extends Component {
       Backend.getUserNames(authors)
       .then ((userNames) => {
         this.setState({
-          userNames : JSON.parse(userNames)
+          userNames : userNames
         })
       })
     })
@@ -124,13 +125,15 @@ export default class SavedQueries extends Component {
   render() {
     return(
       <div className="container">
-        <Spinner loading = {this.state.loading} text = {"Loading queries"}/>
-        <div  style = {{display : (!this.state.loading ? "block" : "none")}}>
+        {(this.state.loading) ?
+           <Spinner loading = {this.state.loading} text = {"Loading queries"}/>
+        :
+          <div  style = {{display : (!this.state.loading ? "block" : "none")}}>
           <Snackbar
             open = {this.state.snackbar}
             message = {this.state.snackbarText}
             autoHideDuration = {10000}/>
-          <div className = "headerCreation" style = {{width:"100%"}}>Your Saved Queries</div>
+          <HeadLine title = {"Your Saved Queries"}/>
           <Filters  value = {this.state.filters}
                     title = {"Filter your queries by search fields"}
                     onChange = {this.handleFilterChange}/>
@@ -156,6 +159,7 @@ export default class SavedQueries extends Component {
             )}
           </div>
         </div>
+        }
       </div>
     )
   }

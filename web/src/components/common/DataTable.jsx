@@ -10,8 +10,12 @@ import AuthorOutputList from '../common/chips/AuthorOutputList'
 import TagOutputList from '../common/chips/TagOutputList'
 import ConfirmationPane from '../common/ConfirmationPane'
 import Status from '../common/Status'
-import Spinner from '../common/Spinner'
 import CircularProgress from 'material-ui/CircularProgress'
+import Archive from 'material-ui/svg-icons/content/archive'
+import Unarchive from 'material-ui/svg-icons/content/unarchive'
+import StarBorder from 'material-ui/svg-icons/toggle/star-border'
+import Star from 'material-ui/svg-icons/toggle/star'
+import Delete from 'material-ui/svg-icons/action/delete'
 
 
 export default class BookmarksTable extends Component {
@@ -23,105 +27,128 @@ export default class BookmarksTable extends Component {
       filters = props.predefinedFilter
     }
     this.state = {
-      filters : filters,
-      filteredData : [],
-      dialogOpen : false,
-      dialogText : "Delete Project",
-      action : null,
-      loading : true,
-      buttonText : "Delete",
-      snackbar : false,
-      snackbarText : "",
+      filters: filters,
+      filteredData: [],
+      dialogOpen: false,
+      dialogText: "Delete Project",
+      action: null,
+      loading: true,
+      buttonText: "Delete",
+      snackbar: false,
+      snackbarText: "",
     }
 
     this.handleFilterChange = this.handleFilterChange.bind(this)
-    this.handleClose = this.handleClose.bind(this)
+    this.handleError = this.handleError.bind(this)
   }
 
-  handleClose(){
-    this.setState({dialogOpen : false, snackbar : false})
+  handleError(){
+    this.setState({
+      dialogOpen: false,
+      snackbar: true,
+      snackbarText: "Error while loading projects",
+      loading: false
+    })
   }
 
   handleDelete(projectInf){
     this.setState({
-      snackbar : false,
-      dialogText : `Do you want to delete project ${projectInf.title}?`,
-      buttonText : "Delete",
-      dialogOpen : true,
-      action : () => {
-        this.setState({loading : true,dialogOpen:false})
+      snackbar: false,
+      dialogText: `Do you want to delete project ${projectInf.title}?`,
+      buttonText: "Delete",
+      dialogOpen: true,
+      action: () => {
+        this.setState({loading: true, dialogOpen: false, filteredData: []})
         Backend.deleteProject(projectInf._id)
         .then(() => {this.props.handler(this.state.filters)})
-        .then(this.setState({snackbar : true,
-          snackbarText : `Project ${projectInf.title} deleted`}))
+        .then(this.setState({snackbar: true,
+          snackbarText: `Project ${projectInf.title} deleted`}))
+        .catch(() => {this.handleError()})
       }
     })
   }
 
   handleArchive(projectInf){
     this.setState({
-      snackbar : false,
-      dialogText : `Do you want to archive project ${projectInf.title}?`,
-      buttonText : "Archive",
-      dialogOpen : true,
-      action : () => {
-        this.setState({loading : true,dialogOpen:false})
+      snackbar: false,
+      dialogText: `Do you want to archive project ${projectInf.title}?`,
+      buttonText: "Archive",
+      dialogOpen: true,
+      action: () => {
+        this.setState({loading: true,dialogOpen: false, filteredData: []})
         var project = projectInf
         delete project.is_bookmark
         delete project.is_owner
         project['archived'] = true
-        Backend.updateProject(projectInf._id, project)
+        Backend.archiveProject(projectInf._id, "true")
         .then(() => {this.props.handler(this.state.filters)})
-        .then(this.setState({snackbar : true,
-          snackbarText : `Project ${projectInf.title} archived`}))
+        .then(this.setState({snackbar: true,
+          snackbarText: `Project ${projectInf.title} archived`}))
+        .catch((e) => {this.handleError()})
       }
     })
   }
 
   handleUnArchive(projectInf){
-    this.setState({loading : true})
+    this.setState({loading: true, filteredData: []})
     var project = projectInf
     delete project.is_bookmark
     delete project.is_owner
     project['archived'] = false
-    Backend.updateProject(projectInf._id, project)
+    Backend.archiveProject(projectInf._id, "false")
         .then(() => {this.props.handler(this.state.filters)})
-        .then(() => {this.setState({snackbar : true,
-          snackbarText : `Project ${projectInf.title} unarchived`})})
+        .then(() => {this.setState({snackbar: true,
+          snackbarText: `Project ${projectInf.title} unarchived`})})
+        .catch(() => {this.handleError()})
   }
 
   handleBookmark(projectInf){
+    this.setState({loading: true, filteredData: []})
     Backend.handleBookmark(projectInf._id, projectInf.is_bookmark)
     .then(() => {this.props.handler(this.state.filters)})
-    .then(() => {this.setState({snackbar : true,
-      snackbarText : `Project bookmark${projectInf.is_bookmark === "true" ? " removed" : "ed"}`})})
+    .then(() => {this.setState({snackbar: true,
+      snackbarText: `Project bookmark${projectInf.is_bookmark === "true" ? " removed": "ed"}`})})
+    .catch(() => {this.handleError()})
   }
 
   componentWillReceiveProps(props){
     if(!this.props.loading && ! props.loading){
-      this.setState({snackbar : false})
+      this.setState({snackbar: false})
     }
-    this.setState({
-      filteredData : (this.props.isBookmarkTable
-                      ? this.filter(props.data, this.state.filters) : props.data),
-      })
     if(this.props.loading && ! props.loading){
       Backend.getAuthors()
       .then((authors) => {
         Backend.getUserNames(authors)
         .then ((userNames) => {
           this.setState({
-            userNames : JSON.parse(userNames)
+            userNames: userNames,
+            filteredData: (this.props.isBookmarkTable
+                            ? this.filter(props.data, this.state.filters): props.data),
           })
         })
       })
+    }else{
+      this.setState({
+        filteredData: (this.props.isBookmarkTable
+                        ? this.filter(props.data, this.state.filters): props.data),
+        })
     }
   }
 
   componentDidUpdate(prevProps, prevState){
     if(prevProps.loading !== this.props.loading){
-      this.setState({ loading : this.props.loading})
+      this.setState({ loading: this.props.loading})
     }
+  }
+
+  resize = () => this.forceUpdate()
+
+  componentDidMount() {
+    window.addEventListener('resize', this.resize)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.resize)
   }
 
   handleFilterChange(key, value){
@@ -132,14 +159,13 @@ export default class BookmarksTable extends Component {
     else  {
       state[key] = value
     }
-    this.setState({filters : state})
+    this.setState({filters: state})
     if(this.props.handleFilter !== undefined)
       this.props.handleFilter(key,value)
     this.props.handler(state)
   }
 
   filter(data, filters){
-    this.setState({loading : true})
     var array = []
     for(let dataObject of data){
       var discard = false
@@ -156,13 +182,13 @@ export default class BookmarksTable extends Component {
         }
         else{
           switch (key){
-            case "date_to":
+            case "date_to" :
               discard = dataObject.date_creation  > value
               break
-            case "date_from":
+            case "date_from" :
               discard = dataObject.date_creation  < value
               break
-            default:
+            default :
               discard = dataObject[key].toLowerCase().indexOf(value.toLowerCase()) === -1
               break
           }
@@ -187,13 +213,13 @@ export default class BookmarksTable extends Component {
         width: 160,
         sortMethod: (a,b) => {
           return  a.title.toLowerCase() === b.title.toLowerCase() ? 0
-                    : a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1
+               : a.title.toLowerCase() > b.title.toLowerCase() ? 1: -1
         },
         accessor: d => d,
         Cell: props =>
-            <div style = {{whiteSpace : "normal", textAlign : 'left', marginTop:8}}>
+            <div style = {{whiteSpace: "normal", textAlign: 'left', marginTop: 8}}>
               <Link to = {`/project/${props.value._id}`}
-                style = {{fontWeight : "bold", color : Styles.palette.textColor}}
+                style = {{fontWeight: "bold", color: Styles.palette.textColor}}
                 >
                 {props.value.title}
               </Link>
@@ -204,18 +230,19 @@ export default class BookmarksTable extends Component {
       columns.push({
         Header: 'Date',
         accessor: 'date_creation',
+        show: window.innerWidth > 768,
         pivot: true,
-        width:95,
-        style: {textAlign:"center", marginTop:9},
+        width: 95,
+        style: {textAlign: "center", marginTop: 9, fontFamily : '-Roboto,sans-serif'},
       })
     }
     if(this.props.columns.indexOf("status") !== -1){
       columns.push({
         Header: 'Status',
         accessor: 'status',
-        id:'status',
-        style: {align:"center", width : 100},
-              width: 100,
+        id: 'status',
+        style: {marginTop: 6},
+        width: 105,
         Cell: props => <Status value = {props.value} />
       })
     }
@@ -223,8 +250,8 @@ export default class BookmarksTable extends Component {
       columns.push({
         Header: 'Tags',
         accessor: "tags",
-        width: 230,
-        style: {textAlign:"center", width : 220},
+        width: 163,
+        style: {textAlign: "center", width: 220},
         Cell: props => <TagOutputList value = {props.value} />
       })
     }
@@ -240,13 +267,14 @@ export default class BookmarksTable extends Component {
       columns.push({
         Header: 'Description',
         id: 'description',
-        style: {width: "100%"},
+        style: {width: "100%", fontFamily :'-Roboto,sans-serif'},
+        show: window.innerWidth > 768,
         accessor: 'description',
         Cell: props =>{
-          var text = (props.value !== undefined) ? props.value.substring(0,200).trim(): "";
-          text = text + ((props.value.length > 200) ? "..." : "")
+          var text = (props.value !== undefined) ? props.value.substring(0,150).trim(): "";
+          text = text + ((props.value.length > 150) ? "...": "")
           return(
-            <div style = {{whiteSpace : "normal", textAlign : "justify", marginTop:8, color : Styles.palette.textColor}}>
+            <div style = {{whiteSpace: "normal", marginTop: 8, color: Styles.palette.textColor}}>
             {text}
             </div>
           )
@@ -260,13 +288,13 @@ export default class BookmarksTable extends Component {
         accessor: d=>d,
         pivot: true,
         width: 85,
-        style: {textAlign:"center"},
+        style: {textAlign: "center"},
         Cell: props =>
           <IconButton onClick = {()=>this.handleBookmark(props.value)}
                       touch = {true}
                       style = {Styles.largeIcon}
-                      iconStyle = {{fontSize: '24px',color:Styles.palette.textColor}}>
-            <i className = "material-icons">{props.value.is_bookmark === "true" ? "star" : "star_border"}</i>
+                      iconStyle = {{fontSize: '24px',color: Styles.palette.textColor}}>
+            {props.value.is_bookmark === "true" ? <Star/>: <StarBorder/>}
           </IconButton>
       })
     }
@@ -274,25 +302,25 @@ export default class BookmarksTable extends Component {
       columns.push({
         Header: 'Unarchive',
         accessor: d => d,
-        id: 'archived',
-        sortable:true,
+        id: 'unarchive',
+        sortable: true,
         sortMethod: (a,b) => {
           return  a.archived === b.archived ?
-          (a.title < b.title ? 1 : -1)
-           :
-          (a.archived  ? 1 : -1)},
+          (a.title < b.title ? 1: -1)
+         :
+          (a.archived  ? 1: -1)},
         width: 100,
-        style: {textAlign:"center"},
-        Cell: props => { return props.value.archived  ?
+        style: {textAlign: "center"},
+        Cell: props => { return props.value.archived === "true"?
           <IconButton
           onClick = {()=>this.handleUnArchive(props.value)}
           touch = {true}
           style = {Styles.largeIcon}
-          iconStyle = {{fontSize: '24px',color:Styles.palette.textColor}}
+          iconStyle = {{fontSize: '24px',color: Styles.palette.textColor}}
           value = {props.value._id}>
-            <i className = "material-icons">unarchive</i>
+            <Unarchive/>
           </IconButton>
-          : ""}
+     : ""}
       })
     }
     if(this.props.columns.indexOf("archive") !== -1){
@@ -300,24 +328,24 @@ export default class BookmarksTable extends Component {
         Header: 'Archive',
         accessor: d => d,
         id: 'archive',
-        sortable:true,
+        sortable: true,
         sortMethod: (a,b) => {
           return  a.archived === b.archived ?
-          (a.title < b.title ? -1 : 1)
-           :
-          (a.archived  ? 1 : -1)},
+          (a.title < b.title ? -1: 1)
+         :
+          (a.archived  ? 1: -1)},
         width: 80,
-        style: {textAlign:"center"},
-        Cell: props => { return !props.value.archived  ?
+        style: {textAlign: "center"},
+        Cell: props => { return props.value.archived === "false" ?
           <IconButton
           onClick = {()=>this.handleArchive(props.value)}
           touch = {true}
           style = {Styles.largeIcon}
-          iconStyle = {{fontSize: '24px',color:Styles.palette.textColor}}
+          iconStyle = {{fontSize: '24px',color: Styles.palette.textColor}}
           value = {props.value._id}>
-            <i className = "material-icons">archive</i>
+            <Archive/>
           </IconButton>
-          : "" }
+     : "" }
       })
     }
     if(this.props.columns.indexOf("delete") !== -1){
@@ -325,23 +353,23 @@ export default class BookmarksTable extends Component {
         Header: 'Delete',
         accessor: d => d,
         id: 'delete',
-        sortable:false,
+        sortable: false,
         width: 60,
-        style: {textAlign:"center"},
+        style: {textAlign: "center"},
         Cell: props => <IconButton
           onClick = {()=>this.handleDelete(props.value)}
           touch = {true}
           style = {Styles.largeIcon}
-          iconStyle = {{fontSize: '24px', color:Styles.palette.textColor}}
+          iconStyle = {{fontSize: '24px', color: Styles.palette.textColor}}
           value = {props.value._id}>
-            <i className = "material-icons">delete</i>
+            <Delete/>
           </IconButton>
       })
     }
     return (
       <div>
         <ConfirmationPane   open = {this.state.dialogOpen}
-                            handleClose = {this.handleClose}
+                            handleClose = {() => {this.setState({dialogOpen: false, snackbar: false})}}
                             title = {this.state.dialogText}
                             confirmationLabel = {this.state.buttonText}
                             confirmAction = {this.state.action}
@@ -350,8 +378,7 @@ export default class BookmarksTable extends Component {
                   message = {this.state.snackbarText}
                   autoHideDuration = {10000}
         />
-      <Spinner loading = {this.state.loading} text = {"Loading projects"}/>
-        <div style = {{display : (!this.state.loading ? "block" : "none")}}>
+        <div>
           <Filters value = {this.state.filters}
                    title = {"Apply filters to your search"}
                    onChange = {this.handleFilterChange}/>
@@ -362,13 +389,12 @@ export default class BookmarksTable extends Component {
                     id: 'title',
                     desc: false
                     }]}
-              defaultExpanded = {{1: true}}
               filterable = {false}
               showPageSizeOptions = {false}
               minRows = {3}
               noDataText = {() =>
                 (this.state.loading) ?
-                  <CircularProgress  size = {45} thickness = {5} /> : "No projects found"
+                  <CircularProgress  size = {40} thickness = {5} />: "No projects found"
               }
               defaultPageSize = {10}/>
         </div>
