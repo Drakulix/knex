@@ -4,10 +4,10 @@ from flask_security import login_required
 from uuid import UUID
 
 
-projects_data = Blueprint('api_projects_data', __name__)
+projects_info = Blueprint('api_projects_info', __name__)
 
 
-@projects_data.route('/api/projects/authors', methods=['GET'])
+@projects_info.route('/api/projects/authors', methods=['GET'])
 @login_required
 def get_all_authors():
     """ Returns a list of all email adresses used in projects "authors" field.
@@ -20,7 +20,7 @@ def get_all_authors():
         raise ApiException(str(err), 500)
 
 
-@projects_data.route('/api/projects/tags', methods=['GET'])
+@projects_info.route('/api/projects/tags', methods=['GET'])
 @login_required
 def get_all_tags():
     """ Returns a list of all tags used in projects "tags" field.
@@ -32,7 +32,7 @@ def get_all_tags():
         raise ApiException(str(err), 500)
 
 
-@projects_data.route('/api/projects/titles', methods=['POST'])
+@projects_info.route('/api/projects/titles', methods=['POST'])
 @login_required
 def get_project_titles():
     """ Returns a dictionary of each project in the database as key and

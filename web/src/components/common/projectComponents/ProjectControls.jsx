@@ -45,8 +45,6 @@ export default class ProjectControls extends Component{
 
   handleUnArchive(){
     var project = this.props.projectInf;
-    delete project.is_bookmark
-    delete project.is_owner
     project['archived'] = "false"
     Backend.archiveProject(this.props.projectID, "false").then(
     this.setState({
@@ -81,8 +79,6 @@ export default class ProjectControls extends Component{
 
   handleArchive(){
     var project = this.props.projectInf;
-    delete project.is_bookmark
-    delete project.is_owner
     project['archived'] = "true"
     Backend.archiveProject(this.props.projectID, "true").then(
     this.setState({
@@ -111,11 +107,11 @@ export default class ProjectControls extends Component{
   handleBookmark(event){
     event.preventDefault()
     this.handleClose()
-    Backend.handleBookmark(this.props.projectID, this.props.projectInf.is_bookmark )
+    Backend.handleBookmark(this.props.projectID, this.props.projectsMeta.is_bookmark )
     .then(res => {
-      this.props.updateBookmarkState(this.props.projectInf.is_bookmark === "true" ? "false": "true" )
+      this.props.updateBookmarkState(this.props.projectsMeta.is_bookmark ? false : true )
       this.setState({snackbar: true,
-        snackbarText: `Project bookmark${this.props.projectInf.is_bookmark === "true" ? "ed": " removed"}`})
+        snackbarText: `Project bookmark${this.props.projectsMeta.is_bookmark ? "ed": " removed"}`})
     })
   }
 
@@ -162,7 +158,7 @@ export default class ProjectControls extends Component{
                         tooltip = "Bookmark project"
                         iconStyle = {{fontSize: 24, color: Styles.palette.textColor}}
                         >
-                        {this.props.projectInf.is_bookmark === "true" ? <Star/>: <StarBorder/>}
+                        {this.props.projectsMeta.is_bookmark? <Star/>: <StarBorder/>}
             </IconButton>
             <IconButton
                         onClick = {this.handleShare}
@@ -176,7 +172,7 @@ export default class ProjectControls extends Component{
             </IconButton>
             <IconButton
                         style = {Styles.largeIcon, {paddingTop: 5}}
-                        disabled = {! (this.props.isOwner || Backend.isAdmin())}
+                        disabled = {! (this.props.projectsMeta.is_owner || Backend.isAdmin())}
                         tooltipPosition = "bottom-center"
                         tooltip = "Edit project"
                         href = {`/update/${this.props.projectID}`}
@@ -192,7 +188,7 @@ export default class ProjectControls extends Component{
                         commentBar: false})}
                       touch = {true}
                       style = {Styles.largeIcon}
-                      disabled = {! (this.props.isOwner || Backend.isAdmin())}
+                      disabled = {! (this.props.projectsMeta.is_owner  || Backend.isAdmin())}
                       tooltipPosition = "bottom-center"
                       tooltip = "Archive project"
                       iconStyle = {{fontSize: 24, color: Styles.palette.textColor}}
@@ -206,7 +202,7 @@ export default class ProjectControls extends Component{
                       onClick = {() => this.handleUnArchive()}
                       touch = {true}
                       style = {Styles.largeIcon}
-                      disabled = {! (this.props.isOwner || Backend.isAdmin())}
+                      disabled = {! (this.props.projectsMeta.is_owner  || Backend.isAdmin())}
                       tooltipPosition = "bottom-center"
                       tooltip = "Unarchive project"
                       iconStyle = {{fontSize: 24, color: Styles.palette.textColor}}

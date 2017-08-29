@@ -7,6 +7,7 @@ import Styles from '../Styles.jsx'
 export default class AuthorOutputList extends Component{
 
   render(){
+
     return (
       <div style = {{display: 'flex', flexWrap: 'wrap',}}>
         { this.props.value !== undefined ?

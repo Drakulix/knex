@@ -323,6 +323,10 @@ class Backend {
         {return JSON.parse(data)})
     }
 
+    getProjectMetaData(project_id){
+      return this.getJson(`/api/projects/${project_id}/meta`)
+    }
+
     getProjectNgrams(ngrams){
       return this.getJson(`/api/projects/ngramlist/${ngrams}`)
     }
@@ -567,7 +571,7 @@ class Backend {
     }
 
     handleBookmark(id, shouldBookmark){
-      if(shouldBookmark === 'true') {
+      if(shouldBookmark) {
         return this.delete(`/api/bookmarks/${encodeURIComponent(id)}`);
       }
       else{

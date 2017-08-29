@@ -16,7 +16,8 @@ from api.helper.permissions import current_user_has_permission_to_change_project
 from api.notifications import add_notification, add_self_action
 from globals import ADMIN_PERMISSION
 
-from storage.projects import delete_stored_project, add_project_list, update_stored_project, archive_stored_project, project_exists
+from storage.projects import delete_stored_project, add_project_list, update_stored_project
+from storage.projects import archive_stored_project, project_exists, get_stored_project
 
 
 projects = Blueprint('api_projects', __name__)
@@ -93,8 +94,7 @@ def get_projects():
         for project in res:
             project['is_bookmark'] = 'true' if project['_id']\
                 in current_user['bookmarks'] else 'false'
-            project['is_owner'] = 'true' if current_user['email']\
-                in project['authors'] else 'false'
+        
         return jsonify(res)
     except KeyError as err:
         raise ApiException(str(err), 400)
@@ -111,12 +111,12 @@ def get_project_by_id(project_id):
         res (json): Project corresponding to the ID
     """
 
-    res = g.projects.find_one({'_id': project_id}, {'comments': 0})
     if not project_exists(project_id):
         return make_response("Project not found", 404)
     try:
+
+        res = get_stored_project(project_id)
         res['is_bookmark'] = 'true' if project_id in current_user['bookmarks'] else 'false'
-        res['is_owner'] = 'true' if current_user['email'] in res['authors'] else 'false'
     except KeyError as err:
         raise ApiException(str(err), 500)
     return jsonify(res)
@@ -153,9 +153,8 @@ def archive_project(project_id):
         if not req['archived'] or req['archived'] not in ['true', 'false']:
             raise ApiException("No valid field for archivation request found", 400)
 
-        archive_project(project_id, req)
+        archive_stored_project(project_id, req)
         return make_response("Success")
-
 
     except ApiException as error:
         raise error

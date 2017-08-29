@@ -14,13 +14,16 @@ export default class ProjectContainer extends Component {
     super(props)
 
     this.state = {
-      projectID : this.props.match.params.uuid,
-      projectInf : {},
-      project_exists : false,
-      is_bookmark : false,
-      canEdit : false,
-      myEmail : Backend.getMail(),
-      comments_count : 0
+      projectID: this.props.match.params.uuid,
+      projectInf: {},
+      project_exists: false,
+      is_bookmark: false,
+      canEdit: false,
+      myEmail: Backend.getMail(),
+      meta: {
+        authors: {},
+        is_bookmark : false
+      }
     }
 
     this.updateBookmarkState = this.updateBookmarkState.bind(this)
@@ -38,38 +41,37 @@ export default class ProjectContainer extends Component {
   }
 
   updateBookmarkState(value) {
-    var projectInf = this.state.projectInf
-    projectInf.is_bookmark = value
-    this.setState({projectInf : projectInf})
+    var meta = this.state.meta
+    meta.is_bookmark = value
+    this.setState({meta : meta})
   }
 
   loadSiteInf(uuid) {
-    Backend.getProject(uuid).then(data => {
-      var email = this.state.myEmail
-      var isOwner = false
-      for (let author in data.authors)
-        isOwner = isOwner || data.authors[author] === email
-      this.setState({
-        projectInf : data,
-        project_exists : !!data,
-        site_loaded : true,
-        isOwner : isOwner
-      })
-      Backend.getUserNames(data.authors)
-      .then ((userNames) => {
+    Backend.getProjectMetaData(uuid).then(meta => {
+      this.setState({meta : meta})
+    })
+    .then(
+      Backend.getProject(uuid).then(data => {
+        var email = this.state.myEmail
         this.setState({
-          userNames : userNames
+          projectInf : data,
+          project_exists : !!data,
+          site_loaded : true,
+        })
+      }).catch(ex => {
+        this.setState({
+          project_exists : false,
+          site_loaded : true
         })
       })
-    }).catch(ex => {
-      this.setState({
-        project_exists : false,
-        site_loaded : true
-      })
-    })
+    )
   }
 
   render(){
+
+
+
+
     if(!this.state.site_loaded){
       return (
         <Spinner loading = {true} text = {"Loading project"} />
@@ -90,13 +92,12 @@ export default class ProjectContainer extends Component {
             <div className = "col-12">
               <div style = {{textAlign: "center"}}>
                 <div style = {{fontSize : '20px'}}> {this.state.projectInf.title}</div>
-                {this.state.projectInf.archived ? <i style = {{fontSize : '20px'}}>Archived project</i> : ""}
+                {this.state.projectInf.archived  === "true"? <i style = {{fontSize : '20px'}}>Archived project</i> : ""}
               </div>
               <div style = {{marginTop : 20}}>
                 <ProjectControls  projectInf = {this.state.projectInf}
-                                  isOwner = {this.state.isOwner}
+                                  projectsMeta = {this.state.meta}
                                   projectID = {this.state.projectID}
-                                  userNames = {this.state.userNames}
                                   updateBookmarkState = {this.updateBookmarkState} />
               </div>
             </div>
@@ -120,7 +121,7 @@ export default class ProjectContainer extends Component {
               <div style = {{marginTop : 30}}>
                 <div className = "profile-info">Authors</div>
                 <div style = {{marginLeft : -16}}>
-                  <AuthorOutputList value = {this.state.projectInf.authors} userNames = {this.state.userNames} />
+                  <AuthorOutputList value = {this.state.projectInf.authors} userNames = {this.state.meta.authors} />
                 </div>
               </div>
               <div style = {{marginTop : 30}}>
@@ -138,9 +139,9 @@ export default class ProjectContainer extends Component {
                 <div className = "profile-info">Description</div>
                 <div>{this.state.projectInf.description}</div>
               </div>
-              <div style = {{display : (this.state.projectInf.archived) ? "block" : "none"}}>
-                <div className = "profile-info">Archived</div>
-              </div>
+              {this.state.projectInf.archived === "true" ?
+                  <div className = "profile-info">Archived</div>
+              : ""}
             </div>
           </div>
         </div>

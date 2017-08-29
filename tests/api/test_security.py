@@ -5,7 +5,7 @@ import os
 class TestPOST(object):
     def test_main_page(self, flask_api_url):
         response = requests.get(flask_api_url + '/')
-        assert response.status_code == 200
+        assert response.status_code == 404
 
     def test_login_fake_user(self, flask_api_url):
         session = requests.Session()
@@ -69,6 +69,5 @@ class TestPOST(object):
         assert response.status_code == 200
 
     def test_user_nonexistent(self, flask_api_url):
-        response = requests.get(flask_api_url + '/api/users/',
-                                data=dict(email='unknownuser@knex.com'))
+        response = requests.get(flask_api_url + '/api/users/unknownuser@knex.com')
         assert response.status_code == 404

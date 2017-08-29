@@ -31,11 +31,12 @@ from api.comments import comments
 from api.bookmarks import bookmarks
 from api.avatars import avatars
 from api.share import share
-from api.projectsData import projects_data
+from api.projectsInfo import projects_info
+from api.projectsMeta import projects_meta, delete_project_meta
 from api.notifications import notifications, add_notification, delete_project_notification
 from api.search import search, prepare_search_results, prepare_mongo_query
-from api.helper.apiexception import ApiException
 from api.helper.images import Identicon
+from api.helper.apiexception import ApiException
 
 
 config_file_path = os.path.dirname(os.path.abspath(__file__))
@@ -101,6 +102,7 @@ def set_global_mongoclient():
     g.knexdb = MONGOCLIENT.knexdb
     g.projects = g.knexdb.projects
     g.notifications = g.knexdb.notifications
+    g.projects_meta = g.knexdb.projects_meta
 
 
 @app.before_first_request
@@ -250,6 +252,7 @@ def rerun_saved_searches_func():
 
 def on_project_deletion(project_id):
     delete_project_notification(project_id)
+    delete_project_meta(project_id)
     for user in User.objects:
         user.bookmarks = [x for x in user.bookmarks if g.projects.find_one({'_id': project_id})]
         user.save()
@@ -312,16 +315,14 @@ def index(err):
     """Index of knex
     """
     if request.path.startswith("/api/"):
-        return err, 404
-    return app.send_static_file('index.html')
+        raise ApiException("Endpoint not found", 404)
 
 
 @app.route('/', methods=['GET'])
 def index():
     """Index of knex
     """
-    return app.send_static_file('index.html')
-
+    raise ApiException("Endpoint not found", 404)
 
 app.register_blueprint(projects)
 app.register_blueprint(users)
@@ -331,8 +332,8 @@ app.register_blueprint(bookmarks)
 app.register_blueprint(avatars)
 app.register_blueprint(notifications)
 app.register_blueprint(share)
-app.register_blueprint(projects_data)
-
+app.register_blueprint(projects_info)
+app.register_blueprint(projects_meta)
 
 
 if __name__ == "__main__":

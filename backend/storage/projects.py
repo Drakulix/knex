@@ -6,6 +6,7 @@ from flask_security import current_user
 from pymongo.collection import ReturnDocument
 from api.notifications import add_notification, add_self_action
 from api.helper import uploader
+from api.projectsMeta import init_project_meta, set_last_access
 
 
 def project_exists(project_id):
@@ -17,6 +18,12 @@ def delete_stored_project(project_id):
     g.whoosh_index.delete_by_term('id', str(project_id))
     g.rerun_saved_searches(current_user['email'], project_id, "delete")
     g.on_project_deletion(project_id)
+
+
+def get_stored_project(project_id):
+    res = g.projects.find_one({'_id': project_id}, {'comments': 0})
+    set_last_access(project_id)
+    return res
 
 
 def update_stored_project(project_id, manifest):
@@ -99,6 +106,7 @@ def add_project_list(manifestlist):
         if 'comments' not in project:
             project['comments'] = []
         g.projects.insert(project)
+        init_project_meta(project['_id'])
         writer = g.whoosh_index.writer()
         writer.add_document(ngrams=project['description'],content=project['description'],id=str(project['_id']))
         writer.add_document(spelling=project['description'])

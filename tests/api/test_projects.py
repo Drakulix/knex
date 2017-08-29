@@ -407,7 +407,6 @@ class TestPUT(object):
         print(get_response.text)
         manifest_json['archived'] = "true"
         del manifest_json['is_bookmark']
-        del manifest_json['is_owner']
         get_put_response = session.put(flask_api_url + "/api/projects/" +
                                        project_id_not_archived[0], json=manifest_json)
         print(get_put_response.text)
@@ -429,7 +428,6 @@ class TestPUT(object):
         print(get_response.text)
         manifest_json['archived'] = "false"
         del manifest_json['is_bookmark']
-        del manifest_json['is_owner']
         get_put_response = session.put(flask_api_url + "/api/projects/" + project_id_archived[0],
                                        json=manifest_json)
         get_again_response = session.get(flask_api_url + "/api/projects/" + project_id_archived[0])
@@ -482,7 +480,6 @@ class TestPUT(object):
         manifest = get_response.json()
         manifest['archived'] = "true"
         del manifest['is_bookmark']
-        del manifest['is_owner']
         put_response = session.put(flask_api_url + "/api/projects/" + project_id, json=manifest)
         print(put_response.text)
         assert put_response.status_code == 200
