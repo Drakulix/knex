@@ -105,7 +105,7 @@ export default class BookmarksTable extends Component {
     Backend.handleBookmark(projectInf._id, projectInf.is_bookmark)
     .then(() => {this.props.handler(this.state.filters)})
     .then(() => {this.setState({snackbar: true,
-      snackbarText: `Project bookmark${projectInf.is_bookmark === "true" ? " removed": "ed"}`})})
+      snackbarText: `Project bookmark${projectInf.is_bookmark ? " removed": "ed"}`})})
     .catch(() => {this.handleError()})
   }
 
@@ -292,7 +292,7 @@ export default class BookmarksTable extends Component {
                       touch = {true}
                       style = {Styles.largeIcon}
                       iconStyle = {{fontSize: '24px',color: Styles.palette.textColor}}>
-            {props.value.is_bookmark === "true" ? <Star/>: <StarBorder/>}
+            {props.value.is_bookmark ? <Star/>: <StarBorder/>}
           </IconButton>
       })
     }
