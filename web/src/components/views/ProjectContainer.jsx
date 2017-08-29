@@ -52,7 +52,6 @@ export default class ProjectContainer extends Component {
     })
     .then(
       Backend.getProject(uuid).then(data => {
-        var email = this.state.myEmail
         this.setState({
           projectInf : data,
           project_exists : !!data,

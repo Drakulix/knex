@@ -63,6 +63,10 @@ class Backend {
         return ( this.mail || getCookie('email') )
     }
 
+    getName(){
+      return this.profile.first_name + " " + this.profile.last_name
+    }
+
     async login(mail, password) {
         let response = await fetch('/api/users/login', {
             method: 'POST',

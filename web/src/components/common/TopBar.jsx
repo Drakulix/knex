@@ -23,7 +23,6 @@ export default class TopBar extends Component {
       notifications: [],
       snackbar: false,
       popover: false,
-      userName: "",
     }
     this.handleLogout = this.handleLogout.bind(this)
     this.handleNotificationClick = this.handleNotificationClick.bind(this)
@@ -33,8 +32,6 @@ export default class TopBar extends Component {
 
   componentWillMount(){
     this.loadNotifications()
-    Backend.getUserNames([Backend.getMail()])
-    .then((data) => {this.setState({userName : data[Backend.getMail()] })})
   }
 
   loadNotifications() {
@@ -95,7 +92,7 @@ export default class TopBar extends Component {
                                 display: "inline-block",
                                 cursor: "pointer",
                                 height: "100%", paddingTop: 4}}>
-            {this.state.userName}
+            {Backend.getName()}
           </div>
           <IconButton tooltip = "Notifications" iconStyle = {{color: Styles.palette.alternateTextColor}} onClick = {this.handleNotificationClick}>
             <Notification/>

@@ -44,7 +44,8 @@ export default class ProfileContainer extends Component {
   }
 
   componentWillReceiveProps(nextProps){
-    this.loadProfileInf(nextProps.match.params.email === undefined ? Backend.getMail() : nextProps.params.email)
+    this.loadProfileInf(this.props.match.params.email === undefined ? Backend.getMail()
+      : this.props.match.params.email)
   }
 
   componentWillMount(){
@@ -97,7 +98,7 @@ export default class ProfileContainer extends Component {
       )
     }
     if(this.state.email === Backend.getMail() && this.props.match.url !== "/yourprofile"){
-      return <Redirect to = "/yourprofile"/>
+      history.push("/yourprofile")
     }
     if( !this.state.profile_exists){
       return (
