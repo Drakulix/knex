@@ -307,7 +307,6 @@ class TestGET(object):
         assert get_response.status_code == 200
         assert len(response_json) == 0
 
-
     def test_get_archived_success(self, session, flask_api_url, enter_archived_using_post):
         project_id_archived = enter_archived_using_post.json()
         print(project_id_archived)

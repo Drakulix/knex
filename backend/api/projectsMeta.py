@@ -6,6 +6,7 @@ from api.helper.apiexception import ApiException
 from uuid import UUID
 import time
 
+
 projects_meta = Blueprint('api_projects_meta', __name__)
 
 
@@ -25,7 +26,7 @@ def set_last_access(project_id):
                             { '$set':
                                 { "last_access." + user_mail: time.strftime("%Y-%m-%d %H:%M:%S",
                                     time.gmtime()),
-                                    'visits' : visits_count['visits'] + 1
+                                    'visits': visits_count['visits'] + 1
                                 }
                             },
                             upsert=True)
@@ -44,7 +45,6 @@ def get_project_meta__by_id(project_id):
 
     meta = g.projects_meta.find_one({'_id': project_id})
 
-
     if not meta:
         return make_response("Project not found", 404)
     try:
@@ -58,8 +58,8 @@ def get_project_meta__by_id(project_id):
         userlist = [g.user_datastore.find_user(email=mail) for mail in project['authors']
             if g.user_datastore.find_user(email=mail)]
         res['authors'] = dict([(user.email, (user.first_name + (" "
-                            if user.first_name and user.last_name  else "") + user.last_name))
-                            for user in userlist])
+                              if user.first_name and user.last_name  else "") + user.last_name))
+                              for user in userlist])
         acces_dict = dict(meta['last_access'])
         res['visits'] = meta['visits']
         res['last_access'] = acces_dict[current_user['email'].replace('.','§')]

@@ -131,19 +131,20 @@ def init_global_mongoclient():
     index = create_in("index", schema)
     g.whoosh_index = index
 
+
 schema = Schema(
     ngrams=NGRAMWORDS(minsize=2,
-                     maxsize=10,
-                     stored=True,
-                     field_boost=1.0,
-                     tokenizer=FancyAnalyzer(),
-                     at='start',
-                     queryor=False,
-                     sortable=False),
+                      maxsize=10,
+                      stored=True,
+                      field_boost=1.0,
+                      tokenizer=FancyAnalyzer(),
+                      at='start',
+                      queryor=False,
+                      sortable=False),
     content=TEXT(stored=True),
     spelling=TEXT(stored=True,
-                analyzer=FancyAnalyzer(),
-                spelling = True),
+                  analyzer=FancyAnalyzer(),
+                  spelling = True),
     id=ID(stored=True, unique=True))
 
 

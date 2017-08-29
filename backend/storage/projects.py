@@ -63,7 +63,8 @@ def update_stored_project(project_id, manifest):
         g.projects.find_one_and_replace({'_id': project_id}, res,
                                         return_document=ReturnDocument.AFTER)
         writer = g.whoosh_index.writer()
-        writer.update_document(ngrams=res['description'],content=res['description'],id=str(res['_id']))
+        writer.update_document(ngrams=res['description'], content=res['description'],
+                               id=str(res['_id']))
         writer.commit()
         add_notification(current_user['email'], manifest['authors'], "update",
                          project_id=project_id, reason='author')
@@ -108,7 +109,9 @@ def add_project_list(manifestlist):
         g.projects.insert(project)
         init_project_meta(project['_id'])
         writer = g.whoosh_index.writer()
-        writer.add_document(ngrams=project['description'],content=project['description'],id=str(project['_id']))
+        writer.add_document(ngrams=project['description'],
+                            content=project['description'],
+                            id=str(project['_id']))
         writer.add_document(spelling=project['description'])
         writer.commit()
         add_notification(current_user['email'], project['authors'], "create",

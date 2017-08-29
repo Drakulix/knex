@@ -8,7 +8,6 @@ import pymongo
 import uuid
 
 
-
 notifications = Blueprint('api_notifications', __name__)
 
 
@@ -59,9 +58,10 @@ def delete_user_notification(user_id):
     g.notifications.delete_many({'creator': user_id})
     g.notifications.delete_many({'user_id': user_id})
 
+
 def extend_notification_list(notification_list):
-    userlist = {notification['user_id'] for notification in notification_list }
-    userlist = userlist.union({notification['creator'] for notification in notification_list })
+    userlist = {notification['user_id'] for notification in notification_list}
+    userlist = userlist.union({notification['creator'] for notification in notification_list})
 
     userlist = [g.user_datastore.find_user(email=mail) for mail in userlist
                 if g.user_datastore.find_user(email=mail)]
@@ -71,14 +71,12 @@ def extend_notification_list(notification_list):
 
     projects = list({notification['project_id'] for notification in notification_list})
     projectlist = g.projects.find({'_id': {'$in': projects}}, {"_id": 1, "title": 1})
-
     projectlist = dict([(project['_id'], project['title']) for project in projectlist])
 
-
-    notification_list = [dict({
-                                'creator_name': dic[notification['creator']],
-                                'user_name': dic[notification['user_id']],
-                                'project_title': projectlist[notification['project_id']] if notification['project_id'] else ""
+    notification_list = [dict({'creator_name': dic[notification['creator']],
+                               'user_name': dic[notification['user_id']],
+                               'project_title': projectlist[notification['project_id']]
+                                   if notification['project_id'] else ""
                               },
                              **notification) for notification in notification_list]
     return notification_list
