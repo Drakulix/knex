@@ -135,7 +135,7 @@ export default class ProjectContainer extends Component {
                 <div className = "profile-info">Tags </div>
                 <TagOutputList value = {this.state.projectInf.tags} />
               </div>
-              <div style = {{marginTop : 50}}>
+              <div style = {{marginTop : 30,  paddingTop: 20, clear: "left"}}>
                 <div className = "profile-info">Description</div>
                 <div>{this.state.projectInf.description}</div>
               </div>
