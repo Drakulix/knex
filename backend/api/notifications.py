@@ -75,11 +75,12 @@ def extend_notification_list(notification_list):
 
     notification_list = [dict({'creator_name': dic[notification['creator']],
                                'user_name': dic[notification['user_id']],
-                               'project_title': projectlist[notification['project_id']]\
-                                  if notification['project_id'] else ""
+                               'project_title': projectlist[notification['project_id']]
+                               if notification['project_id'] else ""
                                },
-                             **notification) for notification in notification_list]
+                               **notification) for notification in notification_list]
     return notification_list
+
 
 @notifications.route('/api/users/actions', methods=['GET'])
 @login_required

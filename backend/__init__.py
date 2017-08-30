@@ -316,9 +316,9 @@ def handle_insufficient_permission(error):
 def index(err):
     """Index of knex
     """
-    if request.path.startswith("/api/"):
-        raise ApiException("Endpoint not found", 404)
-    return app.send_static_file('index.html')
+#    if request.path.startswith("/api/"):
+    return err, 404
+#    return app.send_static_file('index.html')
 
 
 @app.route('/', methods=['GET'])
