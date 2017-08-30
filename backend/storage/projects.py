@@ -1,6 +1,6 @@
 import time
 
-from flask import  g
+from flask import g
 from flask_security import current_user
 
 from pymongo.collection import ReturnDocument

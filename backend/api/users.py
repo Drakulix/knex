@@ -40,7 +40,7 @@ def login():
         login_user(user)
         return make_response("Login successful", 200)
 
-        raise ApiException("Username oder Password invalid", 403)
+    raise ApiException("Username oder Password invalid", 403)
 
 
 @users.route('/api/users/logout')
@@ -227,8 +227,7 @@ def update_password():
     user = request.get_json()
     res = g.user_datastore.get_user(user['email'])
     if not res:
-        raise ApiException("Unknown User with Email-address: " +
-                             user['email'], 400)
+        raise ApiException("Unknown User with Email-address: " + user['email'], 400)
 
     if current_user.has_role('admin') or verify_password(user["old_password"], res.password):
         new_password = user["new_password"]
@@ -289,6 +288,9 @@ def get_user_projects(mail):
         Returns:
             res: Array with projects where the user is author
     """
+    user = g.user_datastore.get_user(mail)
+    if not user:
+        raise ApiException("Unknown User with Email-address: " + str(mail), 404)
     try:
         projects = g.projects.find({'authors': str(mail)})
         return jsonify(list(projects))
@@ -304,6 +306,9 @@ def get_user_tags(mail):
         Returns:
             res: Array with topten tags lexicographical order
     """
+    user = g.user_datastore.get_user(mail)
+    if not user:
+        raise ApiException("Unknown User with Email-address: " + str(mail), 404)    
     try:
         pipeline = [{"$unwind": "$authors"},
                     {"$match": {"authors": mail}},

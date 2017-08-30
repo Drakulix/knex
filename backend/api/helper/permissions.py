@@ -17,7 +17,6 @@ def current_user_has_permission_to_change(entry) -> bool:
     return current_user['email'] in entry['authors']
 
 
-
 def current_user_has_permission_to_change_project(project_id):
     """Return boolean value if user has admin permission, arg->list with roles
 

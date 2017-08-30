@@ -94,7 +94,6 @@ def get_projects():
         for project in res:
             project['is_bookmark'] = 'true' if project['_id']\
                 in current_user['bookmarks'] else 'false'
-        
         return jsonify(res)
     except KeyError as err:
         raise ApiException(str(err), 400)
@@ -114,7 +113,6 @@ def get_project_by_id(project_id):
     if not project_exists(project_id):
         return make_response("Project not found", 404)
     try:
-
         res = get_stored_project(project_id)
         res['is_bookmark'] = 'true' if project_id in current_user['bookmarks'] else 'false'
     except KeyError as err:

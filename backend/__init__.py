@@ -123,6 +123,7 @@ def set_global_manifest_validator():
 def set_global_mongo_engine():
     g.user_datastore = USER_DATASTORE
 
+
 @app.before_request
 def init_global_mongoclient():
     global WHOOSH
