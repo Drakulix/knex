@@ -113,6 +113,7 @@ def get_notifications():
     user = g.user_datastore.get_user(current_user['email'])
     if not user:
         raise ApiException("Couldn't find current_user in datastore", 404)
+
     res = g.notifications.find({'user_id': current_user['email'], 'active': 'true'})\
         .sort('date', pymongo.DESCENDING).limit(20)
     return jsonify(list(res))

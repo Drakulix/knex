@@ -325,7 +325,8 @@ def index(err):
 def index():
     """Index of knex
     """
-    return app.send_static_file('index.html')
+    raise ApiException("Not found", 404)
+
 
 app.register_blueprint(projects)
 app.register_blueprint(users)

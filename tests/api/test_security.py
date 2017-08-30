@@ -69,5 +69,6 @@ class TestPOST(object):
         assert response.status_code == 200
 
     def test_user_nonexistent(self, flask_api_url):
-        response = requests.get(flask_api_url + '/api/users/unknownuser@knex.com')
+        response = requests.get(flask_api_url + '/api/users/',
+                                data=dict(email='unknownuser@knex.com'))
         assert response.status_code == 404
