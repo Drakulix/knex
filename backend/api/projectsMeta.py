@@ -53,7 +53,6 @@ def get_project_list_meta():
     return jsonify(res)
 
 
-
 @projects_meta.route('/api/projects/<uuid:project_id>/meta', methods=['GET'])
 @login_required
 def get_project_meta__by_id(project_id):
@@ -65,7 +64,6 @@ def get_project_meta__by_id(project_id):
     Returns:
         res (json): Project meta data corresponding to the ID
     """
-
 
     if not g.projects_meta.find_one({'_id': project_id}):
         return make_response("Project not found", 404)

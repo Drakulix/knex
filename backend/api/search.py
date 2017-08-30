@@ -70,7 +70,6 @@ def search_es():
         with g.whoosh_index.searcher() as searcher:
             ids = [result for result in searcher.search(Term("content", search_String))]
 
-
     projects = g.projects.find(query, {'comments': 0})
 
     projects = prepare_search_results(projects)
