@@ -11,8 +11,13 @@ projects_meta = Blueprint('api_projects_meta', __name__)
 
 
 def init_project_meta(project_id):
+    user_mail = current_user['email'].replace(".", "§")
+    init_time = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime())
     if not g.projects_meta.find_one({'_id': project_id}):
-        g.projects_meta.insert_one({'_id': project_id, 'visits': 0, 'last_access': {}})
+        g.projects_meta.insert_one({'_id': project_id,
+                                    'visits': 0,
+                                    'last_access': {user_mail: init_time}
+                                    })
 
 
 def delete_project_meta(project_id):
@@ -87,3 +92,4 @@ def get_meta_data(project_id):
     acces_dict = dict(meta['last_access'])
     res['visits'] = meta['visits']
     res['last_access'] = acces_dict[current_user['email'].replace('.', '§')]
+    return res

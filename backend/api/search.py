@@ -64,13 +64,12 @@ def search_es():
     request_json = request.get_json()
     query = prepare_mongo_query(request_json)
 
-    if query.get('searchString'):
-        search_String = query.get('searchString')
-    else:
-        search_String = ""
 
-    with g.whoosh_index.searcher() as searcher:
-        ids = [result for result in searcher.search(Term("content", search_String))]
+    if request_json.get('searchString'):
+        search_String = request_json.get('searchString')
+        with g.whoosh_index.searcher() as searcher:
+            ids = [result for result in searcher.search(Term("content", search_String))]
+
 
     projects = g.projects.find(query, {'comments': 0})
 

@@ -84,7 +84,7 @@ def update_stored_project(project_id, manifest):
 
 def archive_stored_project(project_id, req):
     res = g.projects.find_one({'_id': project_id})
-    res['archived'] = 'true' if req['archived'] == 'true' else 'false'
+    res['archived'] =  req['archived']
     operation = 'archive' if req['archived'] == 'true' else 'unarchive'
     g.projects.find_one_and_replace({'_id': project_id}, res,
                                     return_document=ReturnDocument.AFTER)

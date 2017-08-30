@@ -103,7 +103,7 @@ export default class ProfileContainer extends Component {
     if( !this.state.profile_exists){
       return (
         <div className = "container">
-          <div className = "row" style = {{marginTop: 100, marginBottom: 100}}>
+          <div className = "row" style = {{marginTop: 80, marginBottom: 100}}>
             <div className = "col-4">
               {Backend.isAdmin ?
                 <RaisedButton
@@ -135,8 +135,8 @@ export default class ProfileContainer extends Component {
       return (
         <div className = "container">
           {!this.state.showEdit ?
-            <div>
-              <div className = "row" style = {{marginTop: 100}}>
+            <div style = {{width: '100%'}}>
+              <div className = "row" style = {{marginTop: 80}}>
               <div className = "col-3">
                 {(Backend.isAdmin() || this.state.isMe)  ?
                   <RaisedButton
@@ -147,7 +147,7 @@ export default class ProfileContainer extends Component {
                  : ""}
               </div>
               <div className = "col-1"/>
-              <div className = "col-4" style = {{fontSize: 30, height: 41, textAlign: 'center'}}>
+              <div className = "col-4" style = {{fontSize: 30, height: 41, fontWeight:300, textAlign: 'center'}}>
                 Profile details
               </div>
               {!this.state.profileInf.active === "false" ?

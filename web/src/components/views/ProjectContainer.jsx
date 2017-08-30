@@ -58,6 +58,7 @@ export default class ProjectContainer extends Component {
           site_loaded : true,
         })
       }).catch(ex => {
+        alert(ex)
         this.setState({
           project_exists : false,
           site_loaded : true
