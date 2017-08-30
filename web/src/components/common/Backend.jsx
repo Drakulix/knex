@@ -133,6 +133,10 @@ class Backend {
         }
     }
 
+    async refreshProfile(){
+      this.profile = await this.getProfile();
+    }
+
     // returns json
     async getJson(url) {
         let response = await fetch(url, {

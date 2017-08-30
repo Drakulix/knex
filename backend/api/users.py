@@ -20,7 +20,7 @@ from api.helper.search import prepare_search_results
 from api.helper.permissions import current_user_has_permission_to_change
 from api.helper.images import Identicon
 from api.notifications import add_notification, add_self_action, delete_user_notification
-
+from api.projectsMeta import delete_project_meta_user_data
 
 users = Blueprint('api_users', __name__)
 
@@ -253,6 +253,7 @@ def delete_user(mail):
     if not user.has_role('admin'):
         g.user_datastore.delete_user(user)
         delete_user_notification(user['email'])
+        delete_project_meta_user_data(user['email'])
         return make_response("deleted non admin", 200)
     else:
         for usr in g.user_datastore.user_model.objects:

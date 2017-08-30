@@ -253,7 +253,6 @@ def rerun_saved_searches_func():
 
 
 def on_project_deletion(project_id):
-    delete_project_notification(project_id)
     delete_project_meta(project_id)
     for user in User.objects:
         user.bookmarks = [x for x in user.bookmarks if g.projects.find_one({'_id': project_id})]

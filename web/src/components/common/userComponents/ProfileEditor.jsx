@@ -14,11 +14,7 @@ export default class ProfileEditor extends Component {
       last_name: props.profileInf.last_name,
       bio: props.profileInf.bio,
       email: props.profileInf.email,
-      pw_old: '',
-      pw_new: '',
-      pw_new_confirm: ''
     }
-    this.handlePwChangeSubmit = this.handlePwChangeSubmit.bind(this)
     this.handleProfileChangeSubmit = this.handleProfileChangeSubmit.bind(this)
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleFile = this.handleFile.bind(this)
@@ -35,20 +31,6 @@ export default class ProfileEditor extends Component {
     })
   }
 
-  handlePwChangeSubmit(event){
-    event.preventDefault()
-    Backend.updatePassword(this.state.email, this.state.pw_old, this.state.pw_new).then((success) => {
-      if(success){
-          this.props.profileChangeHandler("Password changed", true)
-      }else{
-        this.setState({
-          snackbar: true,
-          snackbarText: 'Password change failed'
-        })
-      }
-    })
-  }
-
   handleProfileChangeSubmit(event){
     event.preventDefault()
     Backend.updateProfile(this.state.email,
@@ -57,6 +39,9 @@ export default class ProfileEditor extends Component {
       this.state.bio ).then((success) => {
       if(success){
         this.props.profileChangeHandler("Profile updated", true)
+        if(this.state.email === Backend.getMail()){
+          Backend.refreshProfile()
+        }
       }else{
         this.props.profileChangeHandler("Profile update failed",false)
       }

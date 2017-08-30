@@ -11,8 +11,8 @@ import uuid
 notifications = Blueprint('api_notifications', __name__)
 
 
-def add_notification(creator, userlist, operation, project_id='',
-                     reason='', saved_search_id=''):
+def add_notification(creator, userlist, operation, project_id=None,
+                     reason=None, saved_search_id=None):
     date = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
     for user in userlist:
         if user not in (creator):
@@ -35,7 +35,7 @@ def add_notification(creator, userlist, operation, project_id='',
                     })
 
 
-def add_self_action(creator, operation, project_id='', user_id=None):
+def add_self_action(creator, operation, project_id=None, user_id=None):
     date = time.strftime("%Y-%m-%d %H:%M:%S")
     if not user_id:
         user_id = creator

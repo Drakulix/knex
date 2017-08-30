@@ -4,9 +4,9 @@ from flask import g
 from flask_security import current_user
 
 from pymongo.collection import ReturnDocument
-from api.notifications import add_notification, add_self_action
+from api.notifications import add_notification, add_self_action, delete_project_notification
 from api.helper import uploader
-from api.projectsMeta import init_project_meta, set_last_access
+from api.projectsMeta import init_project_meta, set_last_access, delete_project_meta
 
 
 def project_exists(project_id):
@@ -16,6 +16,8 @@ def project_exists(project_id):
 def delete_stored_project(project_id):
     g.projects.delete_one({'_id': project_id})
     g.whoosh_index.delete_by_term('id', str(project_id))
+    delete_project_notification(project_id)
+    delete_project_meta(project_id)
     g.rerun_saved_searches(current_user['email'], project_id, "delete")
     g.on_project_deletion(project_id)
 
