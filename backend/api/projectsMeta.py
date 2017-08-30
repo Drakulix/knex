@@ -24,11 +24,11 @@ def set_last_access(project_id):
     visits_count = g.projects_meta.find_one({'_id': project_id}, {'visits': 1})
     g.projects_meta.update({'_id': project_id},
                            {'$set':
-                               {'last_access.' + user_mail: time.strftime('%Y-%m-%d %H:%M:%S',
-                                    time.gmtime()),
+                               {'last_access.' + user_mail:
+                                time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime()),
                                 'visits': visits_count['visits'] + 1
-                               }
-                           },
+                                }
+                            },
                            upsert=True)
 
 
