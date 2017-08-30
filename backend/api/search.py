@@ -70,7 +70,7 @@ def search_es():
         search_String = ""
 
     with g.whoosh_index.searcher() as searcher:
-        ids = [result for result in  searcher.search(Term("content", search_String))]
+        ids = [result for result in searcher.search(Term("content", search_String))]
 
     projects = g.projects.find(query, {'comments': 0})
 
@@ -129,6 +129,7 @@ def query_saved_search(id):
             except RequestError as reqerr:
                 return (str(reqerr), 400)
     return make_response("No search with the given id known", 404)
+
 
 @search.route('/api/projects/ngramlist/<ngrams>', methods=['GET'])
 @login_required

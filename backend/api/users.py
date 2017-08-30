@@ -308,7 +308,7 @@ def get_user_tags(mail):
     """
     user = g.user_datastore.get_user(mail)
     if not user:
-        raise ApiException("Unknown User with Email-address: " + str(mail), 404)    
+        raise ApiException("Unknown User with Email-address: " + str(mail), 404)
     try:
         pipeline = [{"$unwind": "$authors"},
                     {"$match": {"authors": mail}},

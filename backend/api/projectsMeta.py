@@ -23,13 +23,13 @@ def set_last_access(project_id):
     user_mail = current_user['email'].replace(".", "§")
     visits_count = g.projects_meta.find_one({'_id': project_id}, {'visits': 1})
     g.projects_meta.update({'_id': project_id},
-                            {'$set':
-                                {"last_access." + user_mail: time.strftime("%Y-%m-%d %H:%M:%S",
+                           {'$set':
+                                {'last_access.' + user_mail: time.strftime('%Y-%m-%d %H:%M:%S',
                                     time.gmtime()),
                                  'visits': visits_count['visits'] + 1
                                 }
-                            },
-                            upsert=True)
+                           },
+                           upsert=True)
 
 
 @projects_meta.route('/api/projects/<uuid:project_id>/meta', methods=['GET'])
@@ -58,8 +58,8 @@ def get_project_meta__by_id(project_id):
         userlist = [g.user_datastore.find_user(email=mail) for mail in project['authors']
                     if g.user_datastore.find_user(email=mail)]
         res['authors'] = dict([(user.email, (user.first_name + (" "
-                                if user.first_name and user.last_name else "") + user.last_name))
-                                for user in userlist])
+                              if user.first_name and user.last_name else "") + user.last_name))
+                              for user in userlist])
         acces_dict = dict(meta['last_access'])
         res['visits'] = meta['visits']
         res['last_access'] = acces_dict[current_user['email'].replace('.', '§')]

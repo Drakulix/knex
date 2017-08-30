@@ -145,7 +145,7 @@ schema = Schema(
     content=TEXT(stored=True),
     spelling=TEXT(stored=True,
                   analyzer=FancyAnalyzer(),
-                  spelling = True),
+                  spelling=True),
     id=ID(stored=True, unique=True))
 
 
@@ -318,13 +318,14 @@ def index(err):
     """
     if request.path.startswith("/api/"):
         raise ApiException("Endpoint not found", 404)
+    return app.send_static_file('index.html')
 
 
 @app.route('/', methods=['GET'])
 def index():
     """Index of knex
     """
-    raise ApiException("Endpoint not found", 404)
+    return app.send_static_file('index.html')
 
 app.register_blueprint(projects)
 app.register_blueprint(users)
