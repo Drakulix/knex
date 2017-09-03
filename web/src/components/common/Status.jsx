@@ -4,17 +4,17 @@ import MenuItem from 'material-ui/MenuItem'
 import Chip from 'material-ui/Chip'
 
 const statusString = [
-  {text: <Chip style= {{marginTop: 4, background: '#ff5000', float: 'left'}}>
+  {text: <Chip style= {{marginTop: 4, background: '#ff5000'}}>
           <div style= {{color: '#ffffff', fontWeight: 'bold', whiteSpace: 'normal', lineHeight: 1.5}}>
             Done
           </div>
         </Chip>, value: "DONE"},
-  {text: <Chip style= {{marginTop: 4, background: '#ffb400', float: 'left'}}>
+  {text: <Chip style= {{marginTop: 4, background: '#ffb400'}}>
           <div style= {{color: '#ffffff', fontWeight: 'bold', whiteSpace: 'normal', lineHeight: 1.5}}>
             In review
           </div>
         </Chip>, value: "IN_REVIEW"},
-  {text: <Chip style= {{marginTop: 4, background: '#ffcc50', float: 'left'}}>
+  {text: <Chip style= {{marginTop: 4, background: '#ffcc50'}}>
           <div style= {{color: '#ffffff', fontWeight: 'bold', whiteSpace: 'normal', lineHeight: 1.5}}>
             In progress
           </div>

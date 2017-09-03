@@ -1,12 +1,13 @@
 import time
-
+from datetime import datetime, timezone
 from flask import g
 from flask_security import current_user
 
 from pymongo.collection import ReturnDocument
 from api.notifications import add_notification, add_self_action, delete_project_notification
 from api.helper import uploader
-from api.projectsMeta import init_project_meta, set_last_access, delete_project_meta
+from api.projectsMeta import init_project_meta, set_last_access
+from api.projectsMeta import delete_project_meta, set_updated_fields
 
 
 def project_exists(project_id):
@@ -24,46 +25,26 @@ def delete_stored_project(project_id):
 
 def get_stored_project(project_id):
     res = g.projects.find_one({'_id': project_id}, {'comments': 0})
-    set_last_access(project_id)
+    set_last_access(project_id, str(datetime.now(timezone.utc)))
     return res
 
 
 def update_stored_project(project_id, manifest):
     res = g.projects.find_one({'_id': project_id})
-    res['_id'] = str(project_id)
-    if 'title' in manifest:
-        res['title'] = manifest['title']
-    if 'authors' in manifest:
-        res['authors'] = manifest['authors']
-    if 'tags' in manifest:
-        res['tags'] = manifest['tags']
-    if 'description' in manifest:
-        res['description'] = manifest['description']
-    if 'status' in manifest:
-        res['status'] = manifest['status']
-    if 'url' in manifest:
-        res['url'] = manifest['url']
-    if 'analysis' in manifest:
-        res['analysis'] = manifest['analysis']
-    if 'hypothesis' in manifest:
-        res['hypothesis'] = manifest['hypothesis']
-    if 'team' in manifest:
-        res['team'] = manifest['team']
-    if 'futute_work' in manifest:
-        res['future_work'] = manifest['future_work']
-    if 'related_projects' in manifest:
-        res['related_projects'] = manifest['related_projects']
-    if 'date_creation' in manifest:
-        res['date_creation'] = manifest['date_creation']
-    if 'archived' in manifest:
-        res['archived'] = manifest['archived']
-    if g.validator.is_valid(res):
+    changedfields = []
+    for field in res:
+        if field in manifest and not res[field] == manifest[field]:
+            res[field] = manifest[field]
+            changedfields.append(field)
+    if g.validator.is_valid(res) and len(changedfields) > 1:
         res['date_last_updated'] = time.strftime("%Y-%m-%d")
+        changedfields.append('date_last_updated')
         res['_id'] = project_id
         res['authors'] = sorted(list(set(res['authors'])))
         res['tags'] = sorted(res['tags'])
         g.projects.find_one_and_replace({'_id': project_id}, res,
                                         return_document=ReturnDocument.AFTER)
+        set_updated_fields(project_id, changedfields, str(datetime.now(timezone.utc)))
         writer = g.whoosh_index.writer()
         writer.update_document(ngrams=res['description'], content=res['description'],
                                id=str(res['_id']))
@@ -77,6 +58,8 @@ def update_stored_project(project_id, manifest):
                          project_id=project_id, reason='comment')
         add_self_action(current_user['email'], "update", project_id=project_id)
         g.rerun_saved_searches(current_user['email'], project_id, "update")
+        return True
+    elif len(changedfields) == 1:
         return True
     else:
         return False

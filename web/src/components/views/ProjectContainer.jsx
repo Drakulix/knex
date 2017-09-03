@@ -6,6 +6,7 @@ import UrlOutputList from '../common/chips/UrlOutputList'
 import Status from '../common/Status'
 import Spinner from '../common/Spinner'
 import ProjectControls from '../common/projectComponents/ProjectControls'
+import InformationPane from '../common/projectComponents/InformationPane'
 import HeadLine from '../common/HeadLine'
 
 
@@ -22,7 +23,8 @@ export default class ProjectContainer extends Component {
       myEmail: Backend.getMail(),
       meta: {
         authors: {},
-        is_bookmark : false
+        is_bookmark : false,
+        change: {}
       }
     }
 
@@ -68,13 +70,9 @@ export default class ProjectContainer extends Component {
   }
 
   render(){
-
-
-
-
     if(!this.state.site_loaded){
       return (
-        <Spinner loading = {true} text = {"Loading project"} />
+        <Spinner text = {"Loading project"} />
       )
     }
     if(!this.state.project_exists){
@@ -88,13 +86,17 @@ export default class ProjectContainer extends Component {
       return(
         <div className = "container">
           <HeadLine title = {"Project"}/>
-          <div className = "row" style = {{width : "100%"}}>
-            <div className = "col-12">
+          <div className = "row">
+            <div className = "col-12" >
               <div style = {{textAlign: "center"}}>
-                <div style = {{fontSize : '20px'}}> {this.state.projectInf.title}</div>
-                {this.state.projectInf.archived  === "true"? <i style = {{fontSize : '20px'}}>Archived project</i> : ""}
+                <InformationPane change = {this.state.meta.change.title}
+                  component = {
+                    <div style = {{fontSize : '20px'}}> {this.state.projectInf.title}</div>
+                  }
+                />
+              {this.state.meta.archived  === "true"? <i style = {{fontSize : '20px'}}>Archived project</i> : ""}
               </div>
-              <div style = {{marginTop : 20}}>
+              <div style = {{marginTop : 20, marginBottom: 20}}>
                 <ProjectControls  projectInf = {this.state.projectInf}
                                   projectsMeta = {this.state.meta}
                                   projectID = {this.state.projectID}
@@ -106,38 +108,74 @@ export default class ProjectContainer extends Component {
             <div className = "col-5">
               <div className = "row">
                 <div className = "col-4">
-                  <div className = "profile-info">Status</div>
-                    <Status value = {this.state.projectInf.status}/>
+                  <InformationPane change = {this.state.meta.change.status}
+                    component = {<div>
+                      <div className = "profile-info">Status</div>
+                      <Status value = {this.state.projectInf.status}/>
+                      </div>
+                    } />
                 </div>
                 <div className = "col-4">
-                  <div className = "profile-info">Creation date</div>
-                  <div style = {{marginTop : 16}}>{this.state.projectInf.date_creation}</div>
+                  <InformationPane change = {this.state.meta.change.date_creation}
+                    component = {
+                      <div>
+                        <div className = "profile-info">Creation date</div>
+                        <div style = {{marginTop : 2}}>{this.state.projectInf.date_creation}</div>
+                      </div>
+                    } />
                 </div>
                 <div className = "col-4">
-                  <div className = "profile-info">Last update </div>
-                  <div style = {{marginTop : 16}}> {this.state.projectInf.date_last_updated}</div>
+                  <InformationPane change = {this.state.meta.change.date_last_updated}
+                    component = {
+                      <div>
+                        <div className = "profile-info">Last update </div>
+                        <div style = {{marginTop : 2}}> {this.state.projectInf.date_last_updated}</div>
+                      </div>
+                    } />
                 </div>
               </div>
               <div style = {{marginTop : 30}}>
-                <div className = "profile-info">Authors</div>
-                <div style = {{marginLeft : -16}}>
-                  <AuthorOutputList value = {this.state.projectInf.authors} userNames = {this.state.meta.authors} />
-                </div>
+                <InformationPane change = {this.state.meta.change.authors}
+                  component = {
+                    <div>
+                      <div className = "profile-info">Authors</div>
+                      <div style = {{marginLeft : -16}}>
+                        <AuthorOutputList value = {this.state.projectInf.authors} userNames = {this.state.meta.authors} />
+                      </div>
+                    </div>
+                  }
+                />
               </div>
               <div style = {{marginTop : 30}}>
-              <div className = "profile-info">Links</div>
-                <UrlOutputList value = {this.state.projectInf.url} />
+                <InformationPane change = {this.state.meta.change.url}
+                  component = {
+                    <div>
+                      <div className = "profile-info">Links</div>
+                      <UrlOutputList value = {this.state.projectInf.url} />
+                    </div>
+                  }
+                />
               </div>
             </div>
             <div className = "col-1"></div>
             <div className = "col-6">
-              <div>
-                <div className = "profile-info">Tags </div>
-                <TagOutputList value = {this.state.projectInf.tags} />
-              </div>
-              <div style = {{marginTop : 30,  paddingTop: 20, clear: "left"}}>
-                <div className = "profile-info">Description</div>
-                <div>{this.state.projectInf.description}</div>
+              <InformationPane change = {this.state.meta.change.tags}
+                component = {
+                  <div>
+                    <div className = "profile-info">Tags </div>
+                    <TagOutputList value = {this.state.projectInf.tags} />
+                  </div>
+                }
+              />
+            <div style = {{ paddingTop: 35, clear: "left"}}>
+                <InformationPane change = {this.state.meta.change.description}
+                  component = {
+                    <div>
+                      <div className = "profile-info">Description</div>
+                      <div>{this.state.projectInf.description}</div>
+                    </div>
+                  }
+                />
               </div>
               {this.state.projectInf.archived === "true" ?
                   <div className = "profile-info">Archived</div>

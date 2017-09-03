@@ -4,7 +4,6 @@ from flask_security import login_required, current_user
 from api.helper.apiexception import ApiException
 
 from uuid import UUID
-import time
 
 
 projects_meta = Blueprint('api_projects_meta', __name__)
@@ -16,6 +15,7 @@ def init_project_meta(project_id):
     if not g.projects_meta.find_one({'_id': project_id}):
         g.projects_meta.insert_one({'_id': project_id,
                                     'visits': 0,
+                                    'change': {},
                                     'last_access': {user_mail: init_time}
                                     })
 
@@ -29,17 +29,21 @@ def delete_project_meta_user_data(user_mail):
     g.projects_meta.update({}, {'$unset': {'last_access.' + user_mail: 1}})
 
 
-def set_last_access(project_id):
+def set_last_access(project_id, time):
     user_mail = current_user['email'].replace(".", "§")
     visits_count = g.projects_meta.find_one({'_id': project_id}, {'visits': 1})
     g.projects_meta.update({'_id': project_id},
                            {'$set':
-                               {'last_access.' + user_mail:
-                                time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime()),
+                               {'last_access.' + user_mail: time,
                                 'visits': visits_count['visits'] + 1
                                 }
                             },
                            upsert=True)
+
+
+def set_updated_fields(project_id, fields, time):
+    fields = dict([(field, time) for field in fields])
+    g.projects_meta.update({'_id': project_id}, {'$set': {'change.' + field: time for field in fields}}, upsert=True)
 
 
 @projects_meta.route('/api/projects/meta', methods=['POST'])
@@ -88,6 +92,8 @@ def get_meta_data(project_id):
                           if user.first_name and user.last_name else "") + user.last_name))
                           for user in userlist])
     acces_dict = dict(meta['last_access'])
-    res['visits'] = meta['visits']
     res['last_access'] = acces_dict[current_user['email'].replace('.', '§')]
+    res['visits'] = meta['visits']
+    res['change'] = dict([(field, meta['change'][field] > res['last_access'])\
+                         for field in meta['change']])
     return res

@@ -8,7 +8,7 @@ import CommentSideBar from './CommentSideBar'
 import ConfirmationPane from '../ConfirmationPane'
 import Badge from 'material-ui/Badge'
 
-import Edit from 'material-ui/svg-icons/image/edit'
+import Edit from 'material-ui/svg-icons/editor/mode-edit'
 import Comment from 'material-ui/svg-icons/communication/comment'
 import Share from 'material-ui/svg-icons/social/share'
 import Archive from 'material-ui/svg-icons/content/archive'
@@ -174,6 +174,7 @@ export default class ProjectControls extends Component{
                         style = {Styles.largeIcon, {paddingTop: 5}}
                         disabled = {! (this.props.projectsMeta.is_owner || Backend.isAdmin())}
                         tooltipPosition = "bottom-center"
+                        touch = {true}
                         tooltip = "Edit project"
                         href = {`/update/${this.props.projectID}`}
                         iconStyle = {{height: 24, color: Styles.palette.textColor}}

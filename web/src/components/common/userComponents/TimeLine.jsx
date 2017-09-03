@@ -108,7 +108,6 @@ class News extends React.Component {
         reason = ""
         break
     }
-
     return (
       <div className = "row" style={{width: "100%"}}>
         <div className ="col-1">
@@ -132,7 +131,7 @@ class News extends React.Component {
             </span>
           }
           <span> {operationText[this.props.value.operation]} </span>
-          {this.props.value.project_id !== "" ?
+          {this.props.value.project_id !== null ?
             <span>
               <span> project </span>
               <span>
@@ -142,7 +141,7 @@ class News extends React.Component {
                 </span>
               </span>
               <span> {reason} </span>
-              {this.props.saved_search_id !== "" ? this.props.saved_search_id : ""}
+              {this.props.saved_search_id !== null ? this.props.saved_search_id : ""}
             </span>
             : ""
           }
