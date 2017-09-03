@@ -9,14 +9,13 @@ from uuid import UUID
 projects_meta = Blueprint('api_projects_meta', __name__)
 
 
-def init_project_meta(project_id):
+def init_project_meta(project_id, time):
     user_mail = current_user['email'].replace(".", "§")
-    init_time = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime())
     if not g.projects_meta.find_one({'_id': project_id}):
         g.projects_meta.insert_one({'_id': project_id,
                                     'visits': 0,
                                     'change': {},
-                                    'last_access': {user_mail: init_time}
+                                    'last_access': {user_mail: time}
                                     })
 
 
@@ -43,7 +42,9 @@ def set_last_access(project_id, time):
 
 def set_updated_fields(project_id, fields, time):
     fields = dict([(field, time) for field in fields])
-    g.projects_meta.update({'_id': project_id}, {'$set': {'change.' + field: time for field in fields}}, upsert=True)
+    g.projects_meta.update({'_id': project_id},
+                           {'$set': {'change.' + field: time for field in fields}},
+                           upsert=True)
 
 
 @projects_meta.route('/api/projects/meta', methods=['POST'])
@@ -94,6 +95,6 @@ def get_meta_data(project_id):
     acces_dict = dict(meta['last_access'])
     res['last_access'] = acces_dict[current_user['email'].replace('.', '§')]
     res['visits'] = meta['visits']
-    res['change'] = dict([(field, meta['change'][field] > res['last_access'])\
+    res['change'] = dict([(field, meta['change'][field] > res['last_access'])
                          for field in meta['change']])
     return res

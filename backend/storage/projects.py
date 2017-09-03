@@ -92,7 +92,7 @@ def add_project_list(manifestlist):
         if 'comments' not in project:
             project['comments'] = []
         g.projects.insert(project)
-        init_project_meta(project['_id'])
+        init_project_meta(project['_id'], str(datetime.now(timezone.utc)))
         writer = g.whoosh_index.writer()
         writer.add_document(ngrams=project['description'],
                             content=project['description'],
