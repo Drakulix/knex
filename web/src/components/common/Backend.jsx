@@ -326,13 +326,12 @@ class Backend {
         return this.delete(`/api/projects/${id}`);
     }
 
-    getProjectTitels(project_ids){
-      return this.postJson('/api/projects/titles', project_ids).then(function(data)
-        {return JSON.parse(data)})
-    }
-
     getProjectMetaData(project_id){
       return this.getJson(`/api/projects/${project_id}/meta`)
+    }
+
+    getProjectsMetaData(project_id_list){
+      return this.postJson(`/api/projects/meta`, project_id_list).then(function(data){return JSON.parse(data)});
     }
 
     getProjectNgrams(ngrams){

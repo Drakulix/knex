@@ -25,13 +25,10 @@ export default class ProfileContainer extends Component {
       isMe : this.props.match.params.email === Backend.getMail(),
       profileInf : {},
       value : 'a',
-      topTenTags : [],
       snackbar : false,
       snackbarText : "",
-      projectCount : 0,
       showRegistration : false,
       showEdit: false,
-
     }
     this.handleProfileChange = this.handleProfileChange.bind(this)
   }
@@ -48,7 +45,7 @@ export default class ProfileContainer extends Component {
       : this.props.match.params.email)
   }
 
-  componentWillMount(){
+  componentDidMount(){
     this.loadProfileInf(this.state.email)
   }
 
@@ -60,19 +57,11 @@ export default class ProfileContainer extends Component {
           site_loaded : true
         })
       }else{
-        Backend.getTagsOfUser(e)
-        .then(tags => {this.setState({topTenTags : tags})})
-        .then(
-          Backend.getUsersProjects(e)
-          .then(count =>{this.setState({projectCount : count.length})})
-        )
-        .then(
-          this.setState({
-            profileInf : data,
-            profile_exists : true,
-            site_loaded : true,
-          })
-        )
+        this.setState({
+          profileInf : data,
+          profile_exists : true,
+          site_loaded : true,
+        })
       }
     }).catch(ex => {
       this.setState({
@@ -161,8 +150,8 @@ export default class ProfileContainer extends Component {
             <div className = "row" style = {{marginTop: 20}}>
               <div className = "col-3">
                 <ProfileView profileInf = {this.state.profileInf}
-                          topTenTags = {this.state.topTenTags}
-                          projectsContributed = {this.state.projectCount}/>
+                          topTenTags = {this.state.profileInf.tags}
+                          projectsContributed = {this.state.profileInf.project_count}/>
               </div>
               <div className = "col-9">
                 <div style = {{fontWeight: 'bold', fontSize: 26}}>

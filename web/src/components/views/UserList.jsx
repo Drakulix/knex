@@ -58,13 +58,6 @@ export default class ShowUsers extends Component {
         filteredList : data,
       })
     })
-    .then(Backend.getAllUsersTags()
-      .then((userTags) => {
-        this.setState({userTags : userTags})
-      })
-    )
-    .then(() => {return  Backend.getProjectsForAllUsers()})
-    .then((count) => {this.setState({projectCounts : count})})
     .then (() => this.filter ("default", ""))
   }
 
@@ -172,7 +165,7 @@ export default class ShowUsers extends Component {
                             key = {`user#${index2}`}>
                             <UserCard user = {user}
                             projectCounts = {this.state.projectCounts}
-                            userTags = {this.state.userTags}/>
+                            />
                           </div>
                           : ""
                         ))}
@@ -209,11 +202,11 @@ class UserCard extends Component {
                   className = "rounded-circle profile-icon"
                   alt = {this.props.user.email}
               />
-            <div style = {{fontSize : 16, textAlign: "center", width: "100%"}}>{this.props.projectCounts[this.props.user.email] !== undefined ? this.props.projectCounts[this.props.user.email].length : 0} Projects</div>
+            <div style = {{fontSize : 16, textAlign: "center", width: "100%"}}>{this.props.user.project_count} Projects</div>
             </div>
             <div className = "col-8" style = {{marginTop : 0}}>
               <div className ="hidden-lg-up" style = {{fontSize : 16, textAlign: "left", width: "100%"}}>{this.props.projectCounts[this.props.user.email] !== undefined ? this.props.projectCounts[this.props.user.email].length : 0} Projects</div>
-              <SkillOutputList value = {this.props.userTags[this.props.user.email]}/>
+              <SkillOutputList value = {this.props.user.tags}/>
           </div>
           </div>
           <div style = {{width : "100%"}}>

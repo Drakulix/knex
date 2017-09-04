@@ -1,4 +1,4 @@
-from flask import jsonify, g, Blueprint
+from flask import jsonify, g, Blueprint, request
 from flask_security import login_required, current_user
 
 from api.helper.apiexception import ApiException
@@ -55,7 +55,7 @@ def get_project_list_meta():
     """
     projects = [UUID(project_id) for project_id in set(request.get_json())]
     res = [(str(project_id), get_meta_data(project_id)) for project_id in projects]
-    return jsonify(res)
+    return jsonify(dict(res))
 
 
 @projects_meta.route('/api/projects/<uuid:project_id>/meta', methods=['GET'])

@@ -30,14 +30,3 @@ def get_all_tags():
         return jsonify(sorted(tags, key=str.lower))
     except Exception as err:
         raise ApiException(str(err), 500)
-
-
-@projects_info.route('/api/projects/titles', methods=['POST'])
-@login_required
-def get_project_titles():
-    """ Returns a dictionary of each project in the database as key and
-        its title as value.
-    """
-    projects = [UUID(project_id) for project_id in set(request.get_json())]
-    projectlist = g.projects.find({'_id': {'$in': projects}}, {"_id": 1, "title": 1})
-    return jsonify(dict([(str(project['_id']), project['title']) for project in projectlist]))

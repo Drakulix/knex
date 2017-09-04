@@ -38,7 +38,6 @@ export default class ManageUsers extends Component {
       filteredList: [],
       email: "",
       name: "",
-      projectCounts: []
     }
     this.handleDelete = this.handleDelete.bind(this)
     this.handleChange = this.handleChange.bind(this)
@@ -64,8 +63,6 @@ export default class ManageUsers extends Component {
         filteredList: data,
       })
     })
-    .then(() => {return  Backend.getProjectsForAllUsers()})
-    .then((count) => {this.setState({projectCounts: count})})
     .then (() => this.filter ("default", ""))
     .then(() => this.setState({loading: false}))
   }
@@ -178,11 +175,11 @@ export default class ManageUsers extends Component {
 
     columns.push({
       Header: 'Projects',
-      id: 'projectCount',
+      id: 'project_count',
       width :80,
       style: {textAlign: "center", marginTo: 5},
-      accessor: "email",
-      Cell: props => this.state.projectCounts[props.value] !== undefined ? this.state.projectCounts[props.value].length :0
+      accessor: d => d,
+      Cell: props => <div style= {{color: Styles.palette.textColor}}>{props.value.project_count}</div>
     })
 
     columns.push({

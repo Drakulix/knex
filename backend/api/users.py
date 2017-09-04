@@ -57,7 +57,8 @@ def get_all_users():
     """ Returns a list of all user jsons currently in the database.
     """
     users = g.user_datastore.user_model.objects
-    return jsonify(sorted([user.to_dict() for user in users], key=lambda k: k.get('email').lower()))
+    return jsonify(sorted([user_object_to_dictionary(user) 
+                          for user in users], key=lambda k: k.get('email').lower()))
 
 
 @users.route('/api/users/projectids', methods=['GET'])
@@ -277,8 +278,7 @@ def get_user(mail):
     if not user:
         raise ApiException("Unknown User with Email-address: " + str(mail), 404)
 
-    res = user.to_dict()
-    return jsonify(res)
+    return jsonify(user_object_to_dictionary(user))
 
 
 @users.route('/api/users/<email:mail>/projects', methods=['GET'])
@@ -322,3 +322,19 @@ def get_user_tags(mail):
         return jsonify(sorted([x['_id'] for x in toptags], key=str.lower))
     except Exception as err:
         raise ApiException(str(err), 500)
+
+
+def user_object_to_dictionary(user):
+    mail = user['email']
+    user = user.to_dict()
+    pipeline = [{"$unwind": "$authors"},
+                {"$match": {"authors": mail}},
+                {"$unwind": "$tags"},
+                {"$group": {"_id": "$tags", "count": {"$sum": 1}}}
+                ]
+    taglist = sorted(list(g.projects.aggregate(pipeline)), key=lambda k: k['count'],
+                     reverse=True) if g.projects.aggregate(pipeline) else []
+    toptags = taglist[0:5] if len(taglist) > 5 else taglist
+    user['tags'] = sorted([x['_id'] for x in toptags], key=str.lower)
+    user['project_count'] = g.projects.count({'authors': str(mail)})
+    return user
