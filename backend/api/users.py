@@ -57,8 +57,8 @@ def get_all_users():
     """ Returns a list of all user jsons currently in the database.
     """
     users = g.user_datastore.user_model.objects
-    return jsonify(sorted([user_object_to_dictionary(user) 
-                          for user in users], key=lambda k: k.get('email').lower()))
+    return jsonify(sorted([user_object_to_dictionary(user)
+                           for user in users], key=lambda k: k.get('email').lower()))
 
 
 @users.route('/api/users/projectids', methods=['GET'])
@@ -90,10 +90,14 @@ def get_all_users_tags():
 def get_all_users_and_authors():
     """ Returns a list of all users and authors in the database.
     """
-    authors = json.loads(get_all_authors().get_data().decode())
-    users = [user['email'] for user in json.loads(get_all_users().get_data().decode())]
-    res = list(set(authors + users))
-    return jsonify(sorted(res, key=str.lower))
+
+    allUsers = g.user_datastore.user_model.objects
+    authors = dict([(author, author) for author in g.projects.distinct('authors')])
+    users = dict([(user.email, (user.first_name + " "  + user.last_name).strip())
+                 for user in allUsers])
+    authors.update(users)
+    users = [{'email': user, 'name': authors[user]} for user in authors]
+    return jsonify(users)
 
 
 @users.route('/api/users/names', methods=['POST'])

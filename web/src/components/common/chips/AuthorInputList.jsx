@@ -30,29 +30,20 @@ export default class AuthorInputList extends Component {
   }
 
   componentWillMount(){
-    Backend.getAuthors().then((authors) => {
-        Backend.getUserNames(authors)
-        .then ((userNames) => {
-          var suggestions = []
-          for (let author in authors){
-            var email = authors[author]
-            var name = (userNames[email] === undefined) ? email: userNames[email]
-            suggestions.push({email: email, name: name})
+    Backend.getAuthors().then((suggestions) => {
+      var list = this.props.value.map(email => {
+        var name = email
+        for(let item in suggestions){
+          if(suggestions[item].email === email){
+            name = suggestions[item].name
+            break
           }
-          var list = this.props.value.map((email) => {
-            var name = email
-            for(let item in suggestions){
-              if(suggestions[item].email === email){
-                name = suggestions[item].name
-                break
-              }
-            }
-            return {email: email, name: name}
-          })
-          this.setState({
-            suggestions: suggestions,
-            list: list,
-          })
+        }
+        return {email: email, name: name}
+      })
+      this.setState({
+        suggestions: suggestions,
+        list: list,
       })
     })
   }
