@@ -93,7 +93,7 @@ def get_all_users_and_authors():
 
     allUsers = g.user_datastore.user_model.objects
     authors = dict([(author, author) for author in g.projects.distinct('authors')])
-    users = dict([(user.email, (user.first_name + " "  + user.last_name).strip())
+    users = dict([(user.email, (user.first_name + " " + user.last_name).strip())
                  for user in allUsers])
     authors.update(users)
     users = [{'email': user, 'name': authors[user]} for user in authors]
