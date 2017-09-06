@@ -235,18 +235,6 @@ def save_search_func():
     g.save_search = save_search
 
 
-def on_project_deletion(project_id):
-    delete_project_meta(project_id)
-    for user in User.objects:
-        user.bookmarks = [x for x in user.bookmarks if g.projects.find_one({'_id': project_id})]
-        user.save()
-
-
-@app.before_request
-def project_deleted_func():
-    g.on_project_deletion = on_project_deletion
-
-
 @app.before_first_request
 def initialize_users():
     user_role = USER_DATASTORE.find_or_create_role('user')

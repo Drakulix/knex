@@ -5,6 +5,7 @@ from flask_security import current_user
 
 from pymongo.collection import ReturnDocument
 from api.notifications import delete_project_notification, add_project_notification
+from api.notifications import rerun_saved_searches
 from api.helper import uploader
 from api.projectsMeta import init_project_meta, set_last_access
 from api.projectsMeta import delete_project_meta, set_updated_fields
@@ -19,8 +20,10 @@ def delete_stored_project(project_id):
     g.whoosh_index.delete_by_term('id', str(project_id))
     delete_project_notification(project_id)
     delete_project_meta(project_id)
-    g.rerun_saved_searches(current_user['email'], project_id, "delete")
-    g.on_project_deletion(project_id)
+    rerun_saved_searches(current_user['email'], project_id, "delete")
+    for user in g.user_datastore.user_model.objects:
+        user.bookmarks = [x for x in user.bookmarks if g.projects.find_one({'_id': project_id})]
+        user.save()
 
 
 def get_stored_project(project_id):
@@ -50,7 +53,6 @@ def update_stored_project(project_id, manifest):
                                id=str(res['_id']))
         writer.commit()
         add_project_notification(current_user['email'], 'update', res)
-        g.rerun_saved_searches(current_user['email'], project_id, "update")
         return True
     elif len(changedfields) == 1:
         return True
@@ -67,7 +69,6 @@ def archive_stored_project(project_id, req):
     g.projects.find_one_and_replace({'_id': project_id}, res,
                                     return_document=ReturnDocument.AFTER)
     add_project_notification(current_user['email'], operation, res)
-    g.rerun_saved_searches(current_user['email'], project_id, operation)
 
 
 def add_project_list(manifestlist):
@@ -86,5 +87,4 @@ def add_project_list(manifestlist):
         writer.add_document(spelling=project['description'])
         writer.commit()
         add_project_notification(current_user['email'], 'create', project)
-        g.rerun_saved_searches(current_user['email'], project['_id'], "create")
     return [project['_id'] for project in projects]
