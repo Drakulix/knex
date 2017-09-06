@@ -9,10 +9,7 @@ import ProfileProjects from '../common/userComponents/ProfileProjects'
 import ProfileEditor from '../common/userComponents/ProfileEditor'
 import RegisterUser from '../common/adminComponents/RegisterUser'
 import TimeLine from '../common/userComponents/TimeLine'
-
 import RaisedButton from 'material-ui/RaisedButton'
-import {Redirect} from 'react-router-dom'
-
 
 
 export default class ProfileContainer extends Component {

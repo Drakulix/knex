@@ -249,7 +249,6 @@ export default class DataTable extends Component {
     if(this.props.columns.indexOf("authors") !== -1){
       columns.push({
         Header: 'Authors',
-        accessor: "authors",
         id: 'authors',
         accessor: d => d,
         width: 200,

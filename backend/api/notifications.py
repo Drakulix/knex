@@ -2,6 +2,8 @@ from flask import request, jsonify, make_response, g, Blueprint
 from flask_security import login_required, current_user
 from api.helper.apiexception import ApiException
 from api.helper.permissions import current_user_has_permission_to_change
+from api.search import prepare_mongo_query
+
 
 import time
 import pymongo
@@ -51,6 +53,17 @@ def add_self_action(creator, operation, project_id=None, user_id=None):
         'active': 'false'
     })
 
+def add_project_notification(creator, operation, project):
+    project_id = project['_id']
+    add_notification(creator, project['authors'], operation,
+                     project_id=project_id, reason='author')
+    add_notification(creator, g.users_with_bookmark(project_id), operation,
+                     project_id=project_id, reason='bookmark')
+    add_notification(creator,
+                     [comment['author'] for comment in project['comments']], operation,
+                     project_id=project_id, reason='comment')
+    add_self_action(creator, operation, project_id=project_id)
+
 
 def delete_project_notification(project_id):
     g.notifications.delete_many({'project_id': project_id})
@@ -67,20 +80,21 @@ def extend_notification_list(notification_list):
 
     userlist = [g.user_datastore.find_user(email=mail) for mail in userlist
                 if g.user_datastore.find_user(email=mail)]
-    dic = dict([(user.email, (user.first_name + (" " if user.first_name and user.last_name
+    name_list = dict([(user.email, (user.first_name + (" " if user.first_name and user.last_name
                 else "") + user.last_name))
                 for user in userlist])
 
     projects = list({notification['project_id'] for notification in notification_list})
     projectlist = g.projects.find({'_id': {'$in': projects}}, {"_id": 1, "title": 1})
-    projectlist = dict([(project['_id'], project['title']) for project in projectlist])
-
-    notification_list = [dict({'creator_name': dic[notification['creator']],
-                               'user_name': dic[notification['user_id']],
-                               'project_title': projectlist[notification['project_id']]
-                               if notification['project_id'] else ""
-                               }, **notification) for notification in notification_list]
-    return notification_list
+    projectlist = dict([(str(project['_id']), project['title']) for project in projectlist])
+    for notification in notification_list:
+        notification['creator_name'] = name_list[notification['creator']]
+        notification['user_name'] = name_list[notification['user_id']]
+        if notification['project_id'] and str(notification['project_id']) in projectlist:
+            notification['project_title'] = projectlist[str(notification['project_id'])]
+        else:
+            notification['project_title'] = ""
+    return [dict(notification) for notification in notification_list]
 
 
 @notifications.route('/api/users/actions', methods=['GET'])
@@ -168,3 +182,15 @@ def put_notification_settings():
     user['notifications_settings'] = settings
     user.save()
     return make_response("Notification settings updated", 200)
+
+
+def rerun_saved_searches(creator, project_id, operation):
+    for user in g.user_datastore.user_model.objects:
+        for search in user.saved_searches:
+            query = search.to_dict()
+            preparedQuery = prepare_mongo_query(query['metadata'])
+            search['count'] = g.projects.count(preparedQuery)
+            search.save()
+            if g.projects.count(preparedQuery) == 1:
+                add_notification(creator, user['email'], operation, project_id=project_id,
+                                 reason='search', saved_search_id=query['id'])

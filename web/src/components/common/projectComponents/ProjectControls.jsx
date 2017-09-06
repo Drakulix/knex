@@ -171,7 +171,7 @@ export default class ProjectControls extends Component{
                         <Share/>
             </IconButton>
             <IconButton
-                        style = {Styles.largeIcon, {paddingTop: 5}}
+                        style = {Styles.largeIcon}
                         disabled = {! (this.props.projectsMeta.is_owner || Backend.isAdmin())}
                         tooltipPosition = "bottom-center"
                         touch = {true}

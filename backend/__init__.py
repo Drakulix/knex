@@ -34,7 +34,7 @@ from api.share import share
 from api.projectsInfo import projects_info
 from api.projectsMeta import projects_meta, delete_project_meta
 from api.notifications import notifications, add_notification, delete_project_notification
-from api.search import search, prepare_search_results, prepare_mongo_query
+from api.search import search, prepare_mongo_query
 from api.helper.images import Identicon
 from api.helper.apiexception import ApiException
 
@@ -233,23 +233,6 @@ def save_search(user, meta, count):
 @app.before_request
 def save_search_func():
     g.save_search = save_search
-
-
-def rerun_saved_searches(creator, project_id, operation):
-    for user in User.objects:
-        for search in user.saved_searches:
-            query = search.to_dict()
-            preparedQuery = prepare_mongo_query(query['metadata'])
-            search['count'] = g.projects.count(preparedQuery)
-            search.save()
-            if g.projects.count(preparedQuery) == 1:
-                add_notification(creator, user['email'], operation, project_id=project_id,
-                                 reason='search', saved_search_id=query['id'])
-
-
-@app.before_request
-def rerun_saved_searches_func():
-    g.rerun_saved_searches = rerun_saved_searches
 
 
 def on_project_deletion(project_id):

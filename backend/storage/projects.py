@@ -4,7 +4,7 @@ from flask import g
 from flask_security import current_user
 
 from pymongo.collection import ReturnDocument
-from api.notifications import add_notification, add_self_action, delete_project_notification
+from api.notifications import delete_project_notification, add_project_notification
 from api.helper import uploader
 from api.projectsMeta import init_project_meta, set_last_access
 from api.projectsMeta import delete_project_meta, set_updated_fields
@@ -49,14 +49,7 @@ def update_stored_project(project_id, manifest):
         writer.update_document(ngrams=res['description'], content=res['description'],
                                id=str(res['_id']))
         writer.commit()
-        add_notification(current_user['email'], manifest['authors'], "update",
-                         project_id=project_id, reason='author')
-        add_notification(current_user['email'], g.users_with_bookmark(project_id), "update",
-                         project_id=project_id, reason='bookmark')
-        add_notification(current_user['email'],
-                         [comment['author'] for comment in res['comments']], "update",
-                         project_id=project_id, reason='comment')
-        add_self_action(current_user['email'], "update", project_id=project_id)
+        add_project_notification(current_user['email'], 'update', res)
         g.rerun_saved_searches(current_user['email'], project_id, "update")
         return True
     elif len(changedfields) == 1:
@@ -69,20 +62,11 @@ def archive_stored_project(project_id, req):
     res = g.projects.find_one({'_id': project_id})
     res['archived'] = req['archived']
     operation = 'archive' if req['archived'] == 'true' else 'unarchive'
-    g.projects.find_one_and_replace({'_id': project_id}, res,
-                                    return_document=ReturnDocument.AFTER)
     res['date_last_updated'] = time.strftime("%Y-%m-%d")
     res['_id'] = project_id
     g.projects.find_one_and_replace({'_id': project_id}, res,
                                     return_document=ReturnDocument.AFTER)
-    add_notification(current_user['email'], res['authors'], operation,
-                     project_id=project_id, reason='author')
-    add_notification(current_user['email'], g.users_with_bookmark(project_id), operation,
-                     project_id=project_id, reason='bookmark')
-    add_notification(current_user['email'],
-                     [comment['author'] for comment in res['comments']], operation,
-                     project_id=project_id, reason='comment')
-    add_self_action(current_user['email'], operation, project_id=project_id)
+    add_project_notification(current_user['email'], operation, res)
     g.rerun_saved_searches(current_user['email'], project_id, operation)
 
 
@@ -91,6 +75,8 @@ def add_project_list(manifestlist):
     for project in projects:
         if 'comments' not in project:
             project['comments'] = []
+        if 'archived' not in project:
+            project['archived'] = 'false'
         g.projects.insert(project)
         init_project_meta(project['_id'], str(datetime.now(timezone.utc)))
         writer = g.whoosh_index.writer()
@@ -99,8 +85,6 @@ def add_project_list(manifestlist):
                             id=str(project['_id']))
         writer.add_document(spelling=project['description'])
         writer.commit()
-        add_notification(current_user['email'], project['authors'], "create",
-                         project_id=project['_id'], reason='author')
-        add_self_action(current_user['email'], "create", project_id=project['_id'])
+        add_project_notification(current_user['email'], 'create', project)
         g.rerun_saved_searches(current_user['email'], project['_id'], "create")
     return [project['_id'] for project in projects]

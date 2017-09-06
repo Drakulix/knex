@@ -280,12 +280,14 @@ class TestGET(object):
 
     def test_success_getall(self, session, flask_api_url, manifest_validator,
                             mongo_client, enter_data_using_post):
+        project_id_not_archived = enter_data_using_post.json()
         response = session.get(flask_api_url + "/api/projects")
         print(response.status_code)
         assert response.status_code == 200
         projects = response.json()
         print(projects)
         print(projects[0])
+        assert projects[0]['_id'] == project_id_not_archived[0]
         for project in projects:
             print(project)
             if 'is_bookmark' in project:
