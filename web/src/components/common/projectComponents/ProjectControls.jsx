@@ -7,6 +7,7 @@ import Snackbar from 'material-ui/Snackbar'
 import CommentSideBar from './CommentSideBar'
 import ConfirmationPane from '../ConfirmationPane'
 import Badge from 'material-ui/Badge'
+import history from '../history'
 
 import Edit from 'material-ui/svg-icons/editor/mode-edit'
 import Comment from 'material-ui/svg-icons/communication/comment'
@@ -176,7 +177,7 @@ export default class ProjectControls extends Component{
                         tooltipPosition = "bottom-center"
                         touch = {true}
                         tooltip = "Edit project"
-                        href = {`/update/${this.props.projectID}`}
+                        onClick = {() => history.push(`/update/${this.props.projectID}`)}
                         iconStyle = {{height: 24, color: Styles.palette.textColor}}
                         >
                         <Edit/>

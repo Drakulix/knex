@@ -63,6 +63,7 @@ def add_project_notification(creator, operation, project):
                      [comment['author'] for comment in project['comments']], operation,
                      project_id=project_id, reason='comment')
     add_self_action(creator, operation, project_id=project_id)
+    rerun_saved_searches(creator, project_id, operation)
 
 
 def delete_project_notification(project_id):
