@@ -32,8 +32,8 @@ from api.bookmarks import bookmarks
 from api.avatars import avatars
 from api.share import share
 from api.projectsInfo import projects_info
-from api.projectsMeta import projects_meta, delete_project_meta
-from api.notifications import notifications, add_notification, delete_project_notification
+from api.projectsMeta import projects_meta
+from api.notifications import notifications
 from api.search import search, prepare_mongo_query
 from api.helper.images import Identicon
 from api.helper.apiexception import ApiException
@@ -190,8 +190,8 @@ class User(DB.Document, UserMixin):
         # dic['password'] = str(self.password)
         dic['active'] = str(self.active).lower()
         dic['bio'] = str(self.bio)
-        dic['notifications_settings'] = dict(self.notifications_settings)
-        dic['bookmarks'] = [str(bookmark) for bookmark in self.bookmarks]
+#        dic['notifications_settings'] = dict(self.notifications_settings)
+#        dic['bookmarks'] = [str(bookmark) for bookmark in self.bookmarks]
         dic['roles'] = [str(role.name) for role in self.roles]
         return dic
 

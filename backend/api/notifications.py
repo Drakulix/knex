@@ -22,8 +22,7 @@ def add_notification(creator, userlist, operation, project_id=None,
         if user not in (creator):
             user_object = g.user_datastore.get_user(user)
             if user_object:
-                dict = user_object.to_dict()
-                notifications_settings = dict['notifications_settings']
+                notifications_settings = user_object['notifications_settings']
                 if operation not in notifications_settings\
                         or notifications_settings[operation] == 'true':
                     g.notifications.insert_one({
@@ -53,6 +52,7 @@ def add_self_action(creator, operation, project_id=None, user_id=None):
         'active': 'false'
     })
 
+
 def add_project_notification(creator, operation, project):
     project_id = project['_id']
     add_notification(creator, project['authors'], operation,
@@ -81,9 +81,8 @@ def extend_notification_list(notification_list):
 
     userlist = [g.user_datastore.find_user(email=mail) for mail in userlist
                 if g.user_datastore.find_user(email=mail)]
-    name_list = dict([(user.email, (user.first_name + (" " if user.first_name and user.last_name
-                else "") + user.last_name))
-                for user in userlist])
+    name_list = dict([(user.email, (user.first_name + " " + user.last_name).strip())
+                     for user in userlist])
 
     projects = list({notification['project_id'] for notification in notification_list})
     projectlist = g.projects.find({'_id': {'$in': projects}}, {"_id": 1, "title": 1})
@@ -169,8 +168,7 @@ def get_notification_settings():
     user = g.user_datastore.get_user(current_user['email'])
     if not user:
         raise ApiException("Couldn't find current_user in datastore", 500)
-    user_dict = user.to_dict()
-    return jsonify(user_dict['notifications_settings'])
+    return jsonify(user['notifications_settings'])
 
 
 @notifications.route('/api/users/notifications/settings', methods=['PUT'])
