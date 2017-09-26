@@ -10,46 +10,14 @@ from mongoengine.fields import ObjectId
 from uuid import UUID
 
 from api.helper.apiexception import ApiException
-from api.helper.search import prepare_search_results
+from api.helper.search import prepare_search_results, prepare_mongo_query
 
 from whoosh.query import Term
 
+from storage.projects import get_stored_projects
+
 
 search = Blueprint('api_projects_search', __name__)
-
-
-def prepare_mongo_query(query):
-    """ Internal function to prepare the ElasticSearch search query from a given json
-    """
-    archived = query.get('archived')
-    authors = query.get('authors')
-    tags = query.get('tags')
-    status = query.get('status')
-    date_from = query.get('date_from')
-    date_to = query.get('date_to')
-    description = query.get('description')
-    title = query.get('title')
-
-    request_json = {}
-
-    if authors:
-        request_json['authors'] = {'$all': authors}
-    if tags:
-        request_json['tags'] = {'$all': tags}
-    if status:
-        request_json['status'] = status
-    if archived in ['true', 'false']:
-        request_json['archived'] = archived
-    if date_from:
-        request_json['date_creation'] = {'$gte': date_from}
-    if date_to:
-        request_json['date_creation'] = {'$lte': date_to}
-    if description:
-        request_json['description'] = {'$regex': '(^| )' + description, '$options': 'i'}
-    if title:
-        request_json['title'] = {'$regex': '(^| )' + title, '$options': 'i'}
-
-    return request_json
 
 
 @search.route('/api/projects/search', methods=['POST'])
@@ -69,16 +37,14 @@ def search_es():
         with g.whoosh_index.searcher() as searcher:
             ids = [result for result in searcher.search(Term("content", search_String))]
 
-    projects = g.projects.find(query, {'comments': 0})
-    projects = prepare_search_results(projects)
-
     if 'label' in query:
         try:
             return g.save_search(current_user, request_json, len(projects))
         except json.JSONDecodeError:
             return make_response('Invalid json', 400)
-
-    return jsonify(projects)
+    else:
+        projects = get_stored_projects(query)
+        return jsonify(projects)
 
 
 @search.route('/api/projects/search/count', methods=['POST'])

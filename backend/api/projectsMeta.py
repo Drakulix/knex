@@ -60,7 +60,7 @@ def get_project_list_meta():
 
 @projects_meta.route('/api/projects/<uuid:project_id>/meta', methods=['GET'])
 @login_required
-def get_project_meta__by_id(project_id):
+def get_project_meta_by_id(project_id):
     """Returns project meta information by ID number, 404 if it is not found.
 
     Args:
@@ -69,12 +69,9 @@ def get_project_meta__by_id(project_id):
     Returns:
         res (json): Project meta data corresponding to the ID
     """
-
     if not g.projects_meta.find_one({'_id': project_id}):
         return make_response("Project not found", 404)
-
     res = get_meta_data(project_id)
-
     return jsonify(res)
 
 
@@ -86,7 +83,6 @@ def get_meta_data(project_id):
     res['is_owner'] = current_user['email'] in project['authors']
     res['archived'] = project['archived']
     res['comment_count'] = len(project['comments'])
-
     userlist = [g.user_datastore.find_user(email=mail) for mail in project['authors']
                 if g.user_datastore.find_user(email=mail)]
     res['authors'] = dict([(user.email, (user.first_name + (" "

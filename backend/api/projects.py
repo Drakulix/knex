@@ -18,6 +18,7 @@ from globals import ADMIN_PERMISSION
 
 from storage.projects import delete_stored_project, add_project_list, update_stored_project
 from storage.projects import archive_stored_project, project_exists, get_stored_project
+from storage.projects import get_stored_projects
 
 
 projects = Blueprint('api_projects', __name__)
@@ -70,8 +71,7 @@ def get_projects():
     Returns:
         res: A list of projects
     """
-    limit = request.args.get('limit', type=int)
-    skip = request.args.get('skip', type=int)
+
     archived = request.args.get('archived', type=str, default='false')
     if archived not in ['true', 'false', 'mixed']:
         return make_response('Invalid parameters', 400)
@@ -80,23 +80,8 @@ def get_projects():
         query = {'archived': 'true'}
     elif archived == 'false':
         query = {'archived': 'false'}
-    if limit and skip:
-        res = g.projects.find(query, {'comments': 0}, limit=limit, skip=skip)
-    elif limit:
-        res = g.projects.find(query, {'comments': 0}, limit=limit)
-    elif skip:
-        res = g.projects.find(query, {'comments': 0}, skip=skip)
-    else:
-        res = g.projects.find(query)
-
-    try:
-        res = [x for x in res[:]]
-        for project in res:
-            project['is_bookmark'] = 'true' if project['_id']\
-                in current_user['bookmarks'] else 'false'
-        return jsonify(res)
-    except KeyError as err:
-        raise ApiException(str(err), 400)
+    res = get_stored_projects(query)
+    return jsonify(res)
 
 
 @projects.route('/api/projects/<uuid:project_id>', methods=['GET'])

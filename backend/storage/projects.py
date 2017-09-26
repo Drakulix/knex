@@ -32,6 +32,11 @@ def get_stored_project(project_id):
     return res
 
 
+def get_stored_projects(query):
+    projects = g.projects.find(query, {'comments': 0})
+    return list(projects)
+
+
 def update_stored_project(project_id, manifest):
     res = g.projects.find_one({'_id': project_id})
     changedfields = []

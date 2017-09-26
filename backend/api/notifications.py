@@ -2,7 +2,7 @@ from flask import request, jsonify, make_response, g, Blueprint
 from flask_security import login_required, current_user
 from api.helper.apiexception import ApiException
 from api.helper.permissions import current_user_has_permission_to_change
-from api.search import prepare_mongo_query
+from api.helper.search import prepare_mongo_query
 
 
 import time
