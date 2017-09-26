@@ -24,7 +24,7 @@ class TestPOST(object):
             'validexample0.json5'
         )
         with open(test_manifest, 'r', encoding='utf-8') as tf:
-            data = str(tf.read().replace('\n', ''))
+            data = str(tf.read())
         response = session.post(flask_api_url + "/api/projects", data=data.encode('utf-8'),
                                 headers={'Content-Type': 'application/json5'})
         print(response.text)
@@ -283,6 +283,7 @@ class TestGET(object):
         project_id_not_archived = enter_data_using_post.json()
         response = session.get(flask_api_url + "/api/projects")
         print(response.status_code)
+        print(project_id_not_archived)
         assert response.status_code == 200
         projects = response.json()
         print(projects)
