@@ -7,8 +7,9 @@ import Styles from '../Styles.jsx'
 export default class AuthorOutputList extends Component{
 
   render(){
+
     return (
-      <div style = {{display: 'flex', flexWrap: 'wrap',}}>
+      <div style = {{display: 'flex', flexWrap: 'wrap'}}>
         { this.props.value !== undefined ?
           this.props.value.map(email =>
             <Chip style= {{margin: '4px 4px 4px 4px', background: '#ffffff', float: 'left' }} key = {email}>

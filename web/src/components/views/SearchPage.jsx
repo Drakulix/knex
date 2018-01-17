@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import TextField from 'material-ui/TextField'
+import AutoComplete from 'material-ui/AutoComplete'
 import RaisedButton from 'material-ui/RaisedButton'
 import DataTable from '../common/DataTable'
 import Dialog from 'material-ui/Dialog'
@@ -24,7 +25,8 @@ export default class SearchPage extends Component {
         snackbar : false,
         snackbarText : "",
         loading : false,
-        projects : []
+        projects : [],
+        suggestions : []
     }
 
     delete query.label
@@ -41,6 +43,7 @@ export default class SearchPage extends Component {
 
   componentDidMount(){
     this.handler(this.state.query)
+
   }
 
   handler(query){
@@ -49,14 +52,18 @@ export default class SearchPage extends Component {
               .then ((data) => {this.setState({projects : data, loading : false}); return data;})
   }
 
-  handleChange(event) {
-    const value = event.target.value
+  handleChange(searchText) {
+    const value = searchText
     var query = JSON.parse(JSON.stringify(this.state.query))
     query['searchString'] = value
+
     this.setState({
       query : query,
       searchString : value
     })
+
+    Backend.getProjectNgrams(value)
+    .then((data) => {this.setState({suggestions : data})})
     this.handler(query)
   }
 
@@ -141,12 +148,15 @@ export default class SearchPage extends Component {
           <HeadLine title = {"  Looking for a project?"}/>
           <div className = "row" style = {{textAlign : "center"}}>
             <div className = "col-10">
-              <TextField
+              <AutoComplete
                 name = "searchString"
                 fullWidth = {true}
-                value = {this.state.searchString}
+                searchText = {this.state.searchString}
+                dataSource = {this.state.suggestions}
+                filter = {AutoComplete.fuzzyFilter}
+                maxSearchResults = {10}
                 placeholder = "Enter your query here..."
-                onChange = {this.handleChange} />
+                onUpdateInput = {this.handleChange} />
             </div>
             <div className = "col-2">
               <RaisedButton style = {{width : "100%"}}

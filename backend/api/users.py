@@ -14,13 +14,13 @@ from flask_security.utils import verify_password, hash_password
 from mongoengine import NotUniqueError
 from mongoengine.fields import ObjectId
 
-from api.projects import get_all_authors
+from api.projectsInfo import get_all_authors
 from api.helper.apiexception import ApiException
 from api.helper.search import prepare_search_results
 from api.helper.permissions import current_user_has_permission_to_change
 from api.helper.images import Identicon
 from api.notifications import add_notification, add_self_action, delete_user_notification
-
+from api.projectsMeta import delete_project_meta_user_data
 
 users = Blueprint('api_users', __name__)
 
@@ -34,13 +34,13 @@ def login():
     password = request.form['password']
     user = g.user_datastore.get_user(email)
     if not user:
-        return make_response("Username oder Password invalid", 403)
+        raise ApiException("Username oder Password invalid", 403)
 
     if verify_password(password, user["password"]):
         login_user(user)
         return make_response("Login successful", 200)
 
-    return make_response("Username oder Password invalid", 403)
+    raise ApiException("Username oder Password invalid", 403)
 
 
 @users.route('/api/users/logout')
@@ -57,7 +57,8 @@ def get_all_users():
     """ Returns a list of all user jsons currently in the database.
     """
     users = g.user_datastore.user_model.objects
-    return jsonify(sorted([user.to_dict() for user in users], key=lambda k: k.get('email').lower()))
+    return jsonify(sorted([user_object_to_dictionary(user)
+                           for user in users], key=lambda k: k.get('email').lower()))
 
 
 @users.route('/api/users/projectids', methods=['GET'])
@@ -89,10 +90,14 @@ def get_all_users_tags():
 def get_all_users_and_authors():
     """ Returns a list of all users and authors in the database.
     """
-    authors = json.loads(get_all_authors().get_data().decode())
-    users = [user['email'] for user in json.loads(get_all_users().get_data().decode())]
-    res = list(set(authors + users))
-    return jsonify(sorted(res, key=str.lower))
+
+    allUsers = g.user_datastore.user_model.objects
+    authors = dict([(author, author) for author in g.projects.distinct('authors')])
+    users = dict([(user.email, (user.first_name + " " + user.last_name).strip())
+                 for user in allUsers])
+    authors.update(users)
+    users = [{'email': user, 'name': authors[user]} for user in authors]
+    return jsonify(users)
 
 
 @users.route('/api/users/names', methods=['POST'])
@@ -169,49 +174,49 @@ def update_user():
         Returns: 400 if user unknown, 403 if no permissions, 200 on success.
     """
     user = request.get_json()
-    if current_user_has_permission_to_change(user):
-        res = g.user_datastore.get_user(user['email'])
-        if not res:
-            return make_response("Unknown User with Email-address: " + user['email'], 400)
+    if not current_user_has_permission_to_change(user):
+        raise ApiException("You don't have permission to edit this user", 403)
 
-        res.first_name = user.get('first_name', res.first_name)
-        res.last_name = user.get('last_name', res.last_name)
-        res.bio = user.get('bio', res.bio)
+    res = g.user_datastore.get_user(user['email'])
+    if not res:
+        raise ApiException("Unknown User with Email-address: " + user['email'], 400)
 
-        if 'active' in user:
-            if not current_user.has_role('admin'):
-                raise ApiException("Users cannot de/activate themselves.", 403)
-            if user.get('active') == 'false':
-                for usr in g.user_datastore.user_model.objects:
-                    if usr.has_role('admin') and usr.active and usr['email'] != user['email']:
-                        res.active = False
-                        break
-                else:
-                    raise ApiException("Can't deactivate the last admin.", 400)
-            elif user.get('active') == 'true':
-                res.active = True
+    res.first_name = user.get('first_name', res.first_name)
+    res.last_name = user.get('last_name', res.last_name)
+    res.bio = user.get('bio', res.bio)
+
+    if 'active' in user:
+        if not current_user.has_role('admin'):
+            raise ApiException("Users cannot de/activate themselves.", 403)
+        if user.get('active') == 'false':
+            for usr in g.user_datastore.user_model.objects:
+                if usr.has_role('admin') and usr.active and usr['email'] != user['email']:
+                    res.active = False
+                    break
             else:
-                raise ApiException("user['active'] must be either 'true' or 'false", 400)
+                raise ApiException("Can't deactivate the last admin.", 400)
+        elif user.get('active') == 'true':
+            res.active = True
+        else:
+            raise ApiException("user['active'] must be either 'true' or 'false", 400)
 
-        if 'roles' in user:
-            if 'admin' in user['roles'] and not current_user.has_role('admin'):
-                raise ApiException("Current user has no permission to assign admin role.", 403)
-            if 'admin' not in user['roles'] and res.has_role('admin'):
-                for usr in g.user_datastore.user_model.objects:
-                    if usr.has_role('admin') and usr.active and usr['email'] != user['email']:
-                        res.roles = [g.user_datastore.find_or_create_role(role)
-                                     for role in user['roles']]
-                        break
-                else:
-                    raise ApiException("Can't unassign the admin role from the last admin.", 400)
+    if 'roles' in user:
+        if 'admin' in user['roles'] and not current_user.has_role('admin'):
+            raise ApiException("Current user has no permission to assign admin role.", 403)
+        if 'admin' not in user['roles'] and res.has_role('admin'):
+            for usr in g.user_datastore.user_model.objects:
+                if usr.has_role('admin') and usr.active and usr['email'] != user['email']:
+                    res.roles = [g.user_datastore.find_or_create_role(role)
+                                 for role in user['roles']]
+                    break
             else:
-                res.roles = [g.user_datastore.find_or_create_role(role) for role in user['roles']]
+                raise ApiException("Can't unassign the admin role from the last admin.", 400)
+        else:
+            res.roles = [g.user_datastore.find_or_create_role(role) for role in user['roles']]
 
-        res.save()
+    res.save()
 
-        return make_response("User with email: " + user['email'] + " updated", 200)
-
-    return make_response("You don't have permission to edit this user", 403)
+    return make_response("User with email: " + user['email'] + " updated", 200)
 
 
 @users.route('/api/users/password', methods=['PUT'])
@@ -227,16 +232,15 @@ def update_password():
     user = request.get_json()
     res = g.user_datastore.get_user(user['email'])
     if not res:
-        return make_response("Unknown User with Email-address: " +
-                             user['email'], 400)
+        raise ApiException("Unknown User with Email-address: " + user['email'], 400)
 
     if current_user.has_role('admin') or verify_password(user["old_password"], res.password):
         new_password = user["new_password"]
         res.password = hash_password(new_password)
         res.save()
         return make_response("Password restored!", 200)
-
-    return make_response("You don't have permission to edit this user", 403)
+    else:
+        raise ApiException("You don't have permission to edit this user", 403)
 
 
 @users.route('/api/users/<email:mail>', methods=['DELETE'])
@@ -248,22 +252,22 @@ def delete_user(mail):
     user = g.user_datastore.get_user(mail)
     if not user:
         raise ApiException("user not found", 404)
-    if current_user_has_permission_to_change(user):
-        if not user.has_role('admin'):
-            g.user_datastore.delete_user(user)
-            delete_user_notification(user['email'])
-            return make_response("deleted non admin", 200)
-        else:
-            for usr in g.user_datastore.user_model.objects:
-                if usr.has_role('admin') and usr.active and usr['email'] != user['email']:
-                    delete_user_notification(user['email'])
-                    g.user_datastore.delete_user(user)
-                    return make_response("deleted", 200)
-            raise ApiException("You are the last surviving admin, "
-                               "you cannot delete yourself", 9001)
+    if not current_user_has_permission_to_change(user):
+        raise ApiException("Permission denied!", 403)
 
+    if not user.has_role('admin'):
+        g.user_datastore.delete_user(user)
+        delete_user_notification(user['email'])
+        delete_project_meta_user_data(user['email'])
+        return make_response("deleted non admin", 200)
     else:
-        make_response("Permission denied!", 403)
+        for usr in g.user_datastore.user_model.objects:
+            if usr.has_role('admin') and usr.active and usr['email'] != user['email']:
+                delete_user_notification(user['email'])
+                g.user_datastore.delete_user(user)
+                return make_response("deleted", 200)
+        raise ApiException("You are the last surviving admin, "
+                           "you cannot delete yourself", 9001)
 
 
 @users.route('/api/users/<email:mail>', methods=['GET'])
@@ -276,10 +280,9 @@ def get_user(mail):
     """
     user = g.user_datastore.get_user(mail)
     if not user:
-        return make_response("Unknown User with Email-address: " + str(mail), 404)
+        raise ApiException("Unknown User with Email-address: " + str(mail), 404)
 
-    res = user.to_dict()
-    return jsonify(res)
+    return jsonify(user_object_to_dictionary(user))
 
 
 @users.route('/api/users/<email:mail>/projects', methods=['GET'])
@@ -290,6 +293,9 @@ def get_user_projects(mail):
         Returns:
             res: Array with projects where the user is author
     """
+    user = g.user_datastore.get_user(mail)
+    if not user:
+        raise ApiException("Unknown User with Email-address: " + str(mail), 404)
     try:
         projects = g.projects.find({'authors': str(mail)})
         return jsonify(list(projects))
@@ -305,6 +311,9 @@ def get_user_tags(mail):
         Returns:
             res: Array with topten tags lexicographical order
     """
+    user = g.user_datastore.get_user(mail)
+    if not user:
+        raise ApiException("Unknown User with Email-address: " + str(mail), 404)
     try:
         pipeline = [{"$unwind": "$authors"},
                     {"$match": {"authors": mail}},
@@ -317,3 +326,19 @@ def get_user_tags(mail):
         return jsonify(sorted([x['_id'] for x in toptags], key=str.lower))
     except Exception as err:
         raise ApiException(str(err), 500)
+
+
+def user_object_to_dictionary(user):
+    mail = user['email']
+    user = user.to_dict()
+    pipeline = [{"$unwind": "$authors"},
+                {"$match": {"authors": mail}},
+                {"$unwind": "$tags"},
+                {"$group": {"_id": "$tags", "count": {"$sum": 1}}}
+                ]
+    taglist = sorted(list(g.projects.aggregate(pipeline)), key=lambda k: k['count'],
+                     reverse=True) if g.projects.aggregate(pipeline) else []
+    toptags = taglist[0:5] if len(taglist) > 5 else taglist
+    user['tags'] = sorted([x['_id'] for x in toptags], key=str.lower)
+    user['project_count'] = g.projects.count({'authors': str(mail)})
+    return user

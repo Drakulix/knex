@@ -60,8 +60,12 @@ def run_around_tests(mongo_client):
     :return:
     """
     mongo_client.projects.delete_many({})
+    mongo_client.notifications.delete_many({})
+    mongo_client.projects_meta.delete_many({})
     yield
+    mongo_client.notifications.delete_many({})
     mongo_client.projects.delete_many({})
+    mongo_client.projects_meta.delete_many({})
 
 
 @pytest.yield_fixture()
@@ -73,7 +77,7 @@ def enter_data_using_post(pytestconfig, session):
         'validexample0.json5'
     )
     with open(test_manifest, 'r', encoding='utf-8') as tf:
-        data = str(tf.read().replace('\n', ''))
+        data = str(tf.read())
     response = session.post(flask_api_url() + "/api/projects", data=data.encode('utf-8'),
                             headers={'Content-Type': 'application/json5'})
     yield response
@@ -88,7 +92,7 @@ def enter_archived_using_post(pytestconfig, flask_api_url, session):
         'validexample0_archived.json5'
     )
     with open(test_manifest, 'r', encoding='utf-8') as tf:
-        data = str(tf.read().replace('\n', ''))
+        data = str(tf.read())
     response = session.post(flask_api_url + "/api/projects", data=data.encode('utf-8'),
                             headers={'Content-Type': 'application/json5'})
     yield response

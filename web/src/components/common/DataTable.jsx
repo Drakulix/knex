@@ -18,7 +18,7 @@ import Star from 'material-ui/svg-icons/toggle/star'
 import Delete from 'material-ui/svg-icons/action/delete'
 
 
-export default class BookmarksTable extends Component {
+export default class DataTable extends Component {
 
   constructor(props) {
     super(props)
@@ -29,6 +29,7 @@ export default class BookmarksTable extends Component {
     this.state = {
       filters: filters,
       filteredData: [],
+      metaData: {},
       dialogOpen: false,
       dialogText: "Delete Project",
       action: null,
@@ -78,8 +79,6 @@ export default class BookmarksTable extends Component {
         this.setState({loading: true,dialogOpen: false, filteredData: []})
         var project = projectInf
         delete project.is_bookmark
-        delete project.is_owner
-        project['archived'] = true
         Backend.archiveProject(projectInf._id, "true")
         .then(() => {this.props.handler(this.state.filters)})
         .then(this.setState({snackbar: true,
@@ -93,8 +92,6 @@ export default class BookmarksTable extends Component {
     this.setState({loading: true, filteredData: []})
     var project = projectInf
     delete project.is_bookmark
-    delete project.is_owner
-    project['archived'] = false
     Backend.archiveProject(projectInf._id, "false")
         .then(() => {this.props.handler(this.state.filters)})
         .then(() => {this.setState({snackbar: true,
@@ -102,12 +99,12 @@ export default class BookmarksTable extends Component {
         .catch(() => {this.handleError()})
   }
 
-  handleBookmark(projectInf){
+  handleBookmark(projectInf, is_bookmark){
     this.setState({loading: true, filteredData: []})
-    Backend.handleBookmark(projectInf._id, projectInf.is_bookmark)
+    Backend.handleBookmark(projectInf._id, is_bookmark)
     .then(() => {this.props.handler(this.state.filters)})
     .then(() => {this.setState({snackbar: true,
-      snackbarText: `Project bookmark${projectInf.is_bookmark === "true" ? " removed": "ed"}`})})
+      snackbarText: `Project bookmark${is_bookmark ? " removed": "ed"}`})})
     .catch(() => {this.handleError()})
   }
 
@@ -116,17 +113,11 @@ export default class BookmarksTable extends Component {
       this.setState({snackbar: false})
     }
     if(this.props.loading && ! props.loading){
-      Backend.getAuthors()
-      .then((authors) => {
-        Backend.getUserNames(authors)
-        .then ((userNames) => {
-          this.setState({
-            userNames: userNames,
-            filteredData: (this.props.isBookmarkTable
-                            ? this.filter(props.data, this.state.filters): props.data),
-          })
-        })
-      })
+      Backend.getProjectsMetaData(props.data.map(entry =>{ return entry['_id']}))
+      .then((data) => this.setState({metaData: data,
+        filteredData: (this.props.isBookmarkTable
+                        ? this.filter(props.data, this.state.filters): props.data)
+      }))
     }else{
       this.setState({
         filteredData: (this.props.isBookmarkTable
@@ -258,9 +249,13 @@ export default class BookmarksTable extends Component {
     if(this.props.columns.indexOf("authors") !== -1){
       columns.push({
         Header: 'Authors',
-        accessor: "authors",
+        id: 'authors',
+        accessor: d => d,
         width: 200,
-        Cell: props => <AuthorOutputList value = {props.value} userNames = {this.state.userNames} />
+        Cell: props => <AuthorOutputList value = {props.value.authors} userNames = {
+          this.state.metaData[props.value._id] !== undefined ?
+          this.state.metaData[props.value._id].authors : undefined
+        } />
       })
     }
     if(this.props.columns.indexOf("description") !== -1){
@@ -290,11 +285,13 @@ export default class BookmarksTable extends Component {
         width: 85,
         style: {textAlign: "center"},
         Cell: props =>
-          <IconButton onClick = {()=>this.handleBookmark(props.value)}
+          <IconButton onClick = {() =>
+                              this.handleBookmark(props.value,
+                                                  this.state.metaData[props.value._id].is_bookmark)}
                       touch = {true}
                       style = {Styles.largeIcon}
                       iconStyle = {{fontSize: '24px',color: Styles.palette.textColor}}>
-            {props.value.is_bookmark === "true" ? <Star/>: <StarBorder/>}
+            {this.state.metaData[props.value._id].is_bookmark ? <Star/>: <StarBorder/>}
           </IconButton>
       })
     }
@@ -311,7 +308,7 @@ export default class BookmarksTable extends Component {
           (a.archived  ? 1: -1)},
         width: 100,
         style: {textAlign: "center"},
-        Cell: props => { return props.value.archived === "true"?
+        Cell: props => { return this.state.metaData[props.value._id].archived === "true"?
           <IconButton
           onClick = {()=>this.handleUnArchive(props.value)}
           touch = {true}
@@ -336,7 +333,7 @@ export default class BookmarksTable extends Component {
           (a.archived  ? 1: -1)},
         width: 80,
         style: {textAlign: "center"},
-        Cell: props => { return props.value.archived === "false" ?
+        Cell: props => { return this.state.metaData[props.value._id].archived === "false" ?
           <IconButton
           onClick = {()=>this.handleArchive(props.value)}
           touch = {true}

@@ -1,7 +1,6 @@
 import os
 import sys
 import json
-import time
 import uuid
 import base64
 
@@ -21,18 +20,23 @@ from mongoengine.fields import (UUIDField, ListField, StringField, BooleanField,
                                 ObjectIdField)
 from werkzeug.routing import BaseConverter
 
+from whoosh.fields import Schema, ID, KEYWORD, TEXT, NGRAMWORDS
+from whoosh.index import create_in
+from whoosh.analysis import FancyAnalyzer
+
+
 from api.projects import projects
 from api.users import users
 from api.comments import comments
 from api.bookmarks import bookmarks
 from api.avatars import avatars
 from api.share import share
-from api.notifications import notifications, add_notification, delete_project_notification
-
-
-from api.search import search, prepare_search_results, prepare_mongo_query
-from api.helper.apiexception import ApiException
+from api.projectsInfo import projects_info
+from api.projectsMeta import projects_meta
+from api.notifications import notifications
+from api.search import search, prepare_mongo_query
 from api.helper.images import Identicon
+from api.helper.apiexception import ApiException
 
 
 config_file_path = os.path.dirname(os.path.abspath(__file__))
@@ -98,6 +102,7 @@ def set_global_mongoclient():
     g.knexdb = MONGOCLIENT.knexdb
     g.projects = g.knexdb.projects
     g.notifications = g.knexdb.notifications
+    g.projects_meta = g.knexdb.projects_meta
 
 
 @app.before_first_request
@@ -117,6 +122,31 @@ def set_global_manifest_validator():
 @app.before_request
 def set_global_mongo_engine():
     g.user_datastore = USER_DATASTORE
+
+
+@app.before_request
+def init_global_mongoclient():
+    global WHOOSH
+    if not os.path.exists("index"):
+        os.mkdir("index")
+    index = create_in("index", schema)
+    g.whoosh_index = index
+
+
+schema = Schema(
+    ngrams=NGRAMWORDS(minsize=2,
+                      maxsize=10,
+                      stored=True,
+                      field_boost=1.0,
+                      tokenizer=FancyAnalyzer(),
+                      at='start',
+                      queryor=False,
+                      sortable=False),
+    content=TEXT(stored=True),
+    spelling=TEXT(stored=True,
+                  analyzer=FancyAnalyzer(),
+                  spelling=True),
+    id=ID(stored=True, unique=True))
 
 
 class Role(DB.Document, RoleMixin):
@@ -160,8 +190,8 @@ class User(DB.Document, UserMixin):
         # dic['password'] = str(self.password)
         dic['active'] = str(self.active).lower()
         dic['bio'] = str(self.bio)
-        dic['notifications_settings'] = dict(self.notifications_settings)
-        dic['bookmarks'] = [str(bookmark) for bookmark in self.bookmarks]
+#        dic['notifications_settings'] = dict(self.notifications_settings)
+#        dic['bookmarks'] = [str(bookmark) for bookmark in self.bookmarks]
         dic['roles'] = [str(role.name) for role in self.roles]
         return dic
 
@@ -203,35 +233,6 @@ def save_search(user, meta, count):
 @app.before_request
 def save_search_func():
     g.save_search = save_search
-
-
-def rerun_saved_searches(creator, project_id, operation):
-    for user in User.objects:
-        for search in user.saved_searches:
-            query = search.to_dict()
-            preparedQuery = prepare_mongo_query(query['metadata'])
-            search['count'] = g.projects.count(preparedQuery)
-            search.save()
-            if g.projects.count(preparedQuery) == 1:
-                add_notification(creator, user['email'], operation, project_id=project_id,
-                                 reason='search', saved_search_id=query['id'])
-
-
-@app.before_request
-def rerun_saved_searches_func():
-    g.rerun_saved_searches = rerun_saved_searches
-
-
-def on_project_deletion(project_id):
-    delete_project_notification(project_id)
-    for user in User.objects:
-        user.bookmarks = [x for x in user.bookmarks if g.projects.find_one({'_id': project_id})]
-        user.save()
-
-
-@app.before_request
-def project_deleted_func():
-    g.on_project_deletion = on_project_deletion
 
 
 @app.before_first_request
@@ -285,16 +286,16 @@ def handle_insufficient_permission(error):
 def index(err):
     """Index of knex
     """
-    if request.path.startswith("/api/"):
-        return err, 404
-    return app.send_static_file('index.html')
+#    if request.path.startswith("/api/"):
+    return err, 404
+#    return app.send_static_file('index.html')
 
 
 @app.route('/', methods=['GET'])
 def index():
     """Index of knex
     """
-    return app.send_static_file('index.html')
+    raise ApiException("Not found", 404)
 
 
 app.register_blueprint(projects)
@@ -305,6 +306,8 @@ app.register_blueprint(bookmarks)
 app.register_blueprint(avatars)
 app.register_blueprint(notifications)
 app.register_blueprint(share)
+app.register_blueprint(projects_info)
+app.register_blueprint(projects_meta)
 
 
 if __name__ == "__main__":

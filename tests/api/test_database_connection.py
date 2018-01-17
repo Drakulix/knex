@@ -20,6 +20,7 @@ def test_empty_database(flask_api_url, mongo_client, session):
     :return:
     """
     result = mongo_client.projects.delete_many({})
+    result = mongo_client.notifications.delete_many({})
     print("Database cleaned: ", result)
     response = session.get(flask_api_url + "/api/projects")
     assert response.status_code == 200

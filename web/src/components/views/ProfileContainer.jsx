@@ -9,10 +9,7 @@ import ProfileProjects from '../common/userComponents/ProfileProjects'
 import ProfileEditor from '../common/userComponents/ProfileEditor'
 import RegisterUser from '../common/adminComponents/RegisterUser'
 import TimeLine from '../common/userComponents/TimeLine'
-
 import RaisedButton from 'material-ui/RaisedButton'
-import {Redirect} from 'react-router-dom'
-
 
 
 export default class ProfileContainer extends Component {
@@ -25,13 +22,10 @@ export default class ProfileContainer extends Component {
       isMe : this.props.match.params.email === Backend.getMail(),
       profileInf : {},
       value : 'a',
-      topTenTags : [],
       snackbar : false,
       snackbarText : "",
-      projectCount : 0,
       showRegistration : false,
       showEdit: false,
-
     }
     this.handleProfileChange = this.handleProfileChange.bind(this)
   }
@@ -44,10 +38,11 @@ export default class ProfileContainer extends Component {
   }
 
   componentWillReceiveProps(nextProps){
-    this.loadProfileInf(nextProps.match.params.email === undefined ? Backend.getMail() : nextProps.params.email)
+    this.loadProfileInf(this.props.match.params.email === undefined ? Backend.getMail()
+      : this.props.match.params.email)
   }
 
-  componentWillMount(){
+  componentDidMount(){
     this.loadProfileInf(this.state.email)
   }
 
@@ -59,19 +54,11 @@ export default class ProfileContainer extends Component {
           site_loaded : true
         })
       }else{
-        Backend.getTagsOfUser(e)
-        .then(tags => {this.setState({topTenTags : tags})})
-        .then(
-          Backend.getUsersProjects(e)
-          .then(count =>{this.setState({projectCount : count.length})})
-        )
-        .then(
-          this.setState({
-            profileInf : data,
-            profile_exists : true,
-            site_loaded : true,
-          })
-        )
+        this.setState({
+          profileInf : data,
+          profile_exists : true,
+          site_loaded : true,
+        })
       }
     }).catch(ex => {
       this.setState({
@@ -97,12 +84,12 @@ export default class ProfileContainer extends Component {
       )
     }
     if(this.state.email === Backend.getMail() && this.props.match.url !== "/yourprofile"){
-      return <Redirect to = "/yourprofile"/>
+      history.push("/yourprofile")
     }
     if( !this.state.profile_exists){
       return (
         <div className = "container">
-          <div className = "row" style = {{marginTop: 100, marginBottom: 100}}>
+          <div className = "row" style = {{marginTop: 80, marginBottom: 100}}>
             <div className = "col-4">
               {Backend.isAdmin ?
                 <RaisedButton
@@ -134,8 +121,8 @@ export default class ProfileContainer extends Component {
       return (
         <div className = "container">
           {!this.state.showEdit ?
-            <div>
-              <div className = "row" style = {{marginTop: 100}}>
+            <div style = {{width: '100%'}}>
+              <div className = "row" style = {{marginTop: 80}}>
               <div className = "col-3">
                 {(Backend.isAdmin() || this.state.isMe)  ?
                   <RaisedButton
@@ -146,7 +133,7 @@ export default class ProfileContainer extends Component {
                  : ""}
               </div>
               <div className = "col-1"/>
-              <div className = "col-4" style = {{fontSize: 30, height: 41, textAlign: 'center'}}>
+              <div className = "col-4" style = {{fontSize: 30, height: 41, fontWeight:300, textAlign: 'center'}}>
                 Profile details
               </div>
               {!this.state.profileInf.active === "false" ?
@@ -160,8 +147,8 @@ export default class ProfileContainer extends Component {
             <div className = "row" style = {{marginTop: 20}}>
               <div className = "col-3">
                 <ProfileView profileInf = {this.state.profileInf}
-                          topTenTags = {this.state.topTenTags}
-                          projectsContributed = {this.state.projectCount}/>
+                          topTenTags = {this.state.profileInf.tags}
+                          projectsContributed = {this.state.profileInf.project_count}/>
               </div>
               <div className = "col-9">
                 <div style = {{fontWeight: 'bold', fontSize: 26}}>

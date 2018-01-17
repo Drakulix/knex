@@ -9,7 +9,7 @@ export default class TagOutputList extends Component{
 
   render(){
     return (
-      <div style = {{textAlign: "center"}}>
+      <div style = {{display: 'flex', flexWrap: 'wrap'}}>
         { this.props.value !== undefined ?
           this.props.value.map(item =>
             <Chip onClick = {() => {history.push(`/discovery/${JSON.stringify({tags: [item]})}`)}}

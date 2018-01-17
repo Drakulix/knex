@@ -102,8 +102,6 @@ export default class CreateProject extends Component {
     event.preventDefault()
     this.setState({site_loaded : false})
     var projectInf = this.state.projectInf
-    delete projectInf.is_bookmark
-    delete projectInf.is_owner
     if( this.state.projectID === undefined){
       Backend.addProject(projectInf)
       .then((id) =>{

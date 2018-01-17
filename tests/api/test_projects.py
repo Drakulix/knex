@@ -24,7 +24,7 @@ class TestPOST(object):
             'validexample0.json5'
         )
         with open(test_manifest, 'r', encoding='utf-8') as tf:
-            data = str(tf.read().replace('\n', ''))
+            data = str(tf.read())
         response = session.post(flask_api_url + "/api/projects", data=data.encode('utf-8'),
                                 headers={'Content-Type': 'application/json5'})
         print(response.text)
@@ -280,12 +280,15 @@ class TestGET(object):
 
     def test_success_getall(self, session, flask_api_url, manifest_validator,
                             mongo_client, enter_data_using_post):
+        project_id_not_archived = enter_data_using_post.json()
         response = session.get(flask_api_url + "/api/projects")
         print(response.status_code)
+        print(project_id_not_archived)
         assert response.status_code == 200
         projects = response.json()
         print(projects)
         print(projects[0])
+        assert projects[0]['_id'] == project_id_not_archived[0]
         for project in projects:
             print(project)
             if 'is_bookmark' in project:
@@ -301,22 +304,20 @@ class TestGET(object):
 
     def test_get_archived_fail(self, session, flask_api_url, enter_archived_using_post):
         project_id = enter_archived_using_post.json()
-        get_response = session.get(flask_api_url + "/api/projects/" + project_id.pop(0) +
-                                   "?archived=false")
+        get_response = session.get(flask_api_url + "/api/projects", params={"archived": 'false'}, )
         print(get_response.text)
-
-        assert get_response.status_code == 404
+        response_json = get_response.json()
+        assert get_response.status_code == 200
+        assert len(response_json) == 0
 
     def test_get_archived_success(self, session, flask_api_url, enter_archived_using_post):
         project_id_archived = enter_archived_using_post.json()
         print(project_id_archived)
-        get_response = session.get(flask_api_url + "/api/projects/" +
-                                   project_id_archived[0] + "?archived=true")
+        get_response = session.get(flask_api_url + "/api/projects", params={"archived": 'true'}, )
         print(get_response.text)
         response_json = get_response.json()
         assert get_response.status_code == 200
-        assert response_json["archived"]
-        assert response_json["_id"] == project_id_archived[0]
+        assert len(response_json) == 1
 
     def test_get_archived_mixed_admin(self, session, flask_api_url,
                                       enter_archived_using_post, enter_data_using_post):
@@ -408,7 +409,6 @@ class TestPUT(object):
         print(get_response.text)
         manifest_json['archived'] = "true"
         del manifest_json['is_bookmark']
-        del manifest_json['is_owner']
         get_put_response = session.put(flask_api_url + "/api/projects/" +
                                        project_id_not_archived[0], json=manifest_json)
         print(get_put_response.text)
@@ -430,7 +430,6 @@ class TestPUT(object):
         print(get_response.text)
         manifest_json['archived'] = "false"
         del manifest_json['is_bookmark']
-        del manifest_json['is_owner']
         get_put_response = session.put(flask_api_url + "/api/projects/" + project_id_archived[0],
                                        json=manifest_json)
         get_again_response = session.get(flask_api_url + "/api/projects/" + project_id_archived[0])
@@ -483,7 +482,6 @@ class TestPUT(object):
         manifest = get_response.json()
         manifest['archived'] = "true"
         del manifest['is_bookmark']
-        del manifest['is_owner']
         put_response = session.put(flask_api_url + "/api/projects/" + project_id, json=manifest)
         print(put_response.text)
         assert put_response.status_code == 200

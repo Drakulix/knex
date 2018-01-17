@@ -63,6 +63,10 @@ class Backend {
         return ( this.mail || getCookie('email') )
     }
 
+    getName(){
+      return this.profile.first_name + " " + this.profile.last_name
+    }
+
     async login(mail, password) {
         let response = await fetch('/api/users/login', {
             method: 'POST',
@@ -127,6 +131,10 @@ class Backend {
             error: await response.text(),
           }
         }
+    }
+
+    async refreshProfile(){
+      this.profile = await this.getProfile();
     }
 
     // returns json
@@ -318,9 +326,16 @@ class Backend {
         return this.delete(`/api/projects/${id}`);
     }
 
-    getProjectTitels(project_ids){
-      return this.postJson('/api/projects/titles', project_ids).then(function(data)
-        {return JSON.parse(data)})
+    getProjectMetaData(project_id){
+      return this.getJson(`/api/projects/${project_id}/meta`)
+    }
+
+    getProjectsMetaData(project_id_list){
+      return this.postJson(`/api/projects/meta`, project_id_list).then(function(data){return JSON.parse(data)});
+    }
+
+    getProjectNgrams(ngrams){
+      return this.getJson(`/api/projects/ngramlist/${ngrams}`)
     }
 
     async addProjectComment(id, message) {
@@ -563,7 +578,7 @@ class Backend {
     }
 
     handleBookmark(id, shouldBookmark){
-      if(shouldBookmark === 'true') {
+      if(shouldBookmark) {
         return this.delete(`/api/bookmarks/${encodeURIComponent(id)}`);
       }
       else{

@@ -38,29 +38,9 @@ export default class TimeLine extends React.Component {
     }
     notificationPromise
     .then((data) => {
-      var users = data.map (notification => {return notification.user_id})
-      users = users.concat(data.map (notification => {return notification.creator}))
-      users = users.filter(function(item,pos){
-        return users.indexOf(item) == pos
-      })
-      Backend.getUserNames(users)
-      .then ((userNames) => {
-        this.setState({
-          userNames : userNames
-        })
-        Backend.getProjectTitels(data.filter(notification => {return notification.project_id !== ""
-        }).map (notification => {return notification.project_id}))
-        .then ((projectTitles) =>{
-          this.setState({
-            projectTitles : projectTitles,
-            notifications: data
-          })
-        })
-        .then (
-          this.setState({
-            loading : false,
-          })
-        )
+       this.setState({
+         notifications: data,
+        loading : false,
       })
     })
   }
@@ -79,7 +59,6 @@ export default class TimeLine extends React.Component {
                 <hr></hr>
                 <News
                     value = {notification}
-                    names = {this.state.userNames}
                     titles = {this.state.projectTitles}
                     refreshHandler = {this.load}
                     email = {this.props.email}
@@ -129,7 +108,6 @@ class News extends React.Component {
         reason = ""
         break
     }
-
     return (
       <div className = "row" style={{width: "100%"}}>
         <div className ="col-1">
@@ -149,30 +127,30 @@ class News extends React.Component {
               :
             <span onClick ={() => {history.push(`/profile/${this.props.value.creator}`)}}
                     style = {{color: Styles.palette.primary1Color, cursor: 'pointer'}}>
-                {this.props.names[this.props.value.creator]}
+                {this.props.value.creator_name}
             </span>
           }
           <span> {operationText[this.props.value.operation]} </span>
-          {this.props.value.operation === "invite" || this.props.value.operation === "invitation"?
-            <span onClick ={() => {history.push(`/profile/${this.props.value.user_id}`)}}
-                    style = {{color: Styles.palette.primary1Color, cursor: 'pointer'}}>
-                you
-            </span>
-          : ""}
-          {this.props.value.project_id !== "" ?
+          {this.props.value.project_id !== null ?
             <span>
               <span> project </span>
               <span>
                 <span onClick ={() => {history.push(`/project/${this.props.value.project_id}`)}}
                         style = {{color: Styles.palette.primary1Color, cursor: 'pointer'}}>
-                    {this.props.titles[this.props.value.project_id]}
+                    {this.props.value.project_title}
                 </span>
               </span>
               <span> {reason} </span>
-              {this.props.saved_search_id !== "" ? this.props.saved_search_id : ""}
+              {this.props.saved_search_id !== null ? this.props.saved_search_id : ""}
             </span>
             : ""
           }
+          {this.props.value.operation === "invite" || this.props.value.operation === "invitation"?
+            <span onClick ={() => {history.push(`/profile/${this.props.value.user_id}`)}}
+                    style = {{color: Styles.palette.primary1Color, cursor: 'pointer'}}>
+                {this.props.value.user_id === Backend.getMail() ? "you" : ""}
+            </span>
+          : ""}
           <div style = {{fontStyle: 'italic' , color: Styles.palette.disabledColor}}>
             {Moment(this.props.value.date).from(new Moment())}
           </div>
